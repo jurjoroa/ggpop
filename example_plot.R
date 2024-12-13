@@ -1,7 +1,44 @@
+# *****************************************************************************
+#
+# Script: example_plot.R
+#
+# Purpose: Example plot
+#
+# Author: Jorge Roa
+#
+# Email: jorgeroa@stanford.edu
+#
+#
+# *****************************************************************************
+#
+# Notes:
+#   
+#
+# *****************************************************************************
+
+# *****************************************************************************
+# *****************************************************************************
+
+remove(list = ls())
+
+path <- "figs/"
+
+#* Refresh environment memory
+gc()
+
+# *****************************************************************************
+#### Load packages ####
+# *****************************************************************************
+
+# Load Libraries -------------------------------------------------------
+
 library(ggplot2) # load the library 
 library(ggimage)
 library(ggforce)
+library(dplyr)
 
+# *****************************************************************************
+#### Load data ####
 
 df_crc <- read.csv2("2024_09_06_COL_458510_CaDxAndDeathData.csv", sep = ",")
 
@@ -9,78 +46,59 @@ df_crc <- read.csv2("2024_09_06_COL_458510_CaDxAndDeathData.csv", sep = ",")
 
 #group by CauseOfDeath and get the count of each group
 
-library(dplyr)
 df_prop <- df_crc %>% 
   group_by(CauseOfDeath) %>% 
   summarise(n = n()) %>% 
   mutate(prop = n / sum(n))
 
-library(mtcars)
 
-data(mtcars)
+# Create proportion of CRC cases
+df_crc_cases <- sample(c("CRC", "OTHER"), 1000, replace = TRUE, prob=c(df_prop$prop[1], 1-df_prop$prop[1]))
 
-data("mtcars")
-
-
-# createcar# create migrants sample
-migrant <- sample(c("CRC", "OTHER"), 1000, replace = TRUE, prob=c(df_prop$prop[1], 1-df_prop$prop[1]))
-
-
-# Define total number of migrants
-total_migrants <- 1000
+#Define the total number of dots for the plot
+total_dots <- 1000
 
 # Calculate the number of "CRC" and "OTHER" based on the proportion
-n_crc <- round(df_prop$prop[1] * total_migrants)
-n_other <- total_migrants - n_crc
+n_crc <- round(df_prop$prop[1] * total_dots)
+n_other <- total_dots - n_crc
 
 # Create a vector with the appropriate number of "CRC" and "OTHER"
-migrant <- c(rep("CRC", n_crc), rep("OTHER", n_other))
+df_dots <- c(rep("CRC", n_crc), rep("OTHER", n_other))
 
 
 # load coordinates  
-coor <- read.table("cci2647.txt")
 
-coor2 <- read.table("cci2647.txt")
 
-coor3 <- read.table("cci1000.txt")
-
-#add +1 to the coordinates to avoid log(0)
-
-coor2$V2 <- coor2$V2 + .00001
-
-coor2$V3 <- coor2$V3 + .00001
+df_coor_1000 <- read.table("data-raw/cci1000.txt")
 
 
 #merge the migrants and coordinates data frames 
-df <- cbind(coor, migrant)
 
-df_2 <- cbind(coor3, migrant)
-
-df_final <- cbind(coor2, migrant)
-
-df_2$icon <- "1"
-
-df_3 <- df_2
-
-df_3$icon <- "2"
-
-df_2_3 <- rbind(df_2, df_3)
-
-df_final_final <- rbind(df, df_final)
-#basic plot #basicrbind() plot 
-ggplot(df_2, aes(y=V2, x=V3, color=migrant))+
-  geom_point()
+df_coor_dots <- cbind(df_coor_1000, df_dots)
 
 
-ggplot(df_2_3, aes(x=V2, y=V3,  color=migrant)) +
-  geom_image(aes(image = ifelse(migrant == "OTHER", "person_f.svg", "person_f.svg")), 
+df_coor_dots$icon <- "1"
+
+df_coor_dots_2 <- df_coor_dots
+
+df_coor_dots_2$icon <- "2"
+
+df_coor_dots_f <- rbind(df_coor_dots, df_coor_dots_2)
+
+
+
+
+ggplot(df_coor_dots_f, aes(x=V2, y=V3,  color=df_dots)) +
+  geom_image(aes(image = ifelse(df_dots == "OTHER", "person_f.svg", "female.svg")), 
              size = 0.03) + 
   #facet_wrap(~icon) +
   theme_void()+
   theme(legend.position = "none")
 
 
-ggsave("plot4.png", width = 5, height = 5)
+ggsave("example_plot", width = 5, height = 5)
+
+
 
 
 df_movies <- read.csv2("movies.csv", sep = ",")
@@ -95,8 +113,6 @@ df_movies_pop <- df_movies %>%
   group_by(genres) %>% 
   summarise(n = n()) %>% 
   mutate(prop = n / sum(n))
-
-library(dplyr)
 
 # Define the function to group genres into 20 unique categories
 group_genres <- function(genre) {
@@ -157,7 +173,7 @@ df_movies_pop <- df_movies %>%
 migrant <- sample(c(df_movies_pop$grouped_genres), 1000, replace = TRUE, prob=c(df_movies_pop$prop))
 
 
-coor35 <- read.table("cci1000.txt")
+coor35 <- read.table("data-raw/cci1000.txt")
 
 df_22 <- cbind(coor35, migrant)
 
