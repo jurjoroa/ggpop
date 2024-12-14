@@ -88,7 +88,7 @@ df_coor_dots_f <- rbind(df_coor_dots, df_coor_dots_2)
 
 
 
-ggplot(df_coor_dots_f, aes(x=V2, y=V3,  color=df_dots)) +
+ggplot(df_coor_dots, aes(x=V2, y=V3,  color=df_dots)) +
   geom_image(aes(image = ifelse(df_dots == "OTHER", "person_f.svg", "female.svg")), 
              size = 0.03) + 
   #facet_wrap(~icon) +
@@ -99,6 +99,18 @@ ggplot(df_coor_dots_f, aes(x=V2, y=V3,  color=df_dots)) +
 ggsave("example_plot", width = 5, height = 5)
 
 
+# *****************************************************************************
+#Money data example
+# *****************************************************************************
+
+
+remotes::install_github("npaterno/data_hunter")
+
+
+
+# *****************************************************************************
+# Movie data example
+# *****************************************************************************
 
 
 df_movies <- read.csv2("movies.csv", sep = ",")
@@ -107,7 +119,6 @@ df_movies <- read.csv2("movies.csv", sep = ",")
 
 #group by genres and get the count of each group
 
-library(dplyr)
 
 df_movies_pop <- df_movies %>% 
   group_by(genres) %>% 
@@ -170,18 +181,39 @@ df_movies_pop <- df_movies %>%
 
 
 
-migrant <- sample(c(df_movies_pop$grouped_genres), 1000, replace = TRUE, prob=c(df_movies_pop$prop))
+migrant <- sample(c(df_movies_pop$grouped_genres), 500, replace = TRUE, prob=c(df_movies_pop$prop))
 
 
-coor35 <- read.table("data-raw/cci1000.txt")
+coor35 <- read.table("data-raw/cci500.txt")
+
+coor35 <- coor35[order(coor35$V1), ]  # Ensure coordinates are sorted by V1
+
 
 df_22 <- cbind(coor35, migrant)
 
+#sort by V1 and add the migrant column
+
+# 2. Now reorder the data frame by V1 and then by migrant:
+df_22 <- df_22[order(df_22$V1), ]
+
+vector_order <- df_22$migrant
+
+df_22$migrant <- vector_order
+
+
+#order the data frame by migrant
+# Define your custom 20-color palette
+my_colors <- c('#e6194b', '#3cb44b', '#ffe119', '#0082c8', '#f58231', 
+               '#911eb4', '#46f0f0', '#f032e6', '#d2f53c', '#fabebe', 
+               '#008080', '#e6beff', '#aa6e28', '#fffac8', '#800000', 
+               '#aaffc3', '#808000', '#ffd8b1', '#000080', '#808080')
 
 ggplot(df_22, aes(x=V2, y=V3,  color=migrant)) +
   geom_image(aes(image = ifelse(migrant == "Action", "person_f.svg", "person_f.svg")), 
-             size = 0.03)
-
+             size = 0.03) +
+  #change palette
+  scale_color_manual(values = my_colors)
+  
 
 # Calculate the number of migrants per genre based on the proportion
 df_movies_pop2 <- df_movies_pop %>%
