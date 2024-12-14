@@ -222,3 +222,64 @@ df_movies_pop2 <- df_movies_pop %>%
 # Create a migrant column with a non-randomized sample, replicating based on counts
 migrant <- rep(df_movies_pop$grouped_genres, df_movies_pop$count)
 
+
+# *****************************************************************************
+#Money data example
+# *****************************************************************************
+
+# Load the data
+
+df_money <- read.csv2("data-raw/gdp-world-regions-stacked-area.csv", sep = ",")
+
+#Keep in entity the countries that have ()
+
+df_money_w <- df_money %>% 
+  filter(grepl("\\(", Entity)) %>% 
+  filter(Year == 2022)
+
+#group by entity and get the count of each group
+
+df_money_w$Gross.domestic.product..GDP.
+
+df_money_pop <- df_money_w %>% 
+  group_by(Entity) %>% 
+  summarise(GDP = sum(Gross.domestic.product..GDP.)) %>%
+  mutate(prop = GDP / sum(GDP))
+
+#sample
+
+total_dots_v2 <- 1000
+
+money <- sample(c(df_money_pop$Entity), total_dots_v2, replace = TRUE, prob=c(df_money_pop$prop))
+
+#load coordinates
+
+df_coor_100 <- read.table("data-raw/cci1000.txt")
+
+#merge the migrants and coordinates data frames
+
+df_coor_dots_money <- cbind(df_coor_100, money)
+
+#order the data frame by money
+
+vector_money <- df_coor_dots_money[order(df_coor_dots_money$money), ]
+
+vector_order <- vector_money$money
+
+#order the data frame by V1
+
+df_coor_dots_money <- df_coor_dots_money[order(df_coor_dots_money$V1), ]
+
+df_coor_dots_money$money <- vector_order
+
+
+#plot
+
+ggplot(df_coor_dots_money, aes(x=V2, y=V3,  color=money)) +
+  geom_image(aes(image = ifelse(money == "United States (USA)", "dollar.svg", "dollar.svg")), 
+             size = 0.02)+ 
+  scale_color_brewer( palette = "Set1")
+
+
+
+# Define the function to group entities into 20 unique categories
