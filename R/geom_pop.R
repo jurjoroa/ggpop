@@ -36,7 +36,7 @@ library(rlang)
 arrange_data <- function(data, group_var, sum_var = NULL, sample_size = NULL, arrange = FALSE) {
   group_var_expr <- enquo(group_var)
   sum_var_expr <- enquo(sum_var)
-  
+
   df_proportion <- data %>%
     group_by(!!group_var_expr) %>%
     summarise(
@@ -48,37 +48,34 @@ arrange_data <- function(data, group_var, sum_var = NULL, sample_size = NULL, ar
       .groups = "drop"
     ) %>%
     mutate(prop = n / sum(n))
-  
+
   if (nrow(df_proportion) > 2) {
     stop("The current sample code supports only two groups. For multiple groups, adjust the sampling logic.")
   }
-  
+
   df_prop <- df_proportion
-  
+
   vector_sample <- sample(
     df_prop %>% pull(!!group_var_expr),
     sample_size,
     replace = TRUE,
     prob = c(df_prop$prop[1], 1 - df_prop$prop[1])
   )
-  
+
   df_sample <- tibble(type = vector_sample)
   df_sample$pos <- seq(1, nrow(df_sample))
-  
+
   if (arrange == TRUE) {
     df_sample <- df_sample[order(df_sample$type), ]
     df_sample$pos <- seq(1, nrow(df_sample))
   }
-  
+
   # Get coordinates for the given sample_size
   df_coordinates <- df_coordinates_final %>%
     filter(size == sample_size)
-  
+
   df_coor_dots <- full_join(df_coordinates, df_sample, by = "pos")
-  
-  df_coor_dots <- df_coor_dots %>%
-    mutate(icon = ifelse(type == "CRC", "male", "female"))
-  
+
   return(df_coor_dots)
 }
 
