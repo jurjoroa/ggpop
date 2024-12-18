@@ -16,7 +16,7 @@
 #' It returns a data frame with the coordinates of the dots.
 #' @export
 #' 
-arrange_data <- function(data, group_var, sum_var = NULL, sample_size = NULL, arrange = NULL) {
+arrange_data <- function(data, group_var, sum_var = NULL, sample_size = NULL, arrange = FALSE) {
   df_proportion <- data %>%
     group_by({{ group_var }}) %>%
     summarise(
@@ -25,17 +25,45 @@ arrange_data <- function(data, group_var, sum_var = NULL, sample_size = NULL, ar
     ) %>%
     mutate(prop = n / sum(n))
   
+  vector_sample <- sample(c(df_proportion %>% pull({{ group_var }})), sample_size, replace = TRUE,  prob=c(df_prop$prop[1], 1-df_prop$prop[1]))
+  
+  df_sample <- tibble(type = vector_sample)
+  
+  df_sample$pos <- seq(1, nrow(df_sample))
+  
+  if (arrange == TRUE) {
+    df_sample <- df_sample[order(df_sample$type), ]
+    
+    vector_order <- df_sample$type
+    
+    # Step 3: Order by pos
+    #df <- df[order(df$pos), ]
+    
+    df_sample$type <- vector_order
+    
+    df_sample$pos <- seq(1, nrow(df_sample))
+    
+    #df$type <- vector_order
+  }
+  
   df_coordinates <- df_coordinates_final %>% 
     filter(size == sample_size)
   
-  df_sample <- sample(c(df_proportion %>% pull({{ group_var }})), sample_size, replace = TRUE,  prob=c(df_prop$prop[1], 1-df_prop$prop[1]))
+  df_coor_dots <- full_join(df_coordinates, df_sample, by = "pos")
   
-  df_coor_dots <- bind_cols(df_coordinates, tibble(type = df_sample))
   
   return(df_coor_dots)
 }
 
-df_crc_prop <- arrange_data(data = df_crc, group_var = CauseOfDeath, sample_size = 1000)
+
+
+df_coordinates <- df_coordinates_final %>% 
+  filter(size == sample_size)
+
+df_coor_dots <- bind_cols(df_coordinates, tibble(type = df_sample))
+
+
+df_crc_prop <- arrange_data(data = df_crc, group_var = CauseOfDeath, sample_size = 1000, arrange = FALSE)
 
 
 ggplot(df_crc_prop, aes(x=x1, y=y1,  color=type)) +
