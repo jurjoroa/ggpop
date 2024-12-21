@@ -38,7 +38,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
   if ("image" %in% names(mapping_list)) {
-    stop("Please do not specify the 'image' aesthetic directly. Use only 'icon'.")
+    stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
   }
   
   if (!"icon" %in% names(mapping_list)) {
