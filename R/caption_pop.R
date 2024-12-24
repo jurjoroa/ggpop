@@ -96,49 +96,142 @@ caption_pop <- function(data, size_caption = 3) {
     )
 }
 
-caption_pop <- function(size_caption = 3) {
+caption_pop <- function(size_caption = 3, size_image = 20, hjust = 0.6, text = NULL) {
+  
+  #--- Ensure `data` exists ---
   if (is.null(data)) {
     stop("Data must be provided to generate captions.")
   }
   
+  #--- Get the last plot and its data ---
   last_plot <- ggplot2::last_plot()
-  
-  # Extract data from the ggplot layers
   data <- last_plot$layers[[1]]$data
   
+  #--- Compute counts (ceiling of sum / number of rows) ---
+  first_group <- ceiling(sum(data$n[1], na.rm = TRUE) / nrow(data))
+  second_group <- ceiling(sum(data$n[2], na.rm = TRUE) / nrow(data))
+  third_group <- ceiling(sum(data$n[3], na.rm = TRUE) / nrow(data))
   
-  male_count <- ceiling(sum(data$n[1], na.rm = TRUE) / nrow(data))
-  female_count <- ceiling(sum(data$n[2], na.rm = TRUE) / nrow(data))
+  # Helper function to get text description for an image
+  get_text <- function(image) {
+    if (!is.null(text) && image %in% names(text)) {
+      return(text[[image]])
+    }
+    return("persons") # Default fallback
+  }
   
-  caption_text <- paste(
-    "Every",
-    "<img src='man/figures/male.png' width='20'/>",
-    "represents", 
-    male_count, 
-    "persons",
-    "<br>",
-    "Every",
-    "<img src='man/figures/female.png' width='20'/>",
-    "represents", 
-    female_count,
-    "persons"
-  )
+  # Generate caption based on available images
+  if (!is.na(data$image[1]) && !is.na(data$image[2]) && !is.na(data$image[3])) {
+    
+    caption_text <- paste(
+      "Every",
+      paste0("<img src='man/figures/", data$image[1], ".png' width='", size_image, "'/>"),
+      "represents",
+      first_group,
+      get_text(data$image[1]),
+      "<br>",
+      "Every",
+      paste0("<img src='man/figures/", data$image[2], ".png' width='", size_image, "'/>"),
+      "represents",
+      second_group,
+      get_text(data$image[2]),
+      "<br>",
+      "Every",
+      paste0("<img src='man/figures/", data$image[3], ".png' width='", size_image, "'/>"),
+      "represents",
+      third_group,
+      get_text(data$image[3])
+    )
+    
+  } else if (!is.na(data$image[1]) && !is.na(data$image[2])) {
+    
+    caption_text <- paste(
+      "Every",
+      paste0("<img src='man/figures/", data$image[1], ".png' width='", size_image, "'/>"),
+      "represents",
+      first_group,
+      get_text(data$image[1]),
+      "<br>",
+      "Every",
+      paste0("<img src='man/figures/", data$image[2], ".png' width='", size_image, "'/>"),
+      "represents",
+      second_group,
+      get_text(data$image[2])
+    )
+    
+  } else if (!is.na(data$image[1])) {
+    
+    caption_text <- paste(
+      "Every",
+      paste0("<img src='man/figures/", data$image[1], ".png' width='", size_image, "'/>"),
+      "represents",
+      first_group + second_group,
+      get_text(data$image[1])
+    )
+    
+  } else if (!is.na(data$image[2])) {
+    
+    caption_text <- paste(
+      "Every",
+      paste0("<img src='man/figures/", data$image[2], ".png' width='", size_image, "'/>"),
+      "represents",
+      second_group,
+      get_text(data$image[2])
+    )
+    
+  } else {
+    stop("No valid images found.")
+  }
   
+  #--- Return a list of ggplot2 commands to modify your plot ---
   list(
     labs(caption = caption_text),
-    theme(plot.caption = ggtext::element_markdown(size = size_caption, hjust = 0.6))
+    theme(plot.caption = ggtext::element_markdown(size = size_caption, hjust = hjust))
   )
 }
 
 
 
+df_iris <- iris
+
+df_iris_prop <- process_data(data = df_iris, group_var = Species, sample_size = 500)
+
+df_proportion <- df_iris %>%
+  group_by(Species) %>%
+  summarise(
+    n = n() ) %>%
+  mutate(prop = n / sum(n))
 
 
+df_crc_prop <- df_crc_prop %>% 
+  mutate(icon = ifelse(type =="CRC", "handicap", "male"))
+
+df_crc_prop$icon <- "male"
+
+df_iris_prop <- df_iris_prop %>% 
+  mutate(icon = case_when(
+    type == "setosa" ~ "handicap",
+    type == "versicolor" ~ "syringe",
+    type == "virginica" ~ "build"
+  ))
+
+#idea: # Example usage:
+ggplot() +
+  geom_pop(data = df_iris_prop, aes(icon = icon, group=type, color=type),
+           size = 1.3, arrange = F) +
+  theme_void() +
+  caption_pop(size_caption = 10, size_image = 15) +
+  theme(legend.position = "none")
+
+ggsave("example_plot5.png", width = 5, height = 5)
 
 
 #idea: # Example usage:
 ggplot() +
-  geom_pop(data = df_crc_prop, aes(icon = icon2, group=type, color=type),
+  geom_pop(data = df_crc_prop, aes(icon = icon, group=type, color=type),
            size = 1.3, arrange = F) +
   theme_void() +
-  caption_pop(size_caption = 10)
+  caption_pop(size_caption = 10, size_image = 15, text=c("male"="disabled person",
+                                                         "build"="building",
+                                                         "syringe"="sick person")) +
+  theme(legend.position = "none")
