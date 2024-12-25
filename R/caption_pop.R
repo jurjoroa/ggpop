@@ -120,65 +120,67 @@ caption_pop <- function(size_caption = 3, size_image = 20, hjust = 0.6, text = N
     return("persons") # Default fallback
   }
   
+  # Helper function to split and process text
+  process_text <- function(image) {
+    words <- unlist(strsplit(get_text(image), " "))
+    if (length(words) > 2) {
+      c(words[1], words[2], paste(words[3:length(words)], collapse = " "))
+    } else {
+      c(words, "")
+    }
+  }
+  
   # Generate caption based on available images
   if (!is.na(data$image[1]) && !is.na(data$image[2]) && !is.na(data$image[3])) {
-    
     caption_text <- paste(
-      "Every",
+      process_text(data$image[1])[1],
       paste0("<img src='man/figures/", data$image[1], ".png' width='", size_image, "'/>"),
-      "represents",
+      process_text(data$image[1])[2],
       first_group,
-      get_text(data$image[1]),
+      process_text(data$image[1])[3],
       "<br>",
-      "Every",
+      process_text(data$image[2])[1],
       paste0("<img src='man/figures/", data$image[2], ".png' width='", size_image, "'/>"),
-      "represents",
+      process_text(data$image[2])[2],
       second_group,
-      get_text(data$image[2]),
+      process_text(data$image[2])[3],
       "<br>",
-      "Every",
+      process_text(data$image[3])[1],
       paste0("<img src='man/figures/", data$image[3], ".png' width='", size_image, "'/>"),
-      "represents",
+      process_text(data$image[3])[2],
       third_group,
-      get_text(data$image[3])
+      process_text(data$image[3])[3]
     )
-    
   } else if (!is.na(data$image[1]) && !is.na(data$image[2])) {
-    
     caption_text <- paste(
-      "Every",
+      process_text(data$image[1])[1],
       paste0("<img src='man/figures/", data$image[1], ".png' width='", size_image, "'/>"),
-      "represents",
+      process_text(data$image[1])[2],
       first_group,
-      get_text(data$image[1]),
+      process_text(data$image[1])[3],
       "<br>",
-      "Every",
+      process_text(data$image[2])[1],
       paste0("<img src='man/figures/", data$image[2], ".png' width='", size_image, "'/>"),
-      "represents",
+      process_text(data$image[2])[2],
       second_group,
-      get_text(data$image[2])
+      process_text(data$image[2])[3]
     )
-    
   } else if (!is.na(data$image[1])) {
-    
     caption_text <- paste(
-      "Every",
+      process_text(data$image[1])[1],
       paste0("<img src='man/figures/", data$image[1], ".png' width='", size_image, "'/>"),
-      "represents",
+      process_text(data$image[1])[2],
       first_group + second_group,
-      get_text(data$image[1])
+      process_text(data$image[1])[3]
     )
-    
   } else if (!is.na(data$image[2])) {
-    
     caption_text <- paste(
-      "Every",
+      process_text(data$image[2])[1],
       paste0("<img src='man/figures/", data$image[2], ".png' width='", size_image, "'/>"),
-      "represents",
+      process_text(data$image[2])[2],
       second_group,
-      get_text(data$image[2])
+      process_text(data$image[2])[3]
     )
-    
   } else {
     stop("No valid images found.")
   }
@@ -189,6 +191,7 @@ caption_pop <- function(size_caption = 3, size_image = 20, hjust = 0.6, text = N
     theme(plot.caption = ggtext::element_markdown(size = size_caption, hjust = hjust))
   )
 }
+
 
 
 
@@ -228,10 +231,10 @@ ggsave("example_plot5.png", width = 5, height = 5)
 
 #idea: # Example usage:
 ggplot() +
-  geom_pop(data = df_crc_prop, aes(icon = icon, group=type, color=type),
+  geom_pop(data = df_iris_prop, aes(icon = icon, group=type, color=type),
            size = 1.3, arrange = F) +
   theme_void() +
-  caption_pop(size_caption = 10, size_image = 15, text=c("male"="disabled person",
-                                                         "build"="building",
-                                                         "syringe"="sick person")) +
+  caption_pop(size_caption = 10, size_image = 15, text=c("handicap"="Cada representa personas discapacitadas",
+                                                         "syringe"="Syringe represents medical personnel",
+                                                         "build"="Build represents construction workers")) +
   theme(legend.position = "none")
