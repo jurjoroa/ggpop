@@ -37,6 +37,10 @@ library(ggimage)
 library(ggforce)
 library(dplyr)
 
+
+source("R/geom_pop.R")
+source("R/arrange_data.R")
+
 # *****************************************************************************
 #### Load data ####
 
@@ -68,7 +72,7 @@ df_crc_prop <- process_data(data = df_crc, group_var = CauseOfDeath, sample_size
 
 
 df_crc_prop <- df_crc_prop %>% 
-  mutate(icon = ifelse(type =="CRC", "handicap", "male"))
+  mutate(icon = ifelse(type =="CRC", "bike", "male"))
 
 df_crc_prop$icon <- "male"
 
@@ -112,15 +116,19 @@ ggplot() +
   caption_pop(size_caption = 10, size_image = 15) +
   theme(legend.position = "none")
 
-ggsave("example_plot5.png", width = 5, height = 5)
+ggsave("example_plot6.png", width = 5, height = 5)
 
+df_crc_prop$icon <- "tree"
 
 #idea: # Example usage:
 ggplot() +
   geom_pop(data = df_crc_prop, aes(icon = icon, group=type, color=type),
-           size = 1.3, arrange = T) +
-  theme_void() +
+           size = .9, arrange = F) +
+  theme_void()
   caption_pop(size_caption = 10, size_image = 15, text=c("male"="Cada representa personas discapacitada",
-                                                         "handicap"="Syringe represents medical personnel",
+                                                         "bike"="Syringe represents medical personnel",
                                                          "build"="Build represents construction workers")) +
   theme(legend.position = "none")
+
+ggsave("example_plot7.png", width = 5, height = 5)
+

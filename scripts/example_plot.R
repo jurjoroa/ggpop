@@ -48,7 +48,7 @@ df_crc <- read.csv2("data-raw/2024_09_06_COL_458510_CaDxAndDeathData.csv", sep =
 
 #group by CauseOfDeath and get the count of each group
 
-df_prop <- df_crc %>% 
+df_prop_2 <- df_crc %>% 
   group_by(CauseOfDeath) %>% 
   summarise(n = n()) %>% 
   mutate(prop = n / sum(n))
