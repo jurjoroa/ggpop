@@ -80,7 +80,7 @@ df_coor_dots <- df_coor_dots[order(df_coor_dots$pos), ]
 
 df_coor_dots$type <- vector_order
 
-
+"~/Downloads/syringe.svg"
 
 ggplot(df_coor_dots, aes(x=x1, y=y1,  color=type)) +
   geom_image(aes(image = ifelse(type == "OTHER", "person_f.svg", "female.svg")), 

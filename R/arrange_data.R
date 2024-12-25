@@ -17,7 +17,11 @@
 #' @export
 #' 
 process_data <- function(data, group_var, sum_var = NULL, sample_size = NULL) {
+  
+  #if group_var is a factor, turn it into a character
+  
   df_proportion <- data %>%
+    mutate({{ group_var }} := as.character({{ group_var }})) %>%
     group_by({{ group_var }}) %>%
     summarise(
       n = if (is.null({{ sum_var}}))
@@ -25,11 +29,28 @@ process_data <- function(data, group_var, sum_var = NULL, sample_size = NULL) {
     ) %>%
     mutate(prop = n / sum(n))
   
-  vector_sample <- sample(c(df_proportion %>% pull({{ group_var }})), sample_size, replace = TRUE,  prob=c(df_prop$prop[1], 1-df_prop$prop[1]))
+  vector_sample <- sample(c(df_proportion %>% pull({{ group_var }})), sample_size, replace = TRUE,  prob=df_proportion$prop)
   
   df_sample <- tibble(type = vector_sample)
   
   df_sample$pos <- seq(1, nrow(df_sample))
+  
+  sample_group <- unique(df_sample$type)
+  
+  n_proportion <- df_proportion$n
+  
+  prop <- df_proportion$prop
+  
+  # "Pad" or truncate each vector to match length of df_sample
+  df_extra <- tibble(
+    group = c(sample_group, rep(NA, max(0, nrow(df_sample) - length(sample_group)))),
+    n     = c(n_proportion, rep(NA, max(0, nrow(df_sample) - length(n_proportion)))),
+    prop  = c(prop, rep(NA, max(0, nrow(df_sample) - length(prop))))
+  )[seq_len(nrow(df_sample)), ]    # truncate if needed
+  
+  # Combine
+  df_sample <- bind_cols(df_sample, df_extra)
+  
   
 
   

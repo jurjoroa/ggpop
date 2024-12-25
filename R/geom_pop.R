@@ -65,7 +65,22 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   data_merged <- full_join(filtered_coordinates, data, by = "pos")
   
-  if (!"x1" %in% colnames(data_merged) || !"y1" %in% colnames(data_merged)) {
+  # Get the row count of the merged table
+  N <- nrow(data_merged)
+  
+  # Prepare the vector to fill in your new column
+  vector_name_icon <- unique(data$icon)
+  
+  # Create a tibble with exactly N rows by:
+  #  - adding enough NAs to match N
+  #  - using [seq_len(N)] to truncate if the vector is too long
+  df_icon <- tibble(
+    image = c(vector_name_icon, rep(NA, max(0, N - length(vector_name_icon))))
+  )[seq_len(N), ]
+  
+  df_final <- bind_cols(data_merged, df_icon)
+  
+  if (!"x1" %in% colnames(df_final) || !"y1" %in% colnames(df_final)) {
     stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
   }
   
@@ -81,7 +96,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # Now call geom_image with the internally scaled size
   ggimage::geom_image(
     mapping = final_mapping,
-    data = data_merged,
+    data = df_final,
     stat = stat,
     position = position,
     na.rm = na.rm,
