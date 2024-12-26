@@ -37,12 +37,36 @@ library(ggimage)
 library(ggforce)
 library(dplyr)
 
+
+source("R/geom_pop.R")
+source("R/arrange_data.R")
+
 # *****************************************************************************
 #### Load data ####
 
 load("data/df_coordinates_final.RData")
 
 df_crc <- read.csv2("data-raw/2024_09_06_COL_458510_CaDxAndDeathData.csv", sep = ",")
+
+
+df_order <- df_crc_prop %>% select(group, n , prop)
+
+
+df_crc_2 <- df_crc_prop %>%
+  mutate(original_order = row_number()) %>%
+  arrange(type, original_order) %>%
+  mutate(pos = row_number()) %>%
+  select(-original_order, -group, -n , -prop)
+
+
+df_crc_2 <- bind_cols(df_crc_2, df_order)
+
+df_proportion_crc_2 <- df_crc %>%
+  mutate(CauseOfDeath := as.character(CauseOfDeath)) %>%
+  group_by(CauseOfDeath) %>%
+  summarise(
+    n = n())%>%
+  mutate(prop = n / sum(n))
 
 #get proportion of crc_cases CauseOfDeath from the data (N)
 
@@ -68,15 +92,15 @@ df_crc_prop <- process_data(data = df_crc, group_var = CauseOfDeath, sample_size
 
 
 df_crc_prop <- df_crc_prop %>% 
-  mutate(icon = ifelse(type =="CRC", "handicap", "male"))
+  mutate(icon = ifelse(type =="CRC", "male", "bike"))
 
 df_crc_prop$icon <- "male"
 
 df_iris_prop <- df_iris_prop %>% 
   mutate(icon = case_when(
-    type == "setosa" ~ "handicap",
-    type == "versicolor" ~ "syringe",
-    type == "virginica" ~ "build"
+    type == "setosa" ~ "tree",
+    type == "versicolor" ~ "bike",
+    type == "virginica" ~ "money"
   ))
 
 
@@ -107,20 +131,27 @@ ggsave("example_plot3.png", width = 5, height = 5)
 #idea: # Example usage:
 ggplot() +
   geom_pop(data = df_iris_prop, aes(icon = icon, group=type, color=type),
-           size = 1.3, arrange = F) +
+           size = 1.3, arrange = T) +
   theme_void() +
   caption_pop(size_caption = 10, size_image = 15) +
   theme(legend.position = "none")
 
-ggsave("example_plot5.png", width = 5, height = 5)
+ggsave("example_plot6.png", width = 5, height = 5)
 
+df_crc_prop$icon <- "tree"
 
 #idea: # Example usage:
 ggplot() +
   geom_pop(data = df_crc_prop, aes(icon = icon, group=type, color=type),
-           size = 1.3, arrange = T) +
+           size = 1.3, arrange = F) + 
+  #facet_wrap(~type) +
+  #erase the legend
   theme_void() +
-  caption_pop(size_caption = 10, size_image = 15, text=c("male"="Cada representa personas discapacitada",
-                                                         "handicap"="Syringe represents medical personnel",
-                                                         "build"="Build represents construction workers")) +
+  theme(legend.position = "none") +
+  caption_pop(size_caption = 10, size_image = 15, text=c("bike"="Cada representa personas discapacitada",
+                                                         "male"="Syringe represents medical personnel",
+                                                         "money"="Build represents construction workers")) +
   theme(legend.position = "none")
+
+ggsave("example_plot8.png", width = 10, height = 5)
+
