@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ggpop <img src="inst/figures/logo.png" align="right" width= 200px />
+# ggpop <img src="inst/figures/logo.png" align="right" width= 170px />
 
 <!-- badges: start -->
 
