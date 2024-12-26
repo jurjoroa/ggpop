@@ -47,11 +47,17 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   # If arrange = TRUE, reorder by 'type' and then assign pos:
   if (!is.null(data) && arrange) {
+    df_order <- data %>% select(group, n , prop)
+    
     data <- data %>%
       mutate(original_order = row_number()) %>%
       arrange(type, original_order) %>%
       mutate(pos = row_number()) %>%
-      select(-original_order)
+      select(-original_order, -group, -n , -prop)
+
+    data <- bind_cols(data, df_order)
+    
+    
   }
   
   sample_size <- nrow(data)
