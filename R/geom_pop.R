@@ -1,8 +1,8 @@
 #' Create a circular representative population chart
-#' 
+#' #' 
 #' Draws a circular representative population chart based on the proportion of the groups,
 #' where each point (person) represents a determined number of individuals.
-#' Every person is represented by an image.
+#' Every person is represented by an image with a given icon. 
 #' 
 #' @section Aesthetics:
 #' geom_pop employs the following aesthetics:
@@ -20,7 +20,18 @@
 #' @param sample_size The total number of individuals (points) to be drawn.
 #' @param arrange Logical; if TRUE, the output data is arranged by group.
 #' @param sum_var Optional variable to sum over instead of counting.
+#' 
+#' @return A \code{\link[grid]{ggplot}} object.
+
+#' 
 #' @importFrom ggplot2 layer
+#' @import ggimage
+#' 
+#' @examples
+#' ggplot() +
+#'  geom_pop(data = data, aes(icon = icon, group=type, color=type))
+#'  
+#' 
 #' @export
 geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      position = "identity", na.rm = FALSE, show.legend = NA,
@@ -31,7 +42,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   # Transform the user-specified size to the desired internal scale
   # If user specifies 1, internally we use 0.03
-  # This will scale any size value passed from outside by 0.03.
   size_internal <- size * 0.03
   
   # Convert mapping to a list
@@ -57,49 +67,43 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
 
     data <- bind_cols(data, df_order)
     
-    
   }
-  
   sample_size <- nrow(data)
   
-  filtered_coordinates <- df_coordinates_final %>%
+  df_coordinates_filtered <- df_coordinates_final %>%
     filter(size == sample_size)
   
-  if (nrow(filtered_coordinates) == 0 || !"x1" %in% colnames(filtered_coordinates) || !"y1" %in% colnames(filtered_coordinates)) {
+  if (nrow(df_coordinates_filtered) == 0 || !"x1" %in% colnames(df_coordinates_filtered) || !"y1" %in% colnames(df_coordinates_filtered)) {
     stop("No matching coordinates found for this sample size or x1/y1 columns missing in df_coordinates_final.")
   }
   
-  data_merged <- full_join(filtered_coordinates, data, by = "pos")
+  df_merged <- full_join(df_coordinates_filtered, data, by = "pos")
   
   # Get the row count of the merged table
-  N <- nrow(data_merged)
+  N <- nrow(df_merged)
   
   # Prepare the vector to fill in your new column
-  vector_name_icon <- unique(data$icon)
+  v_name_icon <- unique(data$icon)
   
-  # Create a tibble with exactly N rows by:
-  #  - adding enough NAs to match N
-  #  - using [seq_len(N)] to truncate if the vector is too long
+  #Format to merge with the data
   df_icon <- tibble(
-    image = c(vector_name_icon, rep(NA, max(0, N - length(vector_name_icon))))
+    image = c(v_name_icon, rep(NA, max(0, N - length(v_name_icon))))
   )[seq_len(N), ]
   
-  df_final <- bind_cols(data_merged, df_icon)
+  #Final data
+  df_final <- bind_cols(df_merged, df_icon)
   
   if (!"x1" %in% colnames(df_final) || !"y1" %in% colnames(df_final)) {
     stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
   }
   
-  # Create image aesthetic from icon
   icon_expr <- mapping_list[["icon"]]
   mapping_list[["image"]] <- bquote(paste0("man/figures/", .(icon_expr), ".svg"))
   
-  # Build final mapping
   final_mapping <- do.call(aes_, mapping_list)
   final_mapping$x <- as.name("x1")
   final_mapping$y <- as.name("y1")
   
-  # Now call geom_image with the internally scaled size
   ggimage::geom_image(
     mapping = final_mapping,
     data = df_final,
