@@ -106,8 +106,8 @@ df_iris_prop <- df_iris_prop %>%
 
 # Example usage:
 ggplot() +
-  geom_pop(data = df_crc_prop, aes(icon = icon2, group=type, color=type),
-           size = 1.3, arrange = F) +
+  geom_pop(data = df_crc_prop, aes(icon = icon, group=type, color=type),
+           size = 1.3, arrange = F)
   theme(legend.position = "bottom") +
   theme_void() +
   labs(
@@ -138,20 +138,65 @@ ggplot() +
 
 ggsave("example_plot6.png", width = 5, height = 5)
 
-df_crc_prop$icon <- "tree"
+
+
+df_crc_prop <- process_data(data = df_crc, group_var = CauseOfDeath, sample_size = 100)
+
+df_crc_prop <- df_crc_prop %>% 
+  mutate(icon = ifelse(type =="CRC", "male", "bike"))
+
+
+df_crc_prop$icon <- "male"
+
+
 
 #idea: # Example usage:
-ggplot() +
-  geom_pop(data = df_crc_prop, aes(icon = icon, group=type, color=type),
-           size = 1.3, arrange = F) + 
+  ggplot() +
+  geom_pop(data = df_iris_prop, aes(icon = icon, group=type, color=type),
+           size = 1, arrange = T) + 
   #facet_wrap(~type) +
   #erase the legend
   theme_void() +
   theme(legend.position = "none") +
-  caption_pop(size_caption = 10, size_image = 15, text=c("bike"="Cada representa personas discapacitada",
-                                                         "male"="Syringe represents medical personnel",
-                                                         "money"="Build represents construction workers")) +
+  caption_pop(caption_size = 1, icon_size = 1, hjust = .5, text=c("tree"="Cada representa personas discapacitada",
+                                                         "money"="Syringe represents medical personnel",
+                                                         "bike"="Build represents construction workers")) +
   theme(legend.position = "none")
 
-ggsave("example_plot8.png", width = 10, height = 5)
+ggsave("example_plot10.png", width = 5, height = 5)
 
+
+
+df_arrests <- USArrests
+
+#move states to column
+
+df_arrests$state <- rownames(df_arrests)
+
+#keep California, Arizona, Nevada, Oregon
+
+df_arrests <- df_arrests %>% 
+  filter(state %in% c("California", "Arizona", "Nevada", "Oregon"))
+
+df_arrests_prop <- process_data(data = df_arrests, group_var = state, sum_var = Assault, sample_size = 1000)
+
+df_arrests_prop <- df_arrests_prop %>% 
+  mutate(icon = case_when(
+    type == "California" ~ "tree",
+    type == "Arizona" ~ "bike",
+    type == "Nevada" ~ "money",
+    type == "Oregon" ~ "male"))
+
+# Example usage:
+
+ggplot() +
+  geom_pop(data = df_arrests_prop, aes(icon = icon, group=type, color=type),
+           size = 1, arrange = F) +
+  theme_void() +
+  caption_pop(caption_size = 1, icon_size = 1, text=c("tree"="Every represents persons",
+                                                      "money"="Every represents persons",
+                                                      "bike"="Every represents persons",
+                                                      "male"="Every represents persons")) +
+  theme(legend.position = "none")
+
+ggsave("example_plot11.png", width = 5, height = 5)
