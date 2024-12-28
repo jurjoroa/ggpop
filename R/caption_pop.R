@@ -14,14 +14,6 @@
 #'             to the `image` identifiers in the plot data. If `NULL`, defaults to `"persons"`.
 #' @import ggplot2
 #' @import ggtext
-#'
-#' @examples
-#' # Example usage:
-#' ggplot() +
-#'  geom_pop(data = df_iris_prop, aes(icon = icon, group=type, color=type),
-#'         size = 1.3, arrange = T) +
-#'         theme_void() +
-#'         caption_pop(caption_size = 1, icon_size = 1, hjust=.8)
 #'         
 #'@export
 caption_pop <- function(caption_size = 1, icon_size = 1, hjust = 0.5, text = NULL) {

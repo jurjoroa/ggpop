@@ -99,9 +99,6 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 
 \item{...}{additional parameters}
 }
-\value{
-A \code{\link[grid]{ggplot}} object.
-}
 \description{
 Create a circular representative population chart
 #'
@@ -120,9 +117,3 @@ geom_pop employs the following aesthetics:
 }
 }
 
-\examples{
-ggplot() +
- geom_pop(data = data, aes(icon = icon, group=type, color=type))
- 
-
-}

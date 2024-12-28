@@ -10,6 +10,13 @@
 
 ggpop is an R package that creates visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item Report bugs at \url{https://github.com/jurjoroa/ggpop/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Jorge Roa \email{jorgeroa@stanford.edu} (\href{https://orcid.org/0000-0002-3972-9793}{ORCID})
 

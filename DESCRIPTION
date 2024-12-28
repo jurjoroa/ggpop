@@ -1,20 +1,27 @@
 Type: Package
 Package: ggpop
 Title: Visualizing Population Data (ggpop)
-Version: 0.0.0.9000
+Version: 0.1.0.9000
 Authors@R: person(given = "Jorge",
              family = "Roa",
              role = c("aut", "cre"),
              email = "jorgeroa@stanford.edu",
              comment = c(ORCID = "0000-0002-3972-9793"))
 Description: ggpop is an R package that creates visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.
-License: `use_mit_license()`
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Depends: 
-    R (>= 2.10)
+Depends:
+    R (>= 4.0.5),
+Imports:
+    dplyr,
+    ggimage,
+    ggplot2,
+    ggtext,
+    tibble
 LazyData: true
+BugReports: https://github.com/jurjoroa/ggpop/issues

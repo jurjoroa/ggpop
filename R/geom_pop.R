@@ -21,16 +21,10 @@
 #' @param arrange Logical; if TRUE, the output data is arranged by group.
 #' @param sum_var Optional variable to sum over instead of counting.
 #' 
-#' @return A \code{\link[grid]{ggplot}} object.
-
 #' 
 #' @importFrom ggplot2 layer
 #' @import ggimage
 #' 
-#' @examples
-#' ggplot() +
-#'  geom_pop(data = data, aes(icon = icon, group=type, color=type))
-#'  
 #' 
 #' @export
 geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
