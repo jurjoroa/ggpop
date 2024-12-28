@@ -15,24 +15,7 @@
 #'   \item{n}{The count of individuals in the group.}
 #'   \item{prop}{The proportion of the group relative to the total population.}
 #' }
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#'
-#' # Sample data without sum_var
-#' data <- data.frame(
-#'   category = rep(c("A", "B", "C"), each = 100),
-#'   value = rnorm(300)
-#' )
-#'
-#' # Process data by counting individuals per category
-#' processed_data <- process_data(data, group_var = category, sample_size = 150)
-#'
-#' # Sample data with sum_var
-#' data_sum <- data.frame(
-#'   category = rep(c("A", "B", "C"), each = 100),
-#'   value = runif(300, 1, 10)
-#' )
+#' 
 #' @import dplyr
 #' @import tibble
 #'
