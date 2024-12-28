@@ -24,12 +24,3 @@ The caption includes the number of individuals represented by each image.
 The function also allows you to specify the size of the caption text and
 the icons used in the caption.
 }
-\examples{
-# Example usage:
-ggplot() +
- geom_pop(data = df_iris_prop, aes(icon = icon, group=type, color=type),
-        size = 1.3, arrange = T) +
-        theme_void() +
-        caption_pop(caption_size = 1, icon_size = 1, hjust=.8)
-        
-}
