@@ -25,7 +25,7 @@ process_data <- function(data, group_var= NULL, sum_var = NULL, sample_size = NU
   #if group_var is a factor, turn it into a character
   
   df_proportion <- data %>%
-    mutate({{ group_var }} := as.character({{ group_var }})) %>%
+    mutate({{ group_var }} == as.character({{ group_var }})) %>%
     group_by({{ group_var }}) %>%
     summarise(
       n = if (is.null({{ sum_var}}))
