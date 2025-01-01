@@ -23,6 +23,7 @@
 #' 
 #' 
 #' @importFrom ggplot2 layer
+#' @importFrom ggpopdata load_data
 #' @import ggimage
 #' 
 #' 
@@ -63,6 +64,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
   }
   sample_size <- nrow(data)
+  
+  df_coordinates_final <- fetch_df_coordinates()
   
   df_coordinates_filtered <- df_coordinates_final %>%
     filter(size == sample_size)
