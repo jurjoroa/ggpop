@@ -17,10 +17,12 @@ Suggests:
 Config/testthat/edition: 3
 Depends:
     R (>= 4.0.5),
+    ggpopdata,
+    ggplot2
 Imports:
+    devtools,
     dplyr,
     ggimage,
-    ggplot2,
     ggtext,
     tibble
 LazyData: true
