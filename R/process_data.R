@@ -18,32 +18,36 @@
 #' }
 #' 
 #' @import dplyr
-#' @import tibble
+#' @import utils
+#' @importFrom tidyr nest unnest unite
+#' @importFrom purrr map
+#' @importFrom stats setNames
+#' @importFrom rlang enquo quo_is_null as_label syms ensym
 #'
 #' @export
 process_data <- function(data, 
                          high_group_var = NULL, 
                          group_var = NULL, 
                          sum_var = NULL, 
-                         sample_size = 1000, 
-                         replace = TRUE, 
-                         seed = NULL) {
+                         sample_size = 1000) {
   
   # Check if group_var is provided
   if (rlang::quo_is_null(enquo(group_var))) {
     stop("Please provide a 'group_var'.")
   }
   
-  # Optional: Set seed for reproducibility
-  if (!is.null(seed)) {
-    set.seed(seed)
-  }
+  seed <- sample(1:10000, 1)  # Generate a random seed
+  
+  set.seed(seed)
   
   # Capture the name of group_var as a string
   group_var_name <- rlang::as_label(enquo(group_var))
   
   # Capture high_group_var as symbols if provided
   higher_group_syms <- rlang::syms(high_group_var)
+  
+  # Dynamically resolve the column for sum_var
+  sum_var_sym <- if (!is.null(sum_var)) rlang::ensym(sum_var) else NULL
   
   # Step 1: Compute Proportions
   df_proportion <- data %>%
@@ -61,10 +65,10 @@ process_data <- function(data,
     
     # Summarize counts
     summarise(
-      n = if (is.null(sum_var))
+      n = if (is.null(sum_var_sym))
         n() 
       else 
-        sum({{ sum_var }}),
+        sum(!!sum_var_sym),
       .groups = 'drop'
     ) %>%
     

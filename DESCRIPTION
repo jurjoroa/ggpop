@@ -20,12 +20,12 @@ Depends:
     ggpopdata,
     ggplot2,
     tidyr,
-    purrr
+    purrr,
+    rlang
 Imports:
     devtools,
     dplyr,
     ggimage,
-    ggtext,
-    tibble
+    ggtext
 LazyData: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
