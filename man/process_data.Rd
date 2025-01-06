@@ -4,10 +4,20 @@
 \alias{process_data}
 \title{Process Population Data for Visualization}
 \usage{
-process_data(data, group_var = NULL, sum_var = NULL, sample_size = NULL)
+process_data(
+  data,
+  high_group_var = NULL,
+  group_var = NULL,
+  sum_var = NULL,
+  sample_size = 1000,
+  replace = TRUE,
+  seed = NULL
+)
 }
 \arguments{
 \item{data}{A data frame containing the population data to be processed.}
+
+\item{high_group_var}{Character vector, optional. The variables used to group individuals hierarchically. This should be a categorical variable. If provided, the function samples individuals within each group defined by these variables.}
 
 \item{group_var}{Quosure. The variable used to group individuals in the dataset. This should be a categorical variable.}
 

@@ -49,21 +49,28 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (!"icon" %in% names(mapping_list)) {
     mapping_list[["icon"]] <- icon
   }
-  
-  # If arrange = TRUE, reorder by 'type' and then assign pos:
-  if (!is.null(data) && arrange) {
-    df_order <- data %>% select(group, n , prop)
+  if (!is.null(data) && arrange && !"group" %in% names(data)) {
+    df_order <- data %>% select(n , prop)
     
     data <- data %>%
       mutate(original_order = row_number()) %>%
       arrange(type, original_order) %>%
       mutate(pos = row_number()) %>%
-      select(-original_order, -group, -n , -prop)
-
-    data <- bind_cols(data, df_order)
+      select(-original_order, -n , -prop)
+    
+    data <- bind_cols(data, df_order) }
+  else if (!is.null(data) && arrange && "group" %in% names(data)) {
+    
+    v_order_pos <- rep(seq(1:length(unique(data$pos))), times = length(unique(data$group)))
+    
+    data <- data %>%
+      arrange(group, type) %>% # Arrange by group and type
+      mutate(pos = v_order_pos)
     
   }
-  sample_size <- nrow(data)
+  
+  
+  sample_size <- length(unique(data$pos))
   
   df_coordinates_final <- fetch_df_coordinates()
   
