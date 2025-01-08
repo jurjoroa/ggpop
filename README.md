@@ -27,35 +27,56 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lif
 
 ## Installation
 
-You can install `polite` from [CRAN](https://cran.r-project.org/) with:
+You can install `ggpop` from [CRAN](https://cran.r-project.org/) with:
 
 ``` r
-install.packages("polite")
+install.packages("ggpop")
 ```
 
 Development version of the package can be installed from
-[Github](https://github.com/dmi3kno/polite) with:
+[Github](https://github.com/jurjoroa/ggpop) with:
 
 ``` r
 install.packages("remotes")
-remotes::install_github("dmi3kno/polite")
+remotes::install_github("jurjoroa/ggpop")
 ```
 
 ## Basic Example
-``` r
-library(polite)
-library(rvest)
 
-session <- bow("https://www.cheese.com/by_type", force = TRUE)
-result <- scrape(session, query=list(t="semi-soft", per_page=100)) %>%
-  html_node("#main-body") %>% 
-  html_nodes("h3") %>% 
-  html_text()
-head(result)
-#> [1] "3-Cheese Italian Blend"  "Abbaye de Citeaux"      
-#> [3] "Abbaye du Mont des Cats" "Adelost"                
-#> [5] "ADL Brick Cheese"        "Ailsa Craig"
+
+### 1.- Create a Small Dataset or Use a Built-in Dataset
+
+We start by building a simple data frame called df with 30 observations labeled Group A and 20 observations labeled Group B. This is just a toy dataset to demonstrate how the functions work.
+
+
+The dataset **`df_pop_mx`** is a **minimal example** illustrating population counts by sex in Mexico. It has the following structure:
+
+- **sex**:  
+  A categorical variable indicating the sex, with two entries:
+  - `"male"`
+  - `"female"`
+
+- **n**:  
+  A numeric variable representing the population size for each sex category.
+
+- **country**:  
+  A constant value `"Mexico"`, indicating the country these observations belong to.
+
+- **continent**:  
+  A constant value `"America"`, indicating the continent these observations belong to.
+
+
+``` r
+library(ggpop)
+
+df_pop_mx <- data.frame(sex = c("male", "female"),
+                        n = c(63459580, 67401427),
+                        country = "Mexico",
+                        continent = "America")
 ```
+
+
+
 
 ## Extended Example
 
