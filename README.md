@@ -103,9 +103,9 @@ head(df_pop_mx_prop)
 
 We apply the `process_data()` function to the population data `df_pop_mx` with the following parameters:
 
-- **group_var = sex**: groups the data by sex (male/female).
-- **sum_var = n**: uses the column `n` (population counts) for group totals.
-- **sample_size = 1000**: generates 1,000 sampled records, proportionally allocated to each group.
+- **group_var = sex**: groups the data by sex (male/female). This is our grouping variable
+- **sum_var = n**: uses the column `n` (population counts) for group totals. This is the variable that will be summed up to calculate proportions.
+- **sample_size = 1000**: generates 1,000 sampled records, proportionally allocated to each group. The package allows up to a sample size of 1000. 
 
 The function calculates group proportions, then performs sampling to create a new data frame (`df_pop_mx_prop`). Each row represents one draw from the 1,000 samples. Notable columns:
 
@@ -116,7 +116,20 @@ The function calculates group proportions, then performs sampling to create a ne
 
 
 ```r
-df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, sample_size = 1000)
+df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, 
+                               sum_var = n, sample_size = 1000)
+```
+
+### 3.- Assign icons to groups
+
+Here, we create a new column called `icon` in the `df_pop_mx_prop` dataset. The `case_when()` function checks each row’s **type** (either "male" or "female") and assigns a matching value ("male" or "female") to the `icon` column.
+
+``` r
+df_pop_mx_prop <- df_pop_mx_prop %>% 
+  mutate(icon = case_when(
+    type == "male" ~ "male",
+    type == "female" ~ "female"))
+```
 
 
 ## Extended Example
