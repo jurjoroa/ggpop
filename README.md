@@ -156,17 +156,22 @@ More icons will be available in the future upon request.
 
 ``` r
 ggplot() +
-  geom_pop(data = df_prop_mx_f, aes(icon = icon, group=type, color=type),
-           size = 1, arrange = T) +
-  theme_void() 
+  geom_pop(data = df_prop_mx_f, aes(icon = icon, group=type, color=type)) +
+  theme_void() +
+  theme(legend.position = "bottom")
 ```
 
 ![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png)
 
 
+The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. We can group and color the icons by the **type** variable since the icon it's a svg file. 
 
-The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. We can group and color the icons by the **type** variable since the icno it's a svg file. 
+#### 4.1 Improve plot 
 
+Like a ggplot object, we can improve it to have a more presentable plot.
+
+
+![Example Plot 2](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot2.png)
 
 ## Extended Example
 
