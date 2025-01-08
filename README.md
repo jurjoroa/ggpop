@@ -161,6 +161,7 @@ ggplot() +
   theme_void() 
 ```
 
+![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png)
 
 
 
