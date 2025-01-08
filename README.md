@@ -131,15 +131,8 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
     type == "female" ~ "female"))
 ```
 
-## 3.1 List of icons available in the package.
+#### 3.1 List of icons available in the package.
 
-## 3.1 List of icons available in the package
-
-Below is a list of the icons (SVG files) included in this package. Each icon can be found at the path `man/figures/<icon>.svg`. For example, the **bike** icon is located at `man/figures/bike.svg`.
-
-## 3.1 List of icons available in the package
-
-Below is a table of the icons (SVG files) included in this package. Each icon is located at the path `man/figures/<icon>.svg`. For example, the `bike` icon is at `man/figures/bike.svg`.
 
 | Icon         | Icon Preview                                                                                               |
 |:------------------|:-----------------------------------------------------------------------------------------------------------|
@@ -157,8 +150,21 @@ Below is a table of the icons (SVG files) included in this package. Each icon is
 | `tree`           | <img src="man/figures/tree.svg" alt="tree icon" width="32" height="32">                                    |
 
 
+More icons will be available in the future upon request.
 
-bike, build, car, cancer, dollar, female, graduation_cap, handicap, male, money, syringe, tree
+### 4.- Plot population chart
+
+``` r
+ggplot() +
+  geom_pop(data = df_prop_mx_f, aes(icon = icon, group=type, color=type),
+           size = 1, arrange = T) +
+  theme_void() 
+```
+
+
+
+
+The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. We can group and color the icons by the **type** variable since the icno it's a svg file. 
 
 
 ## Extended Example
