@@ -131,6 +131,30 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
     type == "female" ~ "female"))
 ```
 
+## 3.1 List of icons available in the package.
+
+## 3.1 List of icons available in the package
+
+Below is a list of the icons (SVG files) included in this package. Each icon can be found at the path `man/figures/<icon>.svg`. For example, the **bike** icon is located at `man/figures/bike.svg`.
+
+| Icon Name          | Icon Preview                                               |
+|:-------------------|:----------------------------------------------------------|
+| `bike`            | ![](man/figures/bike.svg){width=24px}                      |
+| `build`           | ![](man/figures/build.svg){width=24px}                     |
+| `cancer`          | ![](man/figures/cancer.svg){width=24px}                    |
+| `car`             | ![](man/figures/car.svg){width=24px}                       |
+| `dollar`          | ![](man/figures/dollar.svg){width=24px}                    |
+| `female`          | ![](man/figures/female.svg){width=24px}                    |
+| `graduation_cap`  | ![](man/figures/graduation_cap.svg){width=24px}            |
+| `handicap`        | ![](man/figures/handicap.svg){width=24px}                  |
+| `male`            | ![](man/figures/male.svg){width=24px}                      |
+| `money`           | ![](man/figures/money.svg){width=24px}                     |
+| `syringe`         | ![](man/figures/syringe.svg){width=24px}                   |
+| `tree`            | ![](man/figures/tree.svg){width=24px}                      |
+
+
+bike, build, car, cancer, dollar, female, graduation_cap, handicap, male, money, syringe, tree
+
 
 ## Extended Example
 
