@@ -46,10 +46,7 @@ remotes::install_github("jurjoroa/ggpop")
 
 ### 1.- Create a Small Dataset or Use a Built-in Dataset
 
-We start by building a simple data frame called df with 30 observations labeled Group A and 20 observations labeled Group B. This is just a toy dataset to demonstrate how the functions work.
-
-
-The dataset **`df_pop_mx`** is a **minimal example** illustrating population counts by sex in Mexico. It has the following structure:
+The dataset **`df_pop_mx`** is a **minimal example** illustrating population counts by sex in Mexico in 2024. It has the following structure:
 
 - **sex**:  
   A categorical variable indicating the sex, with two entries:
@@ -75,7 +72,51 @@ df_pop_mx <- data.frame(sex = c("male", "female"),
                         continent = "America")
 ```
 
+| **Sex**  | **Population (n)** | **Country** | **Continent** |
+|----------|---------------------|-------------|---------------|
+| Male     | 63,459,580          | Mexico      | America       |
+| Female   | 67,401,427          | Mexico      | America       |
 
+### 2.- Process data
+
+``` r
+
+df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, sample_size = 1000)
+
+head(df_pop_mx_prop)
+```
+
+| type   | pos |        n |      prop   |
+|:-------|----:|---------:|------------:|
+| male   |   1 | 63459580 | 0.4849388    |
+| female |   2 | 67401427 | 0.5150612    |
+| female |   3 | 67401427 | 0.5150612    |
+| male   |   4 | 63459580 | 0.4849388    |
+| male   |   5 | 63459580 | 0.4849388    |
+| female |   6 | 67401427 | 0.5150612    |
+| female |   7 | 67401427 | 0.5150612    |
+| male   |   8 | 63459580 | 0.4849388    |
+| female |   9 | 67401427 | 0.5150612    |
+| male   |  10 | 63459580 | 0.4849388    |
+| female |  11 | 67401427 | 0.5150612    |
+| ...    | ... | ...      | ...         |
+
+We apply the `process_data()` function to the population data `df_pop_mx` with the following parameters:
+
+- **group_var = sex**: groups the data by sex (male/female).
+- **sum_var = n**: uses the column `n` (population counts) for group totals.
+- **sample_size = 1000**: generates 1,000 sampled records, proportionally allocated to each group.
+
+The function calculates group proportions, then performs sampling to create a new data frame (`df_pop_mx_prop`). Each row represents one draw from the 1,000 samples. Notable columns:
+
+- **type**: which group (male or female) was sampled.
+- **pos**: the position/index in the sample (from 1 to 1,000).
+- **n**: total population count of the corresponding group.
+- **prop**: proportion of that group in the overall dataset.
+
+
+```r
+df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, sample_size = 1000)
 
 
 ## Extended Example
