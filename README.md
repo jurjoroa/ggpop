@@ -137,20 +137,25 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 
 Below is a list of the icons (SVG files) included in this package. Each icon can be found at the path `man/figures/<icon>.svg`. For example, the **bike** icon is located at `man/figures/bike.svg`.
 
-| Icon Name          | Icon Preview                                               |
-|:-------------------|:----------------------------------------------------------|
-| `bike`            | ![](man/figures/bike.svg){width=24px}                      |
-| `build`           | ![](man/figures/build.svg){width=24px}                     |
-| `cancer`          | ![](man/figures/cancer.svg){width=24px}                    |
-| `car`             | ![](man/figures/car.svg){width=24px}                       |
-| `dollar`          | ![](man/figures/dollar.svg){width=24px}                    |
-| `female`          | ![](man/figures/female.svg){width=24px}                    |
-| `graduation_cap`  | ![](man/figures/graduation_cap.svg){width=24px}            |
-| `handicap`        | ![](man/figures/handicap.svg){width=24px}                  |
-| `male`            | ![](man/figures/male.svg){width=24px}                      |
-| `money`           | ![](man/figures/money.svg){width=24px}                     |
-| `syringe`         | ![](man/figures/syringe.svg){width=24px}                   |
-| `tree`            | ![](man/figures/tree.svg){width=24px}                      |
+## 3.1 List of icons available in the package
+
+Below is a table of the icons (SVG files) included in this package. Each icon is located at the path `man/figures/<icon>.svg`. For example, the `bike` icon is at `man/figures/bike.svg`.
+
+| Icon         | Icon Preview                                                                                               |
+|:------------------|:-----------------------------------------------------------------------------------------------------------|
+| `bike`           | <img src="man/figures/bike.svg" alt="bike icon" width="37" height="37">                                    |
+| `build`          | <img src="man/figures/build.svg" alt="build icon" width="25" height="25">                                  |
+| `car`            | <img src="man/figures/car.svg" alt="car icon" width="25" height="25">                                      |
+| `cancer`         | <img src="man/figures/cancer.svg" alt="cancer icon" width="37" height="37">                                |
+| `dollar`         | <img src="man/figures/dollar.svg" alt="dollar icon" width="32" height="32">                                |
+| `female`         | <img src="man/figures/female.svg" alt="female icon" width="32" height="32">                                |
+| `graduation_cap` | <img src="man/figures/graduation_cap.svg" alt="graduation cap icon" width="32" height="32">                |
+| `handicap`       | <img src="man/figures/handicap.svg" alt="handicap icon" width="32" height="32">                            |
+| `male`           | <img src="man/figures/male.svg" alt="male icon" width="32" height="32">                                    |
+| `money`          | <img src="man/figures/money.svg" alt="money icon" width="32" height="32">                                  |
+| `syringe`        | <img src="man/figures/syringe.svg" alt="syringe icon" width="32" height="32">                              |
+| `tree`           | <img src="man/figures/tree.svg" alt="tree icon" width="32" height="32">                                    |
+
 
 
 bike, build, car, cancer, dollar, female, graduation_cap, handicap, male, money, syringe, tree
