@@ -171,6 +171,13 @@ The `geom_pop()` function creates a population chart using the `df_prop_mx_f` da
 
 Like a ggplot object, we can improve it to have a more presentable plot. We can arrange our points, give color to the background, and add a title and caption to the plot.
 
+
+
+
+![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot2.png)
+
+
+
 ### 5.- More examples
 
 We can also include more than two icons in the same plot. In this example, we will identify the people that is disabled, and we will change some parameters.
