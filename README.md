@@ -143,7 +143,7 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 | `dollar`         | <img src="man/figures/dollar.svg" alt="dollar icon" width="32" height="32">                                |
 | `female`         | <img src="man/figures/female.svg" alt="female icon" width="32" height="32">                                |
 | `graduation_cap` | <img src="man/figures/graduation_cap.svg" alt="graduation cap icon" width="32" height="32">                |
-| `handicap`       | <img src="man/figures/handicap.svg" alt="handicap icon" width="32" height="32">                            |
+| `disability`       | <img src="man/figures/disability.svg" alt="handicap icon" width="32" height="32">                            |
 | `male`           | <img src="man/figures/male.svg" alt="male icon" width="32" height="32">                                    |
 | `money`          | <img src="man/figures/money.svg" alt="money icon" width="32" height="32">                                  |
 | `syringe`        | <img src="man/figures/syringe.svg" alt="syringe icon" width="32" height="32">                              |
@@ -156,7 +156,8 @@ More icons will be available in the future upon request.
 
 ``` r
 ggplot() +
-  geom_pop(data = df_prop_mx_f, aes(icon = icon, group=type, color=type)) +
+  geom_pop(data = df_prop_mx_f, aes(icon = icon, group=type, color=type),
+  size = 1, arrange=F) +
   theme_void() +
   theme(legend.position = "bottom")
 ```
@@ -164,14 +165,51 @@ ggplot() +
 ![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png)
 
 
-The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. We can group and color the icons by the **type** variable since the icon it's a svg file. 
+The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. The object work as a gem_point figure plotted by determined x and y coordinates. We can also group and color the icons by the **type** variable since the icon it's a svg file. 
 
 #### 4.1 Improve plot 
 
-Like a ggplot object, we can improve it to have a more presentable plot.
+Like a ggplot object, we can improve it to have a more presentable plot. We can arrange our points, give color to the background, and add a title and caption to the plot.
+
+### 5.- More examples
+
+We can also include more than two icons in the same plot. In this example, we will identify the people that is disabled, and we will change some parameters.
 
 
-![Example Plot 2](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot2.png)
+``` r
+
+#1.- We load or create the data
+df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled"),
+                        value = c(53726732, 54978806, 20838108),
+                        country = "Mexico",
+                        continent = "America")
+
+#2.- We process the data
+df_pop_dis_mx_prop <- process_data(data = df_pop_dis_mx, group_var = sex, 
+                               sum_var = value, sample_size = 500)
+
+#3.- Assign icons to groups
+df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>% 
+  mutate(icon = case_when(
+    type == "male" ~ "male",
+    type == "female" ~ "female",
+    type == "disabled" ~ "disability"))
+
+#4.- Plot 
+
+ggplot() +
+  geom_pop(data = df_pop_dis_mx_prop, aes(icon = icon, group=type, color=type),
+           size = 1.3, arrange=F) +
+  theme_void() +
+  scale_color_manual(values = c("male" = "#89ABE3", 
+                                "female" = "#EA738D",
+                                "disabled" = "#A9A9A9"),
+                     labels = c("male" = "Male", "female" = "Female", "disabled" = "Disabled")) +
+   theme(legend.position = "bottom",legend.title = element_blank())
+```
+
+
+![Example Plot 3](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot3.png)
 
 ## Extended Example
 
