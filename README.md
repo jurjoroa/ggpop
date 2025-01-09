@@ -201,10 +201,14 @@ ggplot() +
   geom_pop(data = df_pop_dis_mx_prop, aes(icon = icon, group=type, color=type),
            size = 1.3, arrange=F) +
   theme_void() +
+  labs(title = "Population in Mexico by Sex and condition",
+       subtitle = "2022",
+    caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
   scale_color_manual(values = c("male" = "#89ABE3", 
                                 "female" = "#EA738D",
                                 "disabled" = "#A9A9A9"),
-                     labels = c("male" = "Male", "female" = "Female", "disabled" = "Disabled")) +
+                     labels = c("male" = "Male", "female" = "Female", 
+                     "disabled" = "Disabled")) +
    theme(legend.position = "bottom",legend.title = element_blank())
 ```
 
