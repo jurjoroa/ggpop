@@ -67,7 +67,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       arrange(group, type) %>% # Arrange by group and type
       mutate(pos = v_order_pos)
     
-  }
+  } 
+  
   
   
   sample_size <- length(unique(data$pos))
@@ -77,11 +78,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   df_coordinates_filtered <- df_coordinates_final %>%
     filter(size == sample_size)
   
-  if (nrow(df_coordinates_filtered) == 0 || !"x1" %in% colnames(df_coordinates_filtered) || !"y1" %in% colnames(df_coordinates_filtered)) {
-    stop("No matching coordinates found for this sample size or x1/y1 columns missing in df_coordinates_final.")
-  }
-  
-  df_merged <- full_join(df_coordinates_filtered, data, by = "pos")
+  df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
   
   # Get the row count of the merged table
   N <- nrow(df_merged)
