@@ -186,8 +186,8 @@ We can also include more than two icons in the same plot. In this example, we wi
 ``` r
 
 #1.- We load or create the data
-df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled"),
-                        value = c(53726732, 54978806, 20838108),
+df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled males", "disabled females"),
+                        value = c(53726732, 54978806, 9731396, 11106712),
                         country = "Mexico",
                         continent = "America")
 
@@ -200,7 +200,8 @@ df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>%
   mutate(icon = case_when(
     type == "male" ~ "male",
     type == "female" ~ "female",
-    type == "disabled" ~ "disability"))
+    type == "disabled males" ~ "disability",
+    type == "disabled females" ~ "disability"))
 
 #4.- Plot 
 
@@ -211,104 +212,16 @@ ggplot() +
   labs(title = "Population in Mexico by Sex and condition",
        subtitle = "2022",
     caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
-  scale_color_manual(values = c("male" = "#89ABE3", 
-                                "female" = "#EA738D",
-                                "disabled" = "#A9A9A9"),
+  scale_color_manual(values =  c("male" = "#1E88E5",
+                                 "female" = "#D81B60",
+                                  "disabled males" = "#90CAF9", 
+                                  "disabled females" = "#F48FB1",
                      labels = c("male" = "Male", "female" = "Female", 
-                     "disabled" = "Disabled")) +
+                     "disabled females" = "Disabled Females", 
+                     "disabled males" = "Disabled Males")) +
    theme(legend.position = "bottom",legend.title = element_blank())
 ```
 
 
 ![Example Plot 3](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot3.png)
-
-## Extended Example
-
-``` r
-library(polite)
-library(rvest)
-library(purrr)
-library(dplyr)
-
-session <- bow("https://www.cheese.com/alphabetical")
-
-# this is only to illustrate the example.
-letters <- letters[1:3] # delete this line to scrape all letters
-
-responses <- map(letters, ~scrape(session, query = list(per_page=100,i=.x)) )
-results <- map(responses, ~html_nodes(.x, "#id_page li") %>% 
-                           html_text(trim = TRUE) %>% 
-                           as.numeric() %>%
-                           tail(1) ) %>% 
-           map(~pluck(.x, 1, .default=1))
-pages_df <- tibble(letter = rep.int(letters, times=unlist(results)),
-                   pages = unlist(map(results, ~seq.int(from=1, to=.x))))
-pages_df
-#> # A tibble: 6 × 2
-#>   letter pages
-#>   <chr>  <int>
-#> 1 a          1
-#> 2 b          1
-#> 3 b          2
-#> 4 c          1
-#> 5 c          2
-#> 6 c          3
-```
-
-``` r
-get_cheese_page <- function(letter, pages){
- lnks <- scrape(session, query=list(per_page=100,i=letter,page=pages)) %>% 
-    html_nodes("h3 a")
-tibble(name=lnks %>% html_text(),
-       link=lnks %>% html_attr("href"))
-}
-
-df <- pages_df %>% pmap_df(get_cheese_page)
-df
-#> # A tibble: 518 × 2
-#>    name                    link                     
-#>    <chr>                   <chr>                    
-#>  1 Abbaye de Belloc        /abbaye-de-belloc/       
-#>  2 Abbaye de Belval        /abbaye-de-belval/       
-#>  3 Abbaye de Citeaux       /abbaye-de-citeaux/      
-#>  4 Abbaye de Tamié         /tamie/                  
-#>  5 Abbaye de Timadeuc      /abbaye-de-timadeuc/     
-#>  6 Abbaye du Mont des Cats /abbaye-du-mont-des-cats/
-#>  7 Abbot’s Gold            /abbots-gold/            
-#>  8 Abertam                 /abertam/                
-#>  9 Abondance               /abondance/              
-#> 10 Acapella                /acapella/               
-#> # … with 508 more rows
-```
-
-## Another example
-
-``` r
-    library(polite)
-    library(rvest)
-    
-    hrbrmstr_posts <- data.frame()
-    url <- "https://rud.is/b/"
-    session <- bow(url)
-    
-    while(!is.na(url)){
-      # make it verbose
-      message("Scraping ", url)
-      # nod and scrape
-      current_page <- nod(session, url) %>% 
-        scrape(verbose=TRUE)
-      # extract post titles
-      hrbrmstr_posts <- current_page %>% 
-        html_nodes(".entry-title a") %>% 
-        polite::html_attrs_dfr() %>% 
-        rbind(hrbrmstr_posts)
-      # see if there's "Older posts" button
-      url <- current_page %>% 
-        html_node(".nav-previous a") %>% 
-        html_attr("href")
-    } # end while loop
-    
-    tibble::as_tibble(hrbrmstr_posts)
-    #> # A tibble: 578 x3
-```
 
