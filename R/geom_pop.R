@@ -20,6 +20,7 @@
 #' @param sample_size The total number of individuals (points) to be drawn.
 #' @param arrange Logical; if TRUE, the output data is arranged by group.
 #' @param sum_var Optional variable to sum over instead of counting.
+#' @param facet Optional facetting variable.
 #' 
 #' 
 #' @importFrom ggplot2 layer
@@ -32,6 +33,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      position = "identity", na.rm = FALSE, show.legend = NA,
                      inherit.aes = TRUE, icon = "default",
                      group_var = NULL, sample_size = NULL, arrange = FALSE, sum_var = NULL,
+                     facet=NULL,
                      size = 1, # default size as 1 externally
                      ...) {
   
@@ -49,7 +51,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (!"icon" %in% names(mapping_list)) {
     mapping_list[["icon"]] <- icon
   }
-  if (!is.null(data) && arrange && !"group" %in% names(data)) {
+  if (!is.null(data) && arrange && is.null(facet)) {
+    
     df_order <- data %>% select(n , prop)
     
     data <- data %>%
@@ -58,17 +61,24 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       mutate(pos = row_number()) %>%
       select(-original_order, -n , -prop)
     
-    data <- bind_cols(data, df_order) }
-  else if (!is.null(data) && arrange && "group" %in% names(data)) {
+    data <- bind_cols(data, df_order) } 
+  else if (!is.null(data) && arrange && !is.null(facet)) {
+    facet_var <- substitute(facet)
     
-    v_order_pos <- rep(seq(1:length(unique(data$pos))), times = length(unique(data$group)))
+    df_order <- data %>% select(n , prop)
     
     data <- data %>%
-      arrange(group, type) %>% # Arrange by group and type
-      mutate(pos = v_order_pos)
+      mutate(original_order = pos) %>% 
+      arrange(type, original_order, !!facet_var) %>%  # Sort by the specified columns
+      group_by(!!facet_var) %>%  # Group by the specified column
+      mutate(pos = row_number()) %>%  # Calculate a sequential row number without restarting
+      select(-n, -prop) %>% 
+      ungroup()
+    
+    
+    data <- bind_cols(data, df_order)
     
   }
-  
   
   sample_size <- length(unique(data$pos))
   
@@ -77,11 +87,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   df_coordinates_filtered <- df_coordinates_final %>%
     filter(size == sample_size)
   
-  if (nrow(df_coordinates_filtered) == 0 || !"x1" %in% colnames(df_coordinates_filtered) || !"y1" %in% colnames(df_coordinates_filtered)) {
-    stop("No matching coordinates found for this sample size or x1/y1 columns missing in df_coordinates_final.")
-  }
-  
-  df_merged <- full_join(df_coordinates_filtered, data, by = "pos")
+  df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
   
   # Get the row count of the merged table
   N <- nrow(df_merged)

@@ -27,123 +27,201 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lif
 
 ## Installation
 
-You can install `polite` from [CRAN](https://cran.r-project.org/) with:
+You can install `ggpop` from [CRAN](https://cran.r-project.org/) with:
 
 ``` r
-install.packages("polite")
+install.packages("ggpop")
 ```
 
 Development version of the package can be installed from
-[Github](https://github.com/dmi3kno/polite) with:
+[Github](https://github.com/jurjoroa/ggpop) with:
 
 ``` r
 install.packages("remotes")
-remotes::install_github("dmi3kno/polite")
+remotes::install_github("jurjoroa/ggpop")
 ```
 
 ## Basic Example
-``` r
-library(polite)
-library(rvest)
 
-session <- bow("https://www.cheese.com/by_type", force = TRUE)
-result <- scrape(session, query=list(t="semi-soft", per_page=100)) %>%
-  html_node("#main-body") %>% 
-  html_nodes("h3") %>% 
-  html_text()
-head(result)
-#> [1] "3-Cheese Italian Blend"  "Abbaye de Citeaux"      
-#> [3] "Abbaye du Mont des Cats" "Adelost"                
-#> [5] "ADL Brick Cheese"        "Ailsa Craig"
-```
 
-## Extended Example
+### 1.- Create a Small Dataset or Use a Built-in Dataset
 
-``` r
-library(polite)
-library(rvest)
-library(purrr)
-library(dplyr)
+The dataset **`df_pop_mx`** is a **minimal example** illustrating population counts by sex in Mexico in 2024. It has the following structure:
 
-session <- bow("https://www.cheese.com/alphabetical")
+- **sex**:  
+  A categorical variable indicating the sex, with two entries:
+  - `"male"`
+  - `"female"`
 
-# this is only to illustrate the example.
-letters <- letters[1:3] # delete this line to scrape all letters
+- **n**:  
+  A numeric variable representing the population size for each sex category.
 
-responses <- map(letters, ~scrape(session, query = list(per_page=100,i=.x)) )
-results <- map(responses, ~html_nodes(.x, "#id_page li") %>% 
-                           html_text(trim = TRUE) %>% 
-                           as.numeric() %>%
-                           tail(1) ) %>% 
-           map(~pluck(.x, 1, .default=1))
-pages_df <- tibble(letter = rep.int(letters, times=unlist(results)),
-                   pages = unlist(map(results, ~seq.int(from=1, to=.x))))
-pages_df
-#> # A tibble: 6 × 2
-#>   letter pages
-#>   <chr>  <int>
-#> 1 a          1
-#> 2 b          1
-#> 3 b          2
-#> 4 c          1
-#> 5 c          2
-#> 6 c          3
-```
+- **country**:  
+  A constant value `"Mexico"`, indicating the country these observations belong to.
+
+- **continent**:  
+  A constant value `"America"`, indicating the continent these observations belong to.
+
 
 ``` r
-get_cheese_page <- function(letter, pages){
- lnks <- scrape(session, query=list(per_page=100,i=letter,page=pages)) %>% 
-    html_nodes("h3 a")
-tibble(name=lnks %>% html_text(),
-       link=lnks %>% html_attr("href"))
-}
+library(ggpop)
 
-df <- pages_df %>% pmap_df(get_cheese_page)
-df
-#> # A tibble: 518 × 2
-#>    name                    link                     
-#>    <chr>                   <chr>                    
-#>  1 Abbaye de Belloc        /abbaye-de-belloc/       
-#>  2 Abbaye de Belval        /abbaye-de-belval/       
-#>  3 Abbaye de Citeaux       /abbaye-de-citeaux/      
-#>  4 Abbaye de Tamié         /tamie/                  
-#>  5 Abbaye de Timadeuc      /abbaye-de-timadeuc/     
-#>  6 Abbaye du Mont des Cats /abbaye-du-mont-des-cats/
-#>  7 Abbot’s Gold            /abbots-gold/            
-#>  8 Abertam                 /abertam/                
-#>  9 Abondance               /abondance/              
-#> 10 Acapella                /acapella/               
-#> # … with 508 more rows
+df_pop_mx <- data.frame(sex = c("male", "female"),
+                        n = c(63459580, 67401427),
+                        country = "Mexico",
+                        continent = "America")
 ```
 
-## Another example
+| **Sex**  | **Population (n)** | **Country** | **Continent** |
+|----------|---------------------|-------------|---------------|
+| Male     | 63,459,580          | Mexico      | America       |
+| Female   | 67,401,427          | Mexico      | America       |
+
+### 2.- Process data
 
 ``` r
-    library(polite)
-    library(rvest)
-    
-    hrbrmstr_posts <- data.frame()
-    url <- "https://rud.is/b/"
-    session <- bow(url)
-    
-    while(!is.na(url)){
-      # make it verbose
-      message("Scraping ", url)
-      # nod and scrape
-      current_page <- nod(session, url) %>% 
-        scrape(verbose=TRUE)
-      # extract post titles
-      hrbrmstr_posts <- current_page %>% 
-        html_nodes(".entry-title a") %>% 
-        polite::html_attrs_dfr() %>% 
-        rbind(hrbrmstr_posts)
-      # see if there's "Older posts" button
-      url <- current_page %>% 
-        html_node(".nav-previous a") %>% 
-        html_attr("href")
-    } # end while loop
-    
-    tibble::as_tibble(hrbrmstr_posts)
-    #> # A tibble: 578 x3
+
+df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, sample_size = 1000)
+
+head(df_pop_mx_prop)
 ```
+
+| type   | pos |        n |      prop   |
+|:-------|----:|---------:|------------:|
+| male   |   1 | 63459580 | 0.4849388    |
+| female |   2 | 67401427 | 0.5150612    |
+| female |   3 | 67401427 | 0.5150612    |
+| male   |   4 | 63459580 | 0.4849388    |
+| male   |   5 | 63459580 | 0.4849388    |
+| female |   6 | 67401427 | 0.5150612    |
+| female |   7 | 67401427 | 0.5150612    |
+| male   |   8 | 63459580 | 0.4849388    |
+| female |   9 | 67401427 | 0.5150612    |
+| male   |  10 | 63459580 | 0.4849388    |
+| female |  11 | 67401427 | 0.5150612    |
+| ...    | ... | ...      | ...         |
+
+We apply the `process_data()` function to the population data `df_pop_mx` with the following parameters:
+
+- **group_var = sex**: groups the data by sex (male/female). This is our grouping variable
+- **sum_var = n**: uses the column `n` (population counts) for group totals. This is the variable that will be summed up to calculate proportions.
+- **sample_size = 1000**: generates 1,000 sampled records, proportionally allocated to each group. The package allows up to a sample size of 1000. 
+
+The function calculates group proportions, then performs sampling to create a new data frame (`df_pop_mx_prop`). Each row represents one draw from the 1,000 samples. Notable columns:
+
+- **type**: which group (male or female) was sampled.
+- **pos**: the position/index in the sample (from 1 to 1,000).
+- **n**: total population count of the corresponding group.
+- **prop**: proportion of that group in the overall dataset.
+
+
+```r
+df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, 
+                               sum_var = n, sample_size = 1000)
+```
+
+### 3.- Assign icons to groups
+
+Here, we create a new column called `icon` in the `df_pop_mx_prop` dataset. The `case_when()` function checks each row’s **type** (either "male" or "female") and assigns a matching value ("male" or "female") to the `icon` column.
+
+``` r
+df_pop_mx_prop <- df_pop_mx_prop %>% 
+  mutate(icon = case_when(
+    type == "male" ~ "male",
+    type == "female" ~ "female"))
+```
+
+#### 3.1 List of icons available in the package.
+
+
+| Icon         | Icon Preview                                                                                               |
+|:------------------|:-----------------------------------------------------------------------------------------------------------|
+| `bike`           | <img src="man/figures/bike.svg" alt="bike icon" width="37" height="37">                                    |
+| `build`          | <img src="man/figures/build.svg" alt="build icon" width="25" height="25">                                  |
+| `car`            | <img src="man/figures/car.svg" alt="car icon" width="25" height="25">                                      |
+| `cancer`         | <img src="man/figures/cancer.svg" alt="cancer icon" width="37" height="37">                                |
+| `dollar`         | <img src="man/figures/dollar.svg" alt="dollar icon" width="32" height="32">                                |
+| `female`         | <img src="man/figures/female.svg" alt="female icon" width="32" height="32">                                |
+| `graduation_cap` | <img src="man/figures/graduation_cap.svg" alt="graduation cap icon" width="32" height="32">                |
+| `disability`       | <img src="man/figures/disability.svg" alt="handicap icon" width="32" height="32">                            |
+| `male`           | <img src="man/figures/male.svg" alt="male icon" width="32" height="32">                                    |
+| `money`          | <img src="man/figures/money.svg" alt="money icon" width="32" height="32">                                  |
+| `syringe`        | <img src="man/figures/syringe.svg" alt="syringe icon" width="32" height="32">                              |
+| `tree`           | <img src="man/figures/tree.svg" alt="tree icon" width="32" height="32">                                    |
+
+
+More icons will be available in the future upon request.
+
+### 4.- Plot population chart
+
+``` r
+ggplot() +
+  geom_pop(data = df_prop_mx_f, aes(icon = icon, group=type, color=type),
+  size = 1, arrange=F) +
+  theme_void() +
+  theme(legend.position = "bottom")
+```
+
+![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png)
+
+
+The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. The object work as a gem_point figure plotted by determined x and y coordinates. We can also group and color the icons by the **type** variable since the icon it's a svg file. 
+
+#### 4.1 Improve plot 
+
+Like a ggplot object, we can improve it to have a more presentable plot. We can arrange our points, give color to the background, and add a title and caption to the plot.
+
+
+
+
+![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot2.png)
+
+
+
+### 5.- More examples
+
+We can also include more than two icons in the same plot. In this example, we will identify the people that is disabled, and we will change some parameters.
+
+
+``` r
+
+#1.- We load or create the data
+df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled males", "disabled females"),
+                        value = c(53726732, 54978806, 9731396, 11106712),
+                        country = "Mexico",
+                        continent = "America")
+
+#2.- We process the data
+df_pop_dis_mx_prop <- process_data(data = df_pop_dis_mx, group_var = sex, 
+                               sum_var = value, sample_size = 500)
+
+#3.- Assign icons to groups
+df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>% 
+  mutate(icon = case_when(
+    type == "male" ~ "male",
+    type == "female" ~ "female",
+    type == "disabled males" ~ "disability",
+    type == "disabled females" ~ "disability"))
+
+#4.- Plot 
+
+ggplot() +
+  geom_pop(data = df_pop_dis_mx_prop, aes(icon = icon, group=type, color=type),
+           size = 1.3, arrange=F) +
+  theme_void() +
+  labs(title = "Population in Mexico by Sex and condition",
+       subtitle = "2022",
+    caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
+  scale_color_manual(values =  c("male" = "#1E88E5",
+                                 "female" = "#D81B60",
+                                  "disabled males" = "#90CAF9", 
+                                  "disabled females" = "#F48FB1",
+                     labels = c("male" = "Male", "female" = "Female", 
+                     "disabled females" = "Disabled Females", 
+                     "disabled males" = "Disabled Males")) +
+   theme(legend.position = "bottom",legend.title = element_blank())
+```
+
+
+![Example Plot 3](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot3.png)
 
