@@ -9,7 +9,8 @@ process_data(
   high_group_var = NULL,
   group_var = NULL,
   sum_var = NULL,
-  sample_size = 1000
+  sample_size = 1000,
+  replace = TRUE
 )
 }
 \arguments{
