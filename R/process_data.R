@@ -25,74 +25,78 @@
 #' @importFrom rlang enquo quo_is_null as_label syms ensym
 #'
 #' @export
+
 process_data <- function(data, 
                          high_group_var = NULL, 
                          group_var = NULL, 
                          sum_var = NULL, 
                          sample_size = 1000) {
   
-  # Check if group_var is provided
-  if (rlang::quo_is_null(enquo(group_var))) {
+  # --- Capture arguments properly ---
+  group_var_sym <- enquo(group_var)     # Capture unquoted
+  sum_var_sym   <- enquo(sum_var)       # Capture unquoted
+  
+  # Error if no group_var is provided
+  if (rlang::quo_is_missing(group_var_sym) || rlang::as_label(group_var_sym) == "") {
     stop("Please provide a 'group_var'.")
   }
   
-  seed <- sample(1:10000, 1)  # Generate a random seed
-  
+  # Generate a random seed
+  seed <- sample(1:10000, 1)
   set.seed(seed)
   
-  # Capture the name of group_var as a string
-  group_var_name <- rlang::as_label(enquo(group_var))
+  # Convert high_group_var to list of symbols if provided
+  higher_group_syms <- if (!is.null(high_group_var) && length(high_group_var) > 0) {
+    syms(high_group_var)
+  } else {
+    NULL
+  }
   
-  # Capture high_group_var as symbols if provided
-  higher_group_syms <- rlang::syms(high_group_var)
-  
-  # Dynamically resolve the column for sum_var
-  sum_var_sym <- if (!is.null(sum_var)) rlang::ensym(sum_var) else NULL
+  # Convert group_var to string for later usage
+  group_var_name <- as_label(group_var_sym)
   
   # Step 1: Compute Proportions
   df_proportion <- data %>%
     # Convert group_var to character
-    mutate({{ group_var }} == as.character({{ group_var }})) %>%
-    
-    # Group by high_group_var and group_var
-    { 
-      if (!is.null(high_group_var) && length(high_group_var) > 0) {
-        group_by(., !!!higher_group_syms, {{ group_var }})
+    mutate(
+      !!group_var_sym == as.character(!!group_var_sym)
+    ) %>%
+    # Group by high_group_var + group_var
+    {
+      if (!is.null(higher_group_syms)) {
+        group_by(.,
+                 !!!higher_group_syms,
+                 !!group_var_sym)
       } else {
-        group_by(., {{ group_var }})
+        group_by(.,
+                 !!group_var_sym)
       }
     } %>%
-    
-    # Summarize counts
     summarise(
-      n = if (is.null(sum_var_sym))
+      n = if (quo_is_null(sum_var_sym)) {
         n() 
-      else 
-        sum(!!sum_var_sym),
+      } else {
+        sum(!!sum_var_sym)
+      },
       .groups = 'drop'
     ) %>%
-    
-    # Regroup by high_group_var to calculate proportions within each group
-    { 
-      if (!is.null(high_group_var) && length(high_group_var) > 0) {
-        group_by(., !!!higher_group_syms)
+    # Regroup by high_group_var to compute proportions
+    {
+      if (!is.null(higher_group_syms)) {
+        group_by(.,
+                 !!!higher_group_syms)
       } else {
-        group_by(., NULL)  # No grouping
+        .
       }
     } %>%
-    
-    # Calculate proportions
     mutate(prop = n / sum(n)) %>%
-    
-    # Ungroup the data frame
     ungroup()
   
-  # Optional: Validate that proportions sum to 1 within each higher_group_var
-  if (!is.null(high_group_var) && length(high_group_var) > 0) {
+  # Optional: Validate that proportions sum to 1
+  if (!is.null(higher_group_syms)) {
     validation <- df_proportion %>%
       group_by(across(all_of(high_group_var))) %>%
-      summarise(total_prop = sum(prop)) %>%
-      ungroup()
+      summarise(total_prop = sum(prop), .groups = "drop")
     
     if (any(abs(validation$total_prop - 1) > 1e-6)) {
       warning("Proportions within some groups do not sum to 1.")
@@ -104,22 +108,24 @@ process_data <- function(data,
     }
   }
   
-  # Step 2: Perform Sampling Based on Computed Proportions
-  if (!is.null(high_group_var) && length(high_group_var) > 0) {
+  # Step 2: Sampling
+  # If we have high_group_var
+  if (!is.null(higher_group_syms)) {
+    
     vector_sample <- df_proportion %>%
       group_by(across(all_of(high_group_var))) %>%
       nest() %>%
       mutate(
         sample = map(data, ~ sample(
-          x = .x[[group_var_name]],  # Correctly access group_var using the captured name
-          size = sample_size,
-          replace = replace,
-          prob = .x$prop
+          x      = .x[[group_var_name]],
+          size   = sample_size,
+          replace = TRUE,
+          prob   = .x$prop
         ))
       ) %>%
       select(-data) %>%
       unnest(cols = c(sample)) %>%
-      rename(type = sample)  %>% 
+      rename(type = sample) %>% 
       group_by(across(all_of(high_group_var))) %>%
       mutate(pos = row_number()) %>%
       ungroup()
@@ -130,27 +136,28 @@ process_data <- function(data,
     # If no high_group_var, perform global sampling
     df_sample <- data.frame(
       type = sample(
-        x = df_proportion[[group_var_name]],
-        size = sample_size,
-        replace = replace,
-        prob = df_proportion$prop
+        x      = df_proportion[[group_var_name]],
+        size   = sample_size,
+        replace = TRUE,
+        prob   = df_proportion$prop
       ),
       pos = 1:sample_size
     )
-    
   }
   
-  # Now perform the left join
-  if (!is.null(high_group_var) && length(high_group_var) > 0) {
+  # Left join
+  if (!is.null(higher_group_syms)) {
+    # Construct a named vector for joining
     join_by <- c("type" = group_var_name, setNames(high_group_var, high_group_var))
+    
     df_final <- left_join(df_sample, df_proportion, by = join_by) %>%
-      unite(group, all_of(high_group_var), sep = "_", remove = TRUE) # Combine into one column named "group"
-  }else {
+      unite("group", all_of(high_group_var), sep = "_", remove = TRUE)
+    
+  } else {
     # Handle case without high_group_var
     join_by <- c("type" = group_var_name)
     df_final <- left_join(df_sample, df_proportion, by = join_by)
   }
-  
   
   return(df_final)
 }
