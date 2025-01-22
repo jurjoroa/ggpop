@@ -35,16 +35,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      group_var = NULL, sample_size = NULL, arrange = FALSE, sum_var = NULL,
                      facet=NULL,
                      size = 1, # default size as 1 externally
-                     legend_icons = FALSE,
                      ...) {
+  
   # Transform the user-specified size to the desired internal scale
   # If user specifies 1, internally we use 0.03
-  if (is.null(data)) {
-    #inherit from the main ggplot aes
-    data <- ggplot_build(last_plot())$plot$data
-  }    
-  
-  
   size_internal <- size * 0.03
   
   # Convert mapping to a list
@@ -57,18 +51,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (!"icon" %in% names(mapping_list)) {
     mapping_list[["icon"]] <- icon
   }
-  
-  data <- data %>% mutate(pos = as.numeric(row_number()))
-  
-  sample_size <- length(unique(data$pos))
-  
-  df_coordinates_final <- fetch_df_coordinates()
-  
-  df_coordinates_filtered <- df_coordinates_final %>%
-    filter(size == sample_size)
-  
-  df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
-  
   if (!is.null(data) && arrange && is.null(facet)) {
     
     df_order <- data %>% select(n , prop)
@@ -79,27 +61,14 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       mutate(pos = row_number()) %>%
       select(-original_order, -n , -prop)
     
-    data <- bind_cols(data, df_order) 
-    
-    sample_size <- length(unique(data$pos))
-    
-    df_coordinates_final <- fetch_df_coordinates()
-    
-    df_coordinates_filtered <- df_coordinates_final %>%
-      filter(size == sample_size)
-    
-    df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
-    
-  } 
+    data <- bind_cols(data, df_order) } 
   else if (!is.null(data) && arrange && !is.null(facet)) {
     facet_var <- substitute(facet)
     
     df_order <- data %>% select(n , prop)
     
     data <- data %>%
-      group_by(!!facet_var) %>%
-      mutate(original_order = row_number()) %>%
-      ungroup() %>%
+      mutate(original_order = pos) %>% 
       arrange(type, original_order, !!facet_var) %>%  # Sort by the specified columns
       group_by(!!facet_var) %>%  # Group by the specified column
       mutate(pos = row_number()) %>%  # Calculate a sequential row number without restarting
@@ -109,59 +78,16 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     data <- bind_cols(data, df_order)
     
-    #sample_size <- length(unique(data$pos))
-    sample_size <- data %>%
-      group_by(!!facet_var) %>%
-      summarise(sample_size = n_distinct(pos), .groups = "drop")
-    
-    df_coordinates_final <- fetch_df_coordinates()
-    
-    df_coordinates_filtered <- df_coordinates_final %>%
-      rowwise() %>%
-      filter(size %in% sample_size$sample_size) %>%
-      ungroup()
-    
-    # Evaluate facet_var and join sample_size
-    facet_col <- as.character(facet_var)
-    data <- data %>%
-      left_join(sample_size %>% rename(size = sample_size), by = facet_col)
-    
-    # Ensure consistent data types
-    data$size <- as.character(data$size)
-    
-    df_merged <- left_join(df_coordinates_filtered, data, by = c("pos", "size"))
-    
-  } else if (!is.null(data) && !arrange && !is.null(facet)) {
-    facet_var <- substitute(facet)
-    
-    data <- data %>%
-      group_by(!!facet_var) %>%
-      mutate(pos = row_number()) %>%
-      ungroup()
-    
-    #sample_size <- length(unique(data$pos))
-    sample_size <- data %>%
-      group_by(!!facet_var) %>%
-      summarise(sample_size = n_distinct(pos), .groups = "drop")
-    
-    df_coordinates_final <- fetch_df_coordinates()
-    
-    df_coordinates_filtered <- df_coordinates_final %>%
-      rowwise() %>%
-      filter(size %in% sample_size$sample_size) %>%
-      ungroup()
-    
-    # Evaluate facet_var and join sample_size
-    facet_col <- as.character(facet_var)
-    data <- data %>%
-      left_join(sample_size %>% rename(size = sample_size), by = facet_col)
-    
-    # Ensure consistent data types
-    data$size <- as.character(data$size)
-    
-    df_merged <- left_join(df_coordinates_filtered, data, by = c("pos", "size"))
-    
   }
+  
+  sample_size <- length(unique(data$pos))
+  
+  df_coordinates_final <- fetch_df_coordinates()
+  
+  df_coordinates_filtered <- df_coordinates_final %>%
+    filter(size == sample_size)
+  
+  df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
   
   # Get the row count of the merged table
   N <- nrow(df_merged)
@@ -182,37 +108,20 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   icon_expr <- mapping_list[["icon"]]
-  mapping_list[["image"]] <- bquote(paste0("inst/figures/", .(icon_expr), ".svg"))
+  mapping_list[["image"]] <- bquote(paste0("man/figures/", .(icon_expr), ".svg"))
   
-  final_mapping <- do.call(aes, mapping_list)
+  final_mapping <- do.call(aes_, mapping_list)
   final_mapping$x <- as.name("x1")
   final_mapping$y <- as.name("y1")
   
-  if (legend_icons) {
-    ggimage::geom_image(
-      mapping = final_mapping,
-      data = df_final,
-      stat = stat,
-      position = position,
-      na.rm = na.rm,
-      inherit.aes = inherit.aes,
-      size = size_internal,     # <--- here
-      key_glyph = draw_key_pop_image,
-      ...
-    )
-  } else {
-    
-    ggimage::geom_image(
-      mapping = final_mapping,
-      data = df_final,
-      stat = stat,
-      position = position,
-      na.rm = na.rm,
-      inherit.aes = inherit.aes,
-      size = size_internal,     # <--- here
-      #key_glyph = draw_key_standard_point,    
-      ...
-    )
-  }
+  ggimage::geom_image(
+    mapping = final_mapping,
+    data = df_final,
+    stat = stat,
+    position = position,
+    na.rm = na.rm,
+    inherit.aes = inherit.aes,
+    size = size_internal,
+    ...
+  )
 }
-
