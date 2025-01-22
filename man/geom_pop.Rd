@@ -101,6 +101,8 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 
 \item{size}{The size of the points.}
 
+\item{legend_icons}{Logical; if TRUE, the legend will display the selected icons by the user.}
+
 \item{...}{additional parameters}
 }
 \description{
