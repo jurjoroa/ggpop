@@ -21,6 +21,7 @@
 #' @param arrange Logical; if TRUE, the output data is arranged by group.
 #' @param sum_var Optional variable to sum over instead of counting.
 #' @param facet Optional facetting variable.
+#' @param legend_icons Logical; if TRUE, the legend will display the selected icons by the user.
 #' 
 #' 
 #' @importFrom ggplot2 layer
@@ -210,7 +211,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       na.rm = na.rm,
       inherit.aes = inherit.aes,
       size = size_internal,     # <--- here
-      #key_glyph = draw_key_standard_point,    
       ...
     )
   }
