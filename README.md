@@ -135,18 +135,18 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 
 | Icon         | Icon Preview                                                                                               |
 |:------------------|:-----------------------------------------------------------------------------------------------------------|
-| `bike`           | <img src="man/figures/bike.svg" alt="bike icon" width="37" height="37">                                    |
-| `build`          | <img src="man/figures/build.svg" alt="build icon" width="25" height="25">                                  |
-| `car`            | <img src="man/figures/car.svg" alt="car icon" width="25" height="25">                                      |
-| `cancer`         | <img src="man/figures/cancer.svg" alt="cancer icon" width="37" height="37">                                |
-| `dollar`         | <img src="man/figures/dollar.svg" alt="dollar icon" width="32" height="32">                                |
-| `female`         | <img src="man/figures/female.svg" alt="female icon" width="32" height="32">                                |
-| `graduation_cap` | <img src="man/figures/graduation_cap.svg" alt="graduation cap icon" width="32" height="32">                |
-| `disability`       | <img src="man/figures/disability.svg" alt="handicap icon" width="32" height="32">                            |
-| `male`           | <img src="man/figures/male.svg" alt="male icon" width="32" height="32">                                    |
-| `money`          | <img src="man/figures/money.svg" alt="money icon" width="32" height="32">                                  |
-| `syringe`        | <img src="man/figures/syringe.svg" alt="syringe icon" width="32" height="32">                              |
-| `tree`           | <img src="man/figures/tree.svg" alt="tree icon" width="32" height="32">                                    |
+| `bike`           | <img src="inst/figures/bike.svg" alt="bike icon" width="37" height="37">                                    |
+| `build`          | <img src="inst/figures/build.svg" alt="build icon" width="25" height="25">                                  |
+| `car`            | <img src="inst/figures/car.svg" alt="car icon" width="25" height="25">                                      |
+| `cancer`         | <img src="inst/figures/cancer.svg" alt="cancer icon" width="37" height="37">                                |
+| `dollar`         | <img src="inst/figures/dollar.svg" alt="dollar icon" width="32" height="32">                                |
+| `female`         | <img src="inst/figures/female.svg" alt="female icon" width="32" height="32">                                |
+| `graduation_cap` | <img src="inst/figures/graduation_cap.svg" alt="graduation cap icon" width="32" height="32">                |
+| `disability`       | <img src="inst/figures/disability.svg" alt="handicap icon" width="32" height="32">                            |
+| `male`           | <img src="inst/figures/male.svg" alt="male icon" width="32" height="32">                                    |
+| `money`          | <img src="inst/figures/money.svg" alt="money icon" width="32" height="32">                                  |
+| `syringe`        | <img src="inst/figures/syringe.svg" alt="syringe icon" width="32" height="32">                              |
+| `tree`           | <img src="inst/figures/tree.svg" alt="tree icon" width="32" height="32">                                    |
 
 
 More icons will be available in the future upon request.
