@@ -86,20 +86,20 @@ df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, s
 head(df_pop_mx_prop)
 ```
 
-| type   | pos |        n |      prop   |
-|:-------|----:|---------:|------------:|
-| male   |   1 | 63459580 | 0.4849388    |
-| female |   2 | 67401427 | 0.5150612    |
-| female |   3 | 67401427 | 0.5150612    |
-| male   |   4 | 63459580 | 0.4849388    |
-| male   |   5 | 63459580 | 0.4849388    |
-| female |   6 | 67401427 | 0.5150612    |
-| female |   7 | 67401427 | 0.5150612    |
-| male   |   8 | 63459580 | 0.4849388    |
-| female |   9 | 67401427 | 0.5150612    |
-| male   |  10 | 63459580 | 0.4849388    |
-| female |  11 | 67401427 | 0.5150612    |
-| ...    | ... | ...      | ...         |
+| type   |        n |      prop   |
+|:-------|---------:|------------:|
+| male   | 63459580 | 0.4849388    |
+| female | 67401427 | 0.5150612    |
+| female | 67401427 | 0.5150612    |
+| male   | 63459580 | 0.4849388    |
+| male   | 63459580 | 0.4849388    |
+| female | 67401427 | 0.5150612    |
+| female | 67401427 | 0.5150612    |
+| male   | 63459580 | 0.4849388    |
+| female | 67401427 | 0.5150612    |
+| male   | 63459580 | 0.4849388    |
+| female | 67401427 | 0.5150612    |
+| ...    | ...      | ...         |
 
 We apply the `process_data()` function to the population data `df_pop_mx` with the following parameters:
 
@@ -110,7 +110,6 @@ We apply the `process_data()` function to the population data `df_pop_mx` with t
 The function calculates group proportions, then performs sampling to create a new data frame (`df_pop_mx_prop`). Each row represents one draw from the 1,000 samples. Notable columns:
 
 - **type**: which group (male or female) was sampled.
-- **pos**: the position/index in the sample (from 1 to 1,000).
 - **n**: total population count of the corresponding group.
 - **prop**: proportion of that group in the overall dataset.
 
@@ -207,19 +206,20 @@ df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>%
 
 ggplot() +
   geom_pop(data = df_pop_dis_mx_prop, aes(icon = icon, group=type, color=type),
-           size = 1.3, arrange=F) +
+           size = 1.3, arrange=F, legend_icons = T) +
   theme_void() +
   labs(title = "Population in Mexico by Sex and condition",
        subtitle = "2022",
-    caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
-  scale_color_manual(values =  c("male" = "#1E88E5",
-                                 "female" = "#D81B60",
-                                  "disabled males" = "#90CAF9", 
-                                  "disabled females" = "#F48FB1",
-                     labels = c("male" = "Male", "female" = "Female", 
-                     "disabled females" = "Disabled Females", 
-                     "disabled males" = "Disabled Males")) +
-   theme(legend.position = "bottom",legend.title = element_blank())
+       caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
+  scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60",
+                                "disabled males" = "#90CAF9", 
+                                "disabled females" = "#F48FB1"),
+    labels = c("male" = "Males", "female" = "Females", 
+               "disabled females" = "Disabled Females",
+               "disabled males" = "Disabled Males")) + 
+  theme(legend.position = "bottom",legend.title = element_blank()) +
+  guides(color = guide_legend(override.aes = list(icon = c("disability", "disability", 
+                                                           "female", "male"), size = 5)))
 ```
 
 
