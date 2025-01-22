@@ -23,6 +23,16 @@ This is a major release of **ggpop** introduces breaking enhancements and bug fi
 - Added robust handling for grouped `facet` data, with support for `facet_wrap` or `facet_grid`.
 - **Introduced the `legend_icons` parameter in `geom_pop` to allow users to include custom icons within the legend without hiding the entire legend.** This enhancement provides greater flexibility in customizing legends, enabling the display of representative images alongside group labels for more informative and visually appealing plots.
 
+```r
+ggplot(data = df_example) +
+  geom_pop(
+    aes(icon = icon, group = variable1, color = variable1),
+    size = 1.3,
+    arrange = FALSE,
+    legend_icons = TRUE # Enable icons in the legend
+  )
+```
+
 
 ## New features
 
