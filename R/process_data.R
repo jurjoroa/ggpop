@@ -11,7 +11,6 @@
 #' @return A tibble (data frame) with the following columns:
 #' \describe{
 #'   \item{type}{The sampled group type.}
-#'   \item{pos}{The position index of the sampled individual.}
 #'   \item{group}{The group identifier.}
 #'   \item{n}{The count of individuals in the group.}
 #'   \item{prop}{The proportion of the group relative to the total population.}
@@ -157,6 +156,7 @@ process_data <- function(data,
     # Handle case without high_group_var
     join_by <- c("type" = group_var_name)
     df_final <- left_join(df_sample, df_proportion, by = join_by)
+    df_final <- df_final %>% select(-pos)
   }
   
   return(df_final)
