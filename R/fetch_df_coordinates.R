@@ -24,7 +24,7 @@
 #' @export
 
 fetch_df_coordinates <- function() {
-  cache_dir <- tools::R_user_dir("yourpackage", which = "cache")
+  cache_dir <- tools::R_user_dir("ggpop", which = "cache")
   dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
   cache_file <- file.path(cache_dir, "df_coordinates_final.rda")
   

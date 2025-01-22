@@ -21,7 +21,9 @@ geom_pop(
   sample_size = NULL,
   arrange = FALSE,
   sum_var = NULL,
+  facet = NULL,
   size = 1,
+  legend_icons = FALSE,
   ...
 )
 }
@@ -95,7 +97,11 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 
 \item{sum_var}{Optional variable to sum over instead of counting.}
 
+\item{facet}{Optional facetting variable.}
+
 \item{size}{The size of the points.}
+
+\item{legend_icons}{Logical; if TRUE, the legend will display the selected icons by the user.}
 
 \item{...}{additional parameters}
 }
