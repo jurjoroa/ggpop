@@ -21,7 +21,9 @@ geom_pop(
   sample_size = NULL,
   arrange = FALSE,
   sum_var = NULL,
+  facet = NULL,
   size = 1,
+  legend_icons = FALSE,
   ...
 )
 }
@@ -94,6 +96,8 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 \item{arrange}{Logical; if TRUE, the output data is arranged by group.}
 
 \item{sum_var}{Optional variable to sum over instead of counting.}
+
+\item{facet}{Optional facetting variable.}
 
 \item{size}{The size of the points.}
 

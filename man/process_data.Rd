@@ -9,8 +9,7 @@ process_data(
   high_group_var = NULL,
   group_var = NULL,
   sum_var = NULL,
-  sample_size = 1000,
-  replace = TRUE
+  sample_size = 1000
 )
 }
 \arguments{
@@ -28,7 +27,6 @@ process_data(
 A tibble (data frame) with the following columns:
 \describe{
 \item{type}{The sampled group type.}
-\item{pos}{The position index of the sampled individual.}
 \item{group}{The group identifier.}
 \item{n}{The count of individuals in the group.}
 \item{prop}{The proportion of the group relative to the total population.}

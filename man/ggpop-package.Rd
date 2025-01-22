@@ -6,8 +6,6 @@
 \alias{ggpop-package}
 \title{ggpop: Visualizing Population Data (ggpop)}
 \description{
-\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
-
 ggpop is an R package that creates visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.
 }
 \seealso{
