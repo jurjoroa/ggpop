@@ -26,10 +26,10 @@
 fetch_df_coordinates <- function() {
   cache_dir <- tools::R_user_dir("ggpop", which = "cache")
   dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
-  cache_file <- file.path(cache_dir, "df_coordinates_final.rda")
+  cache_file <- file.path(cache_dir, "df_coordinates_final_10_1000.rda")
   
   if (!file.exists(cache_file)) {
-    githubURL <- "https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/data/df_coordinates_final.rda"
+    githubURL <- "https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/data/df_coordinates_final_10_1000.rda"
     message("Downloading dataset...")
     download.file(githubURL, cache_file, method = "curl")
   }
