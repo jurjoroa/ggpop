@@ -68,6 +68,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   df_coordinates_filtered <- df_coordinates_final %>%
     filter(size == sample_size)
   
+  df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
+  
   df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
   
   if (!is.null(data) && arrange && is.null(facet)) {
@@ -89,6 +91,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     df_coordinates_filtered <- df_coordinates_final %>%
       filter(size == sample_size)
     
+    df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
+    
+    
     df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
     
   } 
@@ -102,7 +107,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       mutate(original_order = row_number()) %>%
       ungroup() %>%
       arrange(type, original_order, !!facet_var) %>%  # Sort by the specified columns
-      group_by(!!facet_var) %>%  # Group by the specified column
+      group_by(!!facet_var) %>%  # Group by the specified columns
       mutate(pos = row_number()) %>%  # Calculate a sequential row number without restarting
       select(-n, -prop) %>% 
       ungroup()
@@ -110,7 +115,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     data <- bind_cols(data, df_order)
     
-    #sample_size <- length(unique(data$pos))
     sample_size <- data %>%
       group_by(!!facet_var) %>%
       summarise(sample_size = n_distinct(pos), .groups = "drop")
@@ -129,6 +133,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     # Ensure consistent data types
     data$size <- as.character(data$size)
+    
+    df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
     
     df_merged <- left_join(df_coordinates_filtered, data, by = c("pos", "size"))
     
@@ -140,7 +146,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       mutate(pos = row_number()) %>%
       ungroup()
     
-    #sample_size <- length(unique(data$pos))
     sample_size <- data %>%
       group_by(!!facet_var) %>%
       summarise(sample_size = n_distinct(pos), .groups = "drop")
@@ -159,6 +164,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     # Ensure consistent data types
     data$size <- as.character(data$size)
+    
+    df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
     
     df_merged <- left_join(df_coordinates_filtered, data, by = c("pos", "size"))
     
@@ -177,6 +184,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   #Final data
   df_final <- bind_cols(df_merged, df_icon)
+  
+  #if type has NA, drop the row
+  df_final <- df_final %>% filter(!is.na(type))
+  
   
   if (!"x1" %in% colnames(df_final) || !"y1" %in% colnames(df_final)) {
     stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
@@ -197,7 +208,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       position = position,
       na.rm = na.rm,
       inherit.aes = inherit.aes,
-      size = size_internal,     # <--- here
+      size = size_internal,
       key_glyph = draw_key_pop_image,
       ...
     )
@@ -210,7 +221,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       position = position,
       na.rm = na.rm,
       inherit.aes = inherit.aes,
-      size = size_internal,     # <--- here
+      size = size_internal,
       ...
     )
   }
