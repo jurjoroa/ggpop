@@ -10,8 +10,6 @@ This version brings significant improvements to the `geom_pop` function and intr
 
 ## Bug fixes
 
-## Bug fixes
-
 - Updated `NAMESPACE` to export the new `scale_legend_icon` function.
 - Removed unnecessary `@importFrom` statements in `draw_key.R` to clean up the code.
 
