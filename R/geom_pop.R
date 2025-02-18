@@ -36,7 +36,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      group_var = NULL, sample_size = NULL, arrange = FALSE, sum_var = NULL,
                      facet=NULL,
                      size = 1, # default size as 1 externally
-                     legend_icons = FALSE,
+                     legend_icons = TRUE,
                      ...) {
   # Transform the user-specified size to the desired internal scale
   # If user specifies 1, internally we use 0.03
@@ -200,6 +200,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   final_mapping$x <- as.name("x1")
   final_mapping$y <- as.name("y1")
   
+  key_fn <- ggplot2::draw_key_point
+  
   if (legend_icons) {
     ggimage::geom_image(
       mapping = final_mapping,
@@ -222,6 +224,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       na.rm = na.rm,
       inherit.aes = inherit.aes,
       size = size_internal,
+      key_glyph = key_fn,
       ...
     )
   }
