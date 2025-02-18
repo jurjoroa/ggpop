@@ -12,10 +12,8 @@
 ##' @param params A list of additional parameters supplied to the geom.
 ##' @param size The width and height of the key in mm. This value is not used directly in this function.
 ##' @return A grid grob containing the image icons with the specified colors and transparency.
-##' @importFrom ggimage color_image
 ##' @importFrom magick image_read
 ##' @importFrom grid rasterGrob gTree
-##' @importFrom ggplot2 ggname
 ##' @export
 draw_key_pop_image <- function(data, params, size) {
   # If each group has a different icon in data$icon
