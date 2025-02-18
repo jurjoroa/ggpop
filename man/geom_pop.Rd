@@ -23,7 +23,7 @@ geom_pop(
   sum_var = NULL,
   facet = NULL,
   size = 1,
-  legend_icons = FALSE,
+  legend_icons = TRUE,
   ...
 )
 }
