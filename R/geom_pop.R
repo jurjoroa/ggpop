@@ -38,15 +38,14 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      size = 1, # default size as 1 externally
                      legend_icons = TRUE,
                      ...) {
-  # Transform the user-specified size to the desired internal scale
-  # If user specifies 1, internally we use 0.03
+
   if (is.null(data)) {
     #inherit from the main ggplot aes
     data <- ggplot_build(last_plot())$plot$data
   }    
   
   
-  size_internal <- size * 0.03
+  size_internal <- size * 0.03 #To adjust the size of the points
   
   # Convert mapping to a list
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
