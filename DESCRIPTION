@@ -16,12 +16,16 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends:
-    R (>= 4.0.5),
-    ggplot2,
-    tidyr,
-    purrr
+    R (>= 4.0.5)
 Imports:
+    ggplot2,
     dplyr,
-    ggimage
+    ggimage,
+    magick,
+    rlang,
+    tidyr,
+    purrr,
+    ggtext
 LazyData: true
+ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
