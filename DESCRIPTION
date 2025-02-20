@@ -26,6 +26,5 @@ Imports:
     tidyr,
     purrr,
     ggtext
-LazyData: true
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
