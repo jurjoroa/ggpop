@@ -12,8 +12,8 @@
 #'               Default is `0.5`.
 #' @param text Named list or named vector. Custom text descriptions for each icon. The names should correspond
 #'             to the `image` identifiers in the plot data. If `NULL`, defaults to `"persons"`.
-#' @import ggplot2
-#' @import ggtext
+#'             
+#' @importFrom ggtext element_textbox
 #'         
 #'@export
 caption_pop <- function(caption_size = 1, icon_size = 1, hjust = 0.5, text = NULL) {

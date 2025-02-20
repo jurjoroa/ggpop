@@ -23,19 +23,17 @@
 #' @param facet Optional facetting variable.
 #' @param legend_icons Logical; if TRUE, the legend will display the selected icons by the user.
 #' 
+#' @return A ggplot object with a circular representative population chart.
 #' 
-#' @importFrom ggplot2 layer
-#' @importFrom ggpopdata load_data
-#' @import ggimage
-#' 
+#' @import dplyr
 #' 
 #' @export
 geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      position = "identity", na.rm = FALSE, show.legend = NA,
                      inherit.aes = TRUE, icon = "default",
                      group_var = NULL, sample_size = NULL, arrange = FALSE, sum_var = NULL,
-                     facet=NULL,
-                     size = 1, # default size as 1 externally
+                     facet = NULL,
+                     size = 1,
                      legend_icons = TRUE,
                      ...) {
 
