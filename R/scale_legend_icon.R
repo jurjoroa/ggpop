@@ -13,6 +13,8 @@
 #'   `label.position`, `label.theme`, and so forth.
 #'
 #' @return A `guides()` specification that you can add to your ggplot object.
+#' 
+#' @importFrom ggplot2 aes labs theme ggplot_build last_plot
 #'
 #' @export
 scale_legend_icon <- function(size = 10, ...) {
