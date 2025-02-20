@@ -105,6 +105,9 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 
 \item{...}{additional parameters}
 }
+\value{
+A ggplot object with a circular representative population chart.
+}
 \description{
 Create a circular representative population chart
 #'
