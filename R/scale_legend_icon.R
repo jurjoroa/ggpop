@@ -26,7 +26,7 @@ scale_legend_icon <- function(size = 10, ...) {
   # type
   types <- levels(factor(data$type))
   
-  # icon
+  # icons
   icons <- sapply(types, function(t) {
     idx <- which(data$type == t)
     data$icon[idx[1]]
