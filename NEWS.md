@@ -58,6 +58,7 @@ We improved **dependency management, import statements, function readability, an
 ## Issues Resolved in v1.1.1
 
 - #99
+- #102
 - #104
 
 ## Version 
