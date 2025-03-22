@@ -17,7 +17,6 @@
 #' }
 #' 
 #' @import dplyr
-#' @import utils
 #' @importFrom tidyr nest unnest unite
 #' @importFrom purrr map
 #' @importFrom stats setNames
@@ -32,8 +31,8 @@ process_data <- function(data,
                          sample_size = 1000) {
   
   # --- Capture arguments properly ---
-  group_var_sym <- enquo(group_var)     # Capture unquoted
-  sum_var_sym   <- enquo(sum_var)       # Capture unquoted
+  group_var_sym <- rlang::enquo(group_var)     # Capture unquoted
+  sum_var_sym   <- rlang::enquo(sum_var)       # Capture unquoted
   
   # Error if no group_var is provided
   if (rlang::quo_is_missing(group_var_sym) || rlang::as_label(group_var_sym) == "") {
@@ -46,13 +45,13 @@ process_data <- function(data,
   
   # Convert high_group_var to list of symbols if provided
   higher_group_syms <- if (!is.null(high_group_var) && length(high_group_var) > 0) {
-    syms(high_group_var)
+    rlang::syms(high_group_var)
   } else {
     NULL
   }
   
   # Convert group_var to string for later usage
-  group_var_name <- as_label(group_var_sym)
+  group_var_name <- rlang::as_label(group_var_sym)
   
   # Step 1: Compute Proportions
   df_proportion <- data %>%
@@ -72,7 +71,7 @@ process_data <- function(data,
       }
     } %>%
     summarise(
-      n = if (quo_is_null(sum_var_sym)) {
+      n = if (rlang::quo_is_null(sum_var_sym)) {
         n() 
       } else {
         sum(!!sum_var_sym)
@@ -113,7 +112,7 @@ process_data <- function(data,
     
     vector_sample <- df_proportion %>%
       group_by(across(all_of(high_group_var))) %>%
-      nest() %>%
+      tidyr::nest() %>%
       mutate(
         sample = map(data, ~ sample(
           x      = .x[[group_var_name]],
@@ -123,7 +122,7 @@ process_data <- function(data,
         ))
       ) %>%
       select(-data) %>%
-      unnest(cols = c(sample)) %>%
+      tidyr::unnest(cols = c(sample)) %>%
       rename(type = sample) %>% 
       group_by(across(all_of(high_group_var))) %>%
       mutate(pos = row_number()) %>%
@@ -147,10 +146,10 @@ process_data <- function(data,
   # Left join
   if (!is.null(higher_group_syms)) {
     # Construct a named vector for joining
-    join_by <- c("type" = group_var_name, setNames(high_group_var, high_group_var))
+    join_by <- c("type" = group_var_name, stats::setNames(high_group_var, high_group_var))
     
     df_final <- left_join(df_sample, df_proportion, by = join_by) %>%
-      unite("group", all_of(high_group_var), sep = "_", remove = TRUE)
+      tidyr::unite("group", all_of(high_group_var), sep = "_", remove = TRUE)
     
   } else {
     # Handle case without high_group_var

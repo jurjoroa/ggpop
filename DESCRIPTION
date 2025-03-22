@@ -1,7 +1,7 @@
 Type: Package
 Package: ggpop
 Title: Visualizing Population Data (ggpop)
-Version: 1.1.0
+Version: 1.1.1
 Authors@R: person(given = "Jorge",
              family = "Roa",
              role = c("aut", "cre"),
@@ -16,12 +16,15 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends:
-    R (>= 4.0.5),
-    ggplot2,
-    tidyr,
-    purrr
+    R (>= 4.0.5)
 Imports:
+    ggplot2,
     dplyr,
-    ggimage
-LazyData: true
+    ggimage,
+    magick,
+    rlang,
+    tidyr,
+    purrr,
+    ggtext
+ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues

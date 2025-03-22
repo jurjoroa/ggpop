@@ -13,16 +13,20 @@
 #'   `label.position`, `label.theme`, and so forth.
 #'
 #' @return A `guides()` specification that you can add to your ggplot object.
+#' 
+#' @importFrom ggplot2 aes labs theme ggplot_build last_plot
 #'
 #' @export
 scale_legend_icon <- function(size = 10, ...) {
   # Retrieve the built plot data
-  data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
+  gg_obj <- ggplot2::last_plot()
   
-  # Extract the levels of 'type' in the order they appear
+  data <- gg_obj$layers[[1]]$data
+
+  # type
   types <- levels(factor(data$type))
   
-  # For each type, pick the first icon encountered
+  # icons
   icons <- sapply(types, function(t) {
     idx <- which(data$type == t)
     data$icon[idx[1]]
@@ -35,3 +39,4 @@ scale_legend_icon <- function(size = 10, ...) {
     )
   )
 }
+
