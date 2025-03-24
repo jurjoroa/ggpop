@@ -259,3 +259,11 @@ ggplot() +
 
 ![Example Plot 3](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot3.png)
 
+
+### 6.- Simulation of natural history of colorectal cancer example
+
+As an applied example, we plotted the simulation of the natural history of colorectal cancer employing `ggpop` package. As it can be appreciated, the plot is a circular representative population chart, where the population is represented by icons. The icons are arranged in a circular manner, and the size of the icons is proportional to the population size. The icons are colored according to the type of cancer, and the legend is displayed at the bottom of the plot. The plot is visually appealing and informative, making it easy to understand the distribution of the population by cancer type.
+This type of plots can be used to present complex population data in a more accessible and visually appealing way, specially if we want to transmit a message to a non-technical audience or decision makers. 
+
+![SimCRC Natural History](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/simcrc_natural_history.png)
+
