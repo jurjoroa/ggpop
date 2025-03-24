@@ -164,7 +164,8 @@ Here is the list of native icons available in the package:
 | `ggfour`           | <img src="inst/figures/ggfour.svg" alt="four icon" width="32" height="32">                                     |
 
 
-All of these are optimized to generate the plot fast, regardless of the sample size.
+All of these are optimized to generate the plot fast, regardless of the sample size. More icons will be available in the future upon request to be optimized. 
+
 
 
 
@@ -182,8 +183,7 @@ For example, this is ust a few sample of more than 1,500 icons available in the 
 |:-----------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
 | **Sample icons:** <br>- home <br>- user <br>- envelope <br>- bell <br>- camera <br>- cog <br>- heart <br>- calendar <br>- cart-plus <br>- check <br>- cloud <br>- comment <br>- comments <br>- download <br>- edit <br>- file <br>- filter <br>- flag <br>- folder <br>- phone | <img src="inst/figures/fontawesome_table.jpg" width="900px" alt="fontawesome table preview" /> |
 
-
-More icons will be available in the future upon request to be optimized. 
+You can check the full list of icons in the [Font Awesome website](https://fontawesome.com/icons?d=gallery&p=2&m=free).
 
 ### 4.- Plot population chart
 
