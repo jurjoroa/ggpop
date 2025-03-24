@@ -22,17 +22,25 @@
 #' provide essential behavior for rendering images within ggplot2.
 ##' @export
 draw_key_pop_image <- function(data, params, size) {
-  # If each group has a different icon in data$icon
-  grobs <- lapply(seq_along(data$colour), function(i) {
-    # Path to the icon file
-    icon_path <- paste0("inst/figures/", data$icon[i], ".png")
-    # Read the image
+
+    grobs <- lapply(seq_along(data$colour), function(i) {
+
+    icon_path <- paste0("inst/figures/", data$icon[i], ".png") #hack with paste0
+    
+    if (file.exists(icon_path)) {
+      temp_icon_path <- icon_path
+    } else {
+      temp_icon_path <- paste0("inst/figures/", data$icon[i], ".png")
+
+      fontawesome::fa_png(paste0(data$icon[i]), file = temp_icon_path) 
+    }
+
     img <- magick::image_read(icon_path)
-    # Convert image to grayscale to remove existing colors
+
     img <- magick::image_quantize(img, colorspace = "gray")
-    # Colorize the image using the specified color and transparency
+    
     img <- magick::image_colorize(img, opacity = data$alpha[i] * 100, color = data$colour[i])
-    # Apply colorization (if applicable) based on 'colour' and 'alpha' aesthetics
+
     # Create the grob for this icon
     grid::rasterGrob(
       x = 0.5, y = 0.5,
@@ -40,9 +48,9 @@ draw_key_pop_image <- function(data, params, size) {
       width = 1, height = 1
     )
   })
-  # Set the grobs' class to gList
+  # class to gList
   class(grobs) <- "gList"
   
-  # Return a named ggplot2 grob containing the icons
+  # grob containing the icons
   grid::gTree(children = grobs, name = "image_key")
 }
