@@ -36,7 +36,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      size = 1,
                      legend_icons = TRUE,
                      ...) {
-
+  
   if (is.null(data)) {
     #inherit from the main ggplot aes
     data <- ggplot_build(last_plot())$plot$data
@@ -190,14 +190,39 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
   }
   
+  # Vectorize the icon assignment
+  df_final <- df_final %>%
+    rowwise() %>%
+    mutate(
+      image = {
+        image_path <- paste0("inst/figures/", icon, ".svg")
+        if (file.exists(image_path)) {
+          image_path  
+        } else {
+          svg_text <- as.character(fontawesome::fa(icon))
+          
+          svg_path <- tempfile(fileext = ".svg")
+          writeLines(svg_text, svg_path)
+          
+          svg_path  # Use file path instead of inline SVG
+        }
+      }
+    ) %>%
+    ungroup()
+  
   icon_expr <- mapping_list[["icon"]]
-  mapping_list[["image"]] <- bquote(paste0("inst/figures/", .(icon_expr), ".svg"))
+  
+  mapping_list[["image"]] <- as.name("image")
   
   final_mapping <- do.call(aes, mapping_list)
   final_mapping$x <- as.name("x1")
   final_mapping$y <- as.name("y1")
   
-  key_fn <- ggplot2::draw_key_point
+  
+  key_fn <- function(data, params, size) {
+    data$size <- data$size * 100  # Increase dot size in the legend if legend_icons is FALSE
+    ggplot2::draw_key_point(data, params, size)
+  }
   
   if (legend_icons) {
     ggimage::geom_image(
@@ -212,7 +237,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       ...
     )
   } else {
-    
     ggimage::geom_image(
       mapping = final_mapping,
       data = df_final,
