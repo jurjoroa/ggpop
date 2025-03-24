@@ -130,7 +130,14 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
     type == "female" ~ "female"))
 ```
 
-#### 3.1 List of icons available in the package.
+### 4.- Icons
+
+The package includes a set of native icons. The icons are stored in the `inst/figures/` directory. The icons are in SVG format, which is a vector format that allows for scaling without loss of quality. The icons are used to represent different groups in the population chart.
+Nevertheless, the package also allows the use of `fontawesome` icons. The difference between these two approaches is that the native icons are optimized for size and quality, while the `fontawesome` icons are more flexible and can be easily customized, however, the plot will be slow to render, especially if the plots contains a big sample size. 
+
+##### 4.1.- Native Icons
+
+Here is the list of native icons available in the package:
 
 
 | Icon         | Icon Preview                                                                                               |
@@ -155,6 +162,14 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 | `ggtwo`            | <img src="inst/figures/ggtwo.svg" alt="two icon" width="32" height="32">                                      |
 | `ggthree`          | <img src="inst/figures/ggthree.svg" alt="three icon" width="32" height="32">                                    |
 | `ggfour`           | <img src="inst/figures/ggfour.svg" alt="four icon" width="32" height="32">                                     |
+
+
+All of these are optimized to generate the plot fast, regardless of the sample size.
+
+
+##### 4.2.- Fontawesome Icons
+
+ <img src="inst/figures/logo.png" align="right" width= 85px /> + <img src="inst/figures/fontawesome.png" align="right" width= 85px />
 
 
 More icons will be available in the future upon request.
