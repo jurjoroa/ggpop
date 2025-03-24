@@ -126,8 +126,8 @@ Here, we create a new column called `icon` in the `df_pop_mx_prop` dataset. The 
 ``` r
 df_pop_mx_prop <- df_pop_mx_prop %>% 
   mutate(icon = case_when(
-    type == "male" ~ "male",
-    type == "female" ~ "female"))
+    type == "male" ~ "ggmale",
+    type == "female" ~ "ggfemale"))
 ```
 
 ### 4.- Icons
@@ -167,12 +167,23 @@ Here is the list of native icons available in the package:
 All of these are optimized to generate the plot fast, regardless of the sample size.
 
 
+
 ##### 4.2.- Fontawesome Icons
 
- <img src="inst/figures/logo.png" align="right" width= 85px /> + <img src="inst/figures/fontawesome.png" align="right" width= 85px />
+<p style="display: flex; align-items: center;">
+  <img src="inst/figures/logo.png" width="95px" alt="Logo" />
+  <img src="inst/figures/fontawesome.png" width="105px" alt="Fontawesome" />
+</p>
+
+The package also allows the use of `fontawesome` icons. The icons are stored in the `fontawesome` package. The only thing that you need to specify is the name of the icon.
+
+For example, this is ust a few sample of more than 1,500 icons available in the `fontawesome` package:
+| List of Font Awesome icons                                                                                                                     | Preview                                                                                                       |
+|:-----------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
+| **Sample icons:** <br>- home <br>- user <br>- envelope <br>- bell <br>- camera <br>- cog <br>- heart <br>- calendar <br>- cart-plus <br>- check <br>- cloud <br>- comment <br>- comments <br>- download <br>- edit <br>- file <br>- filter <br>- flag <br>- folder <br>- phone | <img src="inst/figures/fontawesome_table.jpg" width="900px" alt="fontawesome table preview" /> |
 
 
-More icons will be available in the future upon request.
+More icons will be available in the future upon request to be optimized. 
 
 ### 4.- Plot population chart
 
@@ -220,10 +231,10 @@ df_pop_dis_mx_prop <- process_data(data = df_pop_dis_mx, group_var = sex,
 #3.- Assign icons to groups
 df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>% 
   mutate(icon = case_when(
-    type == "male" ~ "male",
-    type == "female" ~ "female",
-    type == "disabled males" ~ "disability",
-    type == "disabled females" ~ "disability"))
+    type == "male" ~ "ggmale",
+    type == "female" ~ "ggfemale",
+    type == "disabled males" ~ "ggdisability",
+    type == "disabled females" ~ "ggdisability"))
 
 #4.- Plot 
 
