@@ -121,7 +121,7 @@ df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex,
 
 ### 3.- Assign icons to groups
 
-Here, we create a new column called `icon` in the `df_pop_mx_prop` dataset. The `case_when()` function checks each row’s **type** (either "male" or "female") and assigns a matching value ("male" or "female") to the `icon` column.
+Here, we create a new column called `icon` in the `df_pop_mx_prop` dataset. The `case_when()` function checks each row’s **type** (either "male" or "female") and assigns a matching value ("ggmale" or "ggfemale") to the `icon` column.
 
 ``` r
 df_pop_mx_prop <- df_pop_mx_prop %>% 
@@ -132,7 +132,7 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 
 ### 4.- Icons
 
-The package includes a set of native icons. The icons are stored in the `inst/figures/` directory. The icons are in SVG format, which is a vector format that allows for scaling without loss of quality. The icons are used to represent different groups in the population chart.
+The package includes a set of native icons are optimized to generate plots fast, regardless of the sample size. These icons are in SVG format, which is a vector format that allows for scaling without loss of quality. The icons are used to represent different groups in the population chart.
 Nevertheless, the package also allows the use of `fontawesome` icons. The difference between these two approaches is that the native icons are optimized for size and quality, while the `fontawesome` icons are more flexible and can be easily customized, however, the plot will be slow to render, especially if the plots contains a big sample size. 
 
 ##### 4.1.- Native Icons
@@ -164,9 +164,7 @@ Here is the list of native icons available in the package:
 | `ggfour`           | <img src="inst/figures/ggfour.svg" alt="four icon" width="32" height="32">                                     |
 
 
-All of these are optimized to generate the plot fast, regardless of the sample size. More icons will be available in the future upon request to be optimized. 
-
-
+More icons will be available in the future upon request to be optimized. 
 
 
 ##### 4.2.- Fontawesome Icons
@@ -189,7 +187,7 @@ You can check the full list of icons in the [Font Awesome website](https://fonta
 
 ``` r
 ggplot() +
-  geom_pop(data = df_prop_mx_f, aes(icon = icon, group=type, color=type),
+  geom_pop(data = df_pop_mx_prop, aes(icon = icon, group=type, color=type),
   size = 1, arrange=F) +
   theme_void() +
   theme(legend.position = "bottom")
@@ -202,10 +200,29 @@ The `geom_pop()` function creates a population chart using the `df_prop_mx_f` da
 
 #### 4.1 Improve plot 
 
-Like a ggplot object, we can improve it to have a more presentable plot. We can arrange our points, give color to the background, and add a title and caption to the plot.
+Like a ggplot object, we can improve it to have a more presentable plot. We can arrange our icons, add them as part of the legend, give color to the background, and add a title and caption to the plot.
 
-
-
+``` r
+ggplot() +
+    geom_pop(data = df_pop_mx_prop, aes(icon = icon, group=type, color=type),
+    size = 1, arrange=T) +
+    scale_legend_icon() + #add icon to the legend
+    theme_void(base_size = 40) +
+    theme(legend.position = "bottom") + 
+labs(title = "Population in Mexico by Sex",
+     subtitle = "2024",
+     caption = "Source: demogmx") +
+  theme(legend.title = element_blank(),
+        plot.background = element_rect(fill = "black"),
+        panel.background = element_rect(fill = "black"),
+        legend.background = element_rect(fill = "black"),
+        legend.text = element_text(color = "white"),
+        plot.title = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        plot.caption = element_text(color = "white")) +
+  scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60"),
+                     labels = c("female" = "Females: 51%", "male" = "Males: 49%"))
+```
 
 ![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot2.png)
 
