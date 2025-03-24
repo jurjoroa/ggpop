@@ -145,9 +145,8 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 | `ggdisability`       | <img src="inst/figures/ggdisability.svg" alt="handicap icon" width="32" height="32">                            |
 | `ggmale`           | <img src="inst/figures/ggmale.svg" alt="male icon" width="32" height="32">                                    |
 | `ggmoney`          | <img src="inst/figures/ggmoney.svg" alt="money icon" width="32" height="32">                                  |
-| `ggggsyringe`        | <img src="inst/figures/ggsyringe.svg" alt="syringe icon" width="32" height="32">                              |
+| `gggsyringe`        | <img src="inst/figures/ggsyringe.svg" alt="syringe icon" width="32" height="32">                              |
 | `ggtree`           | <img src="inst/figures/ggtree.svg" alt="tree icon" width="32" height="32">                                    |
-| `ggvaccine`        | <img src="inst/figures/ggvaccine.svg" alt="vaccine icon" width="32" height="32">                              |
 | `ggadenoma`        | <img src="inst/figures/ggadenoma.svg" alt="adenoma icon" width="32" height="32">                              |
 | `ggdistal`         | <img src="inst/figures/ggdistal.svg" alt="distal icon" width="32" height="32">                                 |
 | `ggproximal`       | <img src="inst/figures/ggproximal.svg" alt="proximal icon" width="32" height="32">                             |
