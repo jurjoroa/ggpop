@@ -135,18 +135,27 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 
 | Icon         | Icon Preview                                                                                               |
 |:------------------|:-----------------------------------------------------------------------------------------------------------|
-| `bike`           | <img src="inst/figures/bike.svg" alt="bike icon" width="37" height="37">                                    |
-| `build`          | <img src="inst/figures/build.svg" alt="build icon" width="25" height="25">                                  |
-| `car`            | <img src="inst/figures/car.svg" alt="car icon" width="25" height="25">                                      |
-| `cancer`         | <img src="inst/figures/cancer.svg" alt="cancer icon" width="37" height="37">                                |
-| `dollar`         | <img src="inst/figures/dollar.svg" alt="dollar icon" width="32" height="32">                                |
-| `female`         | <img src="inst/figures/female.svg" alt="female icon" width="32" height="32">                                |
-| `graduation_cap` | <img src="inst/figures/graduation_cap.svg" alt="graduation cap icon" width="32" height="32">                |
-| `disability`       | <img src="inst/figures/disability.svg" alt="handicap icon" width="32" height="32">                            |
-| `male`           | <img src="inst/figures/male.svg" alt="male icon" width="32" height="32">                                    |
-| `money`          | <img src="inst/figures/money.svg" alt="money icon" width="32" height="32">                                  |
-| `syringe`        | <img src="inst/figures/syringe.svg" alt="syringe icon" width="32" height="32">                              |
-| `tree`           | <img src="inst/figures/tree.svg" alt="tree icon" width="32" height="32">                                    |
+| `ggbike`           | <img src="inst/figures/ggbike.svg" alt="bike icon" width="37" height="37">                                    |
+| `ggbuild`          | <img src="inst/figures/ggbuild.svg" alt="build icon" width="25" height="25">                                  |
+| `ggcar`            | <img src="inst/figures/ggcar.svg" alt="car icon" width="25" height="25">                                      |
+| `ggcancer`         | <img src="inst/figures/ggcancer.svg" alt="cancer icon" width="37" height="37">                                |
+| `ggdollar`         | <img src="inst/figures/ggdollar.svg" alt="dollar icon" width="32" height="32">                                |
+| `ggfemale`         | <img src="inst/figures/ggfemale.svg" alt="female icon" width="32" height="32">                                |
+| `gggraduation_cap` | <img src="inst/figures/gggraduation_cap.svg" alt="graduation cap icon" width="32" height="32">                |
+| `ggdisability`       | <img src="inst/figures/ggdisability.svg" alt="handicap icon" width="32" height="32">                            |
+| `ggmale`           | <img src="inst/figures/ggmale.svg" alt="male icon" width="32" height="32">                                    |
+| `ggmoney`          | <img src="inst/figures/ggmoney.svg" alt="money icon" width="32" height="32">                                  |
+| `ggggsyringe`        | <img src="inst/figures/ggsyringe.svg" alt="syringe icon" width="32" height="32">                              |
+| `ggtree`           | <img src="inst/figures/ggtree.svg" alt="tree icon" width="32" height="32">                                    |
+| `ggvaccine`        | <img src="inst/figures/ggvaccine.svg" alt="vaccine icon" width="32" height="32">                              |
+| `ggadenoma`        | <img src="inst/figures/ggadenoma.svg" alt="adenoma icon" width="32" height="32">                              |
+| `ggdistal`         | <img src="inst/figures/ggdistal.svg" alt="distal icon" width="32" height="32">                                 |
+| `ggproximal`       | <img src="inst/figures/ggproximal.svg" alt="proximal icon" width="32" height="32">                             |
+| `ggrectum`         | <img src="inst/figures/ggrectum.svg" alt="rectum icon" width="32" height="32">                                 |
+| `ggone`            | <img src="inst/figures/ggone.svg" alt="gone icon" width="32" height="32">                                      |
+| `ggtwo`            | <img src="inst/figures/ggtwo.svg" alt="two icon" width="32" height="32">                                      |
+| `ggthree`          | <img src="inst/figures/ggthree.svg" alt="three icon" width="32" height="32">                                    |
+| `ggfour`           | <img src="inst/figures/ggfour.svg" alt="four icon" width="32" height="32">                                     |
 
 
 More icons will be available in the future upon request.
