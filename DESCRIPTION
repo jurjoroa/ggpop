@@ -36,6 +36,7 @@ Imports:
     rlang,
     tidyr,
     purrr,
-    ggtext
+    ggtext,
+    fontawesome
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues

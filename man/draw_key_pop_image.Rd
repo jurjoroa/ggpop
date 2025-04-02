@@ -19,12 +19,14 @@ and an \code{icon} column with the names of the icon files (without extension) t
 A grid grob containing the image icons with the specified colors and transparency.
 }
 \description{
+Key drawing function for population-based image keys
+}
+\details{
 This function creates a custom key for displaying population-based image icons
 in the legend of a ggplot2 plot. Each group can be assigned a different icon
 based on the information in the \code{data$icon} column, and the icons can be colorized
 according to the specified \code{colour} and \code{alpha} aesthetics.
-}
-\details{
+
 This function relies on \code{ggimage:::color_image} and \code{ggplot2:::ggname}, which are internal functions.
 Their use is necessary for correct functionality, and no exported alternatives exist.
 We acknowledge the potential risks associated with \code{:::} usage, but at present, these functions
