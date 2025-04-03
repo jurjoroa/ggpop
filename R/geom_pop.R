@@ -14,6 +14,7 @@
 #' 
 #' @inheritParams ggplot2::layer
 #' @inheritParams ggimage::geom_image
+#' @inheritParams fontawesome::fa
 #' @param size The size of the points.
 #' @param icon The icon to be used in the chart.
 #' @param group_var The variable used to group individuals.
@@ -195,17 +196,13 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     rowwise() %>%
     mutate(
       image = {
-        image_path <- paste0("inst/figures/", icon, ".svg")
-        if (file.exists(image_path)) {
-          image_path  
-        } else {
-          svg_text <- as.character(fontawesome::fa(icon))
-          
-          svg_path <- tempfile(fileext = ".svg")
-          writeLines(svg_text, svg_path)
-          
-          svg_path  # Use file path instead of inline SVG
+        image_path <- paste0("inst/figures/", icon, ".png")
+        if (!file.exists(image_path)) {
+          fontawesome::fa_png(paste0(icon), file = image_path, width = 50) 
+          image_path <- paste0("inst/figures/", icon, ".png")
         }
+        # Load the saved SVG file with magick
+        image_path
       }
     ) %>%
     ungroup()
