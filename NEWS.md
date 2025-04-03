@@ -4,8 +4,7 @@
 
 # ggpop 1.2.1
 
-This version brings an update to the documentation. We included Ralitza Soultanova, Fernanado Alarid-Escudero and Carlos Pineda-Antunez as new authors. Finally, we fix some documentation issues related to the `ggpop` package.
-
+This version brings an update to the documentation. We included Ralitza Soultanova, Fernando Alarid-Escudero and Carlos Pineda-Antunez as new authors. Finally, we fix some documentation issues related to the `ggpop` package.
 ## Bug fixes
 
 -   We added `fontawesome` as a dependency in the `DESCRIPTION` file. This ensures that the package will work correctly when installed from CRAN or GitHub.
