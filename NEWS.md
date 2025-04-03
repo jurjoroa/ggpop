@@ -1,46 +1,33 @@
-
 # ggpop
 
-ggpop is an R package that extends the capabilities of ggplot2 to create visually engaging and informative population charts. Leveraging the power of `ggplot2` and `ggimage`, `ggpop` allows users to represent population data proportionally using customizable icons, enabling the creation of circular representative population charts with ease. Additionally, the package offers tools for adding descriptive captions adorned with icons, enhancing the interpretability and aesthetic appeal of visualizations. ggpop is intended for visualization purposes and provides an alternative way to present information effectively, making complex population data accessible and visually appealing.
+`ggpop` is an R package built on top of ggplot2 that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users easily visualize population data using proportional, customizable icons arranged in intuitive, circular layouts. The package also includes functionality for adding clear, icon-enhanced captions, which makes charts easier to understand and visually attractive. Designed primarily for visual storytelling, ggpop helps users communicate complex population statistics in a straightforward and appealing manner.
 
-# ggpop 1.2.0
+# ggpop 1.2.1
 
-This version brings significant improvements to the `ggpop` function. We are excited to announce that now we can use icons from `fontawesome` in the `ggpop` package. This enhancement allows users to create visually appealing population charts with a wider range of icon options. The "native" icons will stay since they are optimized due to the size of the images.
-Also, we modified the key_fn function to improve the legend icon display. Finally, we added cancer native icons due to the focus of our research. These changes aim to streamline icon management and functionality in the codebase.
-
-
+This version brings an update to the documentation. We included Ralitza Soultanova, Fernando Alarid-Escudero and Carlos Pineda-Antunez as new authors. Finally, we fix some documentation issues related to the `ggpop` package.
 ## Bug fixes
 
-- There are not any bug fixes in this version of `ggpop`.
-
+-   We added `fontawesome` as a dependency in the `DESCRIPTION` file. This ensures that the package will work correctly when installed from CRAN or GitHub.
+-   `man/draw_key_pop_image.Rd`Added a description and details for the key drawing function for population-based image keys.
+-   `man/ggpop-package.Rd`: Added new authors to the documentation.
 
 ## Improvements
 
-- **Legend Key Function Updates**:
-  - The legend key function in `geom_pop.R` has been updated to increase the dot size for cases when `legend_icons = FALSE`, ensuring better visibility of the icons in the legend.
-  
-- **SimCRC icons** 
-  - Added native icons for cancer types in the SimCRC dataset to enhance the representation of cancer-related data.
+-   We added Ralitza Soultanova, Fernando Alarid-Escudero and Carlos Pineda-Antunez as new authors in the `DESCRIPTION` file.
 
 ## New features
 
-- **Integration with `fontawesome`**:
-  - Icons are now generated using the **fontawesome** package if their respective files do not exist locally. This ensures that missing icons are replaced reliably and provides access to a broader set of icons.
-  - `geom_pop.R`, the icon assignment has been vectorized to check for SVG file existence and to automatically use `fontawesome::fa` if needed, improving efficiency and robustness.
-  - `draw_key.R`, checks verify whether the icon file exists and, if not, generate a replacement icon via `fontawesome::fa_png`.
-
+-   There are no new features in this version of `ggpop`.
 
 ## Breaking changes
 
-- There are not any breaking changes in this version of `ggpop`.
+-   There are not any breaking changes in this version of `ggpop`.
 
+## Issues Resolved in v1.2.1
 
-## Issues Resolved in v1.2.0
+-   #119
+-   #120
 
-- #108
-- #109
-- #110
+## Version
 
-## Version 
-
-- #107
+-   #118

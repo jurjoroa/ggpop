@@ -18,5 +18,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Jorge Roa \email{jorgeroa@stanford.edu} (\href{https://orcid.org/0000-0002-3972-9793}{ORCID})
 
+Authors:
+\itemize{
+  \item Carlos Pineda-Antunez \email{cpinedaa@uw.edu} (\href{https://orcid.org/0000-0002-8352-7080}{ORCID})
+  \item Fernando Alarid-Escudero \email{falarid@stanford.edu} (\href{https://orcid.org/0000-0001-5076-1172}{ORCID})
+}
+
 }
 \keyword{internal}
