@@ -22,32 +22,30 @@
 #' We acknowledge the potential risks associated with `:::` usage, but at present, these functions
 #' provide essential behavior for rendering images within ggplot2.
 ##' @export
-draw_key_pop_image <- function(data, params, size) {
-
-    grobs <- lapply(seq_along(data$colour), function(i) {
-
+ddraw_key_pop_image <- function(data, params, size) {
+  
+  grobs <- lapply(seq_along(data$colour), function(i) {
+    
     icon_path <- paste0("inst/figures/key/", data$icon[i], ".png") #hack with paste0
     
     if (file.exists(icon_path)) {
       temp_icon_path <- icon_path
     } else {
       temp_icon_path <- paste0("inst/figures/key/", data$icon[i], ".png")
-
+      
       fontawesome::fa_png(paste0(data$icon[i]), file = temp_icon_path) 
     }
-
+    
     img <- magick::image_read(icon_path)
-
+    
     img <- magick::image_quantize(img, colorspace = "gray")
     
     img <- magick::image_colorize(img, opacity = data$alpha[i] * 100, color = data$colour[i])
-
+    
     # Create the grob for this icon
     grid::rasterGrob(
-      x = 0.5, y = 0.5,
-      image = img,
-      width = 1
-    )
+      x = .5, y = .5,
+      image = img)
   })
   # class to gList
   class(grobs) <- "gList"
