@@ -6,6 +6,7 @@
 ##' according to the specified `colour` and `alpha` aesthetics.
 ##'
 ##' @name draw_key_pop_image
+##' @title Key drawing function for population-based image keys
 ##' @param data A data frame containing the scaled aesthetics for the key. 
 ##'             It must include a `colour` column for color, an `alpha` column for transparency, 
 ##'             and an `icon` column with the names of the icon files (without extension) to be used.
@@ -25,12 +26,12 @@ draw_key_pop_image <- function(data, params, size) {
 
     grobs <- lapply(seq_along(data$colour), function(i) {
 
-    icon_path <- paste0("inst/figures/", data$icon[i], ".png") #hack with paste0
+    icon_path <- paste0("inst/figures/key/", data$icon[i], ".png") #hack with paste0
     
     if (file.exists(icon_path)) {
       temp_icon_path <- icon_path
     } else {
-      temp_icon_path <- paste0("inst/figures/", data$icon[i], ".png")
+      temp_icon_path <- paste0("inst/figures/key/", data$icon[i], ".png")
 
       fontawesome::fa_png(paste0(data$icon[i]), file = temp_icon_path) 
     }
@@ -45,7 +46,7 @@ draw_key_pop_image <- function(data, params, size) {
     grid::rasterGrob(
       x = 0.5, y = 0.5,
       image = img,
-      width = 1, height = 1
+      width = 1
     )
   })
   # class to gList

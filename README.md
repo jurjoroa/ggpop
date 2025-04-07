@@ -16,11 +16,11 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lif
 <!-- badges: end -->
 
 
-`ggpop` is an R package that extends the capabilities of ggplot2 to create visually engaging and informative population charts.`ggpop` allows users to represent population data proportionally using customizable icons, enabling the creation of circular representative population charts with ease. Additionally, the package offers tools for adding descriptive captions adorned with icons, enhancing visualizations' interpretability and aesthetic appeal.
+`ggpop` is an R package built on top of ggplot2 that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users easily visualize population data using proportional, customizable icons arranged in intuitive, circular layouts. The package also includes functionality for adding clear, icon-enhanced captions, which makes charts easier to understand and visually attractive. Designed primarily for visual storytelling, ggpop helps users communicate complex population statistics in a straightforward and appealing manner.
 
-## Alternative Way to Show Information
+## An Alternative Approach to Visualization
 
-`ggpop` is an alternative to conventional visualization techniques by incorporating icons and proportional representation into population charts. This method enhances the aesthetic quality of the plots and facilitates better audience engagement and understanding. By transforming numerical data into meaningful visual symbols, `ggpop` enables users to tell a more compelling story with their data, making complex information accessible and memorable.
+`ggpop` offers a fresh alternative to traditional data visualizations by using icons and proportional symbols in population charts. This approach not only improves the aesthetics of your plots but also helps your audience better engage with and understand the data. By converting numerical values into intuitive visual representations, `ggpop` makes complex population data clearer and easier to remember, allowing users to tell more compelling and accessible stories.
 
 
 
@@ -113,12 +113,6 @@ The function calculates group proportions, then performs sampling to create a ne
 - **n**: total population count of the corresponding group.
 - **prop**: proportion of that group in the overall dataset.
 
-
-```r
-df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, 
-                               sum_var = n, sample_size = 1000)
-```
-
 ### 3.- Assign icons to groups
 
 Here, we create a new column called `icon` in the `df_pop_mx_prop` dataset. The `case_when()` function checks each row’s **type** (either "male" or "female") and assigns a matching value ("ggmale" or "ggfemale") to the `icon` column.
@@ -130,53 +124,49 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
     type == "female" ~ "ggfemale"))
 ```
 
+
 ### 4.- Icons
 
-The package includes a set of native icons are optimized to generate plots fast, regardless of the sample size. These icons are in SVG format, which is a vector format that allows for scaling without loss of quality. The icons are used to represent different groups in the population chart.
-Nevertheless, the package also allows the use of `fontawesome` icons. The difference between these two approaches is that the native icons are optimized for size and quality, while the `fontawesome` icons are more flexible and can be easily customized, however, the plot will be slow to render, especially if the plots contains a big sample size. 
+This package supports two types of icons for plotting: **native SVG icons** and **Font Awesome icons**.
 
-##### 4.1.- Native Icons
+- **Native icons** are optimized for fast rendering and are ideal for large sample sizes. They are in SVG format, meaning they scale cleanly without loss of quality.
+- **Font Awesome icons** offer greater flexibility and a broader icon set (2,000+ free icons), and in the latest version of the package, their performance is nearly equivalent to that of the native icons. However, when plotting very large datasets, native icons may still be slightly faster.
 
-Here is the list of native icons available in the package:
+To illustrate the improvement, here's a benchmark comparison between **v1.2.1** and the **latest version** using 1,000 observations:
 
+```
+Render Time (Font Awesome icons, 1,000 observations)
 
-| Icon         | Icon Preview                                                                                               |
-|:------------------|:-----------------------------------------------------------------------------------------------------------|
-| `ggbike`           | <img src="inst/figures/ggbike.svg" alt="bike icon" width="37" height="37">                                    |
-| `ggbuild`          | <img src="inst/figures/ggbuild.svg" alt="build icon" width="25" height="25">                                  |
-| `ggcar`            | <img src="inst/figures/ggcar.svg" alt="car icon" width="25" height="25">                                      |
-| `ggcancer`         | <img src="inst/figures/ggcancer.svg" alt="cancer icon" width="37" height="37">                                |
-| `ggdollar`         | <img src="inst/figures/ggdollar.svg" alt="dollar icon" width="32" height="32">                                |
-| `ggfemale`         | <img src="inst/figures/ggfemale.svg" alt="female icon" width="32" height="32">                                |
-| `gggraduation_cap` | <img src="inst/figures/gggraduation_cap.svg" alt="graduation cap icon" width="32" height="32">                |
-| `ggdisability`       | <img src="inst/figures/ggdisability.svg" alt="handicap icon" width="32" height="32">                            |
-| `ggmale`           | <img src="inst/figures/ggmale.svg" alt="male icon" width="32" height="32">                                    |
-| `ggmoney`          | <img src="inst/figures/ggmoney.svg" alt="money icon" width="32" height="32">                                  |
-| `gggsyringe`        | <img src="inst/figures/ggsyringe.svg" alt="syringe icon" width="32" height="32">                              |
-| `ggtree`           | <img src="inst/figures/ggtree.svg" alt="tree icon" width="32" height="32">                                    |
-| `ggadenoma`        | <img src="inst/figures/ggadenoma.svg" alt="adenoma icon" width="32" height="32">                              |
-| `ggdistal`         | <img src="inst/figures/ggdistal.svg" alt="distal icon" width="32" height="32">                                 |
-| `ggproximal`       | <img src="inst/figures/ggproximal.svg" alt="proximal icon" width="32" height="32">                             |
-| `ggrectum`         | <img src="inst/figures/ggrectum.svg" alt="rectum icon" width="32" height="32">                                 |
-| `ggone`            | <img src="inst/figures/ggone.svg" alt="gone icon" width="32" height="32">                                      |
-| `ggtwo`            | <img src="inst/figures/ggtwo.svg" alt="two icon" width="32" height="32">                                      |
-| `ggthree`          | <img src="inst/figures/ggthree.svg" alt="three icon" width="32" height="32">                                    |
-| `ggfour`           | <img src="inst/figures/ggfour.svg" alt="four icon" width="32" height="32">                                     |
+Version 1.2.1      ██████████████████████████████  ~1 minute  
+Latest Version     █                               ~2 seconds
+
+```
+### 4.1.- Native Icons
+
+The following native icons are included in the package:
 
 
-More icons will be available upon request in the future.
+| Icon         | Preview                                                                 | Icon         | Preview                                                                 | Icon         | Preview                                                                 | Icon         | Preview                                                                 |
+|--------------|--------------------------------------------------------------------------|--------------|--------------------------------------------------------------------------|--------------|--------------------------------------------------------------------------|--------------|--------------------------------------------------------------------------|
+| `ggbike`     | <img src="inst/figures/ggbike.svg" width="37" height="37">              | `ggbuild`    | <img src="inst/figures/ggbuild.svg" width="25" height="25">             | `ggcar`      | <img src="inst/figures/ggcar.svg" width="25" height="25">               | `ggcancer`   | <img src="inst/figures/ggcancer.svg" width="37" height="37">            |
+| `ggdollar`   | <img src="inst/figures/ggdollar.svg" width="32" height="32">            | `ggfemale`   | <img src="inst/figures/ggfemale.svg" width="32" height="32">            | `gggraduation_cap` | <img src="inst/figures/gggraduation_cap.svg" width="32" height="32"> | `ggdisability` | <img src="inst/figures/ggdisability.svg" width="32" height="32">        |
+| `ggmale`     | <img src="inst/figures/ggmale.svg" width="32" height="32">              | `ggmoney`    | <img src="inst/figures/ggmoney.svg" width="32" height="32">             | `gggsyringe` | <img src="inst/figures/ggsyringe.svg" width="32" height="32">           | `ggtree`     | <img src="inst/figures/ggtree.svg" width="32" height="32">              |
+| `ggadenoma`  | <img src="inst/figures/ggadenoma.svg" width="32" height="32">           | `ggdistal`   | <img src="inst/figures/ggdistal.svg" width="32" height="32">            | `ggproximal` | <img src="inst/figures/ggproximal.svg" width="32" height="32">          | `ggrectum`   | <img src="inst/figures/ggrectum.svg" width="32" height="32">            |
+| `ggone`      | <img src="inst/figures/ggone.svg" width="32" height="32">               | `ggtwo`      | <img src="inst/figures/ggtwo.svg" width="32" height="32">               | `ggthree`    | <img src="inst/figures/ggthree.svg" width="32" height="32">             | `ggfour`     | <img src="inst/figures/ggfour.svg" width="32" height="32">              |
+
 
 
 ##### 4.2.- Fontawesome Icons
 
 <p style="display: flex; align-items: center;">
-  <img src="inst/figures/logo.png" width="95px" alt="Logo" />
-  <img src="inst/figures/fontawesome.png" width="105px" alt="Fontawesome" />
+  <img src="inst/figures/logo.png" width="115px" alt="Logo" />
+  <img src="inst/figures/fontawesome.png" width="125px" alt="Fontawesome" />
 </p>
 
 The package also allows the use of `fontawesome` icons. The icons are stored in the `fontawesome` package. The only thing you need to specify is the icon's name.
 
-For example, this is a small sample of more than 1,500 icons available in the `fontawesome` package:
+For example, this is just a few sample of more than 2,000 free icons available in the `fontawesome` package:
+
 | List of Font Awesome icons                                                                                                                     | Preview                                                                                                       |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
 | **Sample icons:** <br>- home <br>- user <br>- envelope <br>- bell <br>- camera <br>- cog <br>- heart <br>- calendar <br>- cart-plus <br>- check <br>- cloud <br>- comment <br>- comments <br>- download <br>- edit <br>- file <br>- filter <br>- flag <br>- folder <br>- phone | <img src="inst/figures/fontawesome_table.jpg" width="900px" alt="fontawesome table preview" /> |
@@ -188,7 +178,7 @@ You can check the full list of icons in the [Font Awesome website](https://fonta
 ``` r
 ggplot() +
   geom_pop(data = df_pop_mx_prop, aes(icon = icon, group=type, color=type),
-  size = 1, arrange=F) +
+           size = 1, arrange=F, legend_icons=F) +
   theme_void() +
   theme(legend.position = "bottom")
 ```
