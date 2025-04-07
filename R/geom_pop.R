@@ -191,18 +191,20 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
   }
   
-  # Vectorize the icon assignment
   df_final <- df_final %>%
     rowwise() %>%
     mutate(
       image = {
-        image_path <- paste0("inst/figures/", icon, ".png")
-        if (!file.exists(image_path)) {
-          fontawesome::fa_png(paste0(icon), file = image_path, width = 50) 
-          image_path <- paste0("inst/figures/", icon, ".png")
+        svg_path <- file.path("inst", "figures", "svg", paste0(icon, ".svg"))
+        png_path <- file.path("inst", "figures", "png", paste0(icon, ".png"))
+        if (file.exists(svg_path)) {
+          svg_path
+        } else {
+          if (!file.exists(png_path)) {
+            fontawesome::fa_png(icon, file = png_path, height = 50)
+          }
+          png_path
         }
-        # Load the saved SVG file with magick
-        image_path
       }
     ) %>%
     ungroup()
@@ -217,7 +219,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   
   key_fn <- function(data, params, size) {
-    data$size <- data$size * 100  # Increase dot size in the legend if legend_icons is FALSE
+    data$size <- data$size * 100
     ggplot2::draw_key_point(data, params, size)
   }
   
