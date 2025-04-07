@@ -232,6 +232,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       na.rm = na.rm,
       inherit.aes = inherit.aes,
       size = size_internal,
+      by = "height",
       key_glyph = draw_key_pop_image,
       ...
     )
@@ -244,6 +245,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       na.rm = na.rm,
       inherit.aes = inherit.aes,
       size = size_internal,
+      by = "height",
       key_glyph = key_fn,
       ...
     )
