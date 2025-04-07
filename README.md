@@ -163,10 +163,9 @@ The following native icons are included in the package:
   <img src="inst/figures/fontawesome.png" width="125px" alt="Fontawesome" />
 </p>
 
-The package also allows the use of `fontawesome` icons. The icons are stored in the `fontawesome` package. The only thing that you need to specify is the name of the icon.
+The package also allows the use of `fontawesome` icons. The icons are stored in the `fontawesome` package. The only thing you need to specify is the icon's name.
 
 For example, this is just a few sample of more than 2,000 free icons available in the `fontawesome` package:
-
 
 | List of Font Awesome icons                                                                                                                     | Preview                                                                                                       |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
@@ -187,7 +186,7 @@ ggplot() +
 ![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png)
 
 
-The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. The object work as a gem_point figure plotted by determined x and y coordinates. We can also group and color the icons by the **type** variable since the icon it's a svg file. 
+The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. The object work as a gem_point figure plotted by determined x and y coordinates. We can also group and color the icons by the **type** variable since the icon it's an SVG file. 
 
 #### 4.1 Improve plot 
 
@@ -251,7 +250,7 @@ ggplot() +
            size = 1.3, arrange=F) +
   scale_legend_icon(size=10) +
   theme_void(base_size = 36) +
-  labs(title = "Population in Mexico by Sex and condition",
+  labs(title = "Population in Mexico by Sex and disability status",
        subtitle = "2022",
        caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
   theme(legend.position = "bottom",legend.title = element_blank()) +
@@ -269,8 +268,8 @@ ggplot() +
 
 ### 6.- Simulation of natural history of colorectal cancer example
 
-As an applied example, we plotted the simulation of the natural history of colorectal cancer employing `ggpop` package. As it can be appreciated, the plot is a circular representative population chart, where the population is represented by icons. The icons are arranged in a circular manner, and the size of the icons is proportional to the population size. The icons are colored according to the type of cancer, and the legend is displayed at the bottom of the plot. The plot is visually appealing and informative, making it easy to understand the distribution of the population by cancer type.
-This type of plots can be used to present complex population data in a more accessible and visually appealing way, specially if we want to transmit a message to a non-technical audience or decision makers. 
+As an applied example, we plotted the simulation of the natural history of colorectal cancer employing `ggpop` package. The plot is a circular representative population chart, where icons represent the population. The icons are arranged circularly, and the size of the icons is proportional to the population size. The icons are colored according to the type of cancer, and the legend is displayed at the bottom of the plot. The plot is visually appealing and informative, making the population distribution by cancer type easy to understand.
+This type of plot can be used to present complex population data in a more accessible and visually appealing way, especially if we want to transmit a message to a non-technical audience or decision makers. 
 
 ![SimCRC Natural History](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/simcrc_natural_history.png)
 
