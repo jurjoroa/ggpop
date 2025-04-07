@@ -17,26 +17,29 @@
 #' @importFrom ggplot2 aes labs theme ggplot_build last_plot
 #'
 #' @export
-scale_legend_icon <- function(size = 10, ...) {
+scale_legend_icon <- function(size = 10, margin = ggplot2::margin(0, 0, 30, 0), ...) {
   # Retrieve the built plot data
   gg_obj <- ggplot2::last_plot()
-  
   data <- gg_obj$layers[[1]]$data
-
-  # type
-  types <- levels(factor(data$type))
   
-  # icons
+  # Determine the unique types and select corresponding icons
+  types <- levels(factor(data$type))
   icons <- sapply(types, function(t) {
     idx <- which(data$type == t)
     data$icon[idx[1]]
   })
   
-  ggplot2::guides(
-    color = ggplot2::guide_legend(
-      override.aes = list(icon = icons, size = size),
-      ...
-    )
+  list(
+    # Custom legend guide using the key glyph function
+    ggplot2::guides(
+      color = ggplot2::guide_legend(
+        override.aes = list(icon = icons, size = size),
+        key_glyph = draw_key_pop_image,
+        ...
+      )
+    ),
+    # Add the predetermined plot margin
+    ggplot2::theme(plot.margin = margin)
   )
 }
 
