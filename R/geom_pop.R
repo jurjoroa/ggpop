@@ -43,9 +43,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data <- ggplot_build(last_plot())$plot$data
   }    
   
-  
-  size_internal <- size * 0.03 #To adjust the size of the points
-  
   # Convert mapping to a list
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
@@ -55,6 +52,18 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   if (!"icon" %in% names(mapping_list)) {
     mapping_list[["icon"]] <- icon
+  }
+  
+  # Handle dynamic size column without requiring I()
+  if ("size" %in% names(mapping_list)) {
+    size_var <- rlang::as_name(mapping_list[["size"]])  # Extract variable name from the quosure
+    if (!size_var %in% names(data)) {
+      stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
+    }
+    data$size <- data[[size_var]] * 0.03  # Apply scaling
+    mapping_list[["size"]] <- NULL  # remove from aesthetic to avoid ggimage error
+  } else {
+    data$size <- size * 0.03  # fallback to default size if not mapped
   }
   
   data <- data %>% mutate(pos = as.numeric(row_number()))
@@ -211,44 +220,34 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   icon_expr <- mapping_list[["icon"]]
   
+  # Set required mappings
   mapping_list[["image"]] <- as.name("image")
+  mapping_list[["x"]] <- as.name("x1")
+  mapping_list[["y"]] <- as.name("y1")
   
+  # Construct aes without altering existing ones
   final_mapping <- do.call(aes, mapping_list)
-  final_mapping$x <- as.name("x1")
-  final_mapping$y <- as.name("y1")
-  
   
   key_fn <- function(data, params, size) {
-    data$size <- data$size * 100
+    data$size <- data$size
     ggplot2::draw_key_point(data, params, size)
   }
   
-  if (legend_icons) {
-    ggimage::geom_image(
-      mapping = final_mapping,
-      data = df_final,
-      stat = stat,
-      position = position,
-      na.rm = na.rm,
-      inherit.aes = inherit.aes,
-      size = size_internal,
-      by = "height",
-      key_glyph = draw_key_pop_image,
-      ...
-    )
-  } else {
-    ggimage::geom_image(
-      mapping = final_mapping,
-      data = df_final,
-      stat = stat,
-      position = position,
-      na.rm = na.rm,
-      inherit.aes = inherit.aes,
-      size = size_internal,
-      by = "height",
-      key_glyph = key_fn,
-      ...
-    )
-  }
+  # Set the size aesthetic
+  size_internal <- data$size
+  
+  # Draw image points
+  ggimage::geom_image(
+    mapping      = final_mapping,
+    data         = df_final,
+    size         = size_internal,
+    stat         = stat,
+    position     = position,
+    na.rm        = na.rm,
+    inherit.aes  = inherit.aes,
+    by           = "height",
+    key_glyph    = if (legend_icons) draw_key_pop_image else key_fn,
+    ...
+  )
 }
 
