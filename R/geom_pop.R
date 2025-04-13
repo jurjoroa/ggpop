@@ -17,6 +17,8 @@
 #' @inheritParams fontawesome::fa
 #' @param size The size of the points.
 #' @param icon The icon to be used in the chart.
+#' @param quality Height (in **pixels**) of the PNG icon when rendered with `fontawesome::fa_png()`.
+#'        Higher values produce sharper icons. Defaults to 50. This affects **image quality**, not icon size in the plot.
 #' @param group_var The variable used to group individuals.
 #' @param sample_size The total number of individuals (points) to be drawn.
 #' @param arrange Logical; if TRUE, the output data is arranged by group.
@@ -35,14 +37,13 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      group_var = NULL, sample_size = NULL, arrange = FALSE, sum_var = NULL,
                      facet = NULL,
                      size = 1,
+                     quality = 50,
                      legend_icons = TRUE,
                      ...) {
-  
   if (is.null(data)) {
     #inherit from the main ggplot aes
     data <- ggplot_build(last_plot())$plot$data
   }    
-  
   # Convert mapping to a list
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
@@ -53,7 +54,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (!"icon" %in% names(mapping_list)) {
     mapping_list[["icon"]] <- icon
   }
-  
   # Handle dynamic size column without requiring I()
   if ("size" %in% names(mapping_list)) {
     size_var <- rlang::as_name(mapping_list[["size"]])  # Extract variable name from the quosure
@@ -100,7 +100,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
     
-    
     df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
     
   } 
@@ -119,7 +118,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       select(-n, -prop) %>% 
       ungroup()
     
-    
     data <- bind_cols(data, df_order)
     
     sample_size <- data %>%
@@ -135,6 +133,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     # Evaluate facet_var and join sample_size
     facet_col <- as.character(facet_var)
+    
     data <- data %>%
       left_join(sample_size %>% rename(size = sample_size), by = facet_col)
     
@@ -200,24 +199,30 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
   }
   
+  # Generate the PNG every time with the given height — always overwrites
   df_final <- df_final %>%
     rowwise() %>%
     mutate(
       image = {
         svg_path <- file.path("inst", "figures", "svg", paste0(icon, ".svg"))
         png_path <- file.path("inst", "figures", "png", paste0(icon, ".png"))
+        
+        # Create directories if needed
+        if (!dir.exists(dirname(png_path))) {
+          dir.create(dirname(png_path), recursive = TRUE)
+        }
+        
         if (file.exists(svg_path)) {
           svg_path
         } else {
-          if (!file.exists(png_path)) {
-            fontawesome::fa_png(icon, file = png_path, height = 50)
-          }
+          fontawesome::fa_png(icon, file = png_path, height = quality)  # always overwrite
           png_path
         }
       }
     ) %>%
     ungroup()
   
+  # Check if the icon column is present in the data
   icon_expr <- mapping_list[["icon"]]
   
   # Set required mappings
@@ -250,4 +255,3 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
-
