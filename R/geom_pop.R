@@ -33,15 +33,25 @@
 #' @export
 geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      position = "identity", na.rm = FALSE, show.legend = NA,
-                     inherit.aes = TRUE, icon = "default",
+                     inherit.aes = TRUE, icon = "ggmale",
                      group_var = NULL, sample_size = NULL, arrange = FALSE, sum_var = NULL,
                      facet = NULL,
-                     size = 1,
+                     size = 3,
                      quality = 50,
                      legend_icons = TRUE,
                      ...) {
+  
+  # Capture data passed to ggplot() (if any)
+  inherited_data <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot())$plot$data, 
+                             error = function(e) NULL)
+  
+  plot_obj <- tryCatch(ggplot_build(last_plot())$plot, error = function(e) NULL)
+  inherited_mapping_list <- if (!is.null(plot_obj$mapping)) as.list(plot_obj$mapping) else list()
+  
+  
+  .missing_size <- missing(size)
+  
   if (is.null(data)) {
-    #inherit from the main ggplot aes
     data <- ggplot_build(last_plot())$plot$data
   }    
   # Convert mapping to a list
@@ -50,10 +60,19 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if ("image" %in% names(mapping_list)) {
     stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
   }
+
+  validate_geom_pop_inputs(data, mapping_list, icon, size, quality, inherited_data)
+  
+  warn_geom_pop_inputs(data, mapping_list, inherited_mapping_list, icon, .missing_size)
   
   if (!"icon" %in% names(mapping_list)) {
-    mapping_list[["icon"]] <- icon
+    mapping_list[["icon"]] <- as.name("icon")
   }
+  
+  if (!"icon" %in% names(data)) {
+    data$icon <- icon
+  }
+  
   # Handle dynamic size column without requiring I()
   if ("size" %in% names(mapping_list)) {
     size_var <- rlang::as_name(mapping_list[["size"]])  # Extract variable name from the quosure
@@ -233,8 +252,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # Construct aes without altering existing ones
   final_mapping <- do.call(aes, mapping_list)
   
-  key_fn <- function(data, params, size) {
-    data$size <- data$size
+  key_fn <- function(data, params, size = 5) {
+    data$size <- 5
     ggplot2::draw_key_point(data, params, size)
   }
   
