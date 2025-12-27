@@ -4,7 +4,7 @@
 \alias{scale_legend_icon}
 \title{Adjust legend to display custom icons for each group type}
 \usage{
-scale_legend_icon(size = 10, ...)
+scale_legend_icon(size = 10, margin = NULL, ...)
 }
 \arguments{
 \item{size}{A numeric value specifying the size of the icons in the legend.
