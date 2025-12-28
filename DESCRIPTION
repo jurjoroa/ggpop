@@ -42,6 +42,7 @@ Imports:
     tidyr,
     purrr,
     ggtext,
-    fontawesome
+    fontawesome,
+    rsvg
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
