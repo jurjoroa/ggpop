@@ -34,6 +34,8 @@ draw_key_pop_image <- function(data, params, size) {
       temp_icon_path <- paste0("inst/figures/key/", data$icon[i], ".png")
       
       fontawesome::fa_png(paste0(data$icon[i]), file = temp_icon_path) 
+      
+      rsvg::librsvg_version()
     }
     
     img <- magick::image_read(icon_path)
