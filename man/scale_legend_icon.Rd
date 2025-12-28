@@ -10,6 +10,8 @@ scale_legend_icon(size = 10, margin = NULL, ...)
 \item{size}{A numeric value specifying the size of the icons in the legend.
 Larger values create bigger icons.}
 
+\item{margin}{A \code{margin()} object from \code{ggplot2} to set the plot margins.}
+
 \item{...}{Additional parameters passed on to \code{\link[ggplot2:guide_legend]{ggplot2::guide_legend()}}. This
 lets you control all aspects of the legend, such as \code{title}, \code{title.position},
 \code{label.position}, \code{label.theme}, and so forth.}

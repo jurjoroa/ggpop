@@ -8,6 +8,7 @@
 #'
 #' @param size A numeric value specifying the size of the icons in the legend.
 #'   Larger values create bigger icons.
+#' @param margin A `margin()` object from `ggplot2` to set the plot margins.
 #' @param ... Additional parameters passed on to [ggplot2::guide_legend()]. This
 #'   lets you control all aspects of the legend, such as `title`, `title.position`,
 #'   `label.position`, `label.theme`, and so forth.
