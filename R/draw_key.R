@@ -22,7 +22,7 @@
 #' We acknowledge the potential risks associated with `:::` usage, but at present, these functions
 #' provide essential behavior for rendering images within ggplot2.
 ##' @export
-ddraw_key_pop_image <- function(data, params, size) {
+draw_key_pop_image <- function(data, params, size) {
   
   grobs <- lapply(seq_along(data$colour), function(i) {
     
