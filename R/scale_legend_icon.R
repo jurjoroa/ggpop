@@ -35,9 +35,9 @@ scale_legend_icon <- function(size = 10, margin = NULL, ...) {
     # Custom legend guide using the key glyph function
     ggplot2::guides(
       color = ggplot2::guide_legend(
-        override.aes = list(icon = icons, size = size),
-        key_glyph = draw_key_pop_image,
-        ...
+        override.aes = list(icon = icons, size = size)
+        #key_glyph = draw_key_pop_image,
+        #...
       )
     ),
     # Add the predetermined plot margin
