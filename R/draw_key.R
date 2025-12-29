@@ -22,7 +22,7 @@
 #' We acknowledge the potential risks associated with `:::` usage, but at present, these functions
 #' provide essential behavior for rendering images within ggplot2.
 ##' @export
-ddraw_key_pop_image <- function(data, params, size) {
+draw_key_pop_image <- function(data, params, size) {
   
   grobs <- lapply(seq_along(data$colour), function(i) {
     
@@ -34,6 +34,8 @@ ddraw_key_pop_image <- function(data, params, size) {
       temp_icon_path <- paste0("inst/figures/key/", data$icon[i], ".png")
       
       fontawesome::fa_png(paste0(data$icon[i]), file = temp_icon_path) 
+      
+      rsvg::librsvg_version()
     }
     
     img <- magick::image_read(icon_path)

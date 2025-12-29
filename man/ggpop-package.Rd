@@ -20,8 +20,9 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Carlos Pineda-Antunez \email{cpinedaa@uw.edu} (\href{https://orcid.org/0000-0002-8352-7080}{ORCID})
+  \item Ralitza Soultanova \email{Ralitza.soultanova@gmail.com} (\href{https://orcid.org/0009-0000-9324-5653}{ORCID})
   \item Fernando Alarid-Escudero \email{falarid@stanford.edu} (\href{https://orcid.org/0000-0001-5076-1172}{ORCID})
+  \item Carlos Pineda-Antunez \email{cpinedaa@uw.edu} (\href{https://orcid.org/0000-0002-8352-7080}{ORCID})
 }
 
 }
