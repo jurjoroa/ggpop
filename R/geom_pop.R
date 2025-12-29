@@ -41,6 +41,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      legend_icons = TRUE,
                      ...) {
   
+  
   # Capture data passed to ggplot() (if any)
   inherited_data <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot())$plot$data, 
                              error = function(e) NULL)
@@ -53,7 +54,32 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   if (is.null(data)) {
     data <- ggplot_build(last_plot())$plot$data
-  }    
+  }
+  
+  # --- facet handling (facet is OPTIONAL; supports facet = sex or facet = "sex") ---
+  # --- facet handling (facet is OPTIONAL; supports facet = sex or facet = "sex") ---
+  facet_expr <- rlang::enexpr(facet)
+  
+  if (rlang::is_missing(facet_expr) || rlang::is_null(facet_expr)) {
+    has_facet <- FALSE
+    facet_col <- NULL
+  } else {
+    has_facet <- TRUE
+    
+    if (rlang::is_symbol(facet_expr)) {
+      facet_col <- rlang::as_name(facet_expr)
+    } else if (rlang::is_string(facet_expr)) {
+      facet_col <- facet_expr
+    } else {
+      stop("`facet` must be a column name (facet = sex) or a single string (facet = \"sex\").")
+    }
+    
+    if (!facet_col %in% names(data)) {
+      stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
+    }
+  }
+  
+  
   # Convert mapping to a list
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
@@ -98,7 +124,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
   
-  if (!is.null(data) && arrange && is.null(facet)) {
+  if (!is.null(data) && arrange && !has_facet) {
     
     df_order <- data %>% select(n , prop)
     
@@ -122,17 +148,20 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
     
   } 
-  else if (!is.null(data) && arrange && !is.null(facet)) {
-    facet_var <- substitute(facet)
+  else if (!is.null(data) && arrange && has_facet) {
+    
+    
+     
+     
     
     df_order <- data %>% select(n , prop)
     
     data <- data %>%
-      group_by(!!facet_var) %>%
+      group_by(.data[[facet_col]]) %>%
       mutate(original_order = row_number()) %>%
       ungroup() %>%
-      arrange(type, original_order, !!facet_var) %>%  # Sort by the specified columns
-      group_by(!!facet_var) %>%  # Group by the specified columns
+      arrange(type, original_order,  .data[[facet_col]]) %>%  # Sort by the specified columns
+      group_by(.data[[facet_col]]) %>%  # Group by the specified columns
       mutate(pos = row_number()) %>%  # Calculate a sequential row number without restarting
       select(-n, -prop) %>% 
       ungroup()
@@ -140,7 +169,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data <- bind_cols(data, df_order)
     
     sample_size <- data %>%
-      group_by(!!facet_var) %>%
+      group_by(.data[[facet_col]]) %>%
       summarise(sample_size = n_distinct(pos), .groups = "drop")
     
     df_coordinates_final <- fetch_df_coordinates()
@@ -150,29 +179,32 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       filter(size %in% sample_size$sample_size) %>%
       ungroup()
     
-    # Evaluate facet_var and join sample_size
-    facet_col <- as.character(facet_var)
     
     data <- data %>%
-      left_join(sample_size %>% rename(size = sample_size), by = facet_col)
+      left_join(sample_size %>% rename(coord_size = sample_size), by = facet_col)
     
     # Ensure consistent data types
-    data$size <- as.character(data$size)
-    
+    data$coord_size <- as.character(data$coord_size)
     df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
     
-    df_merged <- left_join(df_coordinates_filtered, data, by = c("pos", "size"))
+    df_merged <- dplyr::left_join(
+      df_coordinates_filtered,
+      data,
+      by = c("pos" = "pos", "size" = "coord_size")
+    )
     
-  } else if (!is.null(data) && !arrange && !is.null(facet)) {
-    facet_var <- substitute(facet)
     
+  } else if (!is.null(data) && !arrange && has_facet) {
+     
+     
+    #browser()
     data <- data %>%
-      group_by(!!facet_var) %>%
+      group_by(.data[[facet_col]]) %>%
       mutate(pos = row_number()) %>%
       ungroup()
     
     sample_size <- data %>%
-      group_by(!!facet_var) %>%
+      group_by(.data[[facet_col]]) %>%
       summarise(sample_size = n_distinct(pos), .groups = "drop")
     
     df_coordinates_final <- fetch_df_coordinates()
@@ -182,19 +214,23 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       filter(size %in% sample_size$sample_size) %>%
       ungroup()
     
-    # Evaluate facet_var and join sample_size
-    facet_col <- as.character(facet_var)
     data <- data %>%
-      left_join(sample_size %>% rename(size = sample_size), by = facet_col)
+      left_join(sample_size %>% rename(coord_size = sample_size), by = facet_col)
     
     # Ensure consistent data types
-    data$size <- as.character(data$size)
-    
+    data$coord_size <- as.character(data$coord_size)
     df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
     
-    df_merged <- left_join(df_coordinates_filtered, data, by = c("pos", "size"))
+    df_merged <- dplyr::left_join(
+      df_coordinates_filtered,
+      data,
+      by = c("pos" = "pos", "size" = "coord_size")
+    )
+    
     
   }
+  
+  
   
   # Get the row count of the merged table
   N <- nrow(df_merged)
