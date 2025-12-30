@@ -214,7 +214,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     dplyr::ungroup()
   
   # ---- LEGEND FIX: inject icon into key-glyph using .id ----
-  # Determine the variable mapped to colour (legend order comes from this)
+  # ---- LEGEND FIX: respect scale breaks order (works with breaks + labels) ----
+  
+  # which variable controls the legend (color/colour aesthetic)
   colour_var <- NULL
   if ("colour" %in% names(mapping_list)) {
     colour_var <- rlang::as_name(mapping_list[["colour"]])
@@ -222,34 +224,99 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     colour_var <- rlang::as_name(mapping_list[["color"]])
   }
   
-  # Determine the variable mapped to icon
   icon_var <- rlang::as_name(mapping_list[["icon"]])
   
-  # Build icon lookup in legend order
-  # (if colour_var is NULL, fallback to distinct icon order)
-  if (!is.null(colour_var) && colour_var %in% names(df_final) && icon_var %in% names(df_final)) {
-    groups <- df_final[[colour_var]]
-    groups <- if (is.factor(groups)) levels(groups) else unique(groups)
+  # build a mapping: group value -> icon value (no tidyselect .data warning)
+  icon_by_group <- NULL
+  if (!is.null(colour_var) &&
+      colour_var %in% names(df_final) &&
+      icon_var   %in% names(df_final)) {
     
-    icon_levels <- df_final %>%
-      dplyr::select(.group = .data[[colour_var]], .icon = .data[[icon_var]]) %>%
-      dplyr::distinct() %>%
-      dplyr::right_join(tibble::tibble(.group = groups), by = ".group") %>%
-      dplyr::pull(.icon)
-  } else {
-    icon_levels <- unique(df_final[[icon_var]])
+    icon_map <- df_final |>
+      dplyr::distinct(
+        .group = .data[[colour_var]],
+        .icon  = .data[[icon_var]]
+      )
+    
+    icon_by_group <- stats::setNames(as.character(icon_map$.icon),
+                                     as.character(icon_map$.group))
   }
   
-  # key_glyph wrapper that forces data$icon (so draw_key_pop_image works under facet)
+  # cache computed icon_levels inside the closure
+  .icon_levels_cache <- NULL
+  
   key_glyph_pop <- function(key_data, params, size) {
-    if (!".id" %in% names(key_data)) {
-      return(draw_key_pop_image(key_data, params, size))
+    
+    # compute icon levels *in legend order* ONCE, at draw time (after scales trained)
+    if (is.null(.icon_levels_cache)) {
+      
+      # try to read breaks from trained scale in the final plot
+      built <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot()),
+                        error = function(e) NULL)
+      
+      breaks <- NULL
+      if (!is.null(built) && !is.null(colour_var)) {
+        
+        # try "colour" then "color"
+        sc <- built$plot$scales$get_scales("colour")
+        if (is.null(sc)) sc <- built$plot$scales$get_scales("color")
+        
+        if (!is.null(sc)) {
+          breaks <- sc$get_breaks()
+          breaks <- breaks[!is.na(breaks)]
+        }
+      }
+      
+      # fallback if no breaks were set
+      if (is.null(breaks) && !is.null(colour_var) && colour_var %in% names(df_final)) {
+        breaks <- unique(as.character(df_final[[colour_var]]))
+      }
+      
+      # turn breaks -> icon vector in that exact order
+      if (!is.null(icon_by_group) && !is.null(breaks)) {
+        .icon_levels_cache <<- unname(icon_by_group[as.character(breaks)])
+      } else {
+        # last resort
+        .icon_levels_cache <<- unique(as.character(df_final[[icon_var]]))
+      }
     }
-    idx <- key_data$.id
-    idx <- pmax(1L, pmin(length(icon_levels), as.integer(idx)))
-    key_data$icon <- icon_levels[idx]
+    
+    # assign exactly ONE icon per legend key row using .id
+    if (".id" %in% names(key_data)) {
+      idx <- as.integer(key_data$.id)
+    } else if ("group" %in% names(key_data)) {
+      idx <- as.integer(key_data$group)
+    } else {
+      idx <- 1L
+    }
+    
+    idx <- pmax(1L, pmin(length(.icon_levels_cache), idx))
+    
+    # force scalar icon
+    key_data$icon <- as.character(.icon_levels_cache[idx][1])
+    
     draw_key_pop_image(key_data, params, size)
   }
+  
+  # (optional) enforce df_final legend factor order for consistency (not required but helps)
+  if (!is.null(colour_var) && colour_var %in% names(df_final)) {
+    built <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot()),
+                      error = function(e) NULL)
+    
+    if (!is.null(built)) {
+      sc <- built$plot$scales$get_scales("colour")
+      if (is.null(sc)) sc <- built$plot$scales$get_scales("color")
+      if (!is.null(sc)) {
+        br <- sc$get_breaks()
+        br <- br[!is.na(br)]
+        if (length(br)) {
+          df_final[[colour_var]] <- factor(as.character(df_final[[colour_var]]),
+                                           levels = as.character(br))
+        }
+      }
+    }
+  }
+  
   
   # ---- mapping for ggimage ----
   mapping_list[["image"]] <- as.name("image")
