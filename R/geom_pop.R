@@ -41,149 +41,114 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      legend_icons = TRUE,
                      ...) {
   
+  inherited_data <- tryCatch(
+    ggplot2::ggplot_build(ggplot2::last_plot())$plot$data,
+    error = function(e) NULL
+  )
   
-  # Capture data passed to ggplot() (if any)
-  inherited_data <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot())$plot$data, 
-                             error = function(e) NULL)
-  
-  plot_obj <- tryCatch(ggplot_build(last_plot())$plot, error = function(e) NULL)
+  plot_obj <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot())$plot, error = function(e) NULL)
   inherited_mapping_list <- if (!is.null(plot_obj$mapping)) as.list(plot_obj$mapping) else list()
-  
   
   .missing_size <- missing(size)
   
   if (is.null(data)) {
-    data <- ggplot_build(last_plot())$plot$data
+    data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
   
-  # --- facet handling (facet is OPTIONAL; supports facet = sex or facet = "sex") ---
-  # --- facet handling (facet is OPTIONAL; supports facet = sex or facet = "sex") ---
+  # --- facet handling ---
   facet_expr <- rlang::enexpr(facet)
-  
   if (rlang::is_missing(facet_expr) || rlang::is_null(facet_expr)) {
     has_facet <- FALSE
     facet_col <- NULL
   } else {
     has_facet <- TRUE
+    if (rlang::is_symbol(facet_expr)) facet_col <- rlang::as_name(facet_expr)
+    else if (rlang::is_string(facet_expr)) facet_col <- facet_expr
+    else stop("`facet` must be a column name (facet = variable) or a single string (facet = \"variable\").")
     
-    if (rlang::is_symbol(facet_expr)) {
-      facet_col <- rlang::as_name(facet_expr)
-    } else if (rlang::is_string(facet_expr)) {
-      facet_col <- facet_expr
-    } else {
-      stop("`facet` must be a column name (facet = sex) or a single string (facet = \"sex\").")
-    }
-    
-    if (!facet_col %in% names(data)) {
-      stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
-    }
+    if (!facet_col %in% names(data)) stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
   }
   
-  
-  # Convert mapping to a list
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
   if ("image" %in% names(mapping_list)) {
     stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
   }
-
-  validate_geom_pop_inputs(data, mapping_list, icon, size, quality, inherited_data)
   
+  validate_geom_pop_inputs(data, mapping_list, icon, size, quality, inherited_data)
   warn_geom_pop_inputs(data, mapping_list, inherited_mapping_list, icon, .missing_size)
   
-  if (!"icon" %in% names(mapping_list)) {
-    mapping_list[["icon"]] <- as.name("icon")
-  }
+  if (!"icon" %in% names(mapping_list)) mapping_list[["icon"]] <- as.name("icon")
+  if (!"icon" %in% names(data)) data$icon <- icon
   
-  if (!"icon" %in% names(data)) {
-    data$icon <- icon
-  }
-  
-  # Handle dynamic size column without requiring I()
+  # size
   if ("size" %in% names(mapping_list)) {
-    size_var <- rlang::as_name(mapping_list[["size"]])  # Extract variable name from the quosure
-    if (!size_var %in% names(data)) {
-      stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
-    }
-    data$size <- data[[size_var]] * 0.03  # Apply scaling
-    mapping_list[["size"]] <- NULL  # remove from aesthetic to avoid ggimage error
+    size_var <- rlang::as_name(mapping_list[["size"]])
+    if (!size_var %in% names(data)) stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
+    data$size <- data[[size_var]] * 0.03
+    mapping_list[["size"]] <- NULL
   } else {
-    data$size <- size * 0.03  # fallback to default size if not mapped
+    data$size <- size * 0.03
   }
   
-  data <- data %>% mutate(pos = as.numeric(row_number()))
-  
+  data <- dplyr::mutate(data, pos = as.numeric(dplyr::row_number()))
   sample_size <- length(unique(data$pos))
   
   df_coordinates_final <- fetch_df_coordinates()
-  
-  df_coordinates_filtered <- df_coordinates_final %>%
-    filter(size == sample_size)
-  
+  df_coordinates_filtered <- df_coordinates_final %>% dplyr::filter(size == sample_size)
   df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
   
-  df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
+  df_merged <- dplyr::left_join(df_coordinates_filtered, data, by = "pos")
   
   if (!is.null(data) && arrange && !has_facet) {
     
-    df_order <- data %>% select(n , prop)
+    df_order <- data %>% dplyr::select(n, prop)
     
     data <- data %>%
-      mutate(original_order = row_number()) %>%
-      arrange(type, original_order) %>%
-      mutate(pos = row_number()) %>%
-      select(-original_order, -n , -prop)
+      dplyr::mutate(original_order = dplyr::row_number()) %>%
+      dplyr::arrange(type, original_order) %>%
+      dplyr::mutate(pos = dplyr::row_number()) %>%
+      dplyr::select(-original_order, -n, -prop)
     
-    data <- bind_cols(data, df_order) 
+    data <- dplyr::bind_cols(data, df_order)
     
     sample_size <- length(unique(data$pos))
     
     df_coordinates_final <- fetch_df_coordinates()
-    
-    df_coordinates_filtered <- df_coordinates_final %>%
-      filter(size == sample_size)
-    
+    df_coordinates_filtered <- df_coordinates_final %>% dplyr::filter(size == sample_size)
     df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
     
-    df_merged <- left_join(df_coordinates_filtered, data, by = "pos")
+    df_merged <- dplyr::left_join(df_coordinates_filtered, data, by = "pos")
     
-  } 
-  else if (!is.null(data) && arrange && has_facet) {
+  } else if (!is.null(data) && arrange && has_facet) {
     
-    
-     
-     
-    
-    df_order <- data %>% select(n , prop)
+    df_order <- data %>% dplyr::select(n, prop)
     
     data <- data %>%
-      group_by(.data[[facet_col]]) %>%
-      mutate(original_order = row_number()) %>%
-      ungroup() %>%
-      arrange(type, original_order,  .data[[facet_col]]) %>%  # Sort by the specified columns
-      group_by(.data[[facet_col]]) %>%  # Group by the specified columns
-      mutate(pos = row_number()) %>%  # Calculate a sequential row number without restarting
-      select(-n, -prop) %>% 
-      ungroup()
+      dplyr::group_by(.data[[facet_col]]) %>%
+      dplyr::mutate(original_order = dplyr::row_number()) %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange(type, original_order, .data[[facet_col]]) %>%
+      dplyr::group_by(.data[[facet_col]]) %>%
+      dplyr::mutate(pos = dplyr::row_number()) %>%
+      dplyr::select(-n, -prop) %>%
+      dplyr::ungroup()
     
-    data <- bind_cols(data, df_order)
+    data <- dplyr::bind_cols(data, df_order)
     
     sample_size <- data %>%
-      group_by(.data[[facet_col]]) %>%
-      summarise(sample_size = n_distinct(pos), .groups = "drop")
+      dplyr::group_by(.data[[facet_col]]) %>%
+      dplyr::summarise(sample_size = dplyr::n_distinct(pos), .groups = "drop")
     
     df_coordinates_final <- fetch_df_coordinates()
-    
     df_coordinates_filtered <- df_coordinates_final %>%
-      rowwise() %>%
-      filter(size %in% sample_size$sample_size) %>%
-      ungroup()
-    
+      dplyr::rowwise() %>%
+      dplyr::filter(size %in% sample_size$sample_size) %>%
+      dplyr::ungroup()
     
     data <- data %>%
-      left_join(sample_size %>% rename(coord_size = sample_size), by = facet_col)
+      dplyr::left_join(sample_size %>% dplyr::rename(coord_size = sample_size), by = facet_col)
     
-    # Ensure consistent data types
     data$coord_size <- as.character(data$coord_size)
     df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
     
@@ -192,32 +157,27 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       data,
       by = c("pos" = "pos", "size" = "coord_size")
     )
-    
     
   } else if (!is.null(data) && !arrange && has_facet) {
-     
-     
-    #browser()
+    
     data <- data %>%
-      group_by(.data[[facet_col]]) %>%
-      mutate(pos = row_number()) %>%
-      ungroup()
+      dplyr::group_by(.data[[facet_col]]) %>%
+      dplyr::mutate(pos = dplyr::row_number()) %>%
+      dplyr::ungroup()
     
     sample_size <- data %>%
-      group_by(.data[[facet_col]]) %>%
-      summarise(sample_size = n_distinct(pos), .groups = "drop")
+      dplyr::group_by(.data[[facet_col]]) %>%
+      dplyr::summarise(sample_size = dplyr::n_distinct(pos), .groups = "drop")
     
     df_coordinates_final <- fetch_df_coordinates()
-    
     df_coordinates_filtered <- df_coordinates_final %>%
-      rowwise() %>%
-      filter(size %in% sample_size$sample_size) %>%
-      ungroup()
+      dplyr::rowwise() %>%
+      dplyr::filter(size %in% sample_size$sample_size) %>%
+      dplyr::ungroup()
     
     data <- data %>%
-      left_join(sample_size %>% rename(coord_size = sample_size), by = facet_col)
+      dplyr::left_join(sample_size %>% dplyr::rename(coord_size = sample_size), by = facet_col)
     
-    # Ensure consistent data types
     data$coord_size <- as.character(data$coord_size)
     df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
     
@@ -226,77 +186,87 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       data,
       by = c("pos" = "pos", "size" = "coord_size")
     )
-    
-    
   }
   
+  # Final data
+  df_final <- df_merged %>% dplyr::filter(!is.na(type))
   
-  
-  # Get the row count of the merged table
-  N <- nrow(df_merged)
-  
-  # Prepare the vector to fill in your new column
-  v_name_icon <- unique(data$icon)
-  
-  #Format to merge with the data
-  df_icon <- tibble(
-    image = c(v_name_icon, rep(NA, max(0, N - length(v_name_icon))))
-  )[seq_len(N), ]
-  
-  #Final data
-  df_final <- bind_cols(df_merged, df_icon)
-  
-  #if type has NA, drop the row
-  df_final <- df_final %>% filter(!is.na(type))
-  
-  
-  if (!"x1" %in% colnames(df_final) || !"y1" %in% colnames(df_final)) {
+  if (!"x1" %in% names(df_final) || !"y1" %in% names(df_final)) {
     stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
   }
   
-  # Generate the PNG every time with the given height — always overwrites
+  # ---- build per-row PNG path from per-row icon ----
   df_final <- df_final %>%
-    rowwise() %>%
-    mutate(
+    dplyr::rowwise() %>%
+    dplyr::mutate(
       image = {
-        svg_path <- file.path("inst", "figures", "svg", paste0(icon, ".svg"))
-        png_path <- file.path("inst", "figures", "png", paste0(icon, ".png"))
-        
-        # Create directories if needed
-        if (!dir.exists(dirname(png_path))) {
-          dir.create(dirname(png_path), recursive = TRUE)
-        }
-        
-        if (file.exists(svg_path)) {
-          svg_path
+        this_icon <- as.character(.data$icon)
+        if (is.na(this_icon) || !nzchar(this_icon)) {
+          NA_character_
         } else {
-          fontawesome::fa_png(icon, file = png_path, height = quality)  # always overwrite
+          png_path <- file.path("inst", "figures", "png", paste0(this_icon, ".png"))
+          if (!dir.exists(dirname(png_path))) dir.create(dirname(png_path), recursive = TRUE)
+          if (!file.exists(png_path)) fontawesome::fa_png(this_icon, file = png_path, height = quality)
           png_path
         }
       }
     ) %>%
-    ungroup()
+    dplyr::ungroup()
   
-  # Check if the icon column is present in the data
-  icon_expr <- mapping_list[["icon"]]
+  # ---- LEGEND FIX: inject icon into key-glyph using .id ----
+  # Determine the variable mapped to colour (legend order comes from this)
+  colour_var <- NULL
+  if ("colour" %in% names(mapping_list)) {
+    colour_var <- rlang::as_name(mapping_list[["colour"]])
+  } else if ("color" %in% names(mapping_list)) {
+    colour_var <- rlang::as_name(mapping_list[["color"]])
+  }
   
-  # Set required mappings
+  # Determine the variable mapped to icon
+  icon_var <- rlang::as_name(mapping_list[["icon"]])
+  
+  # Build icon lookup in legend order
+  # (if colour_var is NULL, fallback to distinct icon order)
+  if (!is.null(colour_var) && colour_var %in% names(df_final) && icon_var %in% names(df_final)) {
+    groups <- df_final[[colour_var]]
+    groups <- if (is.factor(groups)) levels(groups) else unique(groups)
+    
+    icon_levels <- df_final %>%
+      dplyr::select(.group = .data[[colour_var]], .icon = .data[[icon_var]]) %>%
+      dplyr::distinct() %>%
+      dplyr::right_join(tibble::tibble(.group = groups), by = ".group") %>%
+      dplyr::pull(.icon)
+  } else {
+    icon_levels <- unique(df_final[[icon_var]])
+  }
+  
+  # key_glyph wrapper that forces data$icon (so draw_key_pop_image works under facet)
+  key_glyph_pop <- function(key_data, params, size) {
+    if (!".id" %in% names(key_data)) {
+      return(draw_key_pop_image(key_data, params, size))
+    }
+    idx <- key_data$.id
+    idx <- pmax(1L, pmin(length(icon_levels), as.integer(idx)))
+    key_data$icon <- icon_levels[idx]
+    draw_key_pop_image(key_data, params, size)
+  }
+  
+  # ---- mapping for ggimage ----
   mapping_list[["image"]] <- as.name("image")
-  mapping_list[["x"]] <- as.name("x1")
-  mapping_list[["y"]] <- as.name("y1")
+  mapping_list[["x"]]     <- as.name("x1")
+  mapping_list[["y"]]     <- as.name("y1")
+  mapping_list[["icon"]]  <- NULL  # IMPORTANT: ggimage doesn't know this aesthetic
   
-  # Construct aes without altering existing ones
-  final_mapping <- do.call(aes, mapping_list)
+  final_mapping <- do.call(ggplot2::aes, mapping_list)
+  
+  # size aesthetic for layer
+  size_internal <- data$size
   
   key_fn <- function(data, params, size = 5) {
     data$size <- 5
     ggplot2::draw_key_point(data, params, size)
   }
   
-  # Set the size aesthetic
-  size_internal <- data$size
-  
-  # Draw image points
   ggimage::geom_image(
     mapping      = final_mapping,
     data         = df_final,
@@ -306,7 +276,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     na.rm        = na.rm,
     inherit.aes  = inherit.aes,
     by           = "height",
-    key_glyph    = if (legend_icons) draw_key_pop_image else key_fn,
+    key_glyph    = if (legend_icons) key_glyph_pop else key_fn,
     ...
   )
 }
