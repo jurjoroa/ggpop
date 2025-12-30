@@ -17,8 +17,8 @@
 #' @inheritParams fontawesome::fa
 #' @param size The size of the points.
 #' @param icon The icon to be used in the chart.
-#' @param quality Height (in **pixels**) of the PNG icon when rendered with `fontawesome::fa_png()`.
-#'        Higher values produce sharper icons. Defaults to 50. This affects **image quality**, not icon size in the plot.
+#' @param dpi Height (in **pixels**) of the PNG icon when rendered with `fontawesome::fa_png()`.
+#'        Higher values produce sharper icons. Defaults to 50. This affects **image dpi**, not icon size in the plot.
 #' @param group_var The variable used to group individuals.
 #' @param sample_size The total number of individuals (points) to be drawn.
 #' @param arrange Logical; if TRUE, the output data is arranged by group.
@@ -37,7 +37,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      group_var = NULL, sample_size = NULL, arrange = FALSE, sum_var = NULL,
                      facet = NULL,
                      size = 3,
-                     quality = 50,
+                     dpi = 50,
                      legend_icons = TRUE,
                      ...) {
   
@@ -75,7 +75,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
   }
   
-  validate_geom_pop_inputs(data, mapping_list, icon, size, quality, inherited_data)
+  validate_geom_pop_inputs(data, mapping_list, icon, size, dpi, inherited_data)
   warn_geom_pop_inputs(data, mapping_list, inherited_mapping_list, icon, .missing_size)
   
   if (!"icon" %in% names(mapping_list)) mapping_list[["icon"]] <- as.name("icon")
@@ -206,7 +206,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         } else {
           png_path <- file.path("inst", "figures", "png", paste0(this_icon, ".png"))
           if (!dir.exists(dirname(png_path))) dir.create(dirname(png_path), recursive = TRUE)
-          if (!file.exists(png_path)) fontawesome::fa_png(this_icon, file = png_path, height = quality)
+          if (file.exists(png_path)) unlink(png_path)
+          fontawesome::fa_png(this_icon, file = png_path, height = dpi)
+          
           png_path
         }
       }

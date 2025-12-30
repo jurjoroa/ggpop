@@ -23,7 +23,7 @@ geom_pop(
   sum_var = NULL,
   facet = NULL,
   size = 3,
-  quality = 50,
+  dpi = 50,
   legend_icons = TRUE,
   ...
 )
@@ -104,8 +104,8 @@ the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{ann
 
 \item{size}{The size of the points.}
 
-\item{quality}{Height (in \strong{pixels}) of the PNG icon when rendered with \code{fontawesome::fa_png()}.
-Higher values produce sharper icons. Defaults to 50. This affects \strong{image quality}, not icon size in the plot.}
+\item{dpi}{Height (in \strong{pixels}) of the PNG icon when rendered with \code{fontawesome::fa_png()}.
+Higher values produce sharper icons. Defaults to 50. This affects \strong{image dpi}, not icon size in the plot.}
 
 \item{legend_icons}{Logical; if TRUE, the legend will display the selected icons by the user.}
 
