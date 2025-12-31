@@ -106,6 +106,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (has_facet && !is.null(facet_col) && !facet_col %in% names(data)) {
     stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
   }
+
+  
+  
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
@@ -137,36 +140,28 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # -------------------------------------------------
-  # pos handling:
-  # - no facet   -> global pos
-  # - facet      -> keep existing per-facet pos (from process_data) if present
+  # UPDATED pos + facet behavior (both implementations)
+  #
+  # 1) If facet is NOT provided, we pool into ONE circle:
+  #    - Always assign global pos (prevents overlap from pre-existing per-group pos)
+  #
+  # 2) If `process_data(high_group_var=...)` was used, it creates `group`.
+  #    - If there are multiple groups, we treat it as faceted internally by `group`,
+  #      even if `facet_wrap(~ group)` is added after geom_pop().
   # -------------------------------------------------
+  
+  # If user didn't pass facet=, but data has multiple `group`s, treat as faceting by `group`
+  if (!has_facet && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1) {
+    has_facet <- TRUE
+    facet_col <- "group"
+  }
+  
   if (!has_facet) {
-    data <- dplyr::mutate(data, pos = as.numeric(dplyr::row_number()))
+    # Always override any existing `pos` (prevents overlap when pooling)
+    data <- data %>%
+      dplyr::mutate(pos = as.numeric(dplyr::row_number()))
   } else {
-    if (!("pos" %in% names(data))) {
-      data <- data %>%
-        dplyr::group_by(.data[[facet_col]]) %>%
-        dplyr::mutate(pos = as.numeric(dplyr::row_number())) %>%
-        dplyr::ungroup()
-    }
-  }
-  
-  # --------------------------------------------------------------
-  # UPDATED: robust facet inference from DATA (not ggplot object)
-  # If `process_data(high_group_var=...)` was used, it creates `group`.
-  # Even if ggplot facet is added after geom_pop(), treat it as faceting.
-  # --------------------------------------------------------------
-  if (!has_facet && "group" %in% names(data)) {
-    n_groups <- dplyr::n_distinct(data$group)
-    if (n_groups > 1) {
-      has_facet <- TRUE
-      facet_col <- "group"
-    }
-  }
-  
-  # ensure per-facet pos BEFORE enforcing limits
-  if (has_facet) {
+    # Always make pos per-facet group (override any existing pos to be safe)
     data <- data %>%
       dplyr::group_by(.data[[facet_col]]) %>%
       dplyr::mutate(pos = as.numeric(dplyr::row_number())) %>%
@@ -449,6 +444,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
+
 
 
 
