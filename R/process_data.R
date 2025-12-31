@@ -28,7 +28,15 @@ process_data <- function(data,
                          high_group_var = NULL, 
                          group_var = NULL, 
                          sum_var = NULL, 
-                         sample_size = 1000) {
+                         sample_size = 100) {
+  
+  # ---- VALIDATE sample_size ----
+  if (!is.numeric(sample_size) || length(sample_size) != 1L || is.na(sample_size) ||
+      sample_size <= 0 || sample_size > 1000 || sample_size %% 1 != 0) {
+    stop("`sample_size` must be a single integer between 1 and 1000.")
+  }
+  sample_size <- as.integer(sample_size)
+  
   
   # --- Capture arguments properly ---
   group_var_sym <- rlang::enquo(group_var)     # Capture unquoted
