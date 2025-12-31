@@ -76,27 +76,72 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   validate_geom_pop_inputs(data, mapping_list, icon, size, dpi, inherited_data)
-  warn_geom_pop_inputs(data, mapping_list, inherited_mapping_list, icon, .missing_size)
+  
+  warn_geom_pop_inputs(
+    data, mapping_list, inherited_mapping_list,
+    icon = icon,
+    missing_size = .missing_size,
+    legend_icons = legend_icons,
+    dpi = dpi
+  )
   
   if (!"icon" %in% names(mapping_list)) mapping_list[["icon"]] <- as.name("icon")
   if (!"icon" %in% names(data)) data$icon <- icon
   
-  # size
+  # size  (CHANGED: store as icon_size to avoid collision with coord size)
   if ("size" %in% names(mapping_list)) {
     size_var <- rlang::as_name(mapping_list[["size"]])
     if (!size_var %in% names(data)) stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
-    data$size <- data[[size_var]] * 0.03
+    data$icon_size <- data[[size_var]] * 0.03
     mapping_list[["size"]] <- NULL
   } else {
-    data$size <- size * 0.03
+    data$icon_size <- size * 0.03
   }
   
   data <- dplyr::mutate(data, pos = as.numeric(dplyr::row_number()))
+  
+  # ---- ENFORCE MAX ICONS ----
+  MAX_ICONS <- 1000L
+  
+  if (!has_facet) {
+    n_icons <- dplyr::n_distinct(data$pos)
+    if (n_icons > MAX_ICONS) {
+      stop(
+        sprintf(
+          "[geom_pop] Too many icons requested (%d). Max is %d.\n  → Fix: reduce `sample_size` in `process_data(..., sample_size = %d)`.",
+          n_icons, MAX_ICONS, MAX_ICONS
+        ),
+        call. = FALSE
+      )
+    }
+  } else {
+    # allow up to 1000 icons PER facet group
+    per_group <- data %>%
+      dplyr::group_by(.data[[facet_col]]) %>%
+      dplyr::summarise(n_icons = dplyr::n_distinct(pos), .groups = "drop")
+    
+    too_big <- per_group %>% dplyr::filter(n_icons > MAX_ICONS)
+    
+    if (nrow(too_big) > 0) {
+      bad <- paste0(too_big[[facet_col]], " (", too_big$n_icons, ")", collapse = ", ")
+      stop(
+        sprintf(
+          "[geom_pop] Too many icons in facet group(s). Max is %d per group.\n  Offenders: %s\n  → Fix: reduce `sample_size` per group in `process_data(..., high_group_var = ..., sample_size = %d)`.",
+          MAX_ICONS, bad, MAX_ICONS
+        ),
+        call. = FALSE
+      )
+    }
+  }
+  
   sample_size <- length(unique(data$pos))
   
   df_coordinates_final <- fetch_df_coordinates()
-  df_coordinates_filtered <- df_coordinates_final %>% dplyr::filter(size == sample_size)
-  df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
+  # CHANGED: rename coord size to avoid collision with icon_size
+  df_coordinates_filtered <- df_coordinates_final %>%
+    dplyr::filter(size == sample_size) %>%
+    dplyr::rename(coord_size = size)
+  df_coordinates_filtered$coord_size <- as.character(df_coordinates_filtered$coord_size)
   
   df_merged <- dplyr::left_join(df_coordinates_filtered, data, by = "pos")
   
@@ -115,8 +160,11 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     sample_size <- length(unique(data$pos))
     
     df_coordinates_final <- fetch_df_coordinates()
-    df_coordinates_filtered <- df_coordinates_final %>% dplyr::filter(size == sample_size)
-    df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
+    # CHANGED: rename coord size to avoid collision with icon_size
+    df_coordinates_filtered <- df_coordinates_final %>%
+      dplyr::filter(size == sample_size) %>%
+      dplyr::rename(coord_size = size)
+    df_coordinates_filtered$coord_size <- as.character(df_coordinates_filtered$coord_size)
     
     df_merged <- dplyr::left_join(df_coordinates_filtered, data, by = "pos")
     
@@ -319,7 +367,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     }
   }
   
-  
   # ---- mapping for ggimage ----
   mapping_list[["image"]] <- as.name("image")
   mapping_list[["x"]]     <- as.name("x1")
@@ -328,8 +375,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   final_mapping <- do.call(ggplot2::aes, mapping_list)
   
-  # size aesthetic for layer
-  size_internal <- data$size
+  # size aesthetic for layer (CHANGED: must match df_final rows + remain numeric)
+  size_internal <- df_final$icon_size
   
   key_fn <- function(data, params, size = 5) {
     data$size <- 5
@@ -349,3 +396,4 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
+
