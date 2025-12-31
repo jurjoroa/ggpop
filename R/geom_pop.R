@@ -136,30 +136,36 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data$icon_size <- size * 0.03
   }
   
-  data <- dplyr::mutate(data, pos = as.numeric(dplyr::row_number()))
-  
-  # --------------------------------------------------------------
-  # NEW: Heuristic fallback for the common pattern:
-  #   ggplot() + geom_pop(...) + facet_wrap(~ group)
-  # Facet info is not available inside geom_pop() at evaluation time.
-  # If total icons > 1000, but there's a `group` column and each group
-  # is <= 1000, treat it as faceted by `group` internally.
-  # --------------------------------------------------------------
-  if (!has_facet && "group" %in% names(data)) {
-    total_icons <- dplyr::n_distinct(data$pos)
-    if (total_icons > 1000L) {
-      per_group_guess <- data %>%
-        dplyr::group_by(.data[["group"]]) %>%
-        dplyr::summarise(n_icons = dplyr::n_distinct(pos), .groups = "drop")
-      
-      if (all(per_group_guess$n_icons <= 1000L)) {
-        has_facet <- TRUE
-        facet_col <- "group"
-      }
+  # -------------------------------------------------
+  # pos handling:
+  # - no facet   -> global pos
+  # - facet      -> keep existing per-facet pos (from process_data) if present
+  # -------------------------------------------------
+  if (!has_facet) {
+    data <- dplyr::mutate(data, pos = as.numeric(dplyr::row_number()))
+  } else {
+    if (!("pos" %in% names(data))) {
+      data <- data %>%
+        dplyr::group_by(.data[[facet_col]]) %>%
+        dplyr::mutate(pos = as.numeric(dplyr::row_number())) %>%
+        dplyr::ungroup()
     }
   }
   
-  # NEW: if faceting, pos must be per-facet BEFORE enforcing limits
+  # --------------------------------------------------------------
+  # UPDATED: robust facet inference from DATA (not ggplot object)
+  # If `process_data(high_group_var=...)` was used, it creates `group`.
+  # Even if ggplot facet is added after geom_pop(), treat it as faceting.
+  # --------------------------------------------------------------
+  if (!has_facet && "group" %in% names(data)) {
+    n_groups <- dplyr::n_distinct(data$group)
+    if (n_groups > 1) {
+      has_facet <- TRUE
+      facet_col <- "group"
+    }
+  }
+  
+  # ensure per-facet pos BEFORE enforcing limits
   if (has_facet) {
     data <- data %>%
       dplyr::group_by(.data[[facet_col]]) %>%
@@ -443,5 +449,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
+
 
 
