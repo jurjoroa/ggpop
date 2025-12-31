@@ -75,8 +75,17 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
   }
   
+  
   validate_geom_pop_inputs(data, mapping_list, icon, size, dpi, inherited_data)
-  warn_geom_pop_inputs(data, mapping_list, inherited_mapping_list, icon, .missing_size)
+  
+  
+  warn_geom_pop_inputs(
+    data, mapping_list, inherited_mapping_list,
+    icon = icon,
+    missing_size = .missing_size,
+    legend_icons = legend_icons,
+    dpi = dpi
+  )
   
   if (!"icon" %in% names(mapping_list)) mapping_list[["icon"]] <- as.name("icon")
   if (!"icon" %in% names(data)) data$icon <- icon
