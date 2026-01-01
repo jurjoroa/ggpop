@@ -108,33 +108,29 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # -------------------------------------------------
-  # SOFT WARNING (single, informative)
+  # SOFT WARNING (single, ASCII-safe)
   # -------------------------------------------------
-  # Goal: one unified warning that covers the two “danger zones”:
-  #   (A) `process_data(high_group_var=...)` created multiple groups but the plot
-  #       is NOT faceted → overlap risk.
-  #   (B) user intends to “facet” the idea (by having multiple groups) and is using
-  #       facet_wrap for layout; remind that separate plots with cowplot/patchwork
-  #       may be a better/cleaner choice.
+  # This warning covers two common situations that can lead to icon overlap:
+  # (1) Multiple groups created by process_data(high_group_var = ...)
+  #     without faceting the plot.
+  # (2) Explicit use of facet inside geom_pop(), which is advanced usage
+  #     and may require careful layout choices.
   #
-  # IMPORTANT: At layer-build time we cannot reliably detect facet_wrap added later.
-  # So we ONLY warn based on what we can know now:
-  #   - multiple groups in data$group AND facet not explicitly provided in geom_pop()
-  #   - OR facet explicitly provided in geom_pop() (advanced usage; likely user is
-  #     trying to facet) -> warn about layout choices and possible overlap if they
-  #     don't facet the plot.
+  # NOTE:
+  # At layer build time we cannot reliably detect facet_wrap() added later,
+  # so this warning is intentionally conservative.
   # -------------------------------------------------
   
-  # Helper: safe "or" for NULL/empty strings without introducing new deps
+  # ASCII-safe helper
   `%||%` <- function(x, y) if (is.null(x) || !nzchar(as.character(x))) y else x
   
   facet_expr <- rlang::enexpr(facet)
   
-  # flags
-  .has_multi_groups <- "group" %in% names(data) && dplyr::n_distinct(data$group) > 1
-  .facet_explicit   <- !(rlang::is_missing(facet_expr) || rlang::is_null(facet_expr))
+  .has_multi_groups <- "group" %in% names(data) &&
+    dplyr::n_distinct(data$group) > 1
   
-  # choose best "grouping variable" name for message
+  .facet_explicit <- !(rlang::is_missing(facet_expr) || rlang::is_null(facet_expr))
+  
   .group_var_msg <- if (.facet_explicit) {
     facet_col
   } else if (.has_multi_groups) {
@@ -143,45 +139,47 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     NULL
   }
   
-  # only warn when relevant
   if (.has_multi_groups || .facet_explicit) {
     
     warning(
       paste0(
         "[geom_pop] Facet / grouping caution.\n\n",
         
-        "Why you're seeing this:\n",
+        "Why you are seeing this warning:\n",
         
-        # Case A: high_group_var created multiple groups but user didn't set facet=
         if (.has_multi_groups && !.facet_explicit) paste0(
-          "• Your data contains multiple groups in `data$group` (often created by `process_data(high_group_var = ...)`).\n",
-          "  If you do NOT facet the plot, icons from different groups may overlap in the same panel.\n\n"
+          "- The data contains multiple groups in data$group ",
+          "(often created by process_data(high_group_var = ...)).\n",
+          "  If the plot is not faceted, icons from different groups ",
+          "may overlap in the same panel.\n\n"
         ) else "",
         
-        # Case B: user explicitly provided facet= (they intend per-group placement)
         if (.facet_explicit) paste0(
-          "• You provided `facet = ", facet_col, "` inside geom_pop(), which positions icons per `", facet_col, "`.\n",
-          "  If the plot is not actually faceted (e.g., missing `facet_wrap(~ ", facet_col, ")` / `facet_grid()`),\n",
-          "  everything can still render into a single panel and overlap.\n\n"
+          "- You provided facet = ", facet_col, " inside geom_pop().\n",
+          "  Icons are positioned per ", facet_col, ", but if the plot ",
+          "is not actually faceted with facet_wrap() or facet_grid(), ",
+          "everything may render into a single panel.\n\n"
         ) else "",
         
         "Recommended patterns:\n",
+        
         if (!is.null(.group_var_msg)) paste0(
-          "• Facet in ggplot2:\n",
-          "  ggplot() + geom_pop(..., facet = ", .group_var_msg, ") + facet_wrap(~ ", .group_var_msg, ")\n\n"
+          "- Facet in ggplot2:\n",
+          "  ggplot() + geom_pop(..., facet = ", .group_var_msg,
+          ") + facet_wrap(~ ", .group_var_msg, ")\n\n"
         ) else "",
         
-        "• Alternative (often cleaner for “one circle per subgroup”):\n",
-        "  Build separate ggplots (one per subgroup) and combine them with `cowplot` (or `patchwork`).\n",
-        "  This avoids relying on faceting to split panels and can be more predictable for icon placement.\n\n",
+        "- Alternative layout:\n",
+        "  Create one plot per subgroup and combine them with cowplot ",
+        "or patchwork. This is often more predictable than faceting ",
+        "when drawing icon-based circles.\n\n",
         
-        "If you want ONE pooled circle:\n",
-        "• Re-run `process_data()` without `high_group_var` so only one group is produced.\n"
+        "If you want one pooled circle:\n",
+        "- Re-run process_data() without high_group_var.\n"
       ),
       call. = FALSE
     )
   }
-  
   
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
@@ -250,7 +248,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     if (n_icons > MAX_ICONS) {
       stop(
         sprintf(
-          "[geom_pop] Too many icons requested (%d). Max is %d.\n  → Fix: reduce `sample_size` in `process_data(..., sample_size = %d)`.",
+          "[geom_pop] Too many icons requested (%d). Max is %d.\n  Fix: reduce `sample_size` in `process_data(..., sample_size = %d)`.",
           n_icons, MAX_ICONS, MAX_ICONS
         ),
         call. = FALSE
@@ -268,7 +266,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       bad <- paste0(too_big[[facet_col]], " (", too_big$n_icons, ")", collapse = ", ")
       stop(
         sprintf(
-          "[geom_pop] Too many icons in facet group(s). Max is %d per group.\n  Offenders: %s\n  → Fix: reduce `sample_size` per group in `process_data(..., high_group_var = ..., sample_size = %d)`.",
+          "[geom_pop] Too many icons in facet group(s). Max is %d per group.\n  Offenders: %s\n  Fix: reduce `sample_size` per group in `process_data(..., high_group_var = ..., sample_size = %d)`.",
           MAX_ICONS, bad, MAX_ICONS
         ),
         call. = FALSE
