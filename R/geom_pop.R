@@ -55,19 +55,132 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
   
+  # --- infer facet from facet_wrap/facet_grid if facet= not supplied ---
+  infer_facet_var <- function(plot_obj) {
+    
+    if (is.null(plot_obj) || is.null(plot_obj$facet)) return(NULL)
+    
+    f <- plot_obj$facet
+    
+    # facet_wrap: f$params$facets is usually a quosure list
+    if (!is.null(f$params$facets) && length(f$params$facets) == 1) {
+      q <- f$params$facets[[1]]
+      nm <- tryCatch(rlang::as_name(rlang::get_expr(q)), error = function(e) NULL)
+      if (!is.null(nm) && nzchar(nm)) return(nm)
+    }
+    
+    # facet_grid: rows/cols stored in f$params$rows / f$params$cols
+    pick_one <- function(x) {
+      if (is.null(x) || length(x) != 1) return(NULL)
+      tryCatch(rlang::as_name(rlang::get_expr(x[[1]])), error = function(e) NULL)
+    }
+    
+    r <- pick_one(f$params$rows)
+    c <- pick_one(f$params$cols)
+    
+    # allow exactly one variable overall (rows OR cols)
+    if (!is.null(r) && is.null(c)) return(r)
+    if (is.null(r) && !is.null(c)) return(c)
+    
+    NULL
+  }
+  
   # --- facet handling ---
   facet_expr <- rlang::enexpr(facet)
   if (rlang::is_missing(facet_expr) || rlang::is_null(facet_expr)) {
-    has_facet <- FALSE
-    facet_col <- NULL
+    inferred <- infer_facet_var(plot_obj)
+    if (!is.null(inferred)) {
+      has_facet <- TRUE
+      facet_col <- inferred
+    } else {
+      has_facet <- FALSE
+      facet_col <- NULL
+    }
   } else {
     has_facet <- TRUE
     if (rlang::is_symbol(facet_expr)) facet_col <- rlang::as_name(facet_expr)
     else if (rlang::is_string(facet_expr)) facet_col <- facet_expr
     else stop("`facet` must be a column name (facet = variable) or a single string (facet = \"variable\").")
-    
-    if (!facet_col %in% names(data)) stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
   }
+  
+  if (has_facet && !is.null(facet_col) && !facet_col %in% names(data)) {
+    stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
+  }
+  
+  # -------------------------------------------------
+  # SOFT WARNING (single, ASCII-safe)
+  # -------------------------------------------------
+  # This warning covers two common situations that can lead to icon overlap:
+  # (1) Multiple groups created by process_data(high_group_var = ...)
+  #     without faceting the plot.
+  # (2) Explicit use of facet inside geom_pop(), which is advanced usage
+  #     and may require careful layout choices.
+  #
+  # NOTE:
+  # At layer build time we cannot reliably detect facet_wrap() added later,
+  # so this warning is intentionally conservative.
+  # -------------------------------------------------
+  
+  # ASCII-safe helper
+  `%||%` <- function(x, y) if (is.null(x) || !nzchar(as.character(x))) y else x
+  
+  facet_expr <- rlang::enexpr(facet)
+  
+  .has_multi_groups <- "group" %in% names(data) &&
+    dplyr::n_distinct(data$group) > 1
+  
+  .facet_explicit <- !(rlang::is_missing(facet_expr) || rlang::is_null(facet_expr))
+  
+  .group_var_msg <- if (.facet_explicit) {
+    facet_col
+  } else if (.has_multi_groups) {
+    "group"
+  } else {
+    NULL
+  }
+  
+  if (.has_multi_groups || .facet_explicit) {
+    
+    warning(
+      paste0(
+        "[geom_pop] Facet / grouping caution.\n\n",
+        
+        "Why you are seeing this warning:\n",
+        
+        if (.has_multi_groups && !.facet_explicit) paste0(
+          "- The data contains multiple groups in data$group ",
+          "(often created by process_data(high_group_var = ...)).\n",
+          "  If the plot is not faceted, icons from different groups ",
+          "may overlap in the same panel.\n\n"
+        ) else "",
+        
+        if (.facet_explicit) paste0(
+          "- You provided facet = ", facet_col, " inside geom_pop().\n",
+          "  Icons are positioned per ", facet_col, ", but if the plot ",
+          "is not actually faceted with facet_wrap() or facet_grid(), ",
+          "everything may render into a single panel.\n\n"
+        ) else "",
+        
+        "Recommended patterns:\n",
+        
+        if (!is.null(.group_var_msg)) paste0(
+          "- Facet in ggplot2:\n",
+          "  ggplot() + geom_pop(..., facet = ", .group_var_msg,
+          ") + facet_wrap(~ ", .group_var_msg, ")\n\n"
+        ) else "",
+        
+        "- Alternative layout:\n",
+        "  Create one plot per subgroup and combine them with cowplot ",
+        "or patchwork. This is often more predictable than faceting ",
+        "when drawing icon-based circles.\n\n",
+        
+        "If you want one pooled circle:\n",
+        "- Re-run process_data() without high_group_var.\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
@@ -88,7 +201,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (!"icon" %in% names(mapping_list)) mapping_list[["icon"]] <- as.name("icon")
   if (!"icon" %in% names(data)) data$icon <- icon
   
-  # size  (CHANGED: store as icon_size to avoid collision with coord size)
+  # size  (icon_size to avoid collision with coord size)
   if ("size" %in% names(mapping_list)) {
     size_var <- rlang::as_name(mapping_list[["size"]])
     if (!size_var %in% names(data)) stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
@@ -98,7 +211,34 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data$icon_size <- size * 0.03
   }
   
-  data <- dplyr::mutate(data, pos = as.numeric(dplyr::row_number()))
+  # -------------------------------------------------
+  # UPDATED pos + facet behavior (both implementations)
+  #
+  # 1) If facet is NOT provided, we pool into ONE circle:
+  #    - Always assign global pos (prevents overlap from pre-existing per-group pos)
+  #
+  # 2) If `process_data(high_group_var=...)` was used, it creates `group`.
+  #    - If there are multiple groups, we treat it as faceted internally by `group`,
+  #      even if `facet_wrap(~ group)` is added after geom_pop().
+  # -------------------------------------------------
+  
+  # If user didn't pass facet=, but data has multiple `group`s, treat as faceting by `group`
+  if (!has_facet && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1) {
+    has_facet <- TRUE
+    facet_col <- "group"
+  }
+  
+  if (!has_facet) {
+    # Always override any existing `pos` (prevents overlap when pooling)
+    data <- data %>%
+      dplyr::mutate(pos = as.numeric(dplyr::row_number()))
+  } else {
+    # Always make pos per-facet group (override any existing pos to be safe)
+    data <- data %>%
+      dplyr::group_by(.data[[facet_col]]) %>%
+      dplyr::mutate(pos = as.numeric(dplyr::row_number())) %>%
+      dplyr::ungroup()
+  }
   
   # ---- ENFORCE MAX ICONS ----
   MAX_ICONS <- 1000L
@@ -108,7 +248,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     if (n_icons > MAX_ICONS) {
       stop(
         sprintf(
-          "[geom_pop] Too many icons requested (%d). Max is %d.\n  → Fix: reduce `sample_size` in `process_data(..., sample_size = %d)`.",
+          "[geom_pop] Too many icons requested (%d). Max is %d.\n  Fix: reduce `sample_size` in `process_data(..., sample_size = %d)`.",
           n_icons, MAX_ICONS, MAX_ICONS
         ),
         call. = FALSE
@@ -126,7 +266,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       bad <- paste0(too_big[[facet_col]], " (", too_big$n_icons, ")", collapse = ", ")
       stop(
         sprintf(
-          "[geom_pop] Too many icons in facet group(s). Max is %d per group.\n  Offenders: %s\n  → Fix: reduce `sample_size` per group in `process_data(..., high_group_var = ..., sample_size = %d)`.",
+          "[geom_pop] Too many icons in facet group(s). Max is %d per group.\n  Offenders: %s\n  Fix: reduce `sample_size` per group in `process_data(..., high_group_var = ..., sample_size = %d)`.",
           MAX_ICONS, bad, MAX_ICONS
         ),
         call. = FALSE
@@ -137,7 +277,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   sample_size <- length(unique(data$pos))
   
   df_coordinates_final <- fetch_df_coordinates()
-  # CHANGED: rename coord size to avoid collision with icon_size
   df_coordinates_filtered <- df_coordinates_final %>%
     dplyr::filter(size == sample_size) %>%
     dplyr::rename(coord_size = size)
@@ -160,7 +299,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     sample_size <- length(unique(data$pos))
     
     df_coordinates_final <- fetch_df_coordinates()
-    # CHANGED: rename coord size to avoid collision with icon_size
     df_coordinates_filtered <- df_coordinates_final %>%
       dplyr::filter(size == sample_size) %>%
       dplyr::rename(coord_size = size)
@@ -256,7 +394,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
           if (!dir.exists(dirname(png_path))) dir.create(dirname(png_path), recursive = TRUE)
           if (file.exists(png_path)) unlink(png_path)
           fontawesome::fa_png(this_icon, file = png_path, height = dpi)
-          
           png_path
         }
       }
@@ -266,7 +403,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # ---- LEGEND FIX: inject icon into key-glyph using .id ----
   # ---- LEGEND FIX: respect scale breaks order (works with breaks + labels) ----
   
-  # which variable controls the legend (color/colour aesthetic)
   colour_var <- NULL
   if ("colour" %in% names(mapping_list)) {
     colour_var <- rlang::as_name(mapping_list[["colour"]])
@@ -276,7 +412,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   icon_var <- rlang::as_name(mapping_list[["icon"]])
   
-  # build a mapping: group value -> icon value (no tidyselect .data warning)
   icon_by_group <- NULL
   if (!is.null(colour_var) &&
       colour_var %in% names(df_final) &&
@@ -292,46 +427,36 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                                      as.character(icon_map$.group))
   }
   
-  # cache computed icon_levels inside the closure
   .icon_levels_cache <- NULL
   
   key_glyph_pop <- function(key_data, params, size) {
     
-    # compute icon levels *in legend order* ONCE, at draw time (after scales trained)
     if (is.null(.icon_levels_cache)) {
       
-      # try to read breaks from trained scale in the final plot
       built <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot()),
                         error = function(e) NULL)
       
       breaks <- NULL
       if (!is.null(built) && !is.null(colour_var)) {
-        
-        # try "colour" then "color"
         sc <- built$plot$scales$get_scales("colour")
         if (is.null(sc)) sc <- built$plot$scales$get_scales("color")
-        
         if (!is.null(sc)) {
           breaks <- sc$get_breaks()
           breaks <- breaks[!is.na(breaks)]
         }
       }
       
-      # fallback if no breaks were set
       if (is.null(breaks) && !is.null(colour_var) && colour_var %in% names(df_final)) {
         breaks <- unique(as.character(df_final[[colour_var]]))
       }
       
-      # turn breaks -> icon vector in that exact order
       if (!is.null(icon_by_group) && !is.null(breaks)) {
         .icon_levels_cache <<- unname(icon_by_group[as.character(breaks)])
       } else {
-        # last resort
         .icon_levels_cache <<- unique(as.character(df_final[[icon_var]]))
       }
     }
     
-    # assign exactly ONE icon per legend key row using .id
     if (".id" %in% names(key_data)) {
       idx <- as.integer(key_data$.id)
     } else if ("group" %in% names(key_data)) {
@@ -341,14 +466,11 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     }
     
     idx <- pmax(1L, pmin(length(.icon_levels_cache), idx))
-    
-    # force scalar icon
     key_data$icon <- as.character(.icon_levels_cache[idx][1])
     
     draw_key_pop_image(key_data, params, size)
   }
   
-  # (optional) enforce df_final legend factor order for consistency (not required but helps)
   if (!is.null(colour_var) && colour_var %in% names(df_final)) {
     built <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot()),
                       error = function(e) NULL)
@@ -367,15 +489,13 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     }
   }
   
-  # ---- mapping for ggimage ----
   mapping_list[["image"]] <- as.name("image")
   mapping_list[["x"]]     <- as.name("x1")
   mapping_list[["y"]]     <- as.name("y1")
-  mapping_list[["icon"]]  <- NULL  # IMPORTANT: ggimage doesn't know this aesthetic
+  mapping_list[["icon"]]  <- NULL
   
   final_mapping <- do.call(ggplot2::aes, mapping_list)
   
-  # size aesthetic for layer (CHANGED: must match df_final rows + remain numeric)
   size_internal <- df_final$icon_size
   
   key_fn <- function(data, params, size = 5) {
@@ -396,4 +516,3 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
-
