@@ -204,6 +204,32 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
+  # -------------------------------------------------
+  # HARD STOP: icon is mandatory
+  # -------------------------------------------------
+  icon_mapped  <- "icon" %in% names(mapping_list)
+  has_icon_col <- "icon" %in% names(data)
+  
+  if (!icon_mapped && !has_icon_col) {
+    stop(
+      paste0(
+        "[geom_pop] No icon specified.\n\n",
+        "Why this is an error:\n",
+        "- `geom_pop()` requires an icon for every row.\n",
+        "- There is no meaningful default icon.\n\n",
+        "Fix:\n",
+        "- Provide `aes(icon = <column>)`, OR\n",
+        "- Add an `icon` column to `data`.\n\n",
+        "Example:\n",
+        "  df |> dplyr::mutate(icon = 'male')\n",
+        "  ggplot() + geom_pop(aes(icon = icon))\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  
+  
   if ("image" %in% names(mapping_list)) {
     stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
   }
@@ -211,12 +237,17 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   validate_geom_pop_inputs(data, mapping_list, icon, size, dpi, inherited_data)
   
   warn_geom_pop_inputs(
-    data, mapping_list, inherited_mapping_list,
-    icon = icon,
-    missing_size = .missing_size,
-    legend_icons = legend_icons,
-    dpi = dpi
+    data,
+    mapping_list,
+    inherited_mapping_list,
+    icon          = icon,
+    missing_size  = .missing_size,
+    size          = size,
+    legend_icons  = legend_icons,
+    dpi           = dpi,
+    arrange       = arrange
   )
+  
   
   if (!"icon" %in% names(mapping_list)) mapping_list[["icon"]] <- as.name("icon")
   if (!"icon" %in% names(data)) data$icon <- icon
@@ -400,6 +431,32 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (!"x1" %in% names(df_final) || !"y1" %in% names(df_final)) {
     stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
   }
+  
+  # -------------------------------------------------
+  # HARD STOP: missing / empty icons are not allowed
+  # -------------------------------------------------
+  if ("icon" %in% names(df_final)) {
+    
+    bad_icon <- is.na(df_final$icon) | !nzchar(as.character(df_final$icon))
+    
+    if (any(bad_icon)) {
+      n_bad <- sum(bad_icon)
+      
+      stop(
+        paste0(
+          "[geom_pop] Invalid icon values detected.\n\n",
+          "Found ", n_bad, " row(s) with missing or empty `icon` values.\n\n",
+          "Why this is an error:\n",
+          "- Every row must map to a valid Font Awesome icon.\n",
+          "- Missing icons cannot be rendered and would silently drop points.\n\n",
+          "Fix:\n",
+          "- Ensure `icon` is non-missing for all rows.\n"
+        ),
+        call. = FALSE
+      )
+    }
+  }
+  
   
   # ---- build per-row PNG path from per-row icon ----
   df_final <- df_final %>%
