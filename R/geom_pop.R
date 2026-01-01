@@ -107,6 +107,26 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
   }
   
+  
+  # -------------------------------------------------
+  # HARD STOP: dpi too low -> blurry icons
+  # -------------------------------------------------
+  if (is.numeric(dpi) && length(dpi) == 1 && !is.na(dpi) && is.finite(dpi)) {
+    if (dpi < 30) {
+      stop(
+        paste0(
+          "[geom_pop] `dpi = ", dpi, "` is too low.\n",
+          "Icons will look blurry when rendered with fontawesome::fa_png().\n\n",
+          "Fix:\n",
+          "- Use dpi >= 30 (recommended: 50-200 for crisp icons).\n",
+          "- If you want smaller icons, change `size`, not `dpi`.\n"
+        ),
+        call. = FALSE
+      )
+    }
+  }
+  
+  
   # -------------------------------------------------
   # SOFT WARNING (single, ASCII-safe)
   # -------------------------------------------------
