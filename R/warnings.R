@@ -77,14 +77,6 @@ warn_geom_pop_inputs <- function(data,
   # ------------------------------------------------------------------
   if (is.numeric(dpi) && length(dpi) == 1) {
     
-    if (dpi < 20) {
-      warnings <- c(warnings, .msg(
-        "[geom_pop] `dpi = ", dpi, "` is very low.\n",
-        "  - Icons may appear blurry.\n",
-        "  -> Tip: use `dpi = 80-200` for crisp rendering."
-      ))
-    }
-    
     if (dpi > 600) {
       warnings <- c(warnings, .msg(
         "[geom_pop] `dpi = ", dpi, "` is very high.\n",
@@ -93,7 +85,6 @@ warn_geom_pop_inputs <- function(data,
       ))
     }
   }
-  
   # ------------------------------------------------------------------
   # Emit warnings (one per conceptual issue)
   # ------------------------------------------------------------------
