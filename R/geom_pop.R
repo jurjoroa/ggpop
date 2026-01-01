@@ -106,7 +106,81 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (has_facet && !is.null(facet_col) && !facet_col %in% names(data)) {
     stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
   }
-
+  
+  # -------------------------------------------------
+  # SOFT WARNING (single, informative)
+  # -------------------------------------------------
+  # Goal: one unified warning that covers the two “danger zones”:
+  #   (A) `process_data(high_group_var=...)` created multiple groups but the plot
+  #       is NOT faceted → overlap risk.
+  #   (B) user intends to “facet” the idea (by having multiple groups) and is using
+  #       facet_wrap for layout; remind that separate plots with cowplot/patchwork
+  #       may be a better/cleaner choice.
+  #
+  # IMPORTANT: At layer-build time we cannot reliably detect facet_wrap added later.
+  # So we ONLY warn based on what we can know now:
+  #   - multiple groups in data$group AND facet not explicitly provided in geom_pop()
+  #   - OR facet explicitly provided in geom_pop() (advanced usage; likely user is
+  #     trying to facet) -> warn about layout choices and possible overlap if they
+  #     don't facet the plot.
+  # -------------------------------------------------
+  
+  # Helper: safe "or" for NULL/empty strings without introducing new deps
+  `%||%` <- function(x, y) if (is.null(x) || !nzchar(as.character(x))) y else x
+  
+  facet_expr <- rlang::enexpr(facet)
+  
+  # flags
+  .has_multi_groups <- "group" %in% names(data) && dplyr::n_distinct(data$group) > 1
+  .facet_explicit   <- !(rlang::is_missing(facet_expr) || rlang::is_null(facet_expr))
+  
+  # choose best "grouping variable" name for message
+  .group_var_msg <- if (.facet_explicit) {
+    facet_col
+  } else if (.has_multi_groups) {
+    "group"
+  } else {
+    NULL
+  }
+  
+  # only warn when relevant
+  if (.has_multi_groups || .facet_explicit) {
+    
+    warning(
+      paste0(
+        "[geom_pop] Facet / grouping caution.\n\n",
+        
+        "Why you're seeing this:\n",
+        
+        # Case A: high_group_var created multiple groups but user didn't set facet=
+        if (.has_multi_groups && !.facet_explicit) paste0(
+          "• Your data contains multiple groups in `data$group` (often created by `process_data(high_group_var = ...)`).\n",
+          "  If you do NOT facet the plot, icons from different groups may overlap in the same panel.\n\n"
+        ) else "",
+        
+        # Case B: user explicitly provided facet= (they intend per-group placement)
+        if (.facet_explicit) paste0(
+          "• You provided `facet = ", facet_col, "` inside geom_pop(), which positions icons per `", facet_col, "`.\n",
+          "  If the plot is not actually faceted (e.g., missing `facet_wrap(~ ", facet_col, ")` / `facet_grid()`),\n",
+          "  everything can still render into a single panel and overlap.\n\n"
+        ) else "",
+        
+        "Recommended patterns:\n",
+        if (!is.null(.group_var_msg)) paste0(
+          "• Facet in ggplot2:\n",
+          "  ggplot() + geom_pop(..., facet = ", .group_var_msg, ") + facet_wrap(~ ", .group_var_msg, ")\n\n"
+        ) else "",
+        
+        "• Alternative (often cleaner for “one circle per subgroup”):\n",
+        "  Build separate ggplots (one per subgroup) and combine them with `cowplot` (or `patchwork`).\n",
+        "  This avoids relying on faceting to split panels and can be more predictable for icon placement.\n\n",
+        
+        "If you want ONE pooled circle:\n",
+        "• Re-run `process_data()` without `high_group_var` so only one group is produced.\n"
+      ),
+      call. = FALSE
+    )
+  }
   
   
   
@@ -444,7 +518,3 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
-
-
-
-
