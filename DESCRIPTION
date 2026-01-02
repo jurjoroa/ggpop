@@ -8,11 +8,12 @@ Authors@R: c(
              role = c("aut", "cre"),
              email = "jorgeroa@stanford.edu",
              comment = c(ORCID = "0000-0002-3972-9793")),
+
     person(given = "Ralitza",
-             family = "Soultanova",
-             role = c("aut"),
-             email = "Ralitza.soultanova@gmail.com",
-             comment = c(ORCID = "0009-0000-9324-5653")),
+           family = "Soultanova",
+           role = c("aut"),
+           email = "Ralitza.soultanova@gmail.com",
+           comment = c(ORCID = "0009-0000-9324-5653")),
     person(given = "Fernando",
              family = "Alarid-Escudero",
              role = c("aut"),
@@ -23,6 +24,7 @@ Authors@R: c(
              role = c("aut"),
              email = "cpinedaa@uw.edu",
              comment = c(ORCID = "0000-0002-8352-7080")))
+
 Description: ggpop is an R package that creates visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.
 License: CC BY-NC-SA 4.0
 Encoding: UTF-8
