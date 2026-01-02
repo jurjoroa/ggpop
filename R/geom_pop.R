@@ -201,6 +201,27 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
+  
+  # -------------------------------------------------
+  # WARNING: size specified both in aes() and as argument
+  # -------------------------------------------------
+  if ("size" %in% names(mapping_list) && !missing(size)) {
+    
+    warning(
+      paste0(
+        "[geom_pop] `size` was provided both inside aes() and as a parameter.\n\n",
+        "What happens:\n",
+        "- `aes(size = <variable>)` controls icon size per row.\n",
+        "- The argument `geom_pop(aes(), size = ", size, ")` will be ignored.\n\n",
+        "Tip:\n",
+        "- Use ONLY `aes(size = <variable>)` for data-driven sizes, OR\n",
+        "- Remove `size` from aes() and set a fixed size via geom_pop(size = ...).\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  
   # -------------------------------------------------
   # HARD STOP: icon is mandatory
   # -------------------------------------------------
@@ -247,11 +268,20 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     if (is.null(src_var)) {
       stop(
         paste0(
-          "[geom_pop] Raw data detected (no `type` column).\n\n",
+          "[geom_pop] Raw data detected.\n\n",
+          "Why this is an error:\n",
+          "- Your data was not created with `process_data()`.\n",
+          "- `geom_pop()` needs a grouping variable to build the circle layout.\n\n",
           "Fix:\n",
-          "- Add a `type` column to your data, OR\n",
-          "- Map `aes(group = <var>)` (recommended), OR\n",
-          "- Map `aes(color = <var>)`.\n"
+          "- Map `aes(group = <variable>)` (recommended), OR\n",
+          "- Map `aes(color = <variable>)`.\n\n",
+          "Example:\n",
+          "  ggplot() +\n",
+          "    geom_pop(\n",
+          "      data = df,\n",
+          "      aes(icon = icon, group = sex),\n",
+          "      size = 4\n",
+          "    )\n"
         ),
         call. = FALSE
       )
@@ -505,15 +535,23 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         if (is.na(this_icon) || !nzchar(this_icon)) {
           NA_character_
         } else {
-          png_path <- file.path("inst", "figures", "png", paste0(this_icon, ".png"))
-          if (!dir.exists(dirname(png_path))) dir.create(dirname(png_path), recursive = TRUE)
+          
+          # write to a temp cache dir (safe for installed packages)
+          cache_dir <- file.path(tempdir(), "ggpop-icons")
+          if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
+          
+          png_path <- file.path(cache_dir, paste0(this_icon, ".png"))
+          
+          # keep your current behavior: always overwrite
           if (file.exists(png_path)) unlink(png_path)
+          
           fontawesome::fa_png(this_icon, file = png_path, height = dpi)
           png_path
         }
       }
     ) %>%
     dplyr::ungroup()
+  
   
   # ---- LEGEND FIX: inject icon into key-glyph using .id ----
   # ---- LEGEND FIX: respect scale breaks order (works with breaks + labels) ----
@@ -534,12 +572,15 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     icon_map <- df_final |>
       dplyr::distinct(
-        .group = .data[[colour_var]],
-        .icon  = .data[[icon_var]]
+        group = .data[[colour_var]],
+        icon  = .data[[icon_var]]
       )
     
-    icon_by_group <- stats::setNames(as.character(icon_map$.icon),
-                                     as.character(icon_map$.group))
+    icon_by_group <- stats::setNames(
+      as.character(icon_map$icon),
+      as.character(icon_map$group)
+    )
+    
   }
   
   .icon_levels_cache <- NULL
