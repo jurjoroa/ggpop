@@ -4,191 +4,72 @@
 
 # ggpop 1.5.0
 
-This version of `ggpop` introduces comprehensive improvements to input validation, error handling, and user guidance. Major changes include enhanced warnings and error messages, improved facet handling, better legend icon management, and more flexible data input options. The package now provides clearer feedback to users and is more robust in handling various edge cases.
+This release of `ggpop` introduces a set of targeted updates to the `geom_pop`
+function in `R/geom_pop.R`, addressing multiple reported issues related to icon
+rendering, size handling, validation logic, and internal refactoring. The changes
+improve robustness, consistency, and maintainability while preserving expected
+user-facing behavior unless explicitly noted.
 
----
+## Bug Fixes
 
-## #162 - Update changes and parsimony files
+- Fixed legend icon assignment in faceted plots, ensuring correct icon mapping
+  under faceting conditions by introducing dynamic legend icon assignment (#168).
 
-**Description:**  
-Introduced improved input validation and user guidance for the `geom_pop` function, making it more robust and user-friendly by adding internal validation and warning functions, better handling of dataset and aesthetic arguments, and enhanced default behaviors for icons and sizes.
+## Improvements
 
-**Files Changed:**  
-- `R/errors.R`  
-  - Added new file with `validate_geom_pop_inputs()` function to enforce correct usage of aesthetics, validate the `quality` argument, and prevent conflicting dataset specifications.
-- `R/warnings.R`  
-  - Added new file with `warn_geom_pop_inputs()` function to provide user warnings for common pitfalls (missing icon specifications, conflicting size arguments, ignored aesthetics).
-- `R/geom_pop.R`  
-  - Changed default `icon` from `"default"` to `"ggmale"` and default `size` from `1` to `3`.
-  - Added calls to new validation and warning functions.
-  - Updated key drawing function to use fixed size for legend icons.
-- `R/scale_legend_icon.R`  
-  - Modified to allow `margin` parameter to be `NULL` with default margin set if not specified.
+- Refactored input validation and user guidance infrastructure by introducing
+  validation and warning functions, improving error messages with actionable
+  fixes (#162).
+- Enhanced icon rendering compatibility by adding `rsvg` dependency and improving
+  legend customization support (#164).
+- Refactored facet argument processing to accept both symbol and string inputs
+  (e.g., `facet = sex` or `facet = "sex"`), improving flexibility (#166).
+- Renamed `quality` parameter to `dpi` for clarity, indicating it refers to
+  image pixel height rather than subjective quality (#161).
+- Enhanced input validation by enforcing maximum of 1000 icons per plot or facet
+  group, changing default `sample_size` from 1000 to 100, and renaming internal
+  size variables to avoid collisions (#152).
+- Improved facet handling with auto-inferred facet variables from `facet_wrap`
+  or `facet_grid`, treating multiple groups as internal facets when no explicit
+  facet is provided (#173).
+- Enforced mandatory icon specification with clear error messages, added hard
+  stop for `dpi` values below 30 to prevent blurry icons, and enhanced warnings
+  for ambiguous input scenarios (#175).
+- Improved error messages throughout with actionable fixes and examples, changed
+  icon PNG file writing to use temporary cache directory instead of package
+  directory, and standardized internal column naming conventions (#179).
 
----
+## New Features
 
-## #164 - Fix dependencies
+- Added support for raw dataframes without requiring `process_data()`, with
+  automatic mode detection and type inference for user convenience (#177).
 
-**Description:**  
-Updated the package to version 1.5.0 with improvements focused on legend customization, icon rendering, documentation, and package dependencies. Added `rsvg` package for icon rendering and removed restrictions on dataset specification.
+## Breaking Changes
 
-**Files Changed:**  
-- `DESCRIPTION`  
-  - Updated version to 1.5.0.
-  - Added `rsvg` to Imports.
-  - Updated author information and corrected ordering.
-  - Fixed RoxygenNote version.
-- `R/draw_key.R`  
-  - Renamed function from `ddraw_key_pop_image` to `draw_key_pop_image`.
-  - Integrated `rsvg::librsvg_version()` for improved compatibility.
-- `R/errors.R`  
-  - Removed restriction preventing users from specifying different datasets in `ggplot(data=...)` and `geom_pop(data=...)`.
-- `R/scale_legend_icon.R`  
-  - Added support for `margin` parameter in documentation.
-- `man/geom_pop.Rd`  
-  - Updated documentation for default icon, size, and quality parameters (quality was later renamed to dpi in issue #161).
-- `man/ggpop-package.Rd`  
-  - Updated author information.
-- `man/scale_legend_icon.Rd`  
-  - Enhanced documentation for legend parameters.
+- Changed default `icon` from `"default"` to `"ggmale"` and default `size` from
+  `1` to `3` in `geom_pop`. This may affect existing code relying on previous
+  default values (#162).
 
----
+## Issues Resolved in v1.5.0
 
-## #166 - Refactor facet handling in geom_pop function
+Issues are listed in chronological merge order.
+Issues related to "Upload final set of parameters" or "Prerelease version vX.X.X"
+are intentionally excluded.
 
-**Description:**  
-Improved facet argument processing to support both symbol and string inputs, validate facet column existence, and update data manipulation logic to use the resolved facet column, enhancing flexibility and robustness when faceting plots.
+- #162
+- #164
+- #166
+- #168
+- #161
+- #152
+- #173
+- #175
+- #177
+- #179
 
-**Files Changed:**  
-- `R/geom_pop.R`  
-  - Added facet handling logic to accept either symbols or strings (e.g., `facet = sex` or `facet = "sex"`).
-  - Improved error messages for missing facet columns.
-  - Updated data join logic for faceted data using `.data[[facet_col]]`.
-  - Refactored size variable handling and coordinate size naming.
+## Version
 
----
-
-## #168 - Fix legend issue in facet
-
-**Description:**  
-Refactored the `geom_pop` function to improve code clarity, consistency, and legend handling for icon-based plots by standardizing data manipulation, simplifying facet logic, and introducing robust legend icon assignment.
-
-**Files Changed:**  
-- `R/geom_pop.R`  
-  - Replaced base R operations with explicit `dplyr` functions throughout (mutate, arrange, select, group_by, etc.).
-  - Simplified facet and size logic with cleaner error messages.
-  - Introduced `key_glyph_pop()` function for dynamic legend icon assignment based on scale breaks and order.
-  - Added final checks for required columns (`x1`, `y1`) after merging.
-  - Refactored mapping construction for `ggimage::geom_image`.
-- `R/draw_key.R`  
-  - Added newline at end of file for consistency.
-
----
-
-## #161 - Change dpi instead of quality argument in geom_pop
-
-**Description:**  
-Renamed the `quality` parameter to `dpi` throughout the function and documentation for clarity, indicating it refers to image pixel height rather than subjective quality.
-
-**Files Changed:**  
-- `R/geom_pop.R`  
-  - Renamed `quality` parameter to `dpi` in function signature and usage.
-  - Modified icon rendering to always regenerate PNG with specified `dpi`, deleting existing files.
-  - Updated validation calls to use `dpi`.
-- `man/geom_pop.Rd`  
-  - Updated documentation to use `dpi` instead of `quality`.
-
----
-
-## #152 - Add errors and warnings file
-
-**Description:**  
-Introduced stricter input validation, enhanced warning messages, collision avoidance between icon and coordinate size variables, and enforcement of maximum icon limits per plot or facet group.
-
-**Files Changed:**  
-- `R/process_data.R`  
-  - Changed default `sample_size` from 1000 to 100.
-  - Added strict validation for `sample_size` argument (must be integer between 1-1000).
-- `R/geom_pop.R`  
-  - Renamed size mapping to `icon_size` and coordinate size to `coord_size` to avoid collisions.
-  - Enforced maximum of 1000 icons per plot or per facet group with clear error messages.
-  - Updated internal logic to use new variable names.
-- `R/warnings.R`  
-  - Refactored `warn_geom_pop_inputs()` with more detailed warnings about icon mapping, DPI settings, size validity, and legend ambiguity.
-  - Added ASCII-safe warning format.
-
----
-
-## #173 - Stop using facet in argument aes(), move to a unique facet
-
-**Description:**  
-Introduced significant improvements to facet handling, clearer warnings, and improved internal logic for icon positioning and legend generation, making it easier to work with faceted plots and grouped data.
-
-**Files Changed:**  
-- `R/geom_pop.R`  
-  - Added logic to auto-infer facet variable from `facet_wrap` or `facet_grid`.
-  - Updated icon position assignment to treat `group` as facet internally when no facet provided but multiple groups exist.
-  - Introduced comprehensive ASCII-safe warning system about icon overlap and facet usage.
-  - Improved variable naming to avoid collisions (icon_size vs coord_size).
-  - Refined legend handling to respect scale breaks and grouping.
-- `R/warnings.R`  
-  - Standardized warning messages with ASCII-safe formatting.
-- `man/process_data.Rd`  
-  - Updated default `sample_size` documentation to 100.
-
----
-
-## #175 - Finish first version of warnings and errors
-
-**Description:**  
-Introduced stricter error handling and more informative user guidance by enforcing mandatory icon specification, preventing low-quality DPI rendering, and enhancing warnings for ambiguous input scenarios.
-
-**Files Changed:**  
-- `R/geom_pop.R`  
-  - Added hard stop for `dpi` values below 30 (blurry icons).
-  - Enforced that every row must have valid `icon` value with clear error message and example.
-  - Added warning when `size` specified both in `aes()` and as direct argument.
-- `R/warnings.R`  
-  - Enhanced `warn_geom_pop_inputs()` to warn about low/high DPI values, invalid size, and legend ambiguity.
-  - Added checks for multiple icons per color group.
-  - Removed previous warning allowing missing icons.
-
----
-
-## #177 - Allow user to use their own dataframes without using process_data()
-
-**Description:**  
-Refactored to provide more flexible handling of input data, improved error messages, and safer data manipulation, especially regarding grouping and icon assignment. Users can now use raw dataframes without `process_data()`.
-
-**Files Changed:**  
-- `R/errors.R`  
-  - Updated `validate_geom_pop_inputs` to check for `dpi` parameter instead of `quality`.
-- `R/geom_pop.R`  
-  - Added mode detection to identify "processed" vs "raw" data.
-  - For raw data, infers grouping from mapped aesthetics and adds `type` column if needed.
-  - Data arrangement checks for presence of `n` and `prop` columns before selecting/binding.
-  - Used `.data[[var]]` throughout for safer non-standard evaluation.
-  - Improved error messages with clear fixes and examples.
-- `R/warnings.R`  
-  - Improved legend ambiguity warning with safer grouping and summarization.
-
----
-
-## #179 - Finish first version of errors file
-
-**Description:**  
-Improved usability and robustness by enhancing user warnings, clarifying error messages, updating temporary file handling, and standardizing column naming conventions.
-
-**Files Changed:**  
-- `R/geom_pop.R`  
-  - Added warning when `size` specified both in `aes()` and as argument, explaining usage.
-  - Improved error message for missing grouping information with actionable fixes and examples.
-  - Changed icon PNG file writing to use temporary cache directory (`tempdir()`) instead of package directory.
-  - Standardized column names from `.group`/`.icon` to `group`/`icon` for consistency.
-- `R/warnings.R`  
-  - Updated warning helper to use standardized column names (`group`/`icon`).
-
----
+- #151
 
 # ggpop 1.4.0
 
