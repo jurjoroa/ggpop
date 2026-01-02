@@ -32,25 +32,7 @@ warn_geom_pop_inputs <- function(data,
       ))
     }
   }
-  
-  # ------------------------------------------------------------------
-  # 2) REQUIRED COLUMNS (helps when users bypass process_data())
-  # ------------------------------------------------------------------
-  if (!"type" %in% names(data)) {
-    warnings <- c(warnings, .msg(
-      "[geom_pop] Column `type` not found in `data`.\n",
-      "  - `process_data()` typically creates `type`.\n",
-      "  -> Fix: run process_data(...) first, or provide a `type` column."
-    ))
-  }
-  
-  if (isTRUE(arrange) && (!all(c("n", "prop") %in% names(data)))) {
-    warnings <- c(warnings, .msg(
-      "[geom_pop] `arrange = TRUE` requires `n` and `prop` columns.\n",
-      "  -> Fix: run process_data(...), or set arrange = FALSE."
-    ))
-  }
-  
+
   # ------------------------------------------------------------------
   # 3) x / y ARE NOT PART OF THE API
   # ------------------------------------------------------------------
