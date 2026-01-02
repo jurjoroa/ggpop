@@ -15,7 +15,7 @@ Introduced improved input validation and user guidance for the `geom_pop` functi
 
 **Files Changed:**  
 - `R/errors.R`  
-  - Added new file with `validate_geom_pop_inputs()` function to enforce correct usage of aesthetics, validate the `quality` argument (later renamed to `dpi`), and prevent conflicting dataset specifications.
+  - Added new file with `validate_geom_pop_inputs()` function to enforce correct usage of aesthetics, validate the `quality` argument, and prevent conflicting dataset specifications.
 - `R/warnings.R`  
   - Added new file with `warn_geom_pop_inputs()` function to provide user warnings for common pitfalls (missing icon specifications, conflicting size arguments, ignored aesthetics).
 - `R/geom_pop.R`  
@@ -46,7 +46,7 @@ Updated the package to version 1.5.0 with improvements focused on legend customi
 - `R/scale_legend_icon.R`  
   - Added support for `margin` parameter in documentation.
 - `man/geom_pop.Rd`  
-  - Updated documentation for default icon, size, and quality parameters.
+  - Updated documentation for default icon, size, and quality parameters (quality was later renamed to dpi in issue #161).
 - `man/ggpop-package.Rd`  
   - Updated author information.
 - `man/scale_legend_icon.Rd`  
