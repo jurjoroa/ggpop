@@ -505,15 +505,23 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         if (is.na(this_icon) || !nzchar(this_icon)) {
           NA_character_
         } else {
-          png_path <- file.path("inst", "figures", "png", paste0(this_icon, ".png"))
-          if (!dir.exists(dirname(png_path))) dir.create(dirname(png_path), recursive = TRUE)
+          
+          # write to a temp cache dir (safe for installed packages)
+          cache_dir <- file.path(tempdir(), "ggpop-icons")
+          if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
+          
+          png_path <- file.path(cache_dir, paste0(this_icon, ".png"))
+          
+          # keep your current behavior: always overwrite
           if (file.exists(png_path)) unlink(png_path)
+          
           fontawesome::fa_png(this_icon, file = png_path, height = dpi)
           png_path
         }
       }
     ) %>%
     dplyr::ungroup()
+  
   
   # ---- LEGEND FIX: inject icon into key-glyph using .id ----
   # ---- LEGEND FIX: respect scale breaks order (works with breaks + labels) ----
