@@ -1,11 +1,15 @@
+
 # --- Internal warning function (API-aligned, ASCII-safe) ---
 warn_geom_pop_inputs <- function(data,
                                  mapping_list,
                                  inherited_mapping_list,
                                  icon,
                                  missing_size,
+                                 size,
                                  legend_icons = TRUE,
-                                 dpi = 50) {
+                                 dpi = 50,
+                                 arrange = FALSE) {
+  
   
   .has <- function(x, nm) !is.null(x) && nm %in% names(x)
   .msg <- function(...) paste0(...)
@@ -18,16 +22,6 @@ warn_geom_pop_inputs <- function(data,
   icon_mapped  <- .has(mapping_list, "icon")
   has_icon_col <- "icon" %in% names(data)
   
-  if (!icon_mapped && !has_icon_col) {
-    warnings <- c(warnings, .msg(
-      "[geom_pop] No icon provided.\n",
-      "  - Neither `aes(icon = ...)` nor an `icon` column was found.\n",
-      "  - Using default icon: '", icon, "'.\n",
-      "  -> Fix: add `aes(icon = icon)` and create an `icon` column, ",
-      "or pass `icon = \"...\"`."
-    ))
-  }
-  
   if (icon_mapped) {
     icon_var <- tryCatch(rlang::as_name(mapping_list[["icon"]]), error = function(e) NULL)
     if (!is.null(icon_var) && !icon_var %in% names(data)) {
@@ -38,7 +32,7 @@ warn_geom_pop_inputs <- function(data,
       ))
     }
   }
-  
+
   # ------------------------------------------------------------------
   # 3) x / y ARE NOT PART OF THE API
   # ------------------------------------------------------------------
@@ -57,31 +51,20 @@ warn_geom_pop_inputs <- function(data,
   }
   
   # ------------------------------------------------------------------
-  # 4) Legend icons expectation
+  # 5) dpi validity + guidance
   # ------------------------------------------------------------------
-  has_colour_mapping <- any(
-    c("colour", "color") %in%
-      union(names(mapping_list), names(inherited_mapping_list))
-  )
-  
-  if (legend_icons && !has_colour_mapping) {
+  if (!is.numeric(dpi) || length(dpi) != 1 || is.na(dpi) || !is.finite(dpi)) {
     warnings <- c(warnings, .msg(
-      "[geom_pop] `legend_icons = TRUE` but no `color` / `colour` aesthetic is mapped.\n",
-      "  - Icon legends require a colour-based grouping.\n",
-      "  -> Fix: add `aes(color = <group>)` and a corresponding scale."
+      "[geom_pop] `dpi` must be a single finite number.\n",
+      "  - You provided: ", paste(dpi, collapse = ", "), "\n",
+      "  -> Fix: use dpi = 50 (or 50-200 for crisp icons)."
     ))
-  }
-  
-  # ------------------------------------------------------------------
-  # 5) DPI guidance (educational, not noisy)
-  # ------------------------------------------------------------------
-  if (is.numeric(dpi) && length(dpi) == 1) {
-    
-    if (dpi < 20) {
+  } else {
+    if (dpi < 50) {
       warnings <- c(warnings, .msg(
-        "[geom_pop] `dpi = ", dpi, "` is very low.\n",
-        "  - Icons may appear blurry.\n",
-        "  -> Tip: use `dpi = 80-200` for crisp rendering."
+        "[geom_pop] `dpi = ", dpi, "` is on the low side.\n",
+        "  - Icons may still look soft at 30-49.\n",
+        "  -> Tip: use 50-200 for crisp icons (change `size` to resize, not `dpi`)."
       ))
     }
     
@@ -95,6 +78,63 @@ warn_geom_pop_inputs <- function(data,
   }
   
   # ------------------------------------------------------------------
+  # 6) size validity (only when not missing / not mapped)
+  # ------------------------------------------------------------------
+  if (!missing_size) {
+    if (!is.numeric(size) || length(size) != 1 || is.na(size) || !is.finite(size) || size <= 0) {
+      warnings <- c(warnings, .msg(
+        "[geom_pop] `size` must be a single positive number.\n",
+        "  - You provided: ", paste(size, collapse = ", "), "\n",
+        "  -> Fix: use size > 0 (e.g., size = 3)."
+      ))
+    }
+  }
+  
+  # ------------------------------------------------------------------
+  # 8) Legend ambiguity: >1 icon per color group (only matters if a legend group exists)
+  # ------------------------------------------------------------------
+  if (isTRUE(legend_icons) && icon_mapped) {
+    
+    col_nm <- if ("colour" %in% names(mapping_list)) {
+      "colour"
+    } else if ("color" %in% names(mapping_list)) {
+      "color"
+    } else {
+      NULL
+    }
+    
+    # If there's no color/colour mapping, there is no legend grouping to be ambiguous about.
+    if (!is.null(col_nm)) {
+      
+      col_var  <- tryCatch(rlang::as_name(mapping_list[[col_nm]]), error = function(e) NULL)
+      icon_var <- tryCatch(rlang::as_name(mapping_list[["icon"]]), error = function(e) NULL)
+      
+      if (!is.null(col_var) && !is.null(icon_var) &&
+          col_var %in% names(data) && icon_var %in% names(data)) {
+        
+        n_icon_per_group <- data |>
+          dplyr::distinct(.g = .data[[col_var]], .i = .data[[icon_var]]) |>
+          dplyr::count(.g, name = "n_icons")
+        
+        if (any(n_icon_per_group$n_icons > 1)) {
+          
+          offenders <- paste0(
+            n_icon_per_group$.g[n_icon_per_group$n_icons > 1],
+            collapse = ", "
+          )
+          
+          warnings <- c(warnings, .msg(
+            "[geom_pop] Some legend groups map to multiple icons.\n",
+            "  - Offenders: ", offenders, "\n",
+            "  -> Fix: ensure exactly 1 icon per color group, or set legend_icons = FALSE."
+          ))
+        }
+      }
+    }
+  }
+  
+  
+  # ------------------------------------------------------------------
   # Emit warnings (one per conceptual issue)
   # ------------------------------------------------------------------
   if (length(warnings)) {
@@ -103,4 +143,5 @@ warn_geom_pop_inputs <- function(data,
   
   invisible(NULL)
 }
+
 
