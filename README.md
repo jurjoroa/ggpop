@@ -273,3 +273,16 @@ This type of plot can be used to present complex population data in a more acces
 
 ![SimCRC Natural History](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/simcrc_natural_history.png)
 
+
+
+### Citation
+
+```bibtex
+@Manual{ggpop2024,
+  title   = {ggpop: Visualizing Population Data},
+  author  = {Roa-Contreras, Jorge A. and Soultanova, Ralitza and Alarid-Escudero, Fernando and Pineda-Antunez, Carlos},
+  year    = {2024},
+  note    = {R package version 1.5.0},
+  url     = {https://github.com/jurjoroa/ggpop},
+  license = {CC BY-NC-SA 4.0}
+}

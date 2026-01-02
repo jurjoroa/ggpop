@@ -1,33 +1,35 @@
 Type: Package
 Package: ggpop
 Title: Visualizing Population Data (ggpop)
-Version: 1.4.1
+Version: 1.5.0
 Authors@R: c(
-    person(given = "Jorge",
-           family = "Roa",
-           role = c("aut", "cre"),
-           email = "jorgeroa@stanford.edu",
-           comment = c(ORCID = "0000-0002-3972-9793")),
+    person(given = "Jorge A.",
+             family = "Roa-Contreras",
+             role = c("aut", "cre"),
+             email = "jorgeroa@stanford.edu",
+             comment = c(ORCID = "0000-0002-3972-9793")),
+
     person(given = "Ralitza",
            family = "Soultanova",
            role = c("aut"),
            email = "Ralitza.soultanova@gmail.com",
            comment = c(ORCID = "0009-0000-9324-5653")),
     person(given = "Fernando",
-           family = "Alarid-Escudero",
-           role = c("aut"),
-           email = "falarid@stanford.edu",
-           comment = c(ORCID = "0000-0001-5076-1172")),
-    person(given = "Carlos",
-           family = "Pineda-Antunez",
-           role = c("aut"),
-           email = "cpinedaa@uw.edu",
-           comment = c(ORCID = "0000-0002-8352-7080")))
+             family = "Alarid-Escudero",
+             role = c("aut"),
+             email = "falarid@stanford.edu",
+             comment = c(ORCID = "0000-0001-5076-1172")),
+     person(given = "Carlos",
+             family = "Pineda-Antunez",
+             role = c("aut"),
+             email = "cpinedaa@uw.edu",
+             comment = c(ORCID = "0000-0002-8352-7080")))
+
 Description: ggpop is an R package that creates visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.
-License: MIT + file LICENSE
+License: CC BY-NC-SA 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
@@ -42,6 +44,7 @@ Imports:
     tidyr,
     purrr,
     ggtext,
-    fontawesome
+    fontawesome,
+    rsvg
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues

@@ -8,6 +8,7 @@
 #'
 #' @param size A numeric value specifying the size of the icons in the legend.
 #'   Larger values create bigger icons.
+#' @param margin A `margin()` object from `ggplot2` to set the plot margins.
 #' @param ... Additional parameters passed on to [ggplot2::guide_legend()]. This
 #'   lets you control all aspects of the legend, such as `title`, `title.position`,
 #'   `label.position`, `label.theme`, and so forth.
@@ -17,7 +18,9 @@
 #' @importFrom ggplot2 aes labs theme ggplot_build last_plot
 #'
 #' @export
-scale_legend_icon <- function(size = 10, margin = ggplot2::margin(0, 0, 30, 0), ...) {
+scale_legend_icon <- function(size = 10, margin = NULL, ...) {
+  
+  if (is.null(margin)) margin <- ggplot2::margin(0, 0, 30, 0)
   # Retrieve the built plot data
   gg_obj <- ggplot2::last_plot()
   data <- gg_obj$layers[[1]]$data
@@ -33,13 +36,12 @@ scale_legend_icon <- function(size = 10, margin = ggplot2::margin(0, 0, 30, 0), 
     # Custom legend guide using the key glyph function
     ggplot2::guides(
       color = ggplot2::guide_legend(
-        override.aes = list(icon = icons, size = size),
-        key_glyph = draw_key_pop_image,
-        ...
+        override.aes = list(icon = icons, size = size)
+        #key_glyph = draw_key_pop_image,
+        #...
       )
     ),
     # Add the predetermined plot margin
     ggplot2::theme(plot.margin = margin)
   )
 }
-
