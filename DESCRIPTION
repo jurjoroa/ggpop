@@ -3,8 +3,8 @@ Package: ggpop
 Title: Visualizing Population Data (ggpop)
 Version: 1.5.0
 Authors@R: c(
-    person(given = "Jorge",
-             family = "Roa",
+    person(given = "Jorge A.",
+             family = "Roa-Contreras",
              role = c("aut", "cre"),
              email = "jorgeroa@stanford.edu",
              comment = c(ORCID = "0000-0002-3972-9793")),
