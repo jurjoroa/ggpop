@@ -201,6 +201,27 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
+  
+  # -------------------------------------------------
+  # WARNING: size specified both in aes() and as argument
+  # -------------------------------------------------
+  if ("size" %in% names(mapping_list) && !missing(size)) {
+    
+    warning(
+      paste0(
+        "[geom_pop] `size` was provided both inside aes() and as a parameter.\n\n",
+        "What happens:\n",
+        "- `aes(size = <variable>)` controls icon size per row.\n",
+        "- The argument `geom_pop(aes(), size = ", size, ")` will be ignored.\n\n",
+        "Tip:\n",
+        "- Use ONLY `aes(size = <variable>)` for data-driven sizes, OR\n",
+        "- Remove `size` from aes() and set a fixed size via geom_pop(size = ...).\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  
   # -------------------------------------------------
   # HARD STOP: icon is mandatory
   # -------------------------------------------------
@@ -247,11 +268,20 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     if (is.null(src_var)) {
       stop(
         paste0(
-          "[geom_pop] Raw data detected (no `type` column).\n\n",
+          "[geom_pop] Raw data detected.\n\n",
+          "Why this is an error:\n",
+          "- Your data was not created with `process_data()`.\n",
+          "- `geom_pop()` needs a grouping variable to build the circle layout.\n\n",
           "Fix:\n",
-          "- Add a `type` column to your data, OR\n",
-          "- Map `aes(group = <var>)` (recommended), OR\n",
-          "- Map `aes(color = <var>)`.\n"
+          "- Map `aes(group = <variable>)` (recommended), OR\n",
+          "- Map `aes(color = <variable>)`.\n\n",
+          "Example:\n",
+          "  ggplot() +\n",
+          "    geom_pop(\n",
+          "      data = df,\n",
+          "      aes(icon = icon, group = sex),\n",
+          "      size = 4\n",
+          "    )\n"
         ),
         call. = FALSE
       )
