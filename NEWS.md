@@ -15,7 +15,7 @@ Introduced improved input validation and user guidance for the `geom_pop` functi
 
 **Files Changed:**  
 - `R/errors.R`  
-  - Added new file with `validate_geom_pop_inputs()` function to enforce correct usage of aesthetics, validate the `quality` argument, and prevent conflicting dataset specifications.
+  - Added new file with `validate_geom_pop_inputs()` function to enforce correct usage of aesthetics, validate the `quality` argument (later renamed to `dpi`), and prevent conflicting dataset specifications.
 - `R/warnings.R`  
   - Added new file with `warn_geom_pop_inputs()` function to provide user warnings for common pitfalls (missing icon specifications, conflicting size arguments, ignored aesthetics).
 - `R/geom_pop.R`  
@@ -189,10 +189,6 @@ Improved usability and robustness by enhancing user warnings, clarifying error m
   - Updated warning helper to use standardized column names (`group`/`icon`).
 
 ---
-
-## Version
-
-- #151
 
 # ggpop 1.4.0
 
