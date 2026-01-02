@@ -107,7 +107,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
   }
   
-  
   # -------------------------------------------------
   # HARD STOP: dpi too low -> blurry icons
   # -------------------------------------------------
@@ -125,7 +124,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       )
     }
   }
-  
   
   # -------------------------------------------------
   # SOFT WARNING (single, ASCII-safe)
@@ -201,7 +199,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     )
   }
   
-  
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
   # -------------------------------------------------
@@ -214,24 +211,64 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     stop(
       paste0(
         "[geom_pop] No icon specified.\n\n",
-        "Why this is an error:\n",
-        "- `geom_pop()` requires an icon for every row.\n",
-        "- There is no meaningful default icon.\n\n",
         "Fix:\n",
         "- Provide `aes(icon = <column>)`, OR\n",
-        "- Add an `icon` column to `data`.\n\n",
-        "Example:\n",
-        "  df |> dplyr::mutate(icon = 'male')\n",
-        "  ggplot() + geom_pop(aes(icon = icon))\n"
+        "- Add an `icon` column to `data`.\n"
       ),
       call. = FALSE
     )
   }
   
-  
-  
   if ("image" %in% names(mapping_list)) {
     stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
+  }
+  
+  # -------------------------------------------------
+  # MODE DETECTION (keep process_data users working; support raw users too)
+  # -------------------------------------------------
+  processed_mode <- "type" %in% names(data)
+  
+  if (!processed_mode) {
+    
+    .get_mapped_var <- function(aes_name) {
+      if (aes_name %in% names(mapping_list)) {
+        tryCatch(rlang::as_name(mapping_list[[aes_name]]), error = function(e) NULL)
+      } else {
+        NULL
+      }
+    }
+    
+    group_var_m <- .get_mapped_var("group")
+    col_var_m   <- .get_mapped_var("colour")
+    if (is.null(col_var_m)) col_var_m <- .get_mapped_var("color")
+    
+    src_var <- group_var_m %||% col_var_m
+    
+    if (is.null(src_var)) {
+      stop(
+        paste0(
+          "[geom_pop] Raw data detected (no `type` column).\n\n",
+          "Fix:\n",
+          "- Add a `type` column to your data, OR\n",
+          "- Map `aes(group = <var>)` (recommended), OR\n",
+          "- Map `aes(color = <var>)`.\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    if (!src_var %in% names(data)) {
+      stop(
+        paste0(
+          "[geom_pop] Raw data detected, but mapped grouping variable '", src_var,
+          "' was not found in `data`.\n",
+          "Fix: ensure the column exists or update your aes().\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    data$type <- as.character(data[[src_var]])
   }
   
   validate_geom_pop_inputs(data, mapping_list, icon, size, dpi, inherited_data)
@@ -247,7 +284,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     dpi           = dpi,
     arrange       = arrange
   )
-  
   
   if (!"icon" %in% names(mapping_list)) mapping_list[["icon"]] <- as.name("icon")
   if (!"icon" %in% names(data)) data$icon <- icon
@@ -335,17 +371,20 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   df_merged <- dplyr::left_join(df_coordinates_filtered, data, by = "pos")
   
+  has_np <- all(c("n", "prop") %in% names(data))
+  
   if (!is.null(data) && arrange && !has_facet) {
     
-    df_order <- data %>% dplyr::select(n, prop)
+    if (has_np) df_order <- data %>% dplyr::select(n, prop)
     
     data <- data %>%
       dplyr::mutate(original_order = dplyr::row_number()) %>%
       dplyr::arrange(type, original_order) %>%
       dplyr::mutate(pos = dplyr::row_number()) %>%
-      dplyr::select(-original_order, -n, -prop)
+      dplyr::select(-original_order) %>%
+      dplyr::select(-dplyr::any_of(c("n", "prop")))
     
-    data <- dplyr::bind_cols(data, df_order)
+    if (has_np) data <- dplyr::bind_cols(data, df_order)
     
     sample_size <- length(unique(data$pos))
     
@@ -359,7 +398,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
   } else if (!is.null(data) && arrange && has_facet) {
     
-    df_order <- data %>% dplyr::select(n, prop)
+    if (has_np) df_order <- data %>% dplyr::select(n, prop)
     
     data <- data %>%
       dplyr::group_by(.data[[facet_col]]) %>%
@@ -368,10 +407,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       dplyr::arrange(type, original_order, .data[[facet_col]]) %>%
       dplyr::group_by(.data[[facet_col]]) %>%
       dplyr::mutate(pos = dplyr::row_number()) %>%
-      dplyr::select(-n, -prop) %>%
-      dplyr::ungroup()
+      dplyr::ungroup() %>%
+      dplyr::select(-dplyr::any_of(c("n", "prop")))
     
-    data <- dplyr::bind_cols(data, df_order)
+    if (has_np) data <- dplyr::bind_cols(data, df_order)
     
     sample_size <- data %>%
       dplyr::group_by(.data[[facet_col]]) %>%
@@ -426,7 +465,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # Final data
-  df_final <- df_merged %>% dplyr::filter(!is.na(type))
+  df_final <- df_merged %>% dplyr::filter(!is.na(.data$type))
   
   if (!"x1" %in% names(df_final) || !"y1" %in% names(df_final)) {
     stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
@@ -456,7 +495,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       )
     }
   }
-  
   
   # ---- build per-row PNG path from per-row icon ----
   df_final <- df_final %>%
@@ -593,3 +631,4 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
+
