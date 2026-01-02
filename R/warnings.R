@@ -112,14 +112,18 @@ warn_geom_pop_inputs <- function(data,
           col_var %in% names(data) && icon_var %in% names(data)) {
         
         n_icon_per_group <- data |>
-          dplyr::distinct(.data[[col_var]], .data[[icon_var]]) |>
-          dplyr::group_by(.data[[col_var]]) |>
+          dplyr::distinct(
+            group = .data[[col_var]],
+            icon  = .data[[icon_var]]
+          ) |>
+          dplyr::group_by(group) |>
           dplyr::summarise(n_icons = dplyr::n(), .groups = "drop")
+        
         
         if (any(n_icon_per_group$n_icons > 1)) {
           
           offenders <- paste0(
-            n_icon_per_group[[col_var]][n_icon_per_group$n_icons > 1],
+            n_icon_per_group$group[n_icon_per_group$n_icons > 1],
             collapse = ", "
           )
           

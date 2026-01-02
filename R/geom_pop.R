@@ -542,12 +542,15 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     icon_map <- df_final |>
       dplyr::distinct(
-        .group = .data[[colour_var]],
-        .icon  = .data[[icon_var]]
+        group = .data[[colour_var]],
+        icon  = .data[[icon_var]]
       )
     
-    icon_by_group <- stats::setNames(as.character(icon_map$.icon),
-                                     as.character(icon_map$.group))
+    icon_by_group <- stats::setNames(
+      as.character(icon_map$icon),
+      as.character(icon_map$group)
+    )
+    
   }
   
   .icon_levels_cache <- NULL
