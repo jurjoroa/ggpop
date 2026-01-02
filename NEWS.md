@@ -52,7 +52,7 @@ user-facing behavior unless explicitly noted.
 
 ## Issues Resolved in v1.5.0
 
-Issues are listed in chronological merge order.  
+Issues are listed in chronological merge order.
 Issues related to "Upload final set of parameters" or "Prerelease version vX.X.X"
 are intentionally excluded.
 
