@@ -16,7 +16,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jorge Roa \email{jorgeroa@stanford.edu} (\href{https://orcid.org/0000-0002-3972-9793}{ORCID})
+\strong{Maintainer}: Jorge A. Roa-Contreras \email{jorgeroa@stanford.edu} (\href{https://orcid.org/0000-0002-3972-9793}{ORCID})
 
 Authors:
 \itemize{
