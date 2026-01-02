@@ -10,7 +10,6 @@ warn_geom_pop_inputs <- function(data,
                                  dpi = 50,
                                  arrange = FALSE) {
   
-  
   .has <- function(x, nm) !is.null(x) && nm %in% names(x)
   .msg <- function(...) paste0(...)
   
@@ -32,7 +31,7 @@ warn_geom_pop_inputs <- function(data,
       ))
     }
   }
-
+  
   # ------------------------------------------------------------------
   # 3) x / y ARE NOT PART OF THE API
   # ------------------------------------------------------------------
@@ -91,7 +90,7 @@ warn_geom_pop_inputs <- function(data,
   }
   
   # ------------------------------------------------------------------
-  # 8) Legend ambiguity: >1 icon per color group (only matters if a legend group exists)
+  # 8) Legend ambiguity: >1 icon per color group (NO temp column names; NO bare symbols)
   # ------------------------------------------------------------------
   if (isTRUE(legend_icons) && icon_mapped) {
     
@@ -113,13 +112,14 @@ warn_geom_pop_inputs <- function(data,
           col_var %in% names(data) && icon_var %in% names(data)) {
         
         n_icon_per_group <- data |>
-          dplyr::distinct(.g = .data[[col_var]], .i = .data[[icon_var]]) |>
-          dplyr::count(.g, name = "n_icons")
+          dplyr::distinct(.data[[col_var]], .data[[icon_var]]) |>
+          dplyr::group_by(.data[[col_var]]) |>
+          dplyr::summarise(n_icons = dplyr::n(), .groups = "drop")
         
         if (any(n_icon_per_group$n_icons > 1)) {
           
           offenders <- paste0(
-            n_icon_per_group$.g[n_icon_per_group$n_icons > 1],
+            n_icon_per_group[[col_var]][n_icon_per_group$n_icons > 1],
             collapse = ", "
           )
           
@@ -133,7 +133,6 @@ warn_geom_pop_inputs <- function(data,
     }
   }
   
-  
   # ------------------------------------------------------------------
   # Emit warnings (one per conceptual issue)
   # ------------------------------------------------------------------
@@ -143,5 +142,3 @@ warn_geom_pop_inputs <- function(data,
   
   invisible(NULL)
 }
-
-

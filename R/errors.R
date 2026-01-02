@@ -1,5 +1,5 @@
 # --- Internal validation function ---
-validate_geom_pop_inputs <- function(data, mapping_list, icon, size, quality, inherited_data) {
+validate_geom_pop_inputs <- function(data, mapping_list, icon, size, dpi, inherited_data) {
   if ("image" %in% names(mapping_list)) {
     stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
   }
@@ -11,8 +11,8 @@ validate_geom_pop_inputs <- function(data, mapping_list, icon, size, quality, in
     }
   }
   
-  if (!is.numeric(quality) || length(quality) != 1 || quality <= 0) {
-    stop("`quality` must be a positive numeric scalar.")
+  if (!is.numeric(dpi) || length(dpi) != 1 || dpi <= 0) {
+    stop("`dpi` must be a positive numeric scalar.")
   }
   
   # NOTE: removed the restriction about ggplot(data=...) + geom_pop(data=...)
