@@ -24,34 +24,42 @@
 ##' @export
 draw_key_pop_image <- function(data, params, size) {
   
+  # Cache dir (writable everywhere, including CI)
+  cache_dir <- file.path(tempdir(), "ggpop-icons")
+  if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
+  
   grobs <- lapply(seq_along(data$colour), function(i) {
     
-    icon_path <- paste0("inst/figures/key/", data$icon[i], ".png") #hack with paste0
+    this_icon <- as.character(data$icon[i])
     
-    if (file.exists(icon_path)) {
-      temp_icon_path <- icon_path
+    # 1) Prefer a packaged PNG if you ship it under inst/figures/key/
+    #    (after install it becomes <pkg>/figures/key/)
+    pkg_png <- system.file("figures/key", paste0(this_icon, ".png"), package = "ggpop")
+    
+    rsvg::librsvg_version()
+    
+    # 2) Otherwise generate into temp cache
+    if (nzchar(pkg_png) && file.exists(pkg_png)) {
+      png_path <- pkg_png
     } else {
-      temp_icon_path <- paste0("inst/figures/key/", data$icon[i], ".png")
-      
-      fontawesome::fa_png(paste0(data$icon[i]), file = temp_icon_path) 
-      
-      rsvg::librsvg_version()
+      png_path <- file.path(cache_dir, paste0(this_icon, ".png"))
+      if (!file.exists(png_path)) {
+        fontawesome::fa_png(this_icon, file = png_path, height = 120)
+      }
     }
     
-    img <- magick::image_read(icon_path)
-    
+    img <- magick::image_read(png_path)
     img <- magick::image_quantize(img, colorspace = "gray")
+    img <- magick::image_colorize(
+      img,
+      opacity = data$alpha[i] * 100,
+      color   = data$colour[i]
+    )
     
-    img <- magick::image_colorize(img, opacity = data$alpha[i] * 100, color = data$colour[i])
-    
-    # Create the grob for this icon
-    grid::rasterGrob(
-      x = .5, y = .5,
-      image = img)
+    grid::rasterGrob(x = 0.5, y = 0.5, image = img)
   })
-  # class to gList
-  class(grobs) <- "gList"
   
-  # grob containing the icons
+  class(grobs) <- "gList"
   grid::gTree(children = grobs, name = "image_key")
 }
+
