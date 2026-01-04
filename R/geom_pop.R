@@ -34,7 +34,9 @@
 geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      position = "identity", na.rm = FALSE, show.legend = NA,
                      inherit.aes = TRUE, icon = "ggmale",
-                     group_var = NULL, sample_size = NULL, arrange = FALSE, sum_var = NULL,
+                     group_var = NULL, sample_size = NULL, arrange = FALSE,
+                     seed = NULL,
+                     sum_var = NULL,
                      facet = NULL,
                      size = 3,
                      dpi = 50,
@@ -343,6 +345,28 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (!has_facet && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1) {
     has_facet <- TRUE
     facet_col <- "group"
+  }
+  
+  # -------------------------------------------------
+  # Randomize order when arrange = FALSE (seedable)
+  # -------------------------------------------------
+  if (!isTRUE(arrange)) {
+    
+    if (!is.null(seed)) {
+      if (!is.numeric(seed) || length(seed) != 1 || is.na(seed)) {
+        stop("[geom_pop] `seed` must be a single numeric value.", call. = FALSE)
+      }
+      set.seed(seed)
+    }
+    
+    if (!has_facet) {
+      data <- data[sample.int(nrow(data)), , drop = FALSE]
+    } else {
+      data <- data %>%
+        dplyr::group_by(.data[[facet_col]]) %>%
+        dplyr::slice_sample(prop = 1) %>%
+        dplyr::ungroup()
+    }
   }
   
   if (!has_facet) {
@@ -672,4 +696,3 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
-
