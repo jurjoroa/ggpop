@@ -128,18 +128,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # -------------------------------------------------
   # SOFT WARNING (single, ASCII-safe)
   # -------------------------------------------------
-  # This warning covers two common situations that can lead to icon overlap:
-  # (1) Multiple groups created by process_data(high_group_var = ...)
-  #     without faceting the plot.
-  # (2) Explicit use of facet inside geom_pop(), which is advanced usage
-  #     and may require careful layout choices.
-  #
-  # NOTE:
-  # At layer build time we cannot reliably detect facet_wrap() added later,
-  # so this warning is intentionally conservative.
-  # -------------------------------------------------
   
-  # ASCII-safe helper
   `%||%` <- function(x, y) if (is.null(x) || !nzchar(as.character(x))) y else x
   
   facet_expr <- rlang::enexpr(facet)
@@ -201,7 +190,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
-  
   # -------------------------------------------------
   # WARNING: size specified both in aes() and as argument
   # -------------------------------------------------
@@ -220,7 +208,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
   
   # -------------------------------------------------
   # HARD STOP: icon is mandatory
@@ -330,14 +317,42 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   # -------------------------------------------------
   # UPDATED pos + facet behavior (both implementations)
-  #
-  # 1) If facet is NOT provided, we pool into ONE circle:
-  #    - Always assign global pos (prevents overlap from pre-existing per-group pos)
-  #
-  # 2) If `process_data(high_group_var=...)` was used, it creates `group`.
-  #    - If there are multiple groups, we treat it as faceted internally by `group`,
-  #      even if `facet_wrap(~ group)` is added after geom_pop().
   # -------------------------------------------------
+  
+  # -------------------------------------------------
+  # If arrange = FALSE, interleave groups so the circle
+  # doesn't look "blocked" by group just because the
+  # incoming data is ordered/grouped.
+  #
+  # Deterministic, no RNG, safe for tests.
+  # -------------------------------------------------
+  if (!isTRUE(arrange) && "type" %in% names(data)) {
+    
+    if (!has_facet) {
+      
+      data <- data %>%
+        dplyr::group_by(.data$type) %>%
+        dplyr::mutate(.ggpop_i = dplyr::row_number()) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(.data$.ggpop_i, .data$type) %>%
+        dplyr::select(-.data$.ggpop_i)
+      
+    } else {
+      
+      data <- data %>%
+        dplyr::group_by(.data[[facet_col]], .data$type) %>%
+        dplyr::mutate(.ggpop_i = dplyr::row_number()) %>%
+        dplyr::ungroup() %>%
+        dplyr::arrange(.data[[facet_col]], .data$.ggpop_i, .data$type) %>%
+        dplyr::select(-.data$.ggpop_i)
+      
+    }
+  }
+  
+  # -------------------------------------------------
+  # UPDATED pos + facet behavior (both implementations)
+  # -------------------------------------------------
+  
   
   # If user didn't pass facet=, but data has multiple `group`s, treat as faceting by `group`
   if (!has_facet && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1) {
@@ -346,11 +361,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   if (!has_facet) {
-    # Always override any existing `pos` (prevents overlap when pooling)
     data <- data %>%
       dplyr::mutate(pos = as.numeric(dplyr::row_number()))
   } else {
-    # Always make pos per-facet group (override any existing pos to be safe)
     data <- data %>%
       dplyr::group_by(.data[[facet_col]]) %>%
       dplyr::mutate(pos = as.numeric(dplyr::row_number())) %>%
@@ -372,7 +385,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       )
     }
   } else {
-    # allow up to 1000 icons PER facet group
     per_group <- data %>%
       dplyr::group_by(.data[[facet_col]]) %>%
       dplyr::summarise(n_icons = dplyr::n_distinct(pos), .groups = "drop")
@@ -403,6 +415,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   has_np <- all(c("n", "prop") %in% names(data))
   
+  # -------------------------
+  # ARRANGE (FIXED)
+  # -------------------------
   if (!is.null(data) && arrange && !has_facet) {
     
     if (has_np) df_order <- data %>% dplyr::select(n, prop)
@@ -433,11 +448,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data <- data %>%
       dplyr::group_by(.data[[facet_col]]) %>%
       dplyr::mutate(original_order = dplyr::row_number()) %>%
-      dplyr::ungroup() %>%
-      dplyr::arrange(type, original_order, .data[[facet_col]]) %>%
-      dplyr::group_by(.data[[facet_col]]) %>%
+      dplyr::arrange(type, original_order, .by_group = TRUE) %>%
       dplyr::mutate(pos = dplyr::row_number()) %>%
       dplyr::ungroup() %>%
+      dplyr::select(-original_order) %>%
       dplyr::select(-dplyr::any_of(c("n", "prop")))
     
     if (has_np) data <- dplyr::bind_cols(data, df_order)
@@ -536,13 +550,11 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
           NA_character_
         } else {
           
-          # write to a temp cache dir (safe for installed packages)
           cache_dir <- file.path(tempdir(), "ggpop-icons")
           if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
           
           png_path <- file.path(cache_dir, paste0(this_icon, ".png"))
           
-          # keep your current behavior: always overwrite
           if (file.exists(png_path)) unlink(png_path)
           
           fontawesome::fa_png(this_icon, file = png_path, height = dpi)
@@ -551,7 +563,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       }
     ) %>%
     dplyr::ungroup()
-  
   
   # ---- LEGEND FIX: inject icon into key-glyph using .id ----
   # ---- LEGEND FIX: respect scale breaks order (works with breaks + labels) ----
@@ -672,4 +683,3 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
-
