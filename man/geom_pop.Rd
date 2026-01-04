@@ -20,6 +20,7 @@ geom_pop(
   group_var = NULL,
   sample_size = NULL,
   arrange = FALSE,
+  seed = NULL,
   sum_var = NULL,
   facet = NULL,
   size = 3,
