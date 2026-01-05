@@ -2,24 +2,29 @@
 % Please edit documentation in R/scale_legend_icon.R
 \name{scale_legend_icon}
 \alias{scale_legend_icon}
+\alias{ggplot_add.ggpop_legend_icon}
 \title{Legend helper for geom_pop icon legends}
 \usage{
 scale_legend_icon(size = 10, margin = NULL, ...)
+
+\method{ggplot_add}{ggpop_legend_icon}(object, plot, ...)
 }
 \arguments{
-\item{size}{Numeric. Legend icon size (passed via \code{override.aes}).}
+\item{size}{Numeric. Legend icon size (passed via override.aes).}
 
-\item{margin}{A \code{ggplot2::margin()} object applied to \code{plot.margin}.
-Defaults to \code{ggplot2::margin(0, 0, 30, 0)} if \code{NULL}.}
+\item{margin}{ggplot2::margin() for plot margin (defaults to bottom padding).}
 
-\item{...}{Passed to \code{ggplot2::guide_legend()} (e.g., \code{nrow}, \code{byrow},
-\code{title.position}, etc.).}
+\item{...}{Additional arguments forwarded to ggplot2::guide_legend()
+(e.g., nrow, ncol, byrow, title.position, etc.).}
+
+\item{object}{An object to add to the plot}
+
+\item{plot}{The ggplot object to add \code{object} to}
 }
 \value{
-A ggplot add-on object. Add it to a plot with \code{+ scale_legend_icon(...)}.
+A ggplot2 add-on object. Add it with \code{+ scale_legend_icon(...)}.
 }
 \description{
-Adds a legend override so legend keys can display the correct Font Awesome
-icons associated with each group, without relying on \code{ggplot2::last_plot()}
-(which breaks under \code{ggplotGrob()} / cowplot composition).
+Adds a legend override so legend keys can use the same icons used in the plot,
+without relying on ggplot2::last_plot() (which breaks under ggplotGrob/cowplot).
 }
