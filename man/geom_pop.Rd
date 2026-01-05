@@ -2,11 +2,7 @@
 % Please edit documentation in R/geom_pop.R
 \name{geom_pop}
 \alias{geom_pop}
-\title{Create a circular representative population chart
-#'
-Draws a circular representative population chart based on the proportion of the groups,
-where each point (person) represents a determined number of individuals.
-Every person is represented by an image with a given icon.}
+\title{Create a circular representative population chart}
 \usage{
 geom_pop(
   mapping = NULL,
@@ -99,6 +95,8 @@ the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{ann
 
 \item{arrange}{Logical; if TRUE, the output data is arranged by group.}
 
+\item{seed}{Optional numeric seed used only when \code{arrange = FALSE} (randomized layouts).}
+
 \item{sum_var}{Optional variable to sum over instead of counting.}
 
 \item{facet}{Optional facetting variable.}
@@ -113,11 +111,9 @@ Higher values produce sharper icons. Defaults to 50. This affects \strong{image 
 \item{...}{additional parameters}
 }
 \value{
-A ggplot object with a circular representative population chart.
+A ggplot layer with a circular representative population chart.
 }
 \description{
-Create a circular representative population chart
-#'
 Draws a circular representative population chart based on the proportion of the groups,
 where each point (person) represents a determined number of individuals.
 Every person is represented by an image with a given icon.
