@@ -2,27 +2,24 @@
 % Please edit documentation in R/scale_legend_icon.R
 \name{scale_legend_icon}
 \alias{scale_legend_icon}
-\title{Adjust legend to display custom icons for each group type}
+\title{Legend helper for geom_pop icon legends}
 \usage{
 scale_legend_icon(size = 10, margin = NULL, ...)
 }
 \arguments{
-\item{size}{A numeric value specifying the size of the icons in the legend.
-Larger values create bigger icons.}
+\item{size}{Numeric. Legend icon size (passed via \code{override.aes}).}
 
-\item{margin}{A \code{margin()} object from \code{ggplot2} to set the plot margins.}
+\item{margin}{A \code{ggplot2::margin()} object applied to \code{plot.margin}.
+Defaults to \code{ggplot2::margin(0, 0, 30, 0)} if \code{NULL}.}
 
-\item{...}{Additional parameters passed on to \code{\link[ggplot2:guide_legend]{ggplot2::guide_legend()}}. This
-lets you control all aspects of the legend, such as \code{title}, \code{title.position},
-\code{label.position}, \code{label.theme}, and so forth.}
+\item{...}{Passed to \code{ggplot2::guide_legend()} (e.g., \code{nrow}, \code{byrow},
+\code{title.position}, etc.).}
 }
 \value{
-A \code{guides()} specification that you can add to your ggplot object.
+A ggplot add-on object. Add it to a plot with \code{+ scale_legend_icon(...)}.
 }
 \description{
-This helper function extracts the grouping variable (\code{type}) from the data
-used in the \code{geom_pop} object and applies the corresponding
-icons (stored in the \code{icon} column) as legend keys. It overrides the default
-legend keys to use custom icon glyphs (via \code{draw_key_pop_image}) and sets
-a specified legend key size.
+Adds a legend override so legend keys can display the correct Font Awesome
+icons associated with each group, without relying on \code{ggplot2::last_plot()}
+(which breaks under \code{ggplotGrob()} / cowplot composition).
 }
