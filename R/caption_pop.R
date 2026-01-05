@@ -148,7 +148,7 @@ caption_pop <- function(caption_size = 1, icon_size = 1, hjust = 0.5, text = NUL
   
   #--- Return a list of ggplot2 commands to modify your plot ---
   list(
-    labs(caption = caption_text),
-    theme(plot.caption = ggtext::element_markdown(size = caption_size, hjust = hjust))
+    ggplot2::labs(caption = caption_text),
+    ggplot2::theme(plot.caption = ggtext::element_markdown(size = caption_size, hjust = hjust))
   )
 }
