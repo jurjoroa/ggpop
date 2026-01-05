@@ -1,47 +1,88 @@
-#' Adjust legend to display custom icons for each group type
+# R/scale_legend_icon.R
+
+#' @importFrom ggplot2 ggplot_add
+NULL
+
+#' Legend helper for geom_pop icon legends
 #'
-#' This helper function extracts the grouping variable (`type`) from the data
-#' used in the `geom_pop` object and applies the corresponding
-#' icons (stored in the `icon` column) as legend keys. It overrides the default
-#' legend keys to use custom icon glyphs (via `draw_key_pop_image`) and sets
-#' a specified legend key size.
+#' Adds a legend override so legend keys can display the correct Font Awesome
+#' icons associated with each group, without relying on `ggplot2::last_plot()`
+#' (which breaks under `ggplotGrob()` / cowplot composition).
 #'
-#' @param size A numeric value specifying the size of the icons in the legend.
-#'   Larger values create bigger icons.
-#' @param margin A `margin()` object from `ggplot2` to set the plot margins.
-#' @param ... Additional parameters passed on to [ggplot2::guide_legend()]. This
-#'   lets you control all aspects of the legend, such as `title`, `title.position`,
-#'   `label.position`, `label.theme`, and so forth.
+#' @param size Numeric. Legend icon size (passed via `override.aes`).
+#' @param margin A `ggplot2::margin()` object applied to `plot.margin`.
+#'   Defaults to `ggplot2::margin(0, 0, 30, 0)` if `NULL`.
+#' @param ... Passed to `ggplot2::guide_legend()` (e.g., `nrow`, `byrow`,
+#'   `title.position`, etc.).
 #'
-#' @return A `guides()` specification that you can add to your ggplot object.
-#' 
-#' @importFrom ggplot2 aes labs theme ggplot_build last_plot
-#'
+#' @return A ggplot add-on object. Add it to a plot with `+ scale_legend_icon(...)`.
 #' @export
 scale_legend_icon <- function(size = 10, margin = NULL, ...) {
-  
-  if (is.null(margin)) margin <- ggplot2::margin(0, 0, 30, 0)
-  # Retrieve the built plot data
-  gg_obj <- ggplot2::last_plot()
-  data <- gg_obj$layers[[1]]$data
-  
-  # Determine the unique types and select corresponding icons
-  types <- levels(factor(data$type))
-  icons <- sapply(types, function(t) {
-    idx <- which(data$type == t)
-    data$icon[idx[1]]
-  })
-  
-  list(
-    # Custom legend guide using the key glyph function
-    ggplot2::guides(
-      color = ggplot2::guide_legend(
-        override.aes = list(icon = icons, size = size)
-        #key_glyph = draw_key_pop_image,
-        #...
-      )
-    ),
-    # Add the predetermined plot margin
-    ggplot2::theme(plot.margin = margin)
+  structure(
+    list(size = size, margin = margin, guide_args = list(...)),
+    class = "ggpop_legend_icon"
   )
 }
+
+#' S3 method for adding ggpop_legend_icon objects to ggplot
+#'
+#' @method ggplot_add ggpop_legend_icon
+#' @export
+ggplot_add.ggpop_legend_icon <- function(object, plot, object_name) {
+  
+  if (is.null(object$margin)) object$margin <- ggplot2::margin(0, 0, 30, 0)
+  
+  # Extract layer-1 data from THIS plot (not last_plot)
+  ld <- tryCatch(ggplot2::layer_data(plot, 1), error = function(e) NULL)
+  
+  # If the plot/layer doesn't expose the expected columns, just apply margin
+  if (is.null(ld) || !("type" %in% names(ld)) || !("icon" %in% names(ld))) {
+    return(plot + ggplot2::theme(plot.margin = object$margin))
+  }
+  
+  # Determine legend key order from the trained color scale (breaks)
+  sc <- plot$scales$get_scales("colour")
+  if (is.null(sc)) sc <- plot$scales$get_scales("color")
+  
+  breaks <- NULL
+  if (!is.null(sc)) {
+    breaks <- sc$get_breaks()
+    breaks <- breaks[!is.na(breaks)]
+  }
+  
+  # Fallback: use factor levels or stable sort
+  if (is.null(breaks) || length(breaks) == 0) {
+    if (is.factor(ld$type)) breaks <- levels(ld$type)
+    else breaks <- sort(unique(as.character(ld$type)))
+  } else {
+    breaks <- as.character(breaks)
+  }
+  
+  # Build mapping: type -> first non-missing icon
+  ld$type <- as.character(ld$type)
+  ld$icon <- as.character(ld$icon)
+  
+  icon_map <- tapply(ld$icon, ld$type, function(x) {
+    x <- x[!is.na(x) & nzchar(x)]
+    if (length(x) == 0) NA_character_ else x[1]
+  })
+  
+  # Icons in legend order
+  icons <- unname(icon_map[breaks])
+  icons[is.na(icons) | !nzchar(icons)] <- "user"
+  
+  # Build guide_legend with forwarded args (nrow/byrow/etc.)
+  guide <- do.call(
+    ggplot2::guide_legend,
+    c(
+      list(override.aes = list(icon = icons, size = object$size)),
+      object$guide_args
+    )
+  )
+  
+  plot +
+    ggplot2::guides(color = guide) +
+    ggplot2::theme(plot.margin = object$margin)
+}
+
+  
