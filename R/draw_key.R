@@ -24,6 +24,8 @@
 ##' @export
 draw_key_pop_image <- function(data, params, size) {
   
+  rsvg::librsvg_version()
+  
   cache_dir <- file.path(tempdir(), "ggpop-icons")
   if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
   
