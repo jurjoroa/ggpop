@@ -453,3 +453,88 @@ testthat::test_that("geom_pop clean: stress test with 900 icons", {
     )
   )
 })
+
+testthat::test_that("geom_pop clean: 5 facets, 50 different icons per facet (250 unique icons)", {
+  
+  # Big pool of icons (can be > 250; we will slice to exactly 250)
+  icons_pool <- c(
+    "0","1","2","3","4","5","6","7","8","9",
+    "a","accessible-icon","accusoft","address-book","address-card","adn","adversal","affiliatetheme","airbnb","algolia",
+    "align-center","align-justify","align-left","align-right","alipay","amazon","amazon-pay","amilia","anchor","anchor-circle-check",
+    "anchor-circle-exclamation","anchor-circle-xmark","anchor-lock","android","angellist","angle-down","angle-left","angle-right","angle-up","angles-down",
+    "angles-left","angles-right","angles-up","angrycreative","angular","ankh","app-store","app-store-ios","apper","apple",
+    "apple-pay","apple-whole","archway","arrow-down","arrow-down-1-9","arrow-down-9-1","arrow-down-a-z","arrow-down-long","arrow-down-short-wide","arrow-down-up-across-line",
+    "arrow-down-up-lock","arrow-down-wide-short","arrow-down-z-a","arrow-left","arrow-left-long","arrow-pointer","arrow-right","arrow-right-arrow-left","arrow-right-from-bracket","arrow-right-long",
+    "arrow-right-to-bracket","arrow-right-to-city","arrow-rotate-left","arrow-rotate-right","arrow-trend-down","arrow-trend-up","arrow-turn-down","arrow-turn-up","arrow-up","arrow-up-1-9",
+    "arrow-up-9-1","arrow-up-a-z","arrow-up-from-bracket","arrow-up-from-ground-water","arrow-up-from-water-pump","arrow-up-long","arrow-up-right-dots","arrow-up-right-from-square","arrow-up-short-wide","arrow-up-wide-short",
+    "arrow-up-z-a","arrows-down-to-line","arrows-down-to-people","arrows-left-right","arrows-left-right-to-line","arrows-rotate","arrows-spin","arrows-split-up-and-left","arrows-to-circle","arrows-to-dot",
+    "arrows-to-eye","arrows-turn-right","arrows-turn-to-dots","arrows-up-down","arrows-up-down-left-right","arrows-up-to-line","artstation","asterisk","asymmetrik","at",
+    "atlassian","atom","audible","audio-description","austral-sign","autoprefixer","avianex","aviato","award","aws",
+    "b","baby","baby-carriage","backward","backward-fast","backward-step","bacon","bacteria","bacterium","bag-shopping",
+    "bahai","baht-sign","ban","ban-smoking","bandage","bandcamp","bangladeshi-taka-sign","barcode","bars","bars-progress",
+    "bars-staggered","baseball","baseball-bat-ball","basket-shopping","basketball","bath","battery-empty","battery-full","battery-half","battery-quarter",
+    "battery-three-quarters","battle-net","bed","bed-pulse","beer-mug-empty","behance","bell","bell-concierge","bell-slash","bezier-curve",
+    "bicycle","bilibili","bimobject","binoculars","biohazard","bitbucket","bitcoin","bitcoin-sign","bity","black-tie",
+    "blackberry","blender","blender-phone","blog","blogger","blogger-b","bluesky","bluetooth","bluetooth-b","bold",
+    "bolt","bolt-lightning","bomb","bone","bong","book","book-atlas","book-bible","book-bookmark","book-journal-whills",
+    "book-medical","book-open","book-open-reader","book-quran","book-skull","book-tanakh","bookmark","bootstrap","border-all","border-none",
+    "border-top-left","bore-hole","bots","bottle-droplet","bottle-water","bowl-food","bowl-rice","bowling-ball","box","box-archive",
+    "box-open","box-tissue","boxes-packing","boxes-stacked","braille","brain","brave","brave-reverse","brazilian-real-sign","bread-slice",
+    "bridge","bridge-circle-check","bridge-circle-exclamation","bridge-circle-xmark","bridge-lock","bridge-water","briefcase","briefcase-medical","broom","broom-ball",
+    "brush","btc","bucket","buffer","bug","bug-slash","bugs","building","building-circle-arrow-right","building-circle-check",
+    "building-circle-exclamation","building-circle-xmark","building-columns","building-flag","building-lock","building-ngo","building-shield","building-un","building-user","building-wheat",
+    "bullhorn","bullseye","burger","buromobelexperte","burst","bus","bus-simple","business-time","buy-n-large","buysellads",
+    "c","cable-car","cake-candles","calculator","calendar","calendar-check","calendar-day","calendar-days","calendar-minus","calendar-plus",
+    "calendar-week","calendar-xmark","camera","camera-retro","camera-rotate","campground","canadian-maple-leaf","candy-cane","cannabis","capsules",
+    "car","car-battery","car-burst","car-on","car-rear","car-side","car-tunnel","caravan","caret-down","caret-left",
+    "caret-right","caret-up","carrot","cart-arrow-down","cart-flatbed","cart-flatbed-suitcase","cart-plus","cart-shopping","cash-register","cat"
+  )
+  
+  # Enforce uniqueness and slice to EXACTLY 250
+  icons_250 <- unique(icons_pool)[seq_len(250)]
+  testthat::expect_equal(length(icons_250), 250)
+  
+  facets <- paste0("Facet_", 1:5)
+  
+  df <- do.call(
+    rbind,
+    lapply(seq_along(facets), function(i) {
+      
+      groups_i <- paste0("F", i, "_G", sprintf("%02d", 1:50))
+      
+      # 50 unique icons per facet (disjoint slices)
+      idx <- ((i - 1) * 50 + 1):((i - 1) * 50 + 50)
+      icons_i <- icons_250[idx]
+      
+      data.frame(
+        facet = facets[i],
+        grp   = rep(groups_i, each = 10),
+        icon  = rep(icons_i,  each = 10),
+        stringsAsFactors = FALSE
+      )
+    })
+  )
+  
+  testthat::expect_equal(nrow(df), 5 * 50 * 10)
+  
+  testthat::expect_no_warning(
+    testthat::expect_no_error(
+      ggplot2::ggplot_build(
+        ggplot2::ggplot(df) +
+          geom_pop(
+            ggplot2::aes(icon = icon, group = facet, color = grp),
+            facet = facet,
+            size = 0.55,
+            arrange = FALSE,
+            seed = 42,
+            dpi = 50,
+            legend_icons = TRUE
+          ) +
+          ggplot2::facet_wrap(~ facet, ncol = 3) +
+          ggplot2::theme_void() +
+          scale_legend_icon(size=3)
+          
+      )
+    )
+  )
+})
