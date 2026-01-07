@@ -543,19 +543,30 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     dplyr::ungroup()
   
   # -------------------------------------------------
-  # LEGEND (robust): deterministic icon per type (stable under arrange=FALSE)
-  #   - NO last_plot()
-  #   - Stable under ggplotGrob(), cowplot, patchwork
-  #   - Uses the legend key's `label` when available, otherwise falls back to key index
+  # LEGEND (FIXED): map icons by the ACTUAL legend variable
+  #  - for your test: color = grp => legend_var = "grp"
   # -------------------------------------------------
   
-  icon_by_label <- df_final %>%
+  .get_mapped_var2 <- function(aes_name) {
+    if (aes_name %in% names(mapping_list)) {
+      tryCatch(rlang::as_name(mapping_list[[aes_name]]), error = function(e) NULL)
+    } else {
+      NULL
+    }
+  }
+  
+  legend_var <- .get_mapped_var2("colour")
+  if (is.null(legend_var)) legend_var <- .get_mapped_var2("color")
+  if (is.null(legend_var)) legend_var <- .get_mapped_var2("group")
+  if (is.null(legend_var) || !legend_var %in% names(df_final)) legend_var <- "type"
+  
+  icon_by_legend <- df_final %>%
     dplyr::mutate(
-      type = as.character(type),
-      icon = as.character(icon)
+      .legend = as.character(.data[[legend_var]]),
+      icon    = as.character(icon)
     ) %>%
-    dplyr::filter(!is.na(type), nzchar(type), !is.na(icon), nzchar(icon)) %>%
-    dplyr::group_by(type) %>%
+    dplyr::filter(!is.na(.legend), nzchar(.legend), !is.na(icon), nzchar(icon)) %>%
+    dplyr::group_by(.legend) %>%
     dplyr::summarise(
       icon = {
         tab <- sort(table(icon), decreasing = TRUE)
@@ -564,59 +575,64 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       .groups = "drop"
     )
   
-  icon_by_label <- stats::setNames(icon_by_label$icon, icon_by_label$type)
+  icon_by_legend <- stats::setNames(icon_by_legend$icon, icon_by_legend$.legend)
   
   key_glyph_pop <- function(key_data, params, size) {
-    
-    # Normalize colour/color for downstream draw_key_pop_image()
-    if (!("colour" %in% names(key_data)) && ("color" %in% names(key_data))) {
-      key_data$colour <- key_data$color
-    }
-    
-    # 1) Try legend label (preferred)
-    lbl <- NA_character_
-    if ("label" %in% names(key_data)) {
-      lbl <- as.character(key_data$label[1])
-    }
-    if (is.na(lbl) || !nzchar(lbl)) lbl <- NA_character_
-    
-    ic <- NA_character_
-    if (!is.na(lbl) && lbl %in% names(icon_by_label)) {
-      ic <- icon_by_label[[lbl]]
-    }
-    
-    # 2) Fallback: infer by key index
-    if (is.na(ic) || !nzchar(ic)) {
-      
-      # Use stable order: colour scale breaks if available, else names(icon_by_label)
-      breaks <- names(icon_by_label)
-      if (!is.null(plot_obj)) {
-        sc <- plot_obj$scales$get_scales("colour")
-        if (is.null(sc)) sc <- plot_obj$scales$get_scales("color")
-        if (!is.null(sc)) {
-          br <- sc$get_breaks()
-          br <- br[!is.na(br)]
-          if (length(br)) breaks <- as.character(br)
-        }
-      }
-      
-      icon_levels <- unname(icon_by_label[breaks])
-      
-      idx <- NA_integer_
-      if (".id" %in% names(key_data)) idx <- as.integer(key_data$.id[1])
-      if (is.na(idx) && "group" %in% names(key_data)) idx <- as.integer(key_data$group[1])
-      if (is.na(idx)) idx <- 1L
-      
-      idx <- max(1L, min(length(icon_levels), idx))
-      ic <- as.character(icon_levels[idx])
-    }
-    
-    # 3) Hard fallback
-    if (is.na(ic) || !nzchar(ic)) ic <- "user"
-    
-    key_data$icon <- ic
-    draw_key_pop_image(key_data, params, size)
+
+  if (!("colour" %in% names(key_data)) && ("color" %in% names(key_data))) {
+    key_data$colour <- key_data$color
   }
+
+  if (!("alpha" %in% names(key_data))) key_data$alpha <- 1
+  key_data$alpha[is.na(key_data$alpha)] <- 1
+
+  if (!("colour" %in% names(key_data))) key_data$colour <- "black"
+  key_data$colour[is.na(key_data$colour)] <- "black"
+
+  # IMPORTANT: pull override.aes(size=...) from the legend and pass it along
+  key_data$.legend_size <- if ("size" %in% names(key_data)) key_data$size[1] else 5
+
+  lbl <- NA_character_
+  if ("label" %in% names(key_data)) lbl <- as.character(key_data$label[1])
+  if (is.na(lbl) || !nzchar(lbl)) lbl <- NA_character_
+
+  ic <- NA_character_
+  if (!is.na(lbl) && lbl %in% names(icon_by_legend)) {
+    ic <- icon_by_legend[[lbl]]
+  }
+
+  if (is.na(ic) || !nzchar(ic)) {
+    breaks <- names(icon_by_legend)
+
+    if (!is.null(plot_obj)) {
+      sc <- plot_obj$scales$get_scales("colour")
+      if (is.null(sc)) sc <- plot_obj$scales$get_scales("color")
+      if (!is.null(sc)) {
+        br <- sc$get_breaks()
+        br <- br[!is.na(br)]
+        if (length(br)) breaks <- as.character(br)
+      }
+    }
+
+    icon_levels <- unname(icon_by_legend[breaks])
+
+    idx <- NA_integer_
+    if (".id" %in% names(key_data)) idx <- as.integer(key_data$.id[1])
+    if (is.na(idx) && "group" %in% names(key_data)) idx <- as.integer(key_data$group[1])
+    if (is.na(idx)) idx <- 1L
+
+    idx <- max(1L, min(length(icon_levels), idx))
+    ic <- as.character(icon_levels[idx])
+  }
+
+  if (is.na(ic) || !nzchar(ic)) ic <- "user"
+
+  key_data$icon <- ic
+  draw_key_pop_image(key_data, params, size)
+}
+
+  
+  
   
   mapping_list[["image"]] <- as.name("image")
   mapping_list[["x"]]     <- as.name("x1")
@@ -645,3 +661,4 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
 }
+
