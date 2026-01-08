@@ -99,7 +99,8 @@ the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{ann
 
 \item{sum_var}{Optional variable to sum over instead of counting.}
 
-\item{facet}{Optional facetting variable.}
+\item{facet}{Optional facetting variable. NOTE: final plot must be faceted; enforce with
+\code{validate_geom_pop_faceting(p)} after building the ggplot object.}
 
 \item{size}{The size of the points.}
 

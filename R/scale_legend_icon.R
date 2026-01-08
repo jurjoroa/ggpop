@@ -1,16 +1,8 @@
 #' Legend helper for geom_pop icon legends
 #'
-#' Adds a legend override so legend keys can use the same icons used in the plot,
-#' without relying on ggplot2::last_plot() (which breaks under ggplotGrob/cowplot).
-#'
-#' @param size Numeric. Legend icon size (passed via override.aes).
+#' @param size Numeric. Legend key size in mm (this controls icon size).
 #' @param margin ggplot2::margin() for plot margin (defaults to bottom padding).
 #' @param ... Additional arguments forwarded to ggplot2::guide_legend()
-#'   (e.g., nrow, ncol, byrow, title.position, etc.).
-#'
-#' @inheritParams ggplot2::ggplot_add
-#'
-#' @return A ggplot2 add-on object. Add it with `+ scale_legend_icon(...)`.
 #' @export
 scale_legend_icon <- function(size = 10, margin = NULL, ...) {
   structure(
@@ -23,57 +15,55 @@ scale_legend_icon <- function(size = 10, margin = NULL, ...) {
   )
 }
 
-#' @rdname scale_legend_icon
 #' @export
 #' @importFrom ggplot2 ggplot_add
 ggplot_add.ggpop_legend_icon <- function(object, plot, ...) {
   
   if (is.null(object$margin)) object$margin <- ggplot2::margin(0, 0, 30, 0)
   
-  ld <- tryCatch(ggplot2::layer_data(plot, 1), error = function(e) NULL)
+  key_mm <- object$size
+  if (!is.numeric(key_mm) || length(key_mm) != 1 || is.na(key_mm) || key_mm <= 0) key_mm <- 10
   
-  if (is.null(ld) || !("type" %in% names(ld)) || !("icon" %in% names(ld))) {
-    return(plot + ggplot2::theme(plot.margin = object$margin))
-  }
-  
-  sc <- plot$scales$get_scales("colour")
-  if (is.null(sc)) sc <- plot$scales$get_scales("color")
-  
-  breaks <- NULL
-  if (!is.null(sc)) {
-    breaks <- sc$get_breaks()
-    breaks <- breaks[!is.na(breaks)]
-  }
-  
-  if (is.null(breaks) || length(breaks) == 0) {
-    if (is.factor(ld$type)) breaks <- levels(ld$type)
-    else breaks <- sort(unique(as.character(ld$type)))
-  } else {
-    breaks <- as.character(breaks)
-  }
-  
-  ld$type <- as.character(ld$type)
-  ld$icon <- as.character(ld$icon)
-  
-  icon_map <- tapply(ld$icon, ld$type, function(x) {
-    x <- x[!is.na(x) & nzchar(x)]
-    if (length(x) == 0) return(NA_character_)
-    tab <- sort(table(x), decreasing = TRUE)
-    names(tab)[1]
-  })
-  
-  icons <- unname(icon_map[breaks])
-  icons[is.na(icons) | !nzchar(icons)] <- "user"
-  
-  guide <- do.call(
-    ggplot2::guide_legend,
-    c(
-      list(override.aes = list(icon = icons, size = object$size)),
-      object$guide_args
+  # Apply the theme changes now
+  plot <- plot +
+    ggplot2::theme(
+      plot.margin      = object$margin,
+      legend.key.size  = grid::unit(key_mm, "mm"),
+      legend.key.width = grid::unit(key_mm, "mm"),
+      legend.key.height= grid::unit(key_mm, "mm")
     )
-  )
   
-  plot +
-    ggplot2::guides(color = guide) +
-    ggplot2::theme(plot.margin = object$margin)
+  # If a user adds theme_void() after this, it will override these settings.
+  # We can't prevent that programmatically—so we warn once.
+  if (!is.null(plot$theme) && inherits(plot$theme, "theme")) {
+    # no reliable way to detect future additions; this is just a reminder
+    warning(
+      "[ggpop] If legend icon size doesn't change, add `scale_legend_icon()` AFTER your final theme (e.g., after `theme_void()`).",
+      call. = FALSE
+    )
+  }
+  
+  plot
+}
+
+
+
+#' @export
+ggplot_add.ggpop_geom_pop <- function(object, plot, object_name) {
+  # add the layer
+  plot <- plot + object$layer
+  
+  # If geom_pop had an explicit facet=, automatically add facet_wrap(~facet_col)
+  if (!is.null(object$facet_col) && nzchar(object$facet_col)) {
+    
+    # If plot already has a facet, do not override it
+    if (!inherits(plot$facet, "FacetNull")) {
+      return(plot)
+    }
+    
+    fml <- stats::as.formula(paste0("~", object$facet_col))
+    plot <- plot + ggplot2::facet_wrap(fml)
+  }
+  
+  plot
 }
