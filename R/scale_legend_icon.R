@@ -45,3 +45,25 @@ ggplot_add.ggpop_legend_icon <- function(object, plot, ...) {
   
   plot
 }
+
+
+
+#' @export
+ggplot_add.ggpop_geom_pop <- function(object, plot, object_name) {
+  # add the layer
+  plot <- plot + object$layer
+  
+  # If geom_pop had an explicit facet=, automatically add facet_wrap(~facet_col)
+  if (!is.null(object$facet_col) && nzchar(object$facet_col)) {
+    
+    # If plot already has a facet, do not override it
+    if (!inherits(plot$facet, "FacetNull")) {
+      return(plot)
+    }
+    
+    fml <- stats::as.formula(paste0("~", object$facet_col))
+    plot <- plot + ggplot2::facet_wrap(fml)
+  }
+  
+  plot
+}
