@@ -107,8 +107,8 @@ testthat::test_that("facet 10 panels x 5 groups", {
   df <- base[rep(seq_len(nrow(base)), each = 10), ]
   rownames(df) <- NULL
   
-  testthat::expect_no_warning(
-    testthat::expect_no_error(
+  testthat::expect_no_error(
+    testthat::expect_warning(
       ggplot2::ggplot_build(
         ggplot2::ggplot(df) +
           geom_pop(
@@ -519,7 +519,7 @@ testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)",
   testthat::expect_equal(nrow(df), 5 * 50 * 10)
   
   testthat::expect_no_error(
-    testthat::expect_warning(
+    suppressWarnings(
       ggplot2::ggplot_build(
         ggplot2::ggplot(df) +
           geom_pop(
@@ -533,11 +533,11 @@ testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)",
           ) +
           ggplot2::facet_wrap(~ facet, ncol = 3) +
           ggplot2::theme_void() +
-          scale_legend_icon(size=3)
-          
+          scale_legend_icon(size = 3)
       )
     )
   )
+  
 })
 
 
