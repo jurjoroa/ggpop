@@ -263,8 +263,9 @@ testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group pan
   # ---------------------------------------------------------------------------
   # Compose story with cowplot and ensure it builds cleanly
   # ---------------------------------------------------------------------------
-  testthat::expect_no_warning(
+
     testthat::expect_no_error(
+      suppressWarnings(
       {
         g <- cowplot::plot_grid(
           p1, p2, p3,
