@@ -225,6 +225,90 @@ testthat::test_that("Integration: unknown icon name fails (build/render)", {
   )
 })
 
+
+# ******************************************************************************
+# 4 Legend icons: mismatch triggers expected error ----------------------------
+# ******************************************************************************
+
+testthat::test_that("Legend icon raster count mismatch triggers error", {
+  
+  testthat::skip_if_not_installed("grid")
+  testthat::skip_if_not_installed("gtable")
+  
+  icons_50 <- c(
+    "user", "users", "person", "person-walking", "person-running",
+    "car", "bus", "train", "bicycle", "plane",
+    "heart", "star", "circle", "square", "triangle-exclamation",
+    "house", "building", "tree", "cloud", "bolt",
+    "bell", "bell-slash", "check", "xmark", "ban",
+    "info", "question", "shield", "lock", "unlock",
+    "flag", "map", "map-location-dot", "location-dot", "compass",
+    "briefcase", "suitcase", "passport", "ticket", "route",
+    "calendar", "clock", "hourglass", "stopwatch", "battery-full",
+    "wifi", "signal", "phone", "envelope", "globe"
+  )
+  
+  testthat::expect_equal(length(icons_50), 50)
+  
+  df <- data.frame(
+    grp  = rep(paste0("G", sprintf("%02d", seq_len(50))), each = 5),
+    icon = rep(icons_50, each = 5),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df) +
+    geom_pop(
+      ggplot2::aes(icon = icon, group = grp, color = grp),
+      size = 1,
+      dpi = 100,
+      legend_icons = FALSE   # <- intentionally break the invariant
+    ) +
+    ggplot2::theme_void() +
+    ggplot2::theme(legend.position = "right")
+  
+  gt <- ggplot2::ggplotGrob(p)
+  
+  guide_idx <- which(vapply(
+    gt$grobs,
+    function(x) inherits(x, "gtable") && identical(x$name, "guide-box"),
+    logical(1)
+  ))
+  
+  testthat::expect_true(length(guide_idx) == 1)
+  
+  guide <- gt$grobs[[guide_idx]]
+  
+  rasters <- list()
+  recurse <- function(x) {
+    if (inherits(x, "rastergrob")) {
+      rasters[[length(rasters) + 1]] <<- x
+    }
+    if (inherits(x, "gtable") && length(x$grobs)) {
+      for (g in x$grobs) recurse(g)
+    }
+    if (inherits(x, "gTree") && length(x$children)) {
+      for (g in x$children) recurse(g)
+    }
+    if (is.list(x)) {
+      for (g in x) recurse(g)
+    }
+  }
+  recurse(guide)
+  
+  raster_names <- vapply(rasters, function(r) r$name, character(1))
+  n_unique_rasters <- length(unique(raster_names))
+  n_unique_icons   <- length(unique(df$icon))
+  
+  # 🔥 EXPECTED FAILURE: counts do NOT match
+  testthat::expect_error(
+    testthat::expect_equal(n_unique_rasters, n_unique_icons),
+    info = "Legend raster/icon mismatch did not trigger an error as expected."
+  )
+})
+
+
+
+
 # ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************

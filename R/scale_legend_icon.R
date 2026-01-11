@@ -33,16 +33,6 @@ ggplot_add.ggpop_legend_icon <- function(object, plot, ...) {
       legend.key.height= grid::unit(key_mm, "mm")
     )
   
-  # If a user adds theme_void() after this, it will override these settings.
-  # We can't prevent that programmatically—so we warn once.
-  if (!is.null(plot$theme) && inherits(plot$theme, "theme")) {
-    # no reliable way to detect future additions; this is just a reminder
-    warning(
-      "[ggpop] If legend icon size doesn't change, add `scale_legend_icon()` AFTER your final theme (e.g., after `theme_void()`).",
-      call. = FALSE
-    )
-  }
-  
   plot
 }
 

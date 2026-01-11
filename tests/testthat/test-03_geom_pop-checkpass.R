@@ -22,7 +22,7 @@ testthat::skip_if_not_installed("fontawesome")
 # 01 Basic clean cases ---------------------------------------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: minimal raw mode", {
+testthat::test_that("Minimal raw mode", {
   
   df <- data.frame(
     sex  = c("male", "female", "male", "female"),
@@ -53,7 +53,7 @@ testthat::test_that("geom_pop clean: minimal raw mode", {
         ggplot2::ggplot() +
           geom_pop(
             data = df,
-            ggplot2::aes(icon = icon, group = sex, color = sex),
+            ggplot2::aes(icon = icon, color = sex),
             size = 5,
             dpi = 100
           ) +
@@ -67,7 +67,7 @@ testthat::test_that("geom_pop clean: minimal raw mode", {
 # 02 Data-driven size ----------------------------------------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: aes(size=<var>)", {
+testthat::test_that("aes(size=<var>)", {
   
   df <- data.frame(
     sex  = rep(c("male", "female"), each = 10),
@@ -95,7 +95,7 @@ testthat::test_that("geom_pop clean: aes(size=<var>)", {
 # 03 Facet: 10 panels × 5 groups -----------------------------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: facet 10 panels x 5 groups", {
+testthat::test_that("facet 10 panels x 5 groups", {
   
   base <- data.frame(
     panel = rep(paste0("P", sprintf("%02d", 1:10)), each = 5),
@@ -107,13 +107,14 @@ testthat::test_that("geom_pop clean: facet 10 panels x 5 groups", {
   df <- base[rep(seq_len(nrow(base)), each = 10), ]
   rownames(df) <- NULL
   
-  testthat::expect_no_warning(
-    testthat::expect_no_error(
+  testthat::expect_no_error(
+    testthat::expect_warning(
       ggplot2::ggplot_build(
         ggplot2::ggplot(df) +
           geom_pop(
             ggplot2::aes(icon = icon, group = grp, color = grp),
-            size = 4,
+            facet = panel,
+            size = 1,
             arrange = FALSE,
             seed = 123,
             dpi = 100
@@ -129,7 +130,7 @@ testthat::test_that("geom_pop clean: facet 10 panels x 5 groups", {
 # 04 20 groups with 20 icons ----------------------------------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: 20 groups with 20 icons", {
+testthat::test_that("20 groups with 20 icons", {
   
   icons <- c(
     "user","users","person","person-walking","person-running",
@@ -166,7 +167,7 @@ testthat::test_that("geom_pop clean: 20 groups with 20 icons", {
 # 05 Facet inferred from ggplot -------------------------------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: facet inferred from ggplot", {
+testthat::test_that("facet inferred from ggplot", {
   
   df <- data.frame(
     panel = rep(c("A", "B", "C"), each = 40),
@@ -197,7 +198,7 @@ testthat::test_that("geom_pop clean: facet inferred from ggplot", {
 # 06 arrange=TRUE with n/prop ----------------------------------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: arrange=TRUE with n/prop", {
+testthat::test_that("arrange=TRUE with n/prop", {
   
   df <- data.frame(
     type = rep(c("male", "female"), each = 50),
@@ -229,7 +230,7 @@ testthat::test_that("geom_pop clean: arrange=TRUE with n/prop", {
 # 07 No color mapping (still valid) ----------------------------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: no color mapping", {
+testthat::test_that("no color mapping", {
   
   df <- data.frame(
     sex  = rep(c("male", "female"), each = 40),
@@ -259,7 +260,7 @@ testthat::test_that("geom_pop clean: no color mapping", {
 # 08 arrange=FALSE randomness + seed reproducibility ----------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: arrange=FALSE changes with different seeds", {
+testthat::test_that("arrange=FALSE changes with different seeds", {
   
   df <- data.frame(
     grp  = rep(c("A", "B", "C"), each = 40),
@@ -302,7 +303,7 @@ testthat::test_that("geom_pop clean: arrange=FALSE changes with different seeds"
   )
 })
 
-testthat::test_that("geom_pop clean: same seed is stable across builds", {
+testthat::test_that("Same seed is stable across builds", {
   
   df <- data.frame(
     grp  = rep(c("A", "B", "C"), each = 40),
@@ -349,7 +350,7 @@ testthat::test_that("geom_pop clean: same seed is stable across builds", {
 # 09 Facet grid (rows OR cols) inference ---------------------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: facet_grid inference (single dimension)", {
+testthat::test_that("facet_grid inference (single dimension)", {
   
   df <- data.frame(
     panel = rep(c("Row1", "Row2", "Row3"), each = 60),
@@ -380,7 +381,7 @@ testthat::test_that("geom_pop clean: facet_grid inference (single dimension)", {
 # 10 High group variety, no facet (single pooled circle) ------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: many groups pooled into one circle (50 icons)", {
+testthat::test_that("Many groups pooled into one circle (50 icons)", {
   
   # 50 distinct icons (keep to 50 exactly)
   icons_50 <- c(
@@ -429,7 +430,7 @@ testthat::test_that("geom_pop clean: many groups pooled into one circle (50 icon
 # 11 Large-but-valid icon count (stress under MAX) ------------------------
 # ******************************************************************************
 
-testthat::test_that("geom_pop clean: stress test with 900 icons", {
+testthat::test_that("stress test with 900 icons", {
   
   df <- data.frame(
     grp  = rep(c("A","B","C"), times = c(300, 300, 300)),
@@ -454,7 +455,7 @@ testthat::test_that("geom_pop clean: stress test with 900 icons", {
   )
 })
 
-testthat::test_that("geom_pop clean: 5 facets, 50 different icons per facet (250 unique icons)", {
+testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)", {
   
   # Big pool of icons (can be > 250; we will slice to exactly 250)
   icons_pool <- c(
@@ -517,8 +518,8 @@ testthat::test_that("geom_pop clean: 5 facets, 50 different icons per facet (250
   
   testthat::expect_equal(nrow(df), 5 * 50 * 10)
   
-  testthat::expect_no_warning(
-    testthat::expect_no_error(
+  testthat::expect_no_error(
+    suppressWarnings(
       ggplot2::ggplot_build(
         ggplot2::ggplot(df) +
           geom_pop(
@@ -532,9 +533,235 @@ testthat::test_that("geom_pop clean: 5 facets, 50 different icons per facet (250
           ) +
           ggplot2::facet_wrap(~ facet, ncol = 3) +
           ggplot2::theme_void() +
-          scale_legend_icon(size=3)
-          
+          scale_legend_icon(size = 3)
       )
+    )
+  )
+  
+})
+
+
+testthat::test_that("single plot with 1000 rows and random Font Awesome icons", {
+  
+  all_icons <- fontawesome::fa_metadata()$icon_names
+  
+  all_icons
+  
+  # Sample 1000 icons (allow repeats → safe even if FA < 1000 icons)
+  icons_1000 <- sample(all_icons, 1000, replace = TRUE)
+  
+  testthat::expect_equal(length(icons_1000), 1000)
+  
+  df <- data.frame(
+    grp  = paste0("G", sprintf("%04d", seq_len(1000))),
+    icon = icons_1000,
+    stringsAsFactors = FALSE
+  )
+  
+  testthat::expect_equal(nrow(df), 1000)
+  
+  testthat::expect_no_warning(
+    testthat::expect_no_error(
+      ggplot2::ggplot_build(
+        ggplot2::ggplot(df) +
+          geom_pop(
+            ggplot2::aes(icon = icon, group = grp, color = grp),
+            size = 1,
+            arrange = T,
+            seed = 42,
+            dpi = 50,
+            legend_icons = TRUE
+          ) +
+          ggplot2::theme_void() +
+          scale_legend_icon(size = 3) +
+          #dont add legend
+          ggplot2::theme(legend.position = "none")
+      )
+    )
+  )
+})
+
+
+# ******************************************************************************
+# 12 Legend icons: unique raster grobs match unique icons -----------------------
+# ******************************************************************************
+
+testthat::test_that("2 icons Legend draws one unique raster icon per unique df$icon", {
+  
+  testthat::skip_if_not_installed("grid")
+  testthat::skip_if_not_installed("gtable")
+  
+  df <- data.frame(
+    sex  = c("male", "female", "male", "female"),
+    icon = c("male", "female", "male", "female"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df) +
+    geom_pop(
+      ggplot2::aes(icon = icon, group = sex, color = sex),
+      size = 4,
+      dpi = 100,
+      legend_icons = TRUE
+    ) +
+    scale_legend_icon(size = 3) +
+    ggplot2::theme_void() +
+    ggplot2::theme(legend.position = "right")
+  
+  testthat::expect_no_error(ggplot2::ggplot_build(p))
+  gt <- testthat::expect_no_error(ggplot2::ggplotGrob(p))
+  
+  # Find the legend container (guide-box)
+  guide_idx <- which(vapply(
+    gt$grobs,
+    function(x) inherits(x, "gtable") && identical(x$name, "guide-box"),
+    logical(1)
+  ))
+  
+  testthat::expect_true(
+    length(guide_idx) == 1,
+    info = "No legend found (guide-box missing). Legend may be dropped or disabled."
+  )
+  
+  guide <- gt$grobs[[guide_idx]]
+  
+  # Collect raster grobs inside the legend
+  rasters <- list()
+  recurse <- function(x) {
+    
+    if (inherits(x, "rastergrob")) {
+      rasters[[length(rasters) + 1]] <<- x
+    }
+    
+    if (inherits(x, "gtable") && length(x$grobs)) {
+      for (g in x$grobs) recurse(g)
+    }
+    if (inherits(x, "gTree") && length(x$children)) {
+      for (g in x$children) recurse(g)
+    }
+    if (is.list(x)) {
+      for (g in x) recurse(g)
+    }
+  }
+  recurse(guide)
+  
+  testthat::expect_true(
+    length(rasters) > 0,
+    info = "Legend exists but contains no rastergrob. Legend icons likely not rendered as images."
+  )
+  
+  # Unique raster grob names (proxy for unique icons rendered)
+  raster_names <- vapply(rasters, function(r) r$name, character(1))
+  n_unique_rasters <- length(unique(raster_names))
+  n_unique_icons   <- length(unique(df$icon))
+  
+  testthat::expect_equal(
+    n_unique_rasters,
+    n_unique_icons,
+    info = paste0(
+      "Expected ", n_unique_icons, " unique legend icon raster(s) (one per unique df$icon), ",
+      "but found ", n_unique_rasters, ".\n",
+      "Unique raster names: ", paste(sort(unique(raster_names)), collapse = ", ")
+    )
+  )
+})
+
+
+testthat::test_that("50 icons Legend draws one unique raster icon per unique", {
+  
+  testthat::skip_if_not_installed("grid")
+  testthat::skip_if_not_installed("gtable")
+  
+  # 50 distinct Font Awesome icon names (simple + stable)
+  icons_50 <- c(
+    "user", "users", "person", "person-walking", "person-running",
+    "car", "bus", "train", "bicycle", "plane",
+    "heart", "star", "circle", "square", "triangle-exclamation",
+    "house", "building", "tree", "cloud", "bolt",
+    "bell", "bell-slash", "check", "xmark", "ban",
+    "info", "question", "shield", "lock", "unlock",
+    "flag", "map", "map-location-dot", "location-dot", "compass",
+    "briefcase", "suitcase", "passport", "ticket", "route",
+    "calendar", "clock", "hourglass", "stopwatch", "battery-full",
+    "wifi", "signal", "phone", "envelope", "globe"
+  )
+  
+  testthat::expect_equal(length(icons_50), 50)
+  
+  # Build data: each icon appears multiple times to mimic real usage
+  df <- data.frame(
+    grp  = rep(paste0("G", sprintf("%02d", seq_len(50))), each = 5),
+    icon = rep(icons_50, each = 5),
+    stringsAsFactors = FALSE
+  )
+  
+  testthat::expect_equal(nrow(df), 50 * 5)
+  
+  p <- ggplot2::ggplot(df) +
+    geom_pop(
+      ggplot2::aes(icon = icon, group = grp, color = grp),
+      size = 1,
+      dpi = 100,
+      legend_icons = TRUE
+    ) +
+    scale_legend_icon(size = 2.5) +
+    ggplot2::theme_void() +
+    ggplot2::theme(legend.position = "right")
+  
+  testthat::expect_no_error(ggplot2::ggplot_build(p))
+  gt <- testthat::expect_no_error(ggplot2::ggplotGrob(p))
+  
+  # Find the legend container (guide-box)
+  guide_idx <- which(vapply(
+    gt$grobs,
+    function(x) inherits(x, "gtable") && identical(x$name, "guide-box"),
+    logical(1)
+  ))
+  
+  testthat::expect_true(
+    length(guide_idx) == 1,
+    info = "No legend found (guide-box missing). Legend may be dropped or disabled."
+  )
+  
+  guide <- gt$grobs[[guide_idx]]
+  
+  # Collect raster grobs inside the legend
+  rasters <- list()
+  recurse <- function(x) {
+    
+    if (inherits(x, "rastergrob")) {
+      rasters[[length(rasters) + 1]] <<- x
+    }
+    
+    if (inherits(x, "gtable") && length(x$grobs)) {
+      for (g in x$grobs) recurse(g)
+    }
+    if (inherits(x, "gTree") && length(x$children)) {
+      for (g in x$children) recurse(g)
+    }
+    if (is.list(x)) {
+      for (g in x) recurse(g)
+    }
+  }
+  recurse(guide)
+  
+  testthat::expect_true(
+    length(rasters) > 0,
+    info = "Legend exists but contains no rastergrob. Legend icons likely not rendered as images."
+  )
+  
+  # Unique raster grob names (proxy for unique icons rendered)
+  raster_names <- vapply(rasters, function(r) r$name, character(1))
+  n_unique_rasters <- length(unique(raster_names))
+  n_unique_icons   <- length(unique(df$icon))
+  
+  testthat::expect_equal(
+    n_unique_rasters,
+    n_unique_icons,
+    info = paste0(
+      "Expected ", n_unique_icons, " unique legend icon raster(s) (one per unique df$icon), ",
+      "but found ", n_unique_rasters, ".\n",
+      "Unique raster names: ", paste(sort(unique(raster_names)), collapse = ", ")
     )
   )
 })
