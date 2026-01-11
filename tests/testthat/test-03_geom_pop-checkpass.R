@@ -582,3 +582,186 @@ testthat::test_that("single plot with 1000 rows and random Font Awesome icons", 
 })
 
 
+# ******************************************************************************
+# 12 Legend icons: unique raster grobs match unique icons -----------------------
+# ******************************************************************************
+
+testthat::test_that("2 icons Legend draws one unique raster icon per unique df$icon", {
+  
+  testthat::skip_if_not_installed("grid")
+  testthat::skip_if_not_installed("gtable")
+  
+  df <- data.frame(
+    sex  = c("male", "female", "male", "female"),
+    icon = c("male", "female", "male", "female"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df) +
+    geom_pop(
+      ggplot2::aes(icon = icon, group = sex, color = sex),
+      size = 4,
+      dpi = 100,
+      legend_icons = TRUE
+    ) +
+    scale_legend_icon(size = 3) +
+    ggplot2::theme_void() +
+    ggplot2::theme(legend.position = "right")
+  
+  testthat::expect_no_error(ggplot2::ggplot_build(p))
+  gt <- testthat::expect_no_error(ggplot2::ggplotGrob(p))
+  
+  # Find the legend container (guide-box)
+  guide_idx <- which(vapply(
+    gt$grobs,
+    function(x) inherits(x, "gtable") && identical(x$name, "guide-box"),
+    logical(1)
+  ))
+  
+  testthat::expect_true(
+    length(guide_idx) == 1,
+    info = "No legend found (guide-box missing). Legend may be dropped or disabled."
+  )
+  
+  guide <- gt$grobs[[guide_idx]]
+  
+  # Collect raster grobs inside the legend
+  rasters <- list()
+  recurse <- function(x) {
+    
+    if (inherits(x, "rastergrob")) {
+      rasters[[length(rasters) + 1]] <<- x
+    }
+    
+    if (inherits(x, "gtable") && length(x$grobs)) {
+      for (g in x$grobs) recurse(g)
+    }
+    if (inherits(x, "gTree") && length(x$children)) {
+      for (g in x$children) recurse(g)
+    }
+    if (is.list(x)) {
+      for (g in x) recurse(g)
+    }
+  }
+  recurse(guide)
+  
+  testthat::expect_true(
+    length(rasters) > 0,
+    info = "Legend exists but contains no rastergrob. Legend icons likely not rendered as images."
+  )
+  
+  # Unique raster grob names (proxy for unique icons rendered)
+  raster_names <- vapply(rasters, function(r) r$name, character(1))
+  n_unique_rasters <- length(unique(raster_names))
+  n_unique_icons   <- length(unique(df$icon))
+  
+  testthat::expect_equal(
+    n_unique_rasters,
+    n_unique_icons,
+    info = paste0(
+      "Expected ", n_unique_icons, " unique legend icon raster(s) (one per unique df$icon), ",
+      "but found ", n_unique_rasters, ".\n",
+      "Unique raster names: ", paste(sort(unique(raster_names)), collapse = ", ")
+    )
+  )
+})
+
+
+testthat::test_that("50 icons Legend draws one unique raster icon per unique", {
+  
+  testthat::skip_if_not_installed("grid")
+  testthat::skip_if_not_installed("gtable")
+  
+  # 50 distinct Font Awesome icon names (simple + stable)
+  icons_50 <- c(
+    "user", "users", "person", "person-walking", "person-running",
+    "car", "bus", "train", "bicycle", "plane",
+    "heart", "star", "circle", "square", "triangle-exclamation",
+    "house", "building", "tree", "cloud", "bolt",
+    "bell", "bell-slash", "check", "xmark", "ban",
+    "info", "question", "shield", "lock", "unlock",
+    "flag", "map", "map-location-dot", "location-dot", "compass",
+    "briefcase", "suitcase", "passport", "ticket", "route",
+    "calendar", "clock", "hourglass", "stopwatch", "battery-full",
+    "wifi", "signal", "phone", "envelope", "globe"
+  )
+  
+  testthat::expect_equal(length(icons_50), 50)
+  
+  # Build data: each icon appears multiple times to mimic real usage
+  df <- data.frame(
+    grp  = rep(paste0("G", sprintf("%02d", seq_len(50))), each = 5),
+    icon = rep(icons_50, each = 5),
+    stringsAsFactors = FALSE
+  )
+  
+  testthat::expect_equal(nrow(df), 50 * 5)
+  
+  p <- ggplot2::ggplot(df) +
+    geom_pop(
+      ggplot2::aes(icon = icon, group = grp, color = grp),
+      size = 1,
+      dpi = 100,
+      legend_icons = TRUE
+    ) +
+    scale_legend_icon(size = 2.5) +
+    ggplot2::theme_void() +
+    ggplot2::theme(legend.position = "right")
+  
+  testthat::expect_no_error(ggplot2::ggplot_build(p))
+  gt <- testthat::expect_no_error(ggplot2::ggplotGrob(p))
+  
+  # Find the legend container (guide-box)
+  guide_idx <- which(vapply(
+    gt$grobs,
+    function(x) inherits(x, "gtable") && identical(x$name, "guide-box"),
+    logical(1)
+  ))
+  
+  testthat::expect_true(
+    length(guide_idx) == 1,
+    info = "No legend found (guide-box missing). Legend may be dropped or disabled."
+  )
+  
+  guide <- gt$grobs[[guide_idx]]
+  
+  # Collect raster grobs inside the legend
+  rasters <- list()
+  recurse <- function(x) {
+    
+    if (inherits(x, "rastergrob")) {
+      rasters[[length(rasters) + 1]] <<- x
+    }
+    
+    if (inherits(x, "gtable") && length(x$grobs)) {
+      for (g in x$grobs) recurse(g)
+    }
+    if (inherits(x, "gTree") && length(x$children)) {
+      for (g in x$children) recurse(g)
+    }
+    if (is.list(x)) {
+      for (g in x) recurse(g)
+    }
+  }
+  recurse(guide)
+  
+  testthat::expect_true(
+    length(rasters) > 0,
+    info = "Legend exists but contains no rastergrob. Legend icons likely not rendered as images."
+  )
+  
+  # Unique raster grob names (proxy for unique icons rendered)
+  raster_names <- vapply(rasters, function(r) r$name, character(1))
+  n_unique_rasters <- length(unique(raster_names))
+  n_unique_icons   <- length(unique(df$icon))
+  
+  testthat::expect_equal(
+    n_unique_rasters,
+    n_unique_icons,
+    info = paste0(
+      "Expected ", n_unique_icons, " unique legend icon raster(s) (one per unique df$icon), ",
+      "but found ", n_unique_rasters, ".\n",
+      "Unique raster names: ", paste(sort(unique(raster_names)), collapse = ", ")
+    )
+  )
+})
