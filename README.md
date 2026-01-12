@@ -20,7 +20,26 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lif
 
 ## An Alternative Approach to Visualization
 
-`ggpop` offers a fresh alternative to traditional data visualizations by using icons and proportional symbols in population charts. This approach not only improves the aesthetics of your plots but also helps your audience better engage with and understand the data. By converting numerical values into intuitive visual representations, `ggpop` makes complex population data clearer and easier to remember, allowing users to tell more compelling and accessible stories.
+## Overview
+
+**ggpop** is an R package that creates representative population charts where each icon represents a portion of your population. Instead of abstract bars or lines, your audience sees **people** — making data instantly relatable and memorable.
+
+Perfect for:
+- 📊 Public health reports and policy briefs
+- 📰 Data journalism and infographics
+- 🎓 Academic presentations
+- 💼 Stakeholder communications
+- 📱 Social media data visualizations
+
+## Why ggpop?
+
+Traditional charts can feel abstract. **ggpop** makes data human by:
+
+- **Visual Impact**: Icons create immediate connection
+- **Intuitive Understanding**: Proportional representation simplifies complex data
+- **Flexible**: Support for 2,000+ Font Awesome icons + native optimized icons
+- **Fast**: Optimized rendering handles up to 1,000 icons smoothly
+- **ggplot2 Native**: Integrates seamlessly with your existing workflow
 
 
 
@@ -41,8 +60,7 @@ install.packages("remotes")
 remotes::install_github("jurjoroa/ggpop")
 ```
 
-## Basic Example
-
+## Quick Start
 
 ### 1.- Create a Small Dataset or Use a Built-in Dataset
 
@@ -63,14 +81,18 @@ The dataset **`df_pop_mx`** is a **minimal example** illustrating population cou
   A constant value `"America"`, indicating the continent these observations belong to.
 
 
+
 ``` r
+library(dplyr)
 library(ggpop)
 
 df_pop_mx <- data.frame(sex = c("male", "female"),
                         n = c(63459580, 67401427),
                         country = "Mexico",
                         continent = "America")
+
 ```
+
 
 | **Sex**  | **Population (n)** | **Country** | **Continent** |
 |----------|---------------------|-------------|---------------|
@@ -80,26 +102,10 @@ df_pop_mx <- data.frame(sex = c("male", "female"),
 ### 2.- Process data
 
 ``` r
-
 df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, sample_size = 1000)
 
 head(df_pop_mx_prop)
 ```
-
-| type   |        n |      prop   |
-|:-------|---------:|------------:|
-| male   | 63459580 | 0.4849388    |
-| female | 67401427 | 0.5150612    |
-| female | 67401427 | 0.5150612    |
-| male   | 63459580 | 0.4849388    |
-| male   | 63459580 | 0.4849388    |
-| female | 67401427 | 0.5150612    |
-| female | 67401427 | 0.5150612    |
-| male   | 63459580 | 0.4849388    |
-| female | 67401427 | 0.5150612    |
-| male   | 63459580 | 0.4849388    |
-| female | 67401427 | 0.5150612    |
-| ...    | ...      | ...         |
 
 We apply the `process_data()` function to the population data `df_pop_mx` with the following parameters:
 
@@ -117,53 +123,29 @@ The function calculates group proportions, then performs sampling to create a ne
 
 Here, we create a new column called `icon` in the `df_pop_mx_prop` dataset. The `case_when()` function checks each row’s **type** (either "male" or "female") and assigns a matching value ("ggmale" or "ggfemale") to the `icon` column.
 
+
 ``` r
+
 df_pop_mx_prop <- df_pop_mx_prop %>% 
   mutate(icon = case_when(
-    type == "male" ~ "ggmale",
-    type == "female" ~ "ggfemale"))
+    type == "male" ~ "male",
+    type == "female" ~ "female"))
+
 ```
 
 
 ### 4.- Icons
-
-This package supports two types of icons for plotting: **native SVG icons** and **Font Awesome icons**.
-
-- **Native icons** are optimized for fast rendering and are ideal for large sample sizes. They are in SVG format, meaning they scale cleanly without loss of quality.
-- **Font Awesome icons** offer greater flexibility and a broader icon set (2,000+ free icons), and in the latest version of the package, their performance is nearly equivalent to that of the native icons. However, when plotting very large datasets, native icons may still be slightly faster.
-
-To illustrate the improvement, here's a benchmark comparison between **v1.2.1** and the **latest version** using 1,000 observations:
-
-```
-Render Time (Font Awesome icons, 1,000 observations)
-
-Version 1.2.1      ██████████████████████████████  ~1 minute  
-Latest Version     █                               ~2 seconds
-
-```
-### 4.1.- Native Icons
-
-The following native icons are included in the package:
-
-
-| Icon         | Preview                                                                 | Icon         | Preview                                                                 | Icon         | Preview                                                                 | Icon         | Preview                                                                 |
-|--------------|--------------------------------------------------------------------------|--------------|--------------------------------------------------------------------------|--------------|--------------------------------------------------------------------------|--------------|--------------------------------------------------------------------------|
-| `ggbike`     | <img src="inst/figures/ggbike.svg" width="37" height="37">              | `ggbuild`    | <img src="inst/figures/ggbuild.svg" width="25" height="25">             | `ggcar`      | <img src="inst/figures/ggcar.svg" width="25" height="25">               | `ggcancer`   | <img src="inst/figures/ggcancer.svg" width="37" height="37">            |
-| `ggdollar`   | <img src="inst/figures/ggdollar.svg" width="32" height="32">            | `ggfemale`   | <img src="inst/figures/ggfemale.svg" width="32" height="32">            | `gggraduation_cap` | <img src="inst/figures/gggraduation_cap.svg" width="32" height="32"> | `ggdisability` | <img src="inst/figures/ggdisability.svg" width="32" height="32">        |
-| `ggmale`     | <img src="inst/figures/ggmale.svg" width="32" height="32">              | `ggmoney`    | <img src="inst/figures/ggmoney.svg" width="32" height="32">             | `gggsyringe` | <img src="inst/figures/ggsyringe.svg" width="32" height="32">           | `ggtree`     | <img src="inst/figures/ggtree.svg" width="32" height="32">              |
-| `ggadenoma`  | <img src="inst/figures/ggadenoma.svg" width="32" height="32">           | `ggdistal`   | <img src="inst/figures/ggdistal.svg" width="32" height="32">            | `ggproximal` | <img src="inst/figures/ggproximal.svg" width="32" height="32">          | `ggrectum`   | <img src="inst/figures/ggrectum.svg" width="32" height="32">            |
-| `ggone`      | <img src="inst/figures/ggone.svg" width="32" height="32">               | `ggtwo`      | <img src="inst/figures/ggtwo.svg" width="32" height="32">               | `ggthree`    | <img src="inst/figures/ggthree.svg" width="32" height="32">             | `ggfour`     | <img src="inst/figures/ggfour.svg" width="32" height="32">              |
-
-
-
-##### 4.2.- Fontawesome Icons
 
 <p style="display: flex; align-items: center;">
   <img src="inst/figures/logo.png" width="115px" alt="Logo" />
   <img src="inst/figures/fontawesome.png" width="125px" alt="Fontawesome" />
 </p>
 
-The package also allows the use of `fontawesome` icons. The icons are stored in the `fontawesome` package. The only thing you need to specify is the icon's name.
+This package supports **Font Awesome icons**.
+
+- **Font Awesome icons** offer greater flexibility and a broader icon set (2,000+ free icons). However, rendering these icons can be slower if the sample size is large (e.g., 1,000+ observations) or if plot is faceted.
+
+- The icons are stored in the `fontawesome` package. The only thing you need to specify is the icon's name.
 
 For example, this is just a few sample of more than 2,000 free icons available in the `fontawesome` package:
 
@@ -173,26 +155,33 @@ For example, this is just a few sample of more than 2,000 free icons available i
 
 You can check the full list of icons in the [Font Awesome website](https://fontawesome.com/icons?d=gallery&p=2&m=free).
 
-### 4.- Plot population chart
+### 5.- Plot population chart
+
+Now we can proceed to plot the population chart using the assigned icons.
+
 
 ``` r
+
+library(ggplot2)
 ggplot() +
   geom_pop(data = df_pop_mx_prop, aes(icon = icon, group=type, color=type),
            size = 1, arrange=F, legend_icons=F) +
   theme_void() +
   theme(legend.position = "bottom")
+
 ```
 
 ![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png)
 
 
-The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. The object work as a gem_point figure plotted by determined x and y coordinates. We can also group and color the icons by the **type** variable since the icon it's an SVG file. 
+The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. The object work as a `geom_point()` figure plotted by determined x and y coordinates. We can also group and color the icons by the **type** variable or the varaible that we are grouping for.
 
-#### 4.1 Improve plot 
+#### 5.1 Improve plot 
 
 Like a ggplot object, we can improve it to have a more presentable plot. We can arrange our icons, add them as part of the legend, give color to the background, and add a title and caption to the plot.
 
 ``` r
+
 ggplot() +
     geom_pop(data = df_pop_mx_prop, aes(icon = icon, group=type, color=type),
     size = 1, arrange=T) +
@@ -212,13 +201,11 @@ labs(title = "Population in Mexico by Sex",
         plot.caption = element_text(color = "white")) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60"),
                      labels = c("female" = "Females: 51%", "male" = "Males: 49%"))
+
 ```
 
 ![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot2.png)
 
-
-
-### 5.- More examples
 
 We can also include more than two icons in the same plot. In this example, we will identify the people that is disabled, and we will change some parameters.
 
@@ -238,17 +225,17 @@ df_pop_dis_mx_prop <- process_data(data = df_pop_dis_mx, group_var = sex,
 #3.- Assign icons to groups
 df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>% 
   mutate(icon = case_when(
-    type == "male" ~ "ggmale",
-    type == "female" ~ "ggfemale",
-    type == "disabled males" ~ "ggdisability",
-    type == "disabled females" ~ "ggdisability"))
+    type == "male" ~ "male",
+    type == "female" ~ "female",
+    type == "disabled males" ~ "wheelchair",
+    type == "disabled females" ~ "wheelchair"))
 
 #4.- Plot 
 
 ggplot() +
-  geom_pop(data = df_pop_dis_mx_prop, aes(icon = icon, group=type, color=type),
-           size = 1.3, arrange=F) +
-  scale_legend_icon(size=10) +
+  geom_pop(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type),
+           size = 1.3, arrange = T) +
+  scale_legend_icon(size = 10) +
   theme_void(base_size = 36) +
   labs(title = "Population in Mexico by Sex and disability status",
        subtitle = "2022",
@@ -262,16 +249,111 @@ ggplot() +
                                 "disabled males" = "Disabled Males"))
 ```
 
-
 ![Example Plot 3](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot3.png)
 
 
-### 6.- Simulation of natural history of colorectal cancer example
+### 6.- More examples employing facets and other packages
 
-As an applied example, we plotted the simulation of the natural history of colorectal cancer employing `ggpop` package. The plot is a circular representative population chart, where icons represent the population. The icons are arranged circularly, and the size of the icons is proportional to the population size. The icons are colored according to the type of cancer, and the legend is displayed at the bottom of the plot. The plot is visually appealing and informative, making the population distribution by cancer type easy to understand.
-This type of plot can be used to present complex population data in a more accessible and visually appealing way, especially if we want to transmit a message to a non-technical audience or decision makers. 
+#### Facet wrap/grid
 
-![SimCRC Natural History](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/simcrc_natural_history.png)
+``` r
+
+# Example: Transportation Methods Across Cities with 7 Icon Groups
+
+library(ggplot2)
+library(dplyr)
+
+# 1. Create sample data for transportation methods across different cities
+df_transport <- data.frame(
+  method = rep(c("car", "bus", "train", "bicycle", "motorcycle", "walking", "taxi"), 5),
+  value = c(
+    # New York
+    45000, 32000, 28000, 15000, 8000, 25000, 18000,
+    # Los Angeles
+    62000, 28000, 12000, 10000, 12000, 15000, 22000,
+    # Chicago
+    38000, 35000, 30000, 12000, 6000, 22000, 15000,
+    # Houston
+    58000, 25000, 8000, 8000, 14000, 12000, 16000,
+    # San Francisco
+    35000, 30000, 25000, 22000, 10000, 20000, 20000
+  ),
+  city = rep(c("New York", "Los Angeles", "Chicago", "Houston", "San Francisco"), each = 7)
+)
+
+# 2. Process the data for each city
+df_transport_prop <- process_data(
+  data = df_transport, 
+  group_var = method, 
+  sum_var = value, 
+  sample_size = 400,
+  high_group_var = "city"
+)
+
+# 3. Assign Font Awesome icons to transportation methods
+df_transport_prop <- df_transport_prop %>% 
+  mutate(icon = case_when(
+    type == "car" ~ "car",
+    type == "bus" ~ "bus",
+    type == "train" ~ "train",
+    type == "bicycle" ~ "bicycle",
+    type == "motorcycle" ~ "motorcycle",
+    type == "walking" ~ "person-walking",
+    type == "taxi" ~ "taxi"
+  ))
+
+# 4. Plot with facet_wrap
+ggplot() +
+  geom_pop(
+    data = df_transport_prop, 
+    aes(icon = icon, group = type, color = type),
+    size = 1, 
+    arrange = TRUE
+  ) +
+  facet_wrap(~ group, ncol = 2) +
+  scale_legend_icon(size = 6) +
+  theme_void(base_size = 26) +
+  labs(
+    title = "Primary Transportation Methods Across Major US Cities",
+    subtitle = "Distribution of daily commuters by transportation type",
+    caption = "Each icon represents approximately 400 commuters | Data for demonstration purposes"
+  ) +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    plot.background = element_rect(fill = "#1a1a1a"),
+    panel.background = element_rect(fill = "#1a1a1a"),
+    strip.text = element_text(face = "bold", size = 13, color = "white"),
+    legend.background = element_rect(fill = "#1a1a1a"),
+    legend.text = element_text(color = "white", size = 10),
+    plot.title = element_text(hjust = 0.5, face = "bold", color = "white"),
+    plot.subtitle = element_text(hjust = 0.5, color = "#cccccc"),
+    plot.caption = element_text(hjust = 0.5, color = "#999999", size = 9)
+  ) +
+  scale_color_manual(
+    values = c(
+      "car" = "#E53935",
+      "bus" = "#FB8C00",
+      "train" = "#43A047",
+      "bicycle" = "#00ACC1",
+      "motorcycle" = "#8E24AA",
+      "walking" = "#FDD835",
+      "taxi" = "#FFB300"
+    ),
+    labels = c(
+      "car" = "Car",
+      "bus" = "Bus",
+      "train" = "Train/Subway",
+      "bicycle" = "Bicycle",
+      "motorcycle" = "Motorcycle",
+      "walking" = "Walking",
+      "taxi" = "Taxi/Ride-share"
+    )
+  )
+
+```
+
+![Example Plot 3](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/transportation_methods_countries.png)
 
 
 
