@@ -15,21 +15,12 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lif
 [![R-CMD-check](https://github.com/dmi3kno/polite/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dmi3kno/polite/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-
 `ggpop` is an R package built on top of ggplot2 that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users easily visualize population data using proportional, customizable icons arranged in intuitive, circular layouts. The package also includes functionality for adding clear, icon-enhanced captions, which makes charts easier to understand and visually attractive. Designed primarily for visual storytelling, ggpop helps users communicate complex population statistics in a straightforward and appealing manner.
 
 ## An Alternative Approach to Visualization
 
-## Overview
+`ggpop` offers a fresh alternative to traditional data visualizations by using icons and proportional symbols in population charts. This approach not only improves the aesthetics of your plots but also helps your audience better engage with and understand the data. By converting numerical values into intuitive visual representations, `ggpop` makes complex population data clearer and easier to remember, allowing users to tell more compelling and accessible stories.
 
-**ggpop** is an R package that creates representative population charts where each icon represents a portion of your population. Instead of abstract bars or lines, your audience sees **people** — making data instantly relatable and memorable.
-
-Perfect for:
-- 📊 Public health reports and policy briefs
-- 📰 Data journalism and infographics
-- 🎓 Academic presentations
-- 💼 Stakeholder communications
-- 📱 Social media data visualizations
 
 ## Why ggpop?
 
