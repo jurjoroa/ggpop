@@ -39,7 +39,7 @@ ggplot_add.ggpop_legend_icon <- function(object, plot, ...) {
 
 
 #' @export
-ggplot_add.ggpop_geom_pop <- function(object, plot, object_name) {
+ggplot_add.ggpop_geom_pop <- function(object, plot, object_name, ...) {
   # add the layer
   plot <- plot + object$layer
   

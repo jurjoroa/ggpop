@@ -7,3 +7,6 @@ if (getRversion() >= "2.15.1") {
 }
 
 
+.onLoad <- function(libname, pkgname) {
+  utils::globalVariables(c(".legend"))
+}

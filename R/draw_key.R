@@ -17,7 +17,7 @@
 #' @return A grid grob containing the image icons with the specified colors and transparency.
 #' @importFrom magick image_read image_quantize image_colorize
 #' @importFrom grid rasterGrob gTree
-#'
+#' @importFrom grDevices as.raster
 #' @details
 #' This function relies on `ggimage:::color_image` and `ggplot2:::ggname`, which are internal functions.
 #' Their use is necessary for correct functionality, and no exported alternatives exist.
@@ -33,6 +33,8 @@ draw_key_pop_image <- function(data, params, size) {
   
   # High-res PNG for legend keys (crisp even when key box is large)
   png_px <- 480L
+  
+  rsvg::librsvg_version()
   
   grobs <- lapply(seq_along(data$colour), function(i) {
     
