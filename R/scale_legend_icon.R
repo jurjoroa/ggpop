@@ -1,47 +1,59 @@
-#' Adjust legend to display custom icons for each group type
+#' Legend helper for geom_pop icon legends
 #'
-#' This helper function extracts the grouping variable (`type`) from the data
-#' used in the `geom_pop` object and applies the corresponding
-#' icons (stored in the `icon` column) as legend keys. It overrides the default
-#' legend keys to use custom icon glyphs (via `draw_key_pop_image`) and sets
-#' a specified legend key size.
-#'
-#' @param size A numeric value specifying the size of the icons in the legend.
-#'   Larger values create bigger icons.
-#' @param margin A `margin()` object from `ggplot2` to set the plot margins.
-#' @param ... Additional parameters passed on to [ggplot2::guide_legend()]. This
-#'   lets you control all aspects of the legend, such as `title`, `title.position`,
-#'   `label.position`, `label.theme`, and so forth.
-#'
-#' @return A `guides()` specification that you can add to your ggplot object.
-#' 
-#' @importFrom ggplot2 aes labs theme ggplot_build last_plot
-#'
+#' @param size Numeric. Legend key size in mm (this controls icon size).
+#' @param margin ggplot2::margin() for plot margin (defaults to bottom padding).
+#' @param ... Additional arguments forwarded to ggplot2::guide_legend()
 #' @export
 scale_legend_icon <- function(size = 10, margin = NULL, ...) {
-  
-  if (is.null(margin)) margin <- ggplot2::margin(0, 0, 30, 0)
-  # Retrieve the built plot data
-  gg_obj <- ggplot2::last_plot()
-  data <- gg_obj$layers[[1]]$data
-  
-  # Determine the unique types and select corresponding icons
-  types <- levels(factor(data$type))
-  icons <- sapply(types, function(t) {
-    idx <- which(data$type == t)
-    data$icon[idx[1]]
-  })
-  
-  list(
-    # Custom legend guide using the key glyph function
-    ggplot2::guides(
-      color = ggplot2::guide_legend(
-        override.aes = list(icon = icons, size = size)
-        #key_glyph = draw_key_pop_image,
-        #...
-      )
+  structure(
+    list(
+      size  = size,
+      margin = margin,
+      guide_args = list(...)
     ),
-    # Add the predetermined plot margin
-    ggplot2::theme(plot.margin = margin)
+    class = "ggpop_legend_icon"
   )
+}
+
+#' @export
+#' @importFrom ggplot2 ggplot_add
+ggplot_add.ggpop_legend_icon <- function(object, plot, ...) {
+  
+  if (is.null(object$margin)) object$margin <- ggplot2::margin(0, 0, 30, 0)
+  
+  key_mm <- object$size
+  if (!is.numeric(key_mm) || length(key_mm) != 1 || is.na(key_mm) || key_mm <= 0) key_mm <- 10
+  
+  # Apply the theme changes now
+  plot <- plot +
+    ggplot2::theme(
+      plot.margin      = object$margin,
+      legend.key.size  = grid::unit(key_mm, "mm"),
+      legend.key.width = grid::unit(key_mm, "mm"),
+      legend.key.height= grid::unit(key_mm, "mm")
+    )
+  
+  plot
+}
+
+
+
+#' @export
+ggplot_add.ggpop_geom_pop <- function(object, plot, object_name, ...) {
+  # add the layer
+  plot <- plot + object$layer
+  
+  # If geom_pop had an explicit facet=, automatically add facet_wrap(~facet_col)
+  if (!is.null(object$facet_col) && nzchar(object$facet_col)) {
+    
+    # If plot already has a facet, do not override it
+    if (!inherits(plot$facet, "FacetNull")) {
+      return(plot)
+    }
+    
+    fml <- stats::as.formula(paste0("~", object$facet_col))
+    plot <- plot + ggplot2::facet_wrap(fml)
+  }
+  
+  plot
 }
