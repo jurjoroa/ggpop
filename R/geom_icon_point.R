@@ -28,6 +28,18 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             inherit.aes = TRUE, icon = "circle",
                             size = 3, dpi = 50, legend_icons = TRUE, ...) {
   
+  # -------------------------------------------------
+  # HANDLE COMMON USAGE: geom_icon_point(data, aes(...))
+  # -------------------------------------------------
+  if (!is.null(mapping) && !inherits(mapping, "uneval") && 
+      (is.data.frame(mapping) || (is.list(mapping) && !inherits(mapping, "uneval")))) {
+    # User did: geom_icon_point(df, aes(...))
+    # Swap them
+    temp <- mapping
+    mapping <- data
+    data <- temp
+  }
+  
   inherited_data <- tryCatch(
     ggplot2::ggplot_build(ggplot2::last_plot())$plot$data,
     error = function(e) NULL
@@ -40,6 +52,11 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   
   if (is.null(data)) {
     data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
+  }
+  
+  # Ensure data is a data frame
+  if (!is.data.frame(data)) {
+    stop("[geom_icon_point] `data` must be a data frame.", call. = FALSE)
   }
   
   # -------------------------------------------------
