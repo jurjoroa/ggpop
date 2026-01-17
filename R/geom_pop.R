@@ -203,10 +203,13 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   
+  # Combine inherited and layer mappings for checking
+  combined_mapping <- c(inherited_mapping_list, mapping_list)
+  
   # -------------------------------------------------
   # WARNING: size specified both in aes() and as argument
   # -------------------------------------------------
-  if ("size" %in% names(mapping_list) && !missing(size)) {
+  if ("size" %in% names(combined_mapping) && !missing(size)) {
     warning(
       paste0(
         "[geom_pop] `size` was provided both inside aes() and as a parameter.\n\n",
@@ -224,7 +227,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # -------------------------------------------------
   # HARD STOP: icon is mandatory
   # -------------------------------------------------
-  icon_mapped  <- "icon" %in% names(mapping_list)
+  icon_mapped  <- "icon" %in% names(combined_mapping)
   has_icon_col <- "icon" %in% names(data)
   
   if (!icon_mapped && !has_icon_col) {
@@ -250,9 +253,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   if (!processed_mode) {
     
+    # FIXED: Check COMBINED mapping (inherited + layer)
     .get_mapped_var <- function(aes_name) {
-      if (aes_name %in% names(mapping_list)) {
-        tryCatch(rlang::as_name(mapping_list[[aes_name]]), error = function(e) NULL)
+      if (aes_name %in% names(combined_mapping)) {
+        tryCatch(rlang::as_name(combined_mapping[[aes_name]]), error = function(e) NULL)
       } else {
         NULL
       }
@@ -318,8 +322,12 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (!"icon" %in% names(data)) data$icon <- icon
   
   # size  (icon_size to avoid collision with coord size)
-  if ("size" %in% names(mapping_list)) {
-    size_var <- rlang::as_name(mapping_list[["size"]])
+  if ("size" %in% names(combined_mapping)) {
+    size_var <- if ("size" %in% names(mapping_list)) {
+      rlang::as_name(mapping_list[["size"]])
+    } else {
+      rlang::as_name(inherited_mapping_list[["size"]])
+    }
     if (!size_var %in% names(data)) stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
     data$icon_size <- data[[size_var]] * 0.03
     mapping_list[["size"]] <- NULL
