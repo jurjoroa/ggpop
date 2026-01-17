@@ -31,4 +31,7 @@ This function relies on \code{ggimage:::color_image} and \code{ggplot2:::ggname}
 Their use is necessary for correct functionality, and no exported alternatives exist.
 We acknowledge the potential risks associated with \code{:::} usage, but at present, these functions
 provide essential behavior for rendering images within ggplot2.
+
+NOTE: Legend icons are always rendered at a FIXED size, regardless of any size aesthetic
+mapped in the plot. This ensures consistent legend appearance.
 }
