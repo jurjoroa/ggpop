@@ -1,5 +1,3 @@
-# FILE: R/draw_key_pop_image.R
-
 #' Key drawing function for population-based image keys
 #'
 #' This function creates a custom key for displaying population-based image icons
@@ -23,6 +21,9 @@
 #' Their use is necessary for correct functionality, and no exported alternatives exist.
 #' We acknowledge the potential risks associated with `:::` usage, but at present, these functions
 #' provide essential behavior for rendering images within ggplot2.
+#' 
+#' NOTE: Legend icons are always rendered at a FIXED size, regardless of any size aesthetic
+#' mapped in the plot. This ensures consistent legend appearance.
 #' @export
 draw_key_pop_image <- function(data, params, size) {
   
@@ -58,7 +59,9 @@ draw_key_pop_image <- function(data, params, size) {
     
     ras <- as.raster(img)
     
-    # IMPORTANT: scale relative to the key box (npc), not absolute mm
+    # IMPORTANT: Legend icons always have FIXED size (ignoring data$size)
+    # This ensures consistent legend appearance regardless of size mapping in plot
+    # Icons scale relative to the key box (npc), not absolute mm
     grid::rasterGrob(
       x = 0.5, y = 0.5,
       image = ras,
