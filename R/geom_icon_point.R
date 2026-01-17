@@ -1,0 +1,332 @@
+#' Create a scatter plot with Font Awesome icons instead of points
+#'
+#' Works exactly like geom_point(), but renders Font Awesome icons instead of dots.
+#' Pass any data with x and y variables - no special formatting required.
+#'
+#' @section Aesthetics:
+#' geom_icon_point uses standard ggplot2 scatter plot aesthetics:
+#' - **x** - Numeric variable for x-axis
+#' - **y** - Numeric variable for y-axis
+#' - **icon** - Font Awesome icon name (optional, column or mapped)
+#' - **color/colour** - Color grouping
+#' - **alpha** - Transparency
+#' - **size** - Icon size
+#'
+#' @inheritParams ggplot2::layer
+#' @inheritParams ggimage::geom_image
+#' @param icon Default Font Awesome icon (default: "circle").
+#' @param size Default icon size (default: 3).
+#' @param dpi Icon resolution (default: 50).
+#' @param legend_icons Show icons in legend (default: TRUE).
+#'
+#' @return A ggplot layer.
+#'
+#' @import dplyr
+#' @export
+geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
+                            position = "identity", na.rm = FALSE, show.legend = NA,
+                            inherit.aes = TRUE, icon = "circle",
+                            size = 3, dpi = 50, legend_icons = TRUE, ...) {
+  
+  # -------------------------------------------------
+  # HANDLE COMMON USAGE: geom_icon_point(data, aes(...))
+  # -------------------------------------------------
+  if (!is.null(mapping) && !inherits(mapping, "uneval") && 
+      (is.data.frame(mapping) || (is.list(mapping) && !inherits(mapping, "uneval")))) {
+    # User did: geom_icon_point(df, aes(...))
+    # Swap them
+    temp <- mapping
+    mapping <- data
+    data <- temp
+  }
+  
+  inherited_data <- tryCatch(
+    ggplot2::ggplot_build(ggplot2::last_plot())$plot$data,
+    error = function(e) NULL
+  )
+  
+  plot_obj <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot())$plot, error = function(e) NULL)
+  inherited_mapping_list <- if (!is.null(plot_obj$mapping)) as.list(plot_obj$mapping) else list()
+  
+  .missing_size <- missing(size)
+  
+  if (is.null(data)) {
+    data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
+  }
+  
+  # Ensure data is a data frame
+  if (!is.data.frame(data)) {
+    stop("[geom_icon_point] `data` must be a data frame.", call. = FALSE)
+  }
+  
+  # -------------------------------------------------
+  # HARD STOP: dpi too low -> blurry icons
+  # -------------------------------------------------
+  if (is.numeric(dpi) && length(dpi) == 1 && !is.na(dpi) && is.finite(dpi)) {
+    if (dpi < 30) {
+      stop(
+        paste0(
+          "[geom_icon_point] `dpi = ", dpi, "` is too low.\n",
+          "Icons will look blurry when rendered with fontawesome::fa_png().\n\n",
+          "Fix:\n",
+          "- Use dpi >= 30 (recommended: 50-200 for crisp icons).\n",
+          "- If you want smaller icons, change `size`, not `dpi`.\n"
+        ),
+        call. = FALSE
+      )
+    }
+  }
+  
+  mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
+  
+  # Combine inherited and layer mappings
+  combined_mapping <- c(inherited_mapping_list, mapping_list)
+  
+  # -------------------------------------------------
+  # WARNING: size specified both in aes() and as argument
+  # -------------------------------------------------
+  if ("size" %in% names(combined_mapping) && !missing(size)) {
+    warning(
+      paste0(
+        "[geom_icon_point] `size` was provided both inside aes() and as a parameter.\n\n",
+        "What happens:\n",
+        "- `aes(size = <variable>)` controls icon size per row.\n",
+        "- The argument `geom_icon_point(aes(), size = ", size, ")` will be ignored.\n\n",
+        "Tip:\n",
+        "- Use ONLY `aes(size = <variable>)` for data-driven sizes, OR\n",
+        "- Remove `size` from aes() and set a fixed size via geom_icon_point(size = ...).\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  # -------------------------------------------------
+  # HARD STOP: icon is mandatory
+  # -------------------------------------------------
+  icon_mapped  <- "icon" %in% names(combined_mapping)
+  has_icon_col <- "icon" %in% names(data)
+  
+  if (!icon_mapped && !has_icon_col && missing(icon)) {
+    stop(
+      paste0(
+        "[geom_icon_point] No icon specified.\n\n",
+        "Fix:\n",
+        "- Provide `aes(icon = <column>)`, OR\n",
+        "- Add an `icon` column to `data`, OR\n",
+        "- Set `icon = \"icon-name\"` as a parameter.\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  if ("image" %in% names(mapping_list)) {
+    stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
+  }
+  
+  # Add icon column if not mapped
+  if (!"icon" %in% names(mapping_list)) {
+    if ("icon" %in% names(inherited_mapping_list)) {
+      mapping_list[["icon"]] <- inherited_mapping_list[["icon"]]
+    } else {
+      mapping_list[["icon"]] <- as.name("icon")
+    }
+  }
+  if (!"icon" %in% names(data)) data$icon <- icon
+  
+  # Handle size (icon_size to avoid collision with coord size)
+  # Check COMBINED mapping for size
+  if ("size" %in% names(combined_mapping)) {
+    # Get size variable from either layer or inherited mapping
+    size_var <- if ("size" %in% names(mapping_list)) {
+      rlang::as_name(mapping_list[["size"]])
+    } else {
+      rlang::as_name(inherited_mapping_list[["size"]])
+    }
+    
+    if (!size_var %in% names(data)) {
+      stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
+    }
+    
+    data$icon_size <- data[[size_var]] * 0.005
+    
+    # Remove size from layer mapping (but keep in inherited if it's there)
+    mapping_list[["size"]] <- NULL
+  } else {
+    data$icon_size <- size * 0.005
+  }
+  
+  # -------------------------------------------------
+  # HARD STOP: missing / empty icons are not allowed
+  # -------------------------------------------------
+  if ("icon" %in% names(data)) {
+    bad_icon <- is.na(data$icon) | !nzchar(as.character(data$icon))
+    if (any(bad_icon)) {
+      n_bad <- sum(bad_icon)
+      stop(
+        paste0(
+          "[geom_icon_point] Invalid icon values detected.\n\n",
+          "Found ", n_bad, " row(s) with missing or empty `icon` values.\n\n",
+          "Fix:\n",
+          "- Ensure `icon` is non-missing for all rows.\n"
+        ),
+        call. = FALSE
+      )
+    }
+  }
+  
+  # ---- build per-row PNG path from per-row icon ----
+  data <- data %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      image = {
+        this_icon <- as.character(.data$icon)
+        if (is.na(this_icon) || !nzchar(this_icon)) {
+          NA_character_
+        } else {
+          cache_dir <- file.path(tempdir(), "ggpop-icons")
+          if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
+          png_path <- file.path(cache_dir, paste0(this_icon, ".png"))
+          if (!file.exists(png_path)) {
+            fontawesome::fa_png(this_icon, file = png_path, height = dpi)
+          }
+          png_path
+        }
+      }
+    ) %>%
+    dplyr::ungroup()
+  
+  # -------------------------------------------------
+  # LEGEND: map icons by the ACTUAL legend variable
+  # -------------------------------------------------
+  .get_mapped_var_combined <- function(aes_name) {
+    if (aes_name %in% names(combined_mapping)) {
+      tryCatch(rlang::as_name(combined_mapping[[aes_name]]), error = function(e) NULL)
+    } else {
+      NULL
+    }
+  }
+  
+  legend_var <- .get_mapped_var_combined("colour")
+  if (is.null(legend_var)) legend_var <- .get_mapped_var_combined("color")
+  if (is.null(legend_var)) legend_var <- .get_mapped_var_combined("group")
+  
+  # Fallback to icon if we have multiple icons
+  if (is.null(legend_var) || !legend_var %in% names(data)) {
+    if ("icon" %in% names(data) && dplyr::n_distinct(data$icon) > 1) {
+      legend_var <- "icon"
+    } else {
+      legend_var <- NULL
+    }
+  }
+  
+  icon_by_legend <- if (!is.null(legend_var)) {
+    data %>%
+      dplyr::mutate(
+        .legend = as.character(.data[[legend_var]]),
+        icon    = as.character(icon)
+      ) %>%
+      dplyr::filter(!is.na(.legend), nzchar(.legend), !is.na(icon), nzchar(icon)) %>%
+      dplyr::group_by(.legend) %>%
+      dplyr::summarise(
+        icon = {
+          tab <- sort(table(icon), decreasing = TRUE)
+          names(tab)[1]
+        },
+        .groups = "drop"
+      ) %>%
+      { stats::setNames(.$icon, .$.legend) }
+  } else {
+    stats::setNames(icon, "default")
+  }
+  
+  key_glyph_icon_point <- function(key_data, params, size) {
+    
+    if (!("colour" %in% names(key_data)) && ("color" %in% names(key_data))) {
+      key_data$colour <- key_data$color
+    }
+    
+    if (!("alpha" %in% names(key_data))) key_data$alpha <- 1
+    key_data$alpha[is.na(key_data$alpha)] <- 1
+    
+    if (!("colour" %in% names(key_data))) key_data$colour <- "black"
+    key_data$colour[is.na(key_data$colour)] <- "black"
+    
+    lbl <- NA_character_
+    if ("label" %in% names(key_data)) lbl <- as.character(key_data$label[1])
+    if (is.na(lbl) || !nzchar(lbl)) lbl <- NA_character_
+    
+    # Get icon_by_legend from params (passed through)
+    icon_by_legend <- params$icon_by_legend
+    plot_obj <- params$plot_obj
+    
+    ic <- NA_character_
+    if (!is.na(lbl) && lbl %in% names(icon_by_legend)) {
+      ic <- icon_by_legend[[lbl]]
+    }
+    
+    if (is.na(ic) || !nzchar(ic)) {
+      breaks <- names(icon_by_legend)
+      
+      if (!is.null(plot_obj)) {
+        sc <- plot_obj$scales$get_scales("colour")
+        if (is.null(sc)) sc <- plot_obj$scales$get_scales("color")
+        if (!is.null(sc)) {
+          br <- sc$get_breaks()
+          br <- br[!is.na(br)]
+          if (length(br)) breaks <- as.character(br)
+        }
+      }
+      
+      icon_levels <- unname(icon_by_legend[breaks])
+      
+      idx <- NA_integer_
+      if (".id" %in% names(key_data)) idx <- as.integer(key_data$.id[1])
+      if (is.na(idx) && "group" %in% names(key_data)) idx <- as.integer(key_data$group[1])
+      if (is.na(idx)) idx <- 1L
+      
+      idx <- max(1L, min(length(icon_levels), idx))
+      ic <- as.character(icon_levels[idx])
+    }
+    
+    if (is.na(ic) || !nzchar(ic)) ic <- "circle"
+    
+    key_data$icon <- ic
+    draw_key_pop_image(key_data, params, size)
+  }
+  
+  # -------------------------------------------------
+  # THE ONLY REAL CHANGE: use x and y from aes instead of x1/y1
+  # -------------------------------------------------
+  mapping_list[["image"]] <- as.name("image")
+  mapping_list[["icon"]]  <- NULL
+  # Keep x and y as they are (from user's aes)
+  
+  final_mapping <- do.call(ggplot2::aes, mapping_list)
+  
+  size_internal <- data$icon_size
+  
+  key_fn <- function(data, params, size = 5) {
+    data$size <- 5
+    ggplot2::draw_key_point(data, params, size)
+  }
+  
+  layer_out <- ggimage::geom_image(
+    mapping      = final_mapping,
+    data         = data,
+    size         = size_internal,
+    stat         = stat,
+    position     = position,
+    na.rm        = na.rm,
+    inherit.aes  = inherit.aes,
+    by           = "height",
+    key_glyph    = if (legend_icons) key_glyph_icon_point else key_fn,
+    ...
+  )
+  
+  # Pass icon_by_legend to layer params so key glyph can access it
+  layer_out$geom_params$icon_by_legend <- icon_by_legend
+  layer_out$geom_params$plot_obj <- plot_obj
+  layer_out$geom_params$dpi <- dpi
+  
+  layer_out
+}
