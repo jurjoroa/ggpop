@@ -556,6 +556,28 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     }
   }
   
+  # -------------------------------------------------
+  # HARD STOP: alpha must be in aes(), not as parameter
+  # -------------------------------------------------
+  if ("alpha" %in% names(list(...))) {
+    stop(
+      paste0(
+        "[geom_pop] `alpha` cannot be used as a parameter.\n\n",
+        "Why this is an error:\n",
+        "- `alpha` must be mapped inside aes() to work correctly with icon coloring.\n",
+        "- Parameter-based alpha creates conflicts between PNG transparency and rendering.\n\n",
+        "Fix:\n",
+        "- For fixed transparency, add an alpha column:\n",
+        "  data$alpha_val <- 0.5\n",
+        "  geom_pop(aes(icon = icon, group = sex, color = sex, alpha = alpha_val))\n\n",
+        "- For variable transparency:\n",
+        "  geom_pop(aes(icon = icon, group = sex, color = sex, alpha = confidence))\n\n",
+        "- If you want get rid of alpha legend entries, use `guides(alpha = `none`)`.\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
   # ---- build per-row PNG path from per-row icon ----
   df_final <- df_final %>%
     dplyr::rowwise() %>%

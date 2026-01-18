@@ -299,6 +299,20 @@ testthat::test_that("Error: invalid arrange parameter", {
   )
 })
 
+
+### 03.01.10 alpha aesthetic mapped (unsupported) ------------------------------
+
+testthat::test_that("Error: alpha aesthetic mapped (unsupported)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(data = df_raw,
+               ggplot2::aes(icon = icon, group = sex, color = sex),
+               alpha = .1
+               
+      )
+  )
+})
+
 # ******************************************************************************
 ## 03.02 Errors: icon volume limits --------------------------------------------
 # ******************************************************************************
