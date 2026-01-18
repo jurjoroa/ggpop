@@ -131,6 +131,27 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # -------------------------------------------------
+  # HARD STOP: arrange must be logical
+  # -------------------------------------------------
+  if (!is.logical(arrange) || length(arrange) != 1 || is.na(arrange)) {
+    stop(
+      paste0(
+        "[geom_pop] Invalid `arrange` parameter.\n\n",
+        "Why this is an error:\n",
+        "- `arrange` must be a single logical value (TRUE or FALSE).\n",
+        "- You provided: ", 
+        if (is.character(arrange)) paste0('"', arrange, '"') else deparse(arrange),
+        " (", class(arrange)[1], ")\n\n",
+        "Fix:\n",
+        "- Use `arrange = TRUE` to sort icons by group.\n",
+        "- Use `arrange = FALSE` for randomized layouts (default).\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  
+  # -------------------------------------------------
   # HARD STOP: dpi too low -> blurry icons
   # -------------------------------------------------
   if (is.numeric(dpi) && length(dpi) == 1 && !is.na(dpi) && is.finite(dpi)) {
