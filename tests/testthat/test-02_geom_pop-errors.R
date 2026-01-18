@@ -73,6 +73,29 @@ testthat::test_that("Error: dpi too low", {
   )
 })
 
+
+testthat::test_that("Error: non-numeric dpi", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        dpi = "high"
+      )
+  )
+})
+
+testthat::test_that("Error: vector dpi", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        dpi = c(50, 100)
+      )
+  )
+})
+
 ### 03.01.02 icon inputs -------------------------------------------------------
 
 testthat::test_that("Error: icon not specified (no aes(icon=) and no icon column)", {
@@ -98,6 +121,20 @@ testthat::test_that("Error: invalid icon values (NA / empty)", {
     ggplot2::ggplot() +
       geom_pop(
         data = df_bad_icon,
+        ggplot2::aes(icon = icon, group = sex),
+        dpi = 60
+      )
+  )
+})
+
+testthat::test_that("Error: icon with whitespace only", {
+  df_whitespace <- df_raw
+  df_whitespace$icon[2] <- "   "
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_whitespace,
         ggplot2::aes(icon = icon, group = sex),
         dpi = 60
       )
@@ -139,6 +176,19 @@ testthat::test_that("Error: facet column not found", {
   )
 })
 
+testthat::test_that("Error: invalid facet type", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_processed,
+        ggplot2::aes(icon = icon, group = type),
+        facet = 123
+      )
+  )
+})
+
+
+
 ### 03.01.05 forbidden aesthetics ----------------------------------------------
 
 testthat::test_that("Error: image aesthetic is not allowed", {
@@ -147,6 +197,104 @@ testthat::test_that("Error: image aesthetic is not allowed", {
       geom_pop(
         data = df_raw,
         ggplot2::aes(icon = icon, image = icon, group = sex)
+      )
+  )
+})
+
+### 03.01.06 seed inputs -------------------------------------------------------
+
+testthat::test_that("Error: invalid seed parameter (vector)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        seed = c(1, 2),
+        dpi = 60
+      )
+  )
+})
+
+testthat::test_that("Error: invalid seed parameter (NA)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        seed = NA,
+        dpi = 60
+      )
+  )
+})
+
+testthat::test_that("Error: invalid seed parameter (character)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        seed = "jorge",
+        dpi = 60
+      )
+  )
+})
+
+
+### 03.01.07 size inputs -------------------------------------------------------
+
+testthat::test_that("Error: size variable not in data", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex, size = nonexistent_var),
+        dpi = 60
+      )
+  )
+})
+
+
+### 03.01.08 data inputs -------------------------------------------------------
+
+testthat::test_that("Error: empty data frame", {
+  df_empty <- data.frame(
+    sex = character(0),
+    icon = character(0),
+    stringsAsFactors = FALSE
+  )
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_empty,
+        ggplot2::aes(icon = icon, group = sex),
+        dpi = 60
+      )
+  )
+})
+
+testthat::test_that("Error: NULL data with no inherited data", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = NULL,
+        ggplot2::aes(icon = icon, group = sex),
+        dpi = 60
+      )
+  )
+})
+
+
+### 03.01.09 arrange inputs ----------------------------------------------------
+
+testthat::test_that("Error: invalid arrange parameter", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        arrange = "chi",
+        dpi = 60
       )
   )
 })
@@ -226,6 +374,7 @@ testthat::test_that("Integration: unknown icon name fails (build/render)", {
 })
 
 
+
 # ******************************************************************************
 # 4 Legend icons: mismatch triggers expected error ----------------------------
 # ******************************************************************************
@@ -299,7 +448,7 @@ testthat::test_that("Legend icon raster count mismatch triggers error", {
   n_unique_rasters <- length(unique(raster_names))
   n_unique_icons   <- length(unique(df$icon))
   
-  # 🔥 EXPECTED FAILURE: counts do NOT match
+  # This should trigger an error because we intentionally set legend_icons = FALSE
   testthat::expect_error(
     testthat::expect_equal(n_unique_rasters, n_unique_icons),
     info = "Legend raster/icon mismatch did not trigger an error as expected."
