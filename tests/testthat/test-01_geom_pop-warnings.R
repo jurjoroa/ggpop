@@ -176,3 +176,33 @@ testthat::test_that("Build: plot still builds when warning occurs", {
            )
   )
 })
+
+
+# ******************************************************************************
+## 03.03 Size: negative or zero size --------------------------------
+# ******************************************************************************
+
+testthat::test_that("Warning: negative size parameter", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = -5,
+        dpi = 60
+      )
+  )
+})
+
+testthat::test_that("Warning: zero size parameter", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = 0,
+        dpi = 60
+      )
+  )
+})
+
