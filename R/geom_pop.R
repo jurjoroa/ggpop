@@ -405,6 +405,50 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data$type <- as.character(data[[src_var]])
   }
   
+  
+  # -------------------------------------------------
+  # HARD STOP: reserved column names in data
+  # -------------------------------------------------
+  reserved_cols <- c("x1", "y1", "pos", "image", "coord_size", "icon_size", "icon_stroke_width")
+  user_cols <- names(data)
+  conflicts <- intersect(reserved_cols, user_cols)
+  
+  if (length(conflicts) > 0) {
+    stop(
+      paste0(
+        "[geom_pop] Reserved column name(s) detected in data.\n\n",
+        "Why this is an error:\n",
+        "- Your data contains column(s): ", paste(conflicts, collapse = ", "), "\n",
+        "- These are internal column names used by geom_pop() for positioning and rendering.\n",
+        "- Using these names will cause coordinate calculation failures or visual errors.\n\n",
+        "Reserved column names:\n",
+        "- x1, y1        (icon coordinates)\n",
+        "- pos           (icon position index)\n",
+        "- image         (PNG file path)\n",
+        "- coord_size    (coordinate lookup key)\n",
+        "- icon_size     (internal size calculation)\n",
+        "- icon_stroke_width (internal stroke calculation)\n\n",
+        "Fix:\n",
+        "- Rename the conflicting column(s) in your data:\n",
+        if (length(conflicts) == 1) {
+          paste0("  data <- data %>% rename(", conflicts[1], "_orig = ", conflicts[1], ")\n")
+        } else {
+          paste0("  data <- data %>% rename(\n",
+                 paste0("    ", conflicts, "_orig = ", conflicts, collapse = ",\n"),
+                 "\n  )\n")
+        },
+        "\n",
+        "Example:\n",
+        "  # Before:\n",
+        "  df <- data.frame(sex = c('M', 'F'), pos = c(1, 2))  # ✗ 'pos' conflicts\n\n",
+        "  # After:\n",
+        "  df <- df %>% rename(position = pos)  # ✓ Renamed\n",
+        "  ggplot() + geom_pop(data = df, aes(icon = icon, group = sex))\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
   validate_geom_pop_inputs(data, mapping_list, icon, size, dpi, inherited_data)
   
   warn_geom_pop_inputs(
