@@ -26,6 +26,7 @@
 #' @param facet Optional facetting variable. NOTE: final plot must be faceted; enforce with
 #'        `validate_geom_pop_faceting(p)` after building the ggplot object.
 #' @param legend_icons Logical; if TRUE, the legend will display the selected icons by the user.
+#' @param stroke_width Numeric. Width of the black outline/border around icons in pixels.
 #'
 #' @return A ggplot layer with a circular representative population chart.
 #'
@@ -41,6 +42,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      size = 3,
                      dpi = 50,
                      legend_icons = TRUE,
+                     stroke_width = NULL,  # NEW PARAMETER
                      ...) {
   
   inherited_data <- tryCatch(
@@ -50,6 +52,44 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   plot_obj <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot())$plot, error = function(e) NULL)
   inherited_mapping_list <- if (!is.null(plot_obj$mapping)) as.list(plot_obj$mapping) else list()
+  
+  
+  # -------------------------------------------------
+  # HARD STOP: only one geom_pop() per plot
+  # -------------------------------------------------
+  if (!is.null(plot_obj) && length(plot_obj$layers) > 0) {
+    # Check if any existing layer is a geom_pop
+    has_geom_pop <- any(vapply(plot_obj$layers, function(layer) {
+      inherits(layer$geom, "GeomImage") && 
+        !is.null(layer$aes_params) || 
+        inherits(layer, "ggpop_geom_pop") ||
+        ("ggpop_geom_pop" %in% class(layer))
+    }, logical(1)))
+    
+    if (has_geom_pop) {
+      stop(
+        paste0(
+          "[geom_pop] Multiple geom_pop() layers detected.\n\n",
+          "Why this is an error:\n",
+          "- Only ONE geom_pop() layer is allowed per plot.\n",
+          "- Multiple layers create legend conflicts where only the last layer's icons are shown.\n",
+          "Fix:\n",
+          "Option 1: Combine all data into one geom_pop() call:\n",
+          "  df_all <- bind_rows(df1, df2, df3)\n",
+          "  ggplot() + geom_pop(data = df_all, aes(icon = icon, color = group))\n\n",
+          "Option 2: Create separate plots and combine with patchwork:\n",
+          "  library(patchwork)\n",
+          "  p1 <- ggplot() + geom_pop(data = df1, ...)\n",
+          "  p2 <- ggplot() + geom_pop(data = df2, ...)\n",
+          "  p1 | p2\n\n",
+          "Option 3: Use faceting if appropriate:\n",
+          "  ggplot() + geom_pop(data = df_all, aes(...)) + facet_wrap(~ group)\n"
+        ),
+        call. = FALSE
+      )
+    }
+  }
+  
   
   .missing_size <- missing(size)
   
@@ -578,7 +618,35 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     )
   }
   
-  # ---- build per-row PNG path from per-row icon ----
+  
+  # -------------------------------------------------
+  # HARD STOP: fill aesthetic is not supported
+  # -------------------------------------------------
+  if ("fill" %in% names(combined_mapping)) {
+    stop(
+      paste0(
+        "[geom_pop] `fill` aesthetic is not supported.\n\n",
+        "Why this is an error:\n",
+        "- To keep the API simple, only `color` or `colour` are supported for icon coloring.\n",
+        "- FontAwesome icons are colored via the `fill` parameter internally, but we map\n",
+        "  the `color` aesthetic to it.\n\n",
+        "Fix:\n",
+        "- Use `aes(color = <variable>)` or `aes(colour = <variable>)` instead.\n\n",
+        "Example:\n",
+        "  geom_pop(aes(icon = icon, group = sex, color = sex))  # ✓ Correct\n",
+        "  geom_pop(aes(icon = icon, group = sex, fill = sex))   # ✗ Not allowed\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  # -------------------------------------------------
+  # Capture parameters in local scope BEFORE rowwise
+  # -------------------------------------------------
+  local_stroke_width <- stroke_width  # ← DEFINE HERE, BEFORE df_final pipe
+  local_dpi <- dpi
+  
+  # ---- build per-row PNG path with color + alpha + stroke support ----
   df_final <- df_final %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
@@ -587,11 +655,93 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         if (is.na(this_icon) || !nzchar(this_icon)) {
           NA_character_
         } else {
+          
+          # Get color from aes mapping
+          this_color <- if ("colour" %in% names(.)) {
+            as.character(.data$colour)
+          } else if ("color" %in% names(.)) {
+            as.character(.data$color)
+          } else {
+            "black"
+          }
+          
+          # Get alpha from aes mapping
+          this_alpha <- if ("alpha" %in% names(.)) {
+            as.numeric(.data$alpha)
+          } else {
+            1.0
+          }
+          
+          # Convert color to hex
+          this_color <- tryCatch({
+            if (is.na(this_color) || !nzchar(this_color)) {
+              "#000000"
+            } else {
+              rgb_vals <- grDevices::col2rgb(this_color) / 255
+              grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
+            }
+          }, error = function(e) "#000000")
+          
+          # Apply alpha to color for fill
+          rgb_vals <- grDevices::col2rgb(this_color) / 255
+          rgba_color <- grDevices::rgb(
+            rgb_vals[1], 
+            rgb_vals[2], 
+            rgb_vals[3], 
+            alpha = this_alpha
+          )
+          
           cache_dir <- file.path(tempdir(), "ggpop-icons")
           if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
-          png_path <- file.path(cache_dir, paste0(this_icon, ".png"))
-          if (file.exists(png_path)) unlink(png_path)
-          fontawesome::fa_png(this_icon, file = png_path, height = dpi)
+          
+          # Build cache key with color, alpha, and stroke
+          color_hex <- gsub("#", "", this_color)
+          alpha_str <- sprintf("%.2f", this_alpha)
+          
+          cache_parts <- c(
+            this_icon,
+            paste0("c", color_hex),
+            paste0("a", alpha_str)
+          )
+          
+          # Add stroke to cache key if provided (use LOCAL variable)
+          if (!is.null(local_stroke_width) && local_stroke_width > 0) {
+            stroke_color_for_cache <- color_hex  # Same as fill color
+            cache_parts <- c(
+              cache_parts, 
+              paste0("sw", local_stroke_width),
+              paste0("sc", stroke_color_for_cache)
+            )
+          }
+          
+          png_path <- file.path(
+            cache_dir, 
+            paste0(paste(cache_parts, collapse = "_"), ".png")
+          )
+          
+          # Generate PNG if not cached (use LOCAL variables)
+          if (!file.exists(png_path)) {
+            if (!is.null(local_stroke_width) && local_stroke_width > 0) {
+              # With stroke - SAME COLOR AS FILL
+              fontawesome::fa_png(
+                this_icon,
+                file = png_path,
+                height = local_dpi,
+                fill = rgba_color,
+                stroke = rgba_color,  # ← Same color as fill
+                stroke_width = local_stroke_width
+              )
+            } else {
+              # No stroke (solid fill only)
+              fontawesome::fa_png(
+                this_icon,
+                file = png_path,
+                height = local_dpi,
+                fill = rgba_color
+              )
+            }
+          }
+          
           png_path
         }
       }
@@ -630,6 +780,11 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     )
   
   icon_by_legend <- stats::setNames(icon_by_legend$icon, icon_by_legend$.legend)
+  
+  # -------------------------------------------------
+  # LEGEND: Capture stroke_width for key glyph
+  # -------------------------------------------------
+  local_stroke_width_for_legend <- stroke_width  # Capture in outer scope
   
   key_glyph_pop <- function(key_data, params, size) {
     
@@ -679,7 +834,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     if (is.na(ic) || !nzchar(ic)) ic <- "user"
     
     key_data$icon <- ic
-    draw_key_pop_image(key_data, params, size)
+    
+    # Pass stroke_width to legend renderer
+    draw_key_pop_image(key_data, params, size, stroke_width = local_stroke_width_for_legend)
   }
   
   mapping_list[["image"]] <- as.name("image")
