@@ -313,6 +313,21 @@ testthat::test_that("Error: alpha aesthetic mapped (unsupported)", {
   )
 })
 
+### 03.01.11 fill aesthetic mapped (unsupported) ------------------------------
+
+
+testthat::test_that("Error: fill aesthetic mapped (use color instead)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex, fill = sex),
+        dpi = 60
+      )
+  )
+})
+
+
 # ******************************************************************************
 ## 03.02 Errors: icon volume limits --------------------------------------------
 # ******************************************************************************
