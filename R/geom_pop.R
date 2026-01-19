@@ -286,6 +286,46 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # -------------------------------------------------
+  # WARNING: stroke_width in aes() will be ignored
+  # -------------------------------------------------
+  if ("stroke_width" %in% names(combined_mapping)) {
+    
+    # Extract the value they tried to use
+    stroke_attempted <- tryCatch({
+      stroke_expr <- combined_mapping[["stroke_width"]]
+      if (rlang::is_symbol(stroke_expr)) {
+        paste0("<variable: ", rlang::as_name(stroke_expr), ">")
+      } else if (is.numeric(stroke_expr)) {
+        as.character(stroke_expr)
+      } else {
+        deparse(stroke_expr)
+      }
+    }, error = function(e) "<unknown>")
+    
+    warning(
+      paste0(
+        "[geom_pop] `stroke_width` inside aes() will be IGNORED.\n\n",
+        "What you did:\n",
+        "- You provided: aes(stroke_width = ", stroke_attempted, ")\n\n",
+        "Why this doesn't work:\n",
+        "- `stroke_width` is a PARAMETER, not an aesthetic.\n",
+        "- It must be specified OUTSIDE aes() to take effect.\n",
+        "- Values inside aes() are not applied to icon rendering.\n\n",
+        "Fix:\n",
+        "- Move stroke_width OUTSIDE aes():\n\n",
+        "Note:\n",
+        "- Variable stroke widths per row are not yet supported.\n",
+        "- All icons in one geom_pop() layer must have the same stroke_width.\n"
+      ),
+      call. = FALSE
+    )
+    
+    # Remove stroke_width from mapping so it doesn't interfere
+    mapping_list[["stroke_width"]] <- NULL
+    combined_mapping[["stroke_width"]] <- NULL
+  }
+  
+  # -------------------------------------------------
   # HARD STOP: icon is mandatory
   # -------------------------------------------------
   icon_mapped  <- "icon" %in% names(combined_mapping)
