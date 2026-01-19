@@ -403,6 +403,25 @@ testthat::test_that("Integration: unknown icon name fails (build/render)", {
 })
 
 
+### 03.03.02 invalid varaible names in data (build failure) ----------------------
+
+### 03.07.01 data contains reserved column names -------------------------------
+
+testthat::test_that("Error: data contains reserved column names", {
+  df_reserved <- df_raw
+  df_reserved$x1 <- 1:4
+  df_reserved$pos <- 1:4
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_reserved,
+        ggplot2::aes(icon = icon, group = sex),
+        dpi = 60
+      )
+  )
+})
+
 
 # ******************************************************************************
 # 4 Legend icons: mismatch triggers expected error ----------------------------
