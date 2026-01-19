@@ -886,14 +886,16 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
           cache_dir <- file.path(tempdir(), "ggpop-icons")
           if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
           
-          # Build cache key with color, alpha, and stroke
+          # Build cache key with color, alpha, stroke, AND DPI
           color_hex <- gsub("#", "", this_color)
           alpha_str <- sprintf("%.2f", this_alpha)
+          dpi_str <- sprintf("%.0f", local_dpi)  
           
           cache_parts <- c(
             this_icon,
             paste0("c", color_hex),
-            paste0("a", alpha_str)
+            paste0("a", alpha_str),
+            paste0("d", dpi_str)
           )
           
           # Add stroke to cache key if provided (use LOCAL variable)
