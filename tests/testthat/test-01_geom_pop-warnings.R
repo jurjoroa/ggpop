@@ -197,28 +197,68 @@ testthat::test_that("Warning: dpi borderline low (30-50)", {
 
 ### 03.05.01 negative size parameter -------------------------------------------
 
-testthat::test_that("Warning: negative size parameter", {
+testthat::test_that("Edge case: size = 0.1 triggers small value warning", {
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_pop(
         data = df_raw,
         ggplot2::aes(icon = icon, group = sex),
-        size = -5,
-        dpi = 60
+        size = 0.1
       )
   )
 })
 
-### 03.05.02 zero size parameter -----------------------------------------------
-
-testthat::test_that("Warning: zero size parameter", {
+testthat::test_that("Edge case: size = 16 triggers large value warning", {
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_pop(
         data = df_raw,
         ggplot2::aes(icon = icon, group = sex),
-        size = 0,
-        dpi = 60
+        size = 16
+      )
+  )
+})
+
+testthat::test_that("Edge case: size = 0.5 (boundary) does not warn", {
+  testthat::expect_no_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = 0.5
+      )
+  )
+})
+
+testthat::test_that("Edge case: size = 15 (boundary) does not warn", {
+  testthat::expect_no_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = 15
+      )
+  )
+})
+
+testthat::test_that("Edge case: size = 0.49 triggers warning", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = 0.49
+      )
+  )
+})
+
+testthat::test_that("Edge case: size = 15.01 triggers warning", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = 15.01
       )
   )
 })

@@ -209,8 +209,7 @@ testthat::test_that("Error: invalid seed parameter (vector)", {
       geom_pop(
         data = df_raw,
         ggplot2::aes(icon = icon, group = sex),
-        seed = c(1, 2),
-        dpi = 60
+        seed = c(1, 2)
       )
   )
 })
@@ -221,8 +220,7 @@ testthat::test_that("Error: invalid seed parameter (NA)", {
       geom_pop(
         data = df_raw,
         ggplot2::aes(icon = icon, group = sex),
-        seed = NA,
-        dpi = 60
+        seed = NA
       )
   )
 })
@@ -233,8 +231,7 @@ testthat::test_that("Error: invalid seed parameter (character)", {
       geom_pop(
         data = df_raw,
         ggplot2::aes(icon = icon, group = sex),
-        seed = "jorge",
-        dpi = 60
+        seed = "jorge"
       )
   )
 })
@@ -247,12 +244,54 @@ testthat::test_that("Error: size variable not in data", {
     ggplot2::ggplot() +
       geom_pop(
         data = df_raw,
-        ggplot2::aes(icon = icon, group = sex, size = nonexistent_var),
-        dpi = 60
+        ggplot2::aes(icon = icon, group = sex, size = nonexistent_var)
       )
   )
 })
 
+testthat::test_that("Error: size is NA", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = NA
+      )
+  )
+})
+
+testthat::test_that("Error: size is Inf", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = Inf
+      )
+  )
+})
+
+testthat::test_that("Error: size is character", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = "large"
+      )
+  )
+})
+
+testthat::test_that("Error: size is vector", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = c(3, 5)
+      )
+  )
+})
 
 ### 03.01.08 data inputs -------------------------------------------------------
 

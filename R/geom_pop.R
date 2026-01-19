@@ -190,6 +190,114 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     )
   }
   
+  # -------------------------------------------------
+  # HARD STOP: size parameter validation
+  # -------------------------------------------------
+  
+  
+  if (!missing(size)) {
+    # Type check
+    if (!is.numeric(size) || length(size) != 1) {
+      stop(
+        paste0(
+          "[geom_pop] Invalid `size` parameter.\n\n",
+          "Why this is an error:\n",
+          "- `size` must be a single numeric value.\n",
+          "- You provided: ", deparse(size), " (", class(size)[1], ")\n\n",
+          "Fix:\n",
+          "- Use a positive number: size = 3\n",
+          "- Default is 3 if not specified\n\n",
+          "Examples:\n",
+          "  geom_pop(..., size = 5)      # Larger icons\n",
+          "  geom_pop(..., size = 1)      # Smaller icons\n",
+          "  geom_pop(aes(size = var))    # Map to variable (in aes)\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    # Value checks
+    if (is.na(size)) {
+      stop(
+        paste0(
+          "[geom_pop] Invalid `size` value.\n\n",
+          "Why this is an error:\n",
+          "- `size` cannot be NA.\n\n",
+          "Fix:\n",
+          "- Use a numeric value: size = 3\n",
+          "- Or omit `size` to use the default (size = 3)\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    if (!is.finite(size)) {
+      stop(
+        paste0(
+          "[geom_pop] Invalid `size` value.\n\n",
+          "Why this is an error:\n",
+          "- `size` cannot be Inf or -Inf.\n",
+          "- You provided: ", size, "\n\n",
+          "Fix:\n",
+          "- Use a finite numeric value: size = 3\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    if (size <= 0) {
+      stop(
+        paste0(
+          "[geom_pop] Invalid `size` value.\n\n",
+          "Why this is an error:\n",
+          "- `size` must be positive (> 0).\n",
+          "- You provided: ", size, "\n\n",
+          "Fix:\n",
+          "- Use a positive number: size = 3\n",
+          "- Typical range: 1 to 10\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    # -------------------------------------------------
+    # SOFT WARNING : size extreme values
+    # -------------------------------------------------
+    
+    # Warning for extreme values
+    if (size > 15) {
+      warning(
+        paste0(
+          "[geom_pop] Very large `size` value.\n\n",
+          "Why you are seeing this warning:\n",
+          "- size = ", size, " is unusually large.\n",
+          "- Icons may overlap or extend beyond the plot area.\n\n",
+          "Typical values:\n",
+          "- Small icons: 1-2\n",
+          "- Medium icons: 3-5 (default: 3)\n",
+          "- Large icons: 6-10\n\n",
+          "If this is intentional, you can ignore this warning.\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    if (size < 0.5) {
+      warning(
+        paste0(
+          "[geom_pop] Very small `size` value.\n\n",
+          "Why you are seeing this warning:\n",
+          "- size = ", size, " is very small.\n",
+          "- Icons may be difficult to see or distinguish.\n\n",
+          "Recommended:\n",
+          "- Use size >= 1 for visible icons\n",
+          "- Default is 3\n"
+        ),
+        call. = FALSE
+      )
+    }
+  }
+  
   
   # -------------------------------------------------
   # HARD STOP: dpi too low -> blurry icons
