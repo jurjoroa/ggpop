@@ -298,6 +298,67 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     }
   }
   
+  # -------------------------------------------------
+  # HARD STOP: stroke_width parameter validation
+  # -------------------------------------------------
+  if (!is.null(stroke_width)) {
+    # Type check
+    if (!is.numeric(stroke_width) || length(stroke_width) != 1) {
+      stop(
+        paste0(
+          "[geom_pop] Invalid `stroke_width` parameter.\n\n",
+          "Why this is an error:\n",
+          "- `stroke_width` must be a single numeric value.\n",
+          "- You provided: ", deparse(stroke_width), " (", class(stroke_width)[1], ")\n\n",
+          "Fix:\n",
+          "- Use a positive number: stroke_width = 2\n",
+          "- Use NULL for no stroke (default): stroke_width = NULL\n\n",
+          "Examples:\n",
+          "  geom_pop(..., stroke_width = 1)      # Thin outline\n",
+          "  geom_pop(..., stroke_width = 5)      # Thick outline\n",
+          "  geom_pop(..., stroke_width = NULL)   # No outline (default)\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    # Value checks (NA, Inf, negative)
+    if (is.na(stroke_width) || !is.finite(stroke_width) || stroke_width < 0) {
+      stop(
+        paste0(
+          "[geom_pop] Invalid `stroke_width` value.\n\n",
+          "Why this is an error:\n",
+          "- `stroke_width` must be a non-negative finite number.\n",
+          "- You provided: ", stroke_width, "\n\n",
+          "Fix:\n",
+          "- Use a positive number: stroke_width = 2\n",
+          "- Use 0 or NULL for no stroke\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    # -------------------------------------------------
+    # SOFT WARNING: stroke_width extreme values
+    # -------------------------------------------------
+    if (stroke_width > 20) {
+      warning(
+        paste0(
+          "[geom_pop] Very large `stroke_width` value.\n\n",
+          "Why you are seeing this warning:\n",
+          "- stroke_width = ", stroke_width, " is unusually large.\n",
+          "- The stroke may overwhelm the icon fill, making it hard to see.\n\n",
+          "Typical values:\n",
+          "- Subtle outline: 1-2\n",
+          "- Medium outline: 3-5\n",
+          "- Bold outline: 6-10\n\n",
+          "If this is intentional, you can ignore this warning.\n"
+        ),
+        call. = FALSE
+      )
+    }
+  }
+  
   
   # -------------------------------------------------
   # HARD STOP: dpi too low -> blurry icons

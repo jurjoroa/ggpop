@@ -306,8 +306,7 @@ testthat::test_that("Error: empty data frame", {
     ggplot2::ggplot() +
       geom_pop(
         data = df_empty,
-        ggplot2::aes(icon = icon, group = sex),
-        dpi = 60
+        ggplot2::aes(icon = icon, group = sex)
       )
   )
 })
@@ -317,8 +316,7 @@ testthat::test_that("Error: NULL data with no inherited data", {
     ggplot2::ggplot() +
       geom_pop(
         data = NULL,
-        ggplot2::aes(icon = icon, group = sex),
-        dpi = 60
+        ggplot2::aes(icon = icon, group = sex)
       )
   )
 })
@@ -332,8 +330,7 @@ testthat::test_that("Error: invalid arrange parameter", {
       geom_pop(
         data = df_raw,
         ggplot2::aes(icon = icon, group = sex),
-        arrange = "chi",
-        dpi = 60
+        arrange = "chi"
       )
   )
 })
@@ -360,11 +357,50 @@ testthat::test_that("Error: fill aesthetic mapped (use color instead)", {
     ggplot2::ggplot() +
       geom_pop(
         data = df_raw,
-        ggplot2::aes(icon = icon, group = sex, fill = sex),
-        dpi = 60
+        ggplot2::aes(icon = icon, group = sex, fill = sex)
       )
   )
 })
+
+### 03.01.12 stroke_width inputs -------------------------------------------------
+
+testthat::test_that("Error: invalid stroke_width parameter (negative)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        stroke_width = -2
+  )
+  )
+})
+
+testthat::test_that("Error: invalid stroke_width parameter (non-numeric)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        stroke_width = "arriba la maquina"
+      )
+  )
+})
+
+testthat::test_that("Error: invalid stroke_width parameter (vector)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        stroke_width = c(1, 2)
+      )
+  )
+})
+
+
+
+
+
 
 
 # ******************************************************************************
@@ -384,8 +420,7 @@ testthat::test_that("Error: too many icons requested (global)", {
     ggplot2::ggplot() +
       geom_pop(
         data = big,
-        ggplot2::aes(icon = icon, group = sex),
-        dpi = 60
+        ggplot2::aes(icon = icon, group = sex)
       )
   )
 })
@@ -406,8 +441,7 @@ testthat::test_that("Error: too many icons per facet group", {
         geom_pop(
           data  = big_f,
           ggplot2::aes(icon = icon, group = sex),
-          facet = facet,
-          dpi   = 60
+          facet = facet
         )
     )
   )
@@ -434,8 +468,7 @@ testthat::test_that("Integration: unknown icon name fails (build/render)", {
         geom_pop(
           data = df_unknown,
           ggplot2::aes(icon = icon, group = sex, color = sex),
-          legend_icons = TRUE,
-          dpi = 60
+          legend_icons = TRUE
         )
     )
   )
@@ -455,8 +488,7 @@ testthat::test_that("Error: data contains reserved column names", {
     ggplot2::ggplot() +
       geom_pop(
         data = df_reserved,
-        ggplot2::aes(icon = icon, group = sex),
-        dpi = 60
+        ggplot2::aes(icon = icon, group = sex)
       )
   )
 })
