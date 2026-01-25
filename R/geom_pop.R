@@ -191,6 +191,37 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # -------------------------------------------------
+  # HARD STOP: legend_icons must be logical
+  # -------------------------------------------------
+  if (!is.logical(legend_icons) || length(legend_icons) != 1 || is.na(legend_icons)) {
+    stop(
+      paste0(
+        "[geom_pop] Invalid `legend_icons` parameter.\n\n",
+        "Why this is an error:\n",
+        "- `legend_icons` must be a single logical value (TRUE or FALSE).\n",
+        "- You provided: ", 
+        if (is.character(legend_icons)) paste0('"', legend_icons, '"') else deparse(legend_icons),
+        " (", class(legend_icons)[1], ")\n\n",
+        "Fix:\n",
+        "- Use `legend_icons = TRUE` to show Font Awesome icons in the legend.\n",
+        "- Use `legend_icons = FALSE` to show standard ggplot2 point markers (default).\n\n",
+        "Examples:\n",
+        "  # Show icons in legend (recommended):\n",
+        "  geom_pop(..., legend_icons = TRUE)\n\n",
+        "  # Use standard point markers:\n",
+        "  geom_pop(..., legend_icons = FALSE)\n\n",
+        "Common mistakes:\n",
+        "  legend_icons = 'yes'        # ✗ Character string not allowed\n",
+        "  legend_icons = 1            # ✗ Numeric not allowed\n",
+        "  legend_icons = c(TRUE, FALSE)  # ✗ Must be single value\n",
+        "  legend_icons = NA           # ✗ NA not allowed\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  
+  # -------------------------------------------------
   # HARD STOP: size parameter validation
   # -------------------------------------------------
   

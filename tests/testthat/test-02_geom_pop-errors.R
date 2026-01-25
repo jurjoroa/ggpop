@@ -400,6 +400,40 @@ testthat::test_that("Error: invalid stroke_width parameter (vector)", {
 
 
 
+### 03.01.13 legend_icons inputs -----------------------------------------------
+
+testthat::test_that("Error: invalid legend_icons parameter", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        legend_icons = "yes"
+      )
+  )
+})
+
+testthat::test_that("Error: invalid legend_icons parameter (vector)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        legend_icons = c(TRUE, FALSE)
+      )
+  )
+})
+
+testthat::test_that("Error: invalid legend_icons parameter (NA)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex), 
+        legend_icons = NA
+      )
+  )
+})
 
 
 
