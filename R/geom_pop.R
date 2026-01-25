@@ -526,18 +526,49 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # -------------------------------------------------
-  # HARD STOP: icon is mandatory
+  # HARD STOP: icon is mandatory (MOVED UP - CHECK BEFORE FALLBACK)
   # -------------------------------------------------
   icon_mapped  <- "icon" %in% names(combined_mapping)
   has_icon_col <- "icon" %in% names(data)
   
-  if (!icon_mapped && !has_icon_col) {
+  # Don't allow silent fallback to data column - require explicit mapping
+  if (!icon_mapped) {
     stop(
       paste0(
-        "[geom_pop] No icon specified.\n\n",
+        "[geom_pop] No icon aesthetic specified.\n\n",
+        "Why this is an error:\n",
+        "- You must explicitly map the icon aesthetic.\n",
+        "- Even if your data has an 'icon' column, you must map it with aes(icon = icon).\n\n",
         "Fix:\n",
-        "- Provide `aes(icon = <column>)`, OR\n",
-        "- Add an `icon` column to `data`.\n"
+        "- Add aes(icon = <column_name>) to your geom_pop() call.\n\n",
+        "Examples:\n",
+        "  # Map to a column:\n",
+        "  geom_pop(aes(icon = icon, group = sex))\n\n",
+        "  # Map to a different column:\n",
+        "  geom_pop(aes(icon = icon_type, group = sex))\n\n",
+        "Common mistake:\n",
+        "  geom_pop(data = df, aes(group = sex))  # ✗ Missing icon mapping\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  # Verify the mapped column exists
+  icon_var <- tryCatch(
+    rlang::as_name(combined_mapping[["icon"]]), 
+    error = function(e) NULL
+  )
+  
+  if (!is.null(icon_var) && !icon_var %in% names(data)) {
+    stop(
+      paste0(
+        "[geom_pop] Icon column not found in data.\n\n",
+        "Why this is an error:\n",
+        "- You mapped aes(icon = ", icon_var, "), but this column doesn't exist in your data.\n\n",
+        "Fix:\n",
+        "- Check your column name: names(data)\n",
+        "- Use the correct column name in aes(icon = ...)\n",
+        "- Or add the column to your data before calling geom_pop()\n"
       ),
       call. = FALSE
     )
@@ -546,6 +577,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if ("image" %in% names(mapping_list)) {
     stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
   }
+  
   
   # -------------------------------------------------
   # MODE DETECTION (keep process_data users working; support raw users too)
@@ -664,7 +696,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   )
   
   if (!"icon" %in% names(mapping_list)) mapping_list[["icon"]] <- as.name("icon")
-  if (!"icon" %in% names(data)) data$icon <- icon
   
   # size  (icon_size to avoid collision with coord size)
   if ("size" %in% names(combined_mapping)) {

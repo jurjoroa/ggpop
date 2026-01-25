@@ -45,8 +45,6 @@ testthat::test_that("Minimal raw mode", {
     )
   )
   
-  testthat::skip_on_cran()
-  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplotGrob(
@@ -61,6 +59,18 @@ testthat::test_that("Minimal raw mode", {
       )
     )
   )
+  
+  testthat::expect_no_error(
+    ggplot2::ggplot() +
+        geom_pop(
+          data = df,
+    ggplot2::aes(icon = icon, group = sex, color = sex),
+          color = "red",  # sohuld overide mapped color
+          dpi = 100,
+          size = 0
+        )
+  )
+  
 })
 
 # ******************************************************************************

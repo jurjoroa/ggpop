@@ -141,6 +141,16 @@ testthat::test_that("Error: icon with whitespace only", {
   )
 })
 
+testthat::test_that("Error: icon aesthetic maps to non-existent column", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = nonexistent_column, group = sex)
+      )
+  )
+})
+
 ### 03.01.03 raw mode detection ------------------------------------------------
 
 testthat::test_that("Error: raw data without group or color mapping", {
@@ -434,8 +444,6 @@ testthat::test_that("Error: invalid legend_icons parameter (NA)", {
       )
   )
 })
-
-
 
 # ******************************************************************************
 ## 03.02 Errors: icon volume limits --------------------------------------------
