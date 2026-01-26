@@ -65,9 +65,9 @@ testthat::test_that("Minimal raw mode", {
         geom_pop(
           data = df,
     ggplot2::aes(icon = icon, group = sex, color = sex),
-          color = "red",  # sohuld overide mapped color
+          color = "red",  # should overide mapped color
           dpi = 100,
-          size = 0
+          size = 5
         )
   )
   
