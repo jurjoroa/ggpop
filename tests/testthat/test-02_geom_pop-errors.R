@@ -73,6 +73,29 @@ testthat::test_that("Error: dpi too low", {
   )
 })
 
+
+testthat::test_that("Error: non-numeric dpi", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        dpi = "high"
+      )
+  )
+})
+
+testthat::test_that("Error: vector dpi", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        dpi = c(50, 100)
+      )
+  )
+})
+
 ### 03.01.02 icon inputs -------------------------------------------------------
 
 testthat::test_that("Error: icon not specified (no aes(icon=) and no icon column)", {
@@ -100,6 +123,30 @@ testthat::test_that("Error: invalid icon values (NA / empty)", {
         data = df_bad_icon,
         ggplot2::aes(icon = icon, group = sex),
         dpi = 60
+      )
+  )
+})
+
+testthat::test_that("Error: icon with whitespace only", {
+  df_whitespace <- df_raw
+  df_whitespace$icon[2] <- "   "
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_whitespace,
+        ggplot2::aes(icon = icon, group = sex),
+        dpi = 60
+      )
+  )
+})
+
+testthat::test_that("Error: icon aesthetic maps to non-existent column", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = nonexistent_column, group = sex)
       )
   )
 })
@@ -139,6 +186,19 @@ testthat::test_that("Error: facet column not found", {
   )
 })
 
+testthat::test_that("Error: invalid facet type", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_processed,
+        ggplot2::aes(icon = icon, group = type),
+        facet = 123
+      )
+  )
+})
+
+
+
 ### 03.01.05 forbidden aesthetics ----------------------------------------------
 
 testthat::test_that("Error: image aesthetic is not allowed", {
@@ -147,6 +207,240 @@ testthat::test_that("Error: image aesthetic is not allowed", {
       geom_pop(
         data = df_raw,
         ggplot2::aes(icon = icon, image = icon, group = sex)
+      )
+  )
+})
+
+### 03.01.06 seed inputs -------------------------------------------------------
+
+testthat::test_that("Error: invalid seed parameter (vector)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        seed = c(1, 2)
+      )
+  )
+})
+
+testthat::test_that("Error: invalid seed parameter (NA)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        seed = NA
+      )
+  )
+})
+
+testthat::test_that("Error: invalid seed parameter (character)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        seed = "jorge"
+      )
+  )
+})
+
+
+### 03.01.07 size inputs -------------------------------------------------------
+
+testthat::test_that("Error: size variable not in data", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex, size = nonexistent_var)
+      )
+  )
+})
+
+testthat::test_that("Error: size is NA", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = NA
+      )
+  )
+})
+
+testthat::test_that("Error: size is Inf", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = Inf
+      )
+  )
+})
+
+testthat::test_that("Error: size is character", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = "large"
+      )
+  )
+})
+
+testthat::test_that("Error: size is vector", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        size = c(3, 5)
+      )
+  )
+})
+
+### 03.01.08 data inputs -------------------------------------------------------
+
+testthat::test_that("Error: empty data frame", {
+  df_empty <- data.frame(
+    sex = character(0),
+    icon = character(0),
+    stringsAsFactors = FALSE
+  )
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_empty,
+        ggplot2::aes(icon = icon, group = sex)
+      )
+  )
+})
+
+testthat::test_that("Error: NULL data with no inherited data", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = NULL,
+        ggplot2::aes(icon = icon, group = sex)
+      )
+  )
+})
+
+
+### 03.01.09 arrange inputs ----------------------------------------------------
+
+testthat::test_that("Error: invalid arrange parameter", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        arrange = "chi"
+      )
+  )
+})
+
+
+### 03.01.10 alpha aesthetic mapped (unsupported) ------------------------------
+
+testthat::test_that("Error: alpha aesthetic mapped (unsupported)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(data = df_raw,
+               ggplot2::aes(icon = icon, group = sex, color = sex),
+               alpha = .1
+               
+      )
+  )
+})
+
+### 03.01.11 fill aesthetic mapped (unsupported) ------------------------------
+
+
+testthat::test_that("Error: fill aesthetic mapped (use color instead)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex, fill = sex)
+      )
+  )
+})
+
+### 03.01.12 stroke_width inputs -------------------------------------------------
+
+testthat::test_that("Error: invalid stroke_width parameter (negative)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        stroke_width = -2
+  )
+  )
+})
+
+testthat::test_that("Error: invalid stroke_width parameter (non-numeric)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        stroke_width = "arriba la maquina"
+      )
+  )
+})
+
+testthat::test_that("Error: invalid stroke_width parameter (vector)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        stroke_width = c(1, 2)
+      )
+  )
+})
+
+
+
+
+### 03.01.13 legend_icons inputs -----------------------------------------------
+
+testthat::test_that("Error: invalid legend_icons parameter", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        legend_icons = "yes"
+      )
+  )
+})
+
+testthat::test_that("Error: invalid legend_icons parameter (vector)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex),
+        legend_icons = c(TRUE, FALSE)
+      )
+  )
+})
+
+testthat::test_that("Error: invalid legend_icons parameter (NA)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex), 
+        legend_icons = NA
       )
   )
 })
@@ -168,8 +462,7 @@ testthat::test_that("Error: too many icons requested (global)", {
     ggplot2::ggplot() +
       geom_pop(
         data = big,
-        ggplot2::aes(icon = icon, group = sex),
-        dpi = 60
+        ggplot2::aes(icon = icon, group = sex)
       )
   )
 })
@@ -190,8 +483,7 @@ testthat::test_that("Error: too many icons per facet group", {
         geom_pop(
           data  = big_f,
           ggplot2::aes(icon = icon, group = sex),
-          facet = facet,
-          dpi   = 60
+          facet = facet
         )
     )
   )
@@ -218,10 +510,28 @@ testthat::test_that("Integration: unknown icon name fails (build/render)", {
         geom_pop(
           data = df_unknown,
           ggplot2::aes(icon = icon, group = sex, color = sex),
-          legend_icons = TRUE,
-          dpi = 60
+          legend_icons = TRUE
         )
     )
+  )
+})
+
+
+### 03.03.02 invalid varaible names in data (build failure) ----------------------
+
+### 03.07.01 data contains reserved column names -------------------------------
+
+testthat::test_that("Error: data contains reserved column names", {
+  df_reserved <- df_raw
+  df_reserved$x1 <- 1:4
+  df_reserved$pos <- 1:4
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_reserved,
+        ggplot2::aes(icon = icon, group = sex)
+      )
   )
 })
 
@@ -299,7 +609,7 @@ testthat::test_that("Legend icon raster count mismatch triggers error", {
   n_unique_rasters <- length(unique(raster_names))
   n_unique_icons   <- length(unique(df$icon))
   
-  # 🔥 EXPECTED FAILURE: counts do NOT match
+  # This should trigger an error because we intentionally set legend_icons = FALSE
   testthat::expect_error(
     testthat::expect_equal(n_unique_rasters, n_unique_icons),
     info = "Legend raster/icon mismatch did not trigger an error as expected."
@@ -307,6 +617,178 @@ testthat::test_that("Legend icon raster count mismatch triggers error", {
 })
 
 
+
+# ******************************************************************************
+# 05 Data type validation -----------------------------------------------------
+# ******************************************************************************
+
+testthat::test_that("Error: data is not a data frame (list)", {
+  bad_data <- list(sex = c("male", "female"), icon = c("male", "female"))
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = bad_data,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a matrix", {
+  mat <- matrix(c("male", "female", "male", "female"), ncol = 2)
+  colnames(mat) <- c("sex", "icon")
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = mat,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a vector", {
+  vec <- c("male", "female", "male", "female")
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = vec,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a numeric vector", {
+  vec <- c(1, 2, 3, 4)
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = vec,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a character vector", {
+  vec <- c("male", "female")
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = vec,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is an environment", {
+  env <- new.env()
+  env$sex <- c("male", "female")
+  env$icon <- c("male", "female")
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = env,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a function", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = mean,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+
+testthat::test_that("Error: data is a named list (looks like data frame but isn't)", {
+  bad_list <- list(
+    sex = c("male", "female", "male", "female"),
+    icon = c("male", "female", "male", "female")
+  )
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = bad_list,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is an array", {
+  arr <- array(1:12, dim = c(3, 4))
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = arr,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error message shows correct type information", {
+  mat <- matrix(1:4, ncol = 2)
+  
+  err <- testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = mat,
+        ggplot2::aes(icon = icon, group = sex)
+      )
+  )
+  
+  err_msg <- conditionMessage(err)
+  
+  # Should mention the actual type
+  testthat::expect_true(
+    grepl("matrix", err_msg, ignore.case = TRUE),
+    info = "Error message should mention 'matrix'"
+  )
+})
+
+testthat::test_that("Error: nested list structure", {
+  nested_list <- list(
+    group1 = list(sex = "male", icon = "male"),
+    group2 = list(sex = "female", icon = "female")
+  )
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = nested_list,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
 
 
 # ******************************************************************************
