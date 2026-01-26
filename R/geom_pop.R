@@ -97,6 +97,52 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
   
+  # -------------------------------------------------
+  # HARD STOP: data must be a data frame
+  # -------------------------------------------------
+  if (!is.null(data)) {
+    is_valid_data <- inherits(data, "data.frame") || 
+      inherits(data, "tbl_df") || 
+      inherits(data, "tbl") ||
+      inherits(data, "data.table")
+    
+    if (!is_valid_data) {
+      data_class <- class(data)[1]
+      data_type <- typeof(data)
+      
+      stop(
+        paste0(
+          "[geom_pop] Invalid `data` type.\n\n",
+          "Why this is an error:\n",
+          "- `data` must be a data frame, tibble, or data.table.\n",
+          "- You provided: ", data_class, " (type: ", data_type, ")\n\n",
+          "Fix:\n",
+          "- Convert your data to a data frame:\n\n",
+          if (is.matrix(data)) {
+            "  # For matrix:\n  data <- as.data.frame(your_matrix)\n\n"
+          } else if (is.list(data) && !is.data.frame(data)) {
+            "  # For list:\n  data <- as.data.frame(your_list)\n  # or\n  data <- dplyr::bind_rows(your_list)\n\n"
+          } else if (is.vector(data)) {
+            "  # For vector:\n  data <- data.frame(value = your_vector)\n\n"
+          } else {
+            "  data <- as.data.frame(your_data)\n\n"
+          },
+          "Accepted types:\n",
+          "  - data.frame (base R)\n",
+          "  - tibble / tbl_df (tidyverse)\n",
+          "  - data.table (data.table package)\n\n",
+          "Examples:\n",
+          "  # Base R data frame:\n",
+          "  df <- data.frame(sex = c('M', 'F'), icon = c('male', 'female'))\n",
+          "  geom_pop(data = df, aes(icon = icon, group = sex))\n\n",
+          "  # Tibble:\n",
+          "  df <- tibble::tibble(sex = c('M', 'F'), icon = c('male', 'female'))\n",
+          "  geom_pop(data = df, aes(icon = icon, group = sex))\n"
+        ),
+        call. = FALSE
+      )
+    }
+  }
   # --- infer facet from facet_wrap/facet_grid if facet= not supplied ---
   infer_facet_var <- function(plot_obj) {
     

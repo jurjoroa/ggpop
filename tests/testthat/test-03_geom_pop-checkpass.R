@@ -71,6 +71,57 @@ testthat::test_that("Minimal raw mode", {
         )
   )
   
+  
+testthat::test_that("Data is a data.frame", {
+    df <- data.frame(
+      sex = c("male", "female"),
+      icon = c("male", "female"),
+      stringsAsFactors = FALSE
+    )
+    
+    testthat::expect_no_error(
+      ggplot2::ggplot() +
+        geom_pop(
+          data = df,
+          ggplot2::aes(icon = icon, group = sex)
+        )
+    )
+  })
+  
+  testthat::test_that("Data is a tibble", {
+    testthat::skip_if_not_installed("tibble")
+    
+    df <- tibble::tibble(
+      sex = c("male", "female"),
+      icon = c("male", "female")
+    )
+    
+    testthat::expect_no_error(
+      ggplot2::ggplot() +
+        geom_pop(
+          data = df,
+          ggplot2::aes(icon = icon, group = sex)
+        )
+    )
+  })
+  
+  testthat::test_that("Data is a data.table", {
+    testthat::skip_if_not_installed("data.table")
+    
+    df <- data.table::data.table(
+      sex = c("male", "female"),
+      icon = c("male", "female")
+    )
+    
+    testthat::expect_no_error(
+      ggplot2::ggplot() +
+        geom_pop(
+          data = df,
+          ggplot2::aes(icon = icon, group = sex)
+        )
+    )
+  })
+  
 })
 
 # ******************************************************************************

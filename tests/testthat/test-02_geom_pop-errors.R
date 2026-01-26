@@ -618,6 +618,178 @@ testthat::test_that("Legend icon raster count mismatch triggers error", {
 
 
 
+# ******************************************************************************
+# 05 Data type validation -----------------------------------------------------
+# ******************************************************************************
+
+testthat::test_that("Error: data is not a data frame (list)", {
+  bad_data <- list(sex = c("male", "female"), icon = c("male", "female"))
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = bad_data,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a matrix", {
+  mat <- matrix(c("male", "female", "male", "female"), ncol = 2)
+  colnames(mat) <- c("sex", "icon")
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = mat,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a vector", {
+  vec <- c("male", "female", "male", "female")
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = vec,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a numeric vector", {
+  vec <- c(1, 2, 3, 4)
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = vec,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a character vector", {
+  vec <- c("male", "female")
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = vec,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is an environment", {
+  env <- new.env()
+  env$sex <- c("male", "female")
+  env$icon <- c("male", "female")
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = env,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is a function", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = mean,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+
+testthat::test_that("Error: data is a named list (looks like data frame but isn't)", {
+  bad_list <- list(
+    sex = c("male", "female", "male", "female"),
+    icon = c("male", "female", "male", "female")
+  )
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = bad_list,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error: data is an array", {
+  arr <- array(1:12, dim = c(3, 4))
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = arr,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
+testthat::test_that("Error message shows correct type information", {
+  mat <- matrix(1:4, ncol = 2)
+  
+  err <- testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = mat,
+        ggplot2::aes(icon = icon, group = sex)
+      )
+  )
+  
+  err_msg <- conditionMessage(err)
+  
+  # Should mention the actual type
+  testthat::expect_true(
+    grepl("matrix", err_msg, ignore.case = TRUE),
+    info = "Error message should mention 'matrix'"
+  )
+})
+
+testthat::test_that("Error: nested list structure", {
+  nested_list <- list(
+    group1 = list(sex = "male", icon = "male"),
+    group2 = list(sex = "female", icon = "female")
+  )
+  
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = nested_list,
+        ggplot2::aes(icon = icon, group = sex)
+      ),
+    regexp = "Invalid.*data.*type",
+    ignore.case = TRUE
+  )
+})
+
 
 # ******************************************************************************
 # END --------------------------------------------------------------------------
