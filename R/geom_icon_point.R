@@ -175,6 +175,11 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # ---- build per-row PNG path from per-row icon ----
+  # ---- build per-row PNG path from per-row icon ----
+  
+  # Capture DPI in local scope BEFORE rowwise
+  local_dpi <- dpi
+  
   data <- data %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
@@ -183,12 +188,72 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
         if (is.na(this_icon) || !nzchar(this_icon)) {
           NA_character_
         } else {
+          
+          # Get color from aes mapping (if any)
+          this_color <- if ("colour" %in% names(.)) {
+            as.character(.data$colour)
+          } else if ("color" %in% names(.)) {
+            as.character(.data$color)
+          } else {
+            "black"
+          }
+          
+          # Get alpha from aes mapping (if any)
+          this_alpha <- if ("alpha" %in% names(.)) {
+            as.numeric(.data$alpha)
+          } else {
+            1.0
+          }
+          
+          # Convert color to hex
+          this_color <- tryCatch({
+            if (is.na(this_color) || !nzchar(this_color)) {
+              "#000000"
+            } else {
+              rgb_vals <- grDevices::col2rgb(this_color) / 255
+              grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
+            }
+          }, error = function(e) "#000000")
+          
+          # Apply alpha to color
+          rgb_vals <- grDevices::col2rgb(this_color) / 255
+          rgba_color <- grDevices::rgb(
+            rgb_vals[1], 
+            rgb_vals[2], 
+            rgb_vals[3], 
+            alpha = this_alpha
+          )
+          
           cache_dir <- file.path(tempdir(), "ggpop-icons")
           if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
-          png_path <- file.path(cache_dir, paste0(this_icon, ".png"))
+          
+          # Build cache key with color, alpha, AND DPI
+          color_hex <- gsub("#", "", this_color)
+          alpha_str <- sprintf("%.2f", this_alpha)
+          dpi_str <- sprintf("%.0f", local_dpi)  # ← Use local_dpi
+          
+          cache_parts <- c(
+            this_icon,
+            paste0("c", color_hex),
+            paste0("a", alpha_str),
+            paste0("d", dpi_str)  # ← Include DPI in filename
+          )
+          
+          png_path <- file.path(
+            cache_dir, 
+            paste0(paste(cache_parts, collapse = "_"), ".png")
+          )
+          
+          # Generate PNG if not cached
           if (!file.exists(png_path)) {
-            fontawesome::fa_png(this_icon, file = png_path, height = dpi)
+            fontawesome::fa_png(
+              this_icon,
+              file = png_path,
+              height = local_dpi,  # ← Use local_dpi
+              fill = rgba_color
+            )
           }
+          
           png_path
         }
       }
