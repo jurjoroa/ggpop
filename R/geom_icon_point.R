@@ -101,6 +101,46 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # -------------------------------------------------
+  # SOFT WARNING: size too large
+  # -------------------------------------------------
+  if (size > 15) {
+    warning(
+      paste0(
+        "[geom_icon_point] Very large `size` value.\n\n",
+        "Why you are seeing this warning:\n",
+        "- size = ", size, " is unusually large.\n",
+        "- Icons may overlap or extend beyond the plot area.\n\n",
+        "Typical values:\n",
+        "- Small icons: 1-2\n",
+        "- Medium icons: 3-5 (default: 3)\n",
+        "- Large icons: 6-10\n\n",
+        "If this is intentional, you can ignore this warning.\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  # -------------------------------------------------
+  # SOFT WARNING: size too small
+  # -------------------------------------------------
+  if (size < 0.9) {
+    warning(
+      paste0(
+        "[geom_icon_point] Very small `size` value.\n\n",
+        "Why you are seeing this warning:\n",
+        "- size = ", size, " is very small.\n",
+        "- Icons may be difficult to see or distinguish.\n\n",
+        "Recommended:\n",
+        "- Use size >= 0.9 for visible icons\n",
+        "- Default is 3\n",
+        "- Typical range: 1-10\n\n",
+        "If this is intentional, you can ignore this warning.\n"
+      ),
+      call. = FALSE
+    )
+   }
+  
+  # -------------------------------------------------
   # HARD STOP: icon is mandatory
   # -------------------------------------------------
   icon_mapped  <- "icon" %in% names(combined_mapping)
@@ -147,12 +187,12 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
     }
     
-    data$icon_size <- data[[size_var]] * 0.005
+    data$icon_size <- data[[size_var]] * 0.02
     
     # Remove size from layer mapping (but keep in inherited if it's there)
     mapping_list[["size"]] <- NULL
   } else {
-    data$icon_size <- size * 0.005
+    data$icon_size <- size * 0.02
   }
   
   # -------------------------------------------------
