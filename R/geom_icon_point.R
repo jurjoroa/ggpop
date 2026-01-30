@@ -215,51 +215,66 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   
+  # -------------------------------------------------
+  # HARD STOP & SOFT WARNING: dpi validation
+  # -------------------------------------------------
+  if (!is.numeric(dpi) || length(dpi) != 1) {
+    stop(
+      paste0(
+        "[geom_icon_point] Invalid `dpi` parameter.\n\n",
+        "Expected: Single numeric value (e.g., dpi = 50)\n",
+        "Received: ", 
+        if (!is.numeric(dpi)) {
+          paste0(class(dpi)[1], " (", deparse(dpi)[1], ")")
+        } else {
+          paste0("vector of length ", length(dpi))
+        },
+        "\n\n",
+        "Fix:\n",
+        "- Use: dpi = 50 (default)\n",
+        "- Recommended range: 30-300\n"
+      ),
+      call. = FALSE
+    )
+  }
   
-  # -------------------------------------------------
-  # HARD STOP: dpi too low -> blurry icons
-  # -------------------------------------------------
-  if (is.numeric(dpi) && length(dpi) == 1 && !is.na(dpi) && is.finite(dpi)) {
-    if (dpi < 30) {
-      stop(
-        paste0(
-          "[geom_icon_point] `dpi = ", dpi, "` is too low.\n",
-          "Icons will look blurry when rendered with fontawesome::fa_png().\n\n",
-          "Fix:\n",
-          "- Use dpi >= 30 (recommended: 50-200 for crisp icons).\n",
-          "- If you want smaller icons, change `size`, not `dpi`.\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
-    # -------------------------------------------------
-    # SOFT WARNING: dpi very high -> performance issues
-    # -------------------------------------------------
-    if (dpi > 300) {
-      warning(
-        paste0(
-          "[geom_icon_point] Very high `dpi` value.\n\n",
-          "Why you are seeing this warning:\n",
-          "- dpi = ", dpi, " is unusually high.\n",
-          "- High DPI increases:\n",
-          "  * PNG file size (slower rendering)\n",
-          "  * Memory usage\n",
-          "  * Plot generation time\n",
-          "- For most use cases, dpi = 50-200 is sufficient.\n\n",
-          "Recommended values:\n",
-          "- Screen display: 50-100 (default: 50)\n",
-          "- Print quality: 100-200\n",
-          "- High-res publication: 200-300\n\n",
-          "\nTip:\n",
-          "- If icons look blurry in your output, try increasing plot DPI\n",
-          "  in ggsave() instead: ggsave(..., dpi = 300)\n",
-          "- The `dpi` parameter controls SOURCE icon resolution, not output resolution.\n\n",
-          "If this high DPI is intentional, you can ignore this warning.\n"
-        ),
-        call. = FALSE
-      )
-    }
+  if (is.na(dpi) || !is.finite(dpi)) {
+    stop(
+      paste0(
+        "[geom_icon_point] Invalid `dpi` value: ", dpi, "\n\n",
+        "dpi cannot be NA, Inf, or -Inf.\n\n",
+        "Fix:\n",
+        "- Use a finite numeric value: dpi = 50\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  if (dpi < 30) {
+    stop(
+      paste0(
+        "[geom_icon_point] `dpi = ", dpi, "` is too low.\n\n",
+        "Icons will look blurry when rendered.\n\n",
+        "Fix:\n",
+        "- Use dpi >= 30 (recommended: 50-200)\n",
+        "- For smaller icons, change `size`, not `dpi`\n"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  if (dpi > 300) {
+    warning(
+      paste0(
+        "[geom_icon_point] High `dpi` value (", dpi, ").\n\n",
+        "This may cause:\n",
+        "- Slower rendering\n",
+        "- Increased memory usage\n\n",
+        "Recommended: 50-200 (screen), 100-300 (print)\n\n",
+        "Tip: For output quality, use ggsave(..., dpi = 300) instead.\n"
+      ),
+      call. = FALSE
+    )
   }
   
   # ---- build per-row PNG path from per-row icon ----
