@@ -165,37 +165,51 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
    }
   
   # -------------------------------------------------
-  # HARD STOP: icon is mandatory
+  # HARD STOP: icon is mandatory and must be explicit
   # -------------------------------------------------
   icon_mapped  <- "icon" %in% names(combined_mapping)
-  has_icon_col <- "icon" %in% names(data)
+  has_icon_param <- !is.null(icon) && nzchar(as.character(icon))
   
-  if (!icon_mapped && !has_icon_col && missing(icon)) {
+  # Icon must be EXPLICITLY mapped or provided as parameter
+  # Having an 'icon' column in data is NOT enough - user must map it!
+  if (!icon_mapped && !has_icon_param) {
     stop(
       paste0(
         "[geom_icon_point] No icon specified.\n\n",
-        "Fix:\n",
-        "- Provide `aes(icon = <column>)`, OR\n",
-        "- Add an `icon` column to `data`, OR\n",
-        "- Set `icon = \"icon-name\"` as a parameter.\n"
+        "You must EXPLICITLY specify an icon:\n\n",
+        "1. Map to a column:\n",
+        "   ggplot(data, aes(x = x, y = y, icon = icon_column)) +\n",
+        "     geom_icon_point()\n\n",
+        "2. Provide a parameter:\n",
+        "   ggplot(data, aes(x = x, y = y)) +\n",
+        "     geom_icon_point(icon = \"circle\")\n\n",
+        "Note: Having an 'icon' column in your data is NOT enough.\n",
+        "      You must explicitly map it with aes(icon = icon).\n"
       ),
       call. = FALSE
     )
   }
   
-  if ("image" %in% names(mapping_list)) {
-    stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
+  # Add icon to data ONLY if parameter was provided
+  if (has_icon_param && !"icon" %in% names(data)) {
+    data$icon <- icon
   }
   
-  # Add icon column if not mapped
+  # Add icon mapping
   if (!"icon" %in% names(mapping_list)) {
     if ("icon" %in% names(inherited_mapping_list)) {
+      # Icon is mapped in ggplot()
       mapping_list[["icon"]] <- inherited_mapping_list[["icon"]]
-    } else {
+    } else if (has_icon_param) {
+      # Icon parameter provided, map to the data column we just created
       mapping_list[["icon"]] <- as.name("icon")
+    } else {
+      stop(
+        "[geom_icon_point] Internal error: No icon mapping available.",
+        call. = FALSE
+      )
     }
   }
-  if (!"icon" %in% names(data)) data$icon <- icon
   
   # Handle size (icon_size to avoid collision with coord size)
   # Check COMBINED mapping for size
@@ -297,6 +311,16 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
         "Recommended: 50-200 (screen), 100-300 (print)\n\n",
         "Tip: For output quality, use ggsave(..., dpi = 300) instead.\n"
       ),
+      call. = FALSE
+    )
+  }
+  
+  # -------------------------------------------------
+  # FINAL CHECK: icon column must exist in data
+  # -------------------------------------------------
+  if (!"icon" %in% names(data)) {
+    stop(
+      "[geom_icon_point] Internal error: icon column is missing from data.",
       call. = FALSE
     )
   }
