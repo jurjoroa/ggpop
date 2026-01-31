@@ -214,7 +214,88 @@ testthat::test_that("Error: size is vector", {
   )
 })
 
-### 03.01.05 data inputs -------------------------------------------------------
+
+
+### 03.01.05 alpha inputs -------------------------------------------------------
+
+testthat::test_that("Error: alpha = -0.1 throws error (ggplot pattern)", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = -0.1, color = "blue"),
+    regexp = "Invalid `alpha` value"
+  )
+})
+
+testthat::test_that("Error: alpha = 1.5 throws error (geom pattern)", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_icon_point(
+        data = df_scatter,
+        ggplot2::aes(x = x, y = y, icon = icon, color = category),
+        alpha = 1.5
+      ),
+    regexp = "Invalid `alpha` value"
+  )
+})
+
+testthat::test_that("Error: alpha = NA throws error", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = NA, color = "blue"),
+    regexp = "Invalid `alpha` value"
+  )
+})
+
+testthat::test_that("Error: alpha = NULL throws error", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = NULL, color = "blue"),
+    regexp = "Invalid `alpha` value"
+  )
+})
+
+testthat::test_that("Error: alpha = point_size (bare name) throws error", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = point_size, color = "blue"),
+    regexp = "Invalid `alpha` parameter.*use aes\\(\\) instead"
+  )
+})
+
+testthat::test_that("Error: alpha = 'high' throws error", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = "high", color = "blue"),
+    regexp = "Invalid `alpha` value"
+  )
+})
+
+testthat::test_that("Error: alpha = c(0.5, 0.8) throws error", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = c(0.5, 0.8), color = "blue"),
+    regexp = "Invalid `alpha` value"
+  )
+})
+
+testthat::test_that("Error: alpha = Inf throws error", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = Inf, color = "blue"),
+    regexp = "Invalid `alpha` value"
+  )
+})
+
+testthat::test_that("Error: alpha = -Inf throws error", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = -Inf, color = "blue"),
+    regexp = "Invalid `alpha` value"
+  )
+})
+
+
+### 03.01.06 data inputs -------------------------------------------------------
 
 testthat::test_that("Error: data is not a data frame", {
   testthat::expect_error(

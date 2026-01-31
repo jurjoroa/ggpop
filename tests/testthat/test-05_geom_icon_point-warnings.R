@@ -164,7 +164,7 @@ testthat::test_that("Edge case: size = 16 triggers warning (ggplot pattern)", {
   )
 })
 
-### 03.03.04 size very large (geom pattern) ------------------------------------
+### 03.03.05 size very large (geom pattern) ------------------------------------
 
 testthat::test_that("Edge case: size = 16 triggers warning (geom pattern)", {
   testthat::expect_warning(
@@ -202,11 +202,65 @@ testthat::test_that("Edge case: size = 15.01 triggers warning (geom)", {
   )
 })
 
+
 # ******************************************************************************
-## 03.04 Warnings: icon-related ------------------------------------------------
+## 03.04 Warnings: alpha parameters ---------------------------------------------
 # ******************************************************************************
 
-### 03.04.01 multiple icons per legend group (ggplot pattern) ------------------
+### 03.04.01 alpha very small (ggplot pattern) ---------------------------------
+
+testthat::test_that("Edge case: alpha = 0.05 triggers warning (ggplot pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = 0.05, color = "blue"),
+    regexp = "Very low `alpha` value"
+  )
+})
+
+### 03.04.02 alpha very small (geom pattern) -----------------------------------
+
+testthat::test_that("Edge case: alpha = 0.05 triggers warning (geom pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_icon_point(
+        data = df_scatter,
+        ggplot2::aes(x = x, y = y, icon = icon, color = category),
+        alpha = 0.05
+      ),
+    regexp = "Very low `alpha` value"
+  )
+})
+
+### 03.04.03 alpha boundaries (no warnings) ------------------------------------
+
+testthat::test_that("Edge case: alpha = 0.09 triggers warning (mixed)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
+      geom_icon_point(
+        ggplot2::aes(icon = icon, color = category),
+        alpha = 0.09
+      ),
+    regexp = "Very low `alpha` value"
+  )
+})
+
+
+### 03.04.04 alpha in both aes() and parameter triggers warning ---------------
+
+testthat::test_that("Warning: alpha in both aes() and parameter", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, alpha = point_size)) +
+      geom_icon_point(alpha = 0.5, color = "blue"),
+    regexp = "alpha.*provided both inside aes\\(\\) and as a parameter"
+  )
+})
+
+
+# ******************************************************************************
+## 03.05 Warnings: icon-related ------------------------------------------------
+# ******************************************************************************
+
+### 03.05.01 multiple icons per legend group (ggplot pattern) ------------------
 
 testthat::test_that("Warning: multiple icons per color group (ggplot pattern)", {
   df_multi_icon <- data.frame(
@@ -223,7 +277,7 @@ testthat::test_that("Warning: multiple icons per color group (ggplot pattern)", 
   )
 })
 
-### 03.04.02 multiple icons per legend group (geom pattern) --------------------
+### 03.05.02 multiple icons per legend group (geom pattern) --------------------
 
 testthat::test_that("Warning: multiple icons per color group (geom pattern)", {
   df_multi_icon <- data.frame(
@@ -253,10 +307,10 @@ testthat::test_that("Warning: multiple icons per color group (geom pattern)", {
 })
 
 # ******************************************************************************
-## 03.05 Warnings: inherited aesthetics ----------------------------------------
+## 03.06 Warnings: inherited aesthetics ----------------------------------------
 # ******************************************************************************
 
-### 03.05.01 Size inherited + specified (classic ggplot pattern) ---------------
+### 03.06.01 Size inherited + specified (classic ggplot pattern) ---------------
 
 testthat::test_that("Warning: size in ggplot() aes and geom param", {
   testthat::expect_warning(

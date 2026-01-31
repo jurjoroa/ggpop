@@ -152,12 +152,81 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
         "[geom_icon_point] `alpha` was provided both inside aes() and as a parameter.\n\n",
         "What happens:\n",
         "- `aes(alpha = <variable>)` controls transparency per row.\n",
-        "- The argument `ggplot(aes(alpha = ", extra_args$alpha, "))` will be ignored.\n\n",
+        "- The argument `geom_icon_point(aes(), alpha = ", extra_args$alpha, ")` will be ignored.\n\n",
         "Tip:\n",
+        "- Use ONLY `aes(alpha = <variable>)` for data-driven transparency, OR\n",
         "- Remove `alpha` from aes() and set a fixed alpha via geom_icon_point(alpha = ...).\n"
       ),
       call. = FALSE
     )
+  }
+  
+  # -------------------------------------------------
+  # HARD STOP: alpha parameter validation
+  # -------------------------------------------------
+  if ("alpha" %in% names(extra_args)) {
+    alpha_val <- extra_args$alpha
+    
+    # Check if it's a name/symbol (user tried to pass a column name)
+    if (is.symbol(alpha_val) || is.name(alpha_val)) {
+      stop(
+        paste0(
+          "[geom_icon_point] Invalid `alpha` parameter.\n\n",
+          "You passed: alpha = ", deparse(alpha_val), "\n\n",
+          "Problem:\n",
+          "- Parameters like `alpha = point_size` expect a single numeric value (e.g., alpha = 0.5)\n",
+          "- To map alpha to a data column, use aes() instead:\n\n",
+          "Fix:\n",
+          "  # Wrong:\n",
+          "  geom_icon_point(alpha = point_size, color = 'blue')\n\n",
+          "  # Correct:\n",
+          "  geom_icon_point(aes(alpha = point_size), color = 'blue')\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    # Validate it's a single numeric value in valid range
+    if (!is.numeric(alpha_val) || length(alpha_val) != 1 || 
+        is.na(alpha_val) || alpha_val < 0 || alpha_val > 1) {
+      stop(
+        paste0(
+          "[geom_icon_point] Invalid `alpha` value.\n\n",
+          "Expected: Single numeric value between 0 and 1 (e.g., alpha = 0.5)\n",
+          "Received: ", 
+          if (!is.numeric(alpha_val)) {
+            class(alpha_val)[1]
+          } else if (length(alpha_val) != 1) {
+            paste0("vector of length ", length(alpha_val))
+          } else if (is.na(alpha_val)) {
+            "NA"
+          } else {
+            alpha_val
+          },
+          "\n\n",
+          "Valid range: 0 (transparent) to 1 (opaque)\n"
+        ),
+        call. = FALSE
+      )
+    }
+    
+    # SOFT WARNING: alpha too low
+    if (alpha_val < 0.1 && alpha_val > 0) {
+      warning(
+        paste0(
+          "[geom_icon_point] Very low `alpha` value.\n\n",
+          "Why you are seeing this warning:\n",
+          "- alpha = ", alpha_val, " is very low.\n",
+          "- Icons may be nearly invisible.\n\n",
+          "Recommended:\n",
+          "- Use alpha >= 0.1 for visible icons\n",
+          "- Default is 1.0 (fully opaque)\n",
+          "- Typical range: 0.3-1.0\n\n",
+          "If this is intentional, you can ignore this warning.\n"
+        ),
+        call. = FALSE
+      )
+    }
   }
   
   # -------------------------------------------------
