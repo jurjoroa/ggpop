@@ -1,6 +1,6 @@
 # *****************************************************************************
 #
-# Script: test-geom_icon_point-errors.R
+# Script: test-06_geom_icon_point-errors.R
 #
 # Purpose: Test errors (hard stops) produced by geom_icon_point().
 #

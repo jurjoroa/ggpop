@@ -1,6 +1,6 @@
 # *****************************************************************************
 #
-# Script: test-geom_icon_point-warnings.R
+# Script: test-05_geom_icon_point-warnings.R
 #
 # Purpose: Test warnings produced by geom_icon_point().
 #

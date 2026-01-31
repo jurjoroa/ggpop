@@ -1,6 +1,6 @@
 # *****************************************************************************
 #
-# Script: test-geom_pop-cowplot-airports.R
+# Script: test-04_geom_pop-cowplot.R
 #
 # Purpose: Ensure geom_pop() works robustly inside cowplot-driven narratives,
 #          assembling multi-group "airport story" panels into a single figure

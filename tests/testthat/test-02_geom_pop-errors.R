@@ -1,6 +1,6 @@
 # *****************************************************************************
 #
-# Script: test-geom_pop-errors.R
+# Script: test-02_geom_pop-errors.R
 #
 # Purpose: Test errors (hard stops) produced by geom_pop().
 #

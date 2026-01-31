@@ -1,6 +1,6 @@
 # *****************************************************************************
 #
-# Script: test-geom_icon_point-clean.R
+# Script: test-07_geom_icon_point-checkpass.R
 #
 # Purpose: Ensure geom_icon_point() works robustly for all valid scenarios
 #          without warnings or errors.
