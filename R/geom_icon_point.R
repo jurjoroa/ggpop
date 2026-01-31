@@ -518,57 +518,66 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # SOFT WARNING: multiple icons per legend group
   # -------------------------------------------------
   if (legend_icons && !is.null(legend_var) && legend_var %in% names(data)) {
-    # Check if any legend group has multiple different icons
-    icon_counts <- data %>%
-      dplyr::mutate(
-        .legend = as.character(.data[[legend_var]]),
-        icon    = as.character(icon)
-      ) %>%
-      dplyr::filter(!is.na(.legend), nzchar(.legend), !is.na(icon), nzchar(icon)) %>%
-      dplyr::group_by(.legend) %>%
-      dplyr::summarise(
-        n_icons = dplyr::n_distinct(icon),
-        icons = paste(sort(unique(icon)), collapse = ", "),
-        .groups = "drop"
-      ) %>%
-      dplyr::filter(n_icons > 1)
     
-    if (nrow(icon_counts) > 0) {
-      # Build detailed message showing which groups have issues
-      problem_groups <- icon_counts %>%
+    # Check if the legend variable is numeric (continuous scale)
+    is_numeric_scale <- is.numeric(data[[legend_var]])
+    
+    if (is_numeric_scale) {
+      # For continuous scales, we can't have discrete legend groups
+      # Skip the check - continuous color scales don't show discrete icons anyway
+    } else {
+      # Check if any legend group has multiple different icons
+      icon_counts <- data %>%
         dplyr::mutate(
-          msg = paste0("  - ", .legend, ": ", icons, " (", n_icons, " different icons)")
+          .legend = as.character(.data[[legend_var]]),
+          icon    = as.character(icon)
         ) %>%
-        dplyr::pull(msg) %>%
-        paste(collapse = "\n")
+        dplyr::filter(!is.na(.legend), nzchar(.legend), !is.na(icon), nzchar(icon)) %>%
+        dplyr::group_by(.legend) %>%
+        dplyr::summarise(
+          n_icons = dplyr::n_distinct(icon),
+          icons = paste(sort(unique(icon)), collapse = ", "),
+          .groups = "drop"
+        ) %>%
+        dplyr::filter(n_icons > 1)
       
-      warning(
-        paste0(
-          "[geom_icon_point] Multiple icons per legend group.\n\n",
-          "Why you are seeing this warning:\n",
-          "- Some legend groups (mapped via `", legend_var, "`) contain multiple different icons.\n",
-          "- The legend will only show ONE icon per group (the most frequent one).\n\n",
-          "Affected groups:\n",
-          problem_groups, "\n\n",
-          "What happens:\n",
-          "- For each group, the most common icon is selected for the legend.\n",
-          "- In the plot, all icons are displayed as mapped.\n",
-          "- The legend may not accurately represent all icons in each group.\n\n",
-          "Recommended fixes:\n",
-          "1. Use one icon per legend group:\n",
-          "   - Ensure each value of `", legend_var, "` has only one icon type.\n\n",
-          "2. Map icon as the legend variable:\n",
-          "   - Use `aes(color = icon)` to show all icons in the legend.\n\n",
-          "3. Disable icon legends:\n",
-          "   - Use `legend_icons = FALSE` to show standard point markers.\n\n",
-          "Example fix:\n",
-          "  # Make sure each category uses one icon:\n",
-          "  df <- df %>%\n",
-          "    group_by(", legend_var, ") %>%\n",
-          "    mutate(icon = first(icon))  # Use first icon for consistency\n"
-        ),
-        call. = FALSE
-      )
+      if (nrow(icon_counts) > 0) {
+        # Build detailed message showing which groups have issues
+        problem_groups <- icon_counts %>%
+          dplyr::mutate(
+            msg = paste0("  - ", .legend, ": ", icons, " (", n_icons, " different icons)")
+          ) %>%
+          dplyr::pull(msg) %>%
+          paste(collapse = "\n")
+        
+        warning(
+          paste0(
+            "[geom_icon_point] Multiple icons per legend group.\n\n",
+            "Why you are seeing this warning:\n",
+            "- Some legend groups (mapped via `", legend_var, "`) contain multiple different icons.\n",
+            "- The legend will only show ONE icon per group (the most frequent one).\n\n",
+            "Affected groups:\n",
+            problem_groups, "\n\n",
+            "What happens:\n",
+            "- For each group, the most common icon is selected for the legend.\n",
+            "- In the plot, all icons are displayed as mapped.\n",
+            "- The legend may not accurately represent all icons in each group.\n\n",
+            "Recommended fixes:\n",
+            "1. Use one icon per legend group:\n",
+            "   - Ensure each value of `", legend_var, "` has only one icon type.\n\n",
+            "2. Map icon as the legend variable:\n",
+            "   - Use `aes(color = icon)` to show all icons in the legend.\n\n",
+            "3. Disable icon legends:\n",
+            "   - Use `legend_icons = FALSE` to show standard point markers.\n\n",
+            "Example fix:\n",
+            "  # Make sure each category uses one icon:\n",
+            "  df <- df %>%\n",
+            "    group_by(", legend_var, ") %>%\n",
+            "    mutate(icon = first(icon))  # Use first icon for consistency\n"
+          ),
+          call. = FALSE
+        )
+      }
     }
   }
   
