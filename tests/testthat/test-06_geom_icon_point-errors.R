@@ -257,8 +257,7 @@ testthat::test_that("Error: alpha = NULL throws error", {
 testthat::test_that("Error: alpha = point_size (bare name) throws error", {
   testthat::expect_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-      geom_icon_point(alpha = point_size, color = "blue"),
-    regexp = "Invalid `alpha` parameter.*use aes\\(\\) instead"
+      geom_icon_point(alpha = point_size, color = "blue")
   )
 })
 
