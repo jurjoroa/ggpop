@@ -60,6 +60,16 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # -------------------------------------------------
+  # HARD STOP: empty data frame
+  # -------------------------------------------------
+  if (nrow(data) == 0) {
+    stop(
+      "[geom_icon_point] Empty data (0 rows). Cannot create plot with no data points.",
+      call. = FALSE
+    )
+  }
+  
+  # -------------------------------------------------
   # HARD STOP: dpi too low -> blurry icons
   # -------------------------------------------------
   if (is.numeric(dpi) && length(dpi) == 1 && !is.na(dpi) && is.finite(dpi)) {
@@ -105,6 +115,32 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
+  
+  
+  # -------------------------------------------------
+  # HARD STOP: size parameter validation
+  # -------------------------------------------------
+  if (!missing(size)) {
+    # Type check
+    if (!is.numeric(size) || length(size) != 1) {
+      stop(
+        sprintf("[geom_icon_point] size must be a single numeric value, got %s", class(size)[1]),
+        call. = FALSE
+      )
+    }
+    
+    # Value checks
+    if (is.na(size) || !is.finite(size) || size <= 0) {
+      stop(
+        sprintf(
+          "[geom_icon_point] Invalid size (%s). Must be positive and finite (e.g., size = 3)",
+          if (is.na(size)) "NA" else size
+        ),
+        call. = FALSE
+      )
+    }
+  }
+  
   
   # -------------------------------------------------
   # WARNING: size specified both in aes() and as argument
@@ -162,8 +198,9 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       ),
       call. = FALSE
     )
-   }
+  }
   
+
   # -------------------------------------------------
   # HARD STOP: icon is mandatory and must be explicit
   # -------------------------------------------------
