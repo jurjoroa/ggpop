@@ -25,7 +25,7 @@
 #' @export
 geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             position = "identity", na.rm = FALSE, show.legend = NA,
-                            inherit.aes = TRUE, icon = "circle",
+                            inherit.aes = TRUE, icon = NULL,
                             size = 3, dpi = 50, legend_icons = TRUE, ...) {
   
   # -------------------------------------------------
@@ -81,6 +81,30 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   
   # Combine inherited and layer mappings
   combined_mapping <- c(inherited_mapping_list, mapping_list)
+  
+  # -------------------------------------------------
+  # HARD STOP: image aesthetic is not allowed
+  # -------------------------------------------------
+  if ("image" %in% names(combined_mapping)) {
+    stop(
+      paste0(
+        "[geom_icon_point] The 'image' aesthetic is not allowed.\n\n",
+        "Why this is an error:\n",
+        "- geom_icon_point() uses 'icon' aesthetic, not 'image'.\n",
+        "- 'image' is used internally by ggimage::geom_image().\n\n",
+        "Fix:\n",
+        "- Use `aes(icon = ...)` instead of `aes(image = ...)`\n\n",
+        "Example:\n",
+        "  # Wrong:\n",
+        "  ggplot(data, aes(x = x, y = y, image = icon_col)) +\n",
+        "    geom_icon_point()\n\n",
+        "  # Correct:\n",
+        "  ggplot(data, aes(x = x, y = y, icon = icon_col)) +\n",
+        "    geom_icon_point()\n"
+      ),
+      call. = FALSE
+    )
+  }
   
   # -------------------------------------------------
   # WARNING: size specified both in aes() and as argument
