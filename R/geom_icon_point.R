@@ -271,6 +271,21 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # -------------------------------------------------
+  # HARD STOP: legend_icons validation
+  # -------------------------------------------------
+  if (!is.logical(legend_icons) || length(legend_icons) != 1 || is.na(legend_icons)) {
+    stop(
+      sprintf(
+        "[geom_icon_point] legend_icons must be TRUE or FALSE, got %s",
+        if (!is.logical(legend_icons)) class(legend_icons)[1]
+        else if (length(legend_icons) != 1) paste0("length-", length(legend_icons), " vector")
+        else "NA"
+      ),
+      call. = FALSE
+    )
+  }
+  
+  # -------------------------------------------------
   # HARD STOP: missing / empty icons are not allowed
   # -------------------------------------------------
   if ("icon" %in% names(data)) {
