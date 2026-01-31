@@ -24,9 +24,11 @@
 #' @import dplyr
 #' @export
 geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
-                            position = "identity", na.rm = FALSE, show.legend = NA,
+                            position = "identity", na.rm = FALSE,
                             inherit.aes = TRUE, icon = NULL,
                             size = 3, dpi = 50, legend_icons = TRUE, ...) {
+  
+  extra_args <- list(...)
   
   # -------------------------------------------------
   # HANDLE COMMON USAGE: geom_icon_point(data, aes(...))
@@ -141,6 +143,22 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     }
   }
   
+  # -------------------------------------------------
+  # WARNING: alpha specified both in aes() and as argument
+  # -------------------------------------------------
+  if ("alpha" %in% names(combined_mapping) && "alpha" %in% names(extra_args)) {
+    warning(
+      paste0(
+        "[geom_icon_point] `alpha` was provided both inside aes() and as a parameter.\n\n",
+        "What happens:\n",
+        "- `aes(alpha = <variable>)` controls transparency per row.\n",
+        "- The argument `ggplot(aes(alpha = ", extra_args$alpha, "))` will be ignored.\n\n",
+        "Tip:\n",
+        "- Remove `alpha` from aes() and set a fixed alpha via geom_icon_point(alpha = ...).\n"
+      ),
+      call. = FALSE
+    )
+  }
   
   # -------------------------------------------------
   # WARNING: size specified both in aes() and as argument
