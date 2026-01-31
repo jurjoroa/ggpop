@@ -486,7 +486,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     }
   }
   
-  icon_by_legend <- if (!is.null(legend_var)) {
+  icon_by_legend <- if (!is.null(legend_var) && legend_var %in% names(data)) {
     data %>%
       dplyr::mutate(
         .legend = as.character(.data[[legend_var]]),
@@ -503,9 +503,16 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       ) %>%
       { stats::setNames(.$icon, .$.legend) }
   } else {
-    stats::setNames(icon, "default")
+    # Fallback: use first icon from data or parameter
+    first_icon <- if ("icon" %in% names(data) && nrow(data) > 0) {
+      as.character(data$icon[1])
+    } else if (has_icon_param) {
+      icon
+    } else {
+      "circle"  # Ultimate fallback
+    }
+    stats::setNames(first_icon, "default")
   }
-  
   
   # -------------------------------------------------
   # SOFT WARNING: multiple icons per legend group
