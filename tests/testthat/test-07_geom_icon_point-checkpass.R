@@ -396,6 +396,14 @@ testthat::test_that("Legend: icons disabled (FALSE)", {
 })
 
 
+testthat::test_that("Multiple legend_icons settings across layers", {
+    testthat::expect_no_error(
+         ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
+             geom_icon_point(legend_icons = TRUE) +
+             geom_icon_point(ggplot2::aes(size = point_size), legend_icons = TRUE)
+       )
+ })
+
 # ******************************************************************************
 # 07 Real-world usage patterns -------------------------------------------------
 # ******************************************************************************
@@ -1024,3 +1032,648 @@ testthat::test_that("Edge: multiple points at same coordinates", {
 # END --------------------------------------------------------------------------
 # ******************************************************************************
 
+
+
+# Simulate data
+set.seed(170513)
+n <- 2000
+d <- data.frame(a = rnorm(n))
+d$b <- -(d$a + rnorm(n, sd = 2))
+
+# Add first principal component
+d$pc <- predict(prcomp(~a+b, d))[,1]
+
+# Add density for each point
+d$density <- fields::interp.surface(
+  MASS::kde2d(d$a, d$b), d[,c("a", "b")])
+
+#Add icon column
+
+d$icon <- "star"
+
+# Plot
+ggplot(d, aes(a, b, color = pc, alpha = 1/density)) +
+  geom_icon_point(aes(icon = icon), size = 1, dpi = 50) +
+  theme_minimal() +
+  scale_color_gradient(low = "#32aeff", high = "#f2aeff") +
+  scale_alpha(range = c(.25, .6))
+
+
+ggplot(d, aes(a, b, color = pc, alpha = 1/density)) +
+  geom_point(shape = 16, size = 5, show.legend = FALSE) +
+  theme_minimal() +
+  scale_color_gradient(low = "#32aeff", high = "#f2aeff") +
+  scale_alpha(range = c(.25, .6))
+
+
+
+
+set.seed(170513)
+n <- 2000
+d <- data.frame(a = rnorm(n))
+d$b <- -(d$a + rnorm(n, sd = 2))
+
+# Add first principal component
+d$pc <- predict(prcomp(~a+b, d))[,1]
+
+# Add density for each point
+d$density <- fields::interp.surface(
+  MASS::kde2d(d$a, d$b), d[,c("a", "b")])
+
+# Add icon column
+d$icon <- "star"
+
+# Plot with icons
+p1 <- ggplot(d, aes(a, b, color = pc, alpha = 1/density)) +
+  geom_icon_point(aes(icon = icon), size = 1, dpi = 50) +
+  theme_minimal() +
+  scale_color_gradient(low = "#32aeff", high = "#f2aeff") +
+  scale_alpha(range = c(.25, .6)) +
+  labs(title = "Density Gradient with Icon Points",
+       subtitle = "Stars with varying density and PCA coloring")
+
+print(p1)
+
+# Compare with standard geom_point
+p1_compare <- ggplot(d, aes(a, b, color = pc, alpha = 1/density)) +
+  geom_point(shape = 16, size = 2, show.legend = FALSE) +
+  theme_minimal() +
+  scale_color_gradient(low = "#32aeff", high = "#f2aeff") +
+  scale_alpha(range = c(.25, .6)) +
+  labs(title = "Same Data with geom_point()",
+       subtitle = "Standard points for comparison")
+
+print(p1_compare)
+
+
+
+set.seed(42)
+n_obs <- 150
+
+df_regression <- data.frame(
+  x = seq(0, 10, length.out = n_obs)
+)
+
+df_regression <- df_regression %>%
+  mutate(
+    # True relationship with noise
+    y = 2 + 1.5 * x + rnorm(n_obs, sd = 2),
+    
+    # Categorize by residuals
+    category = case_when(
+      y > 2 + 1.5 * x + 1 ~ "Above",
+      y < 2 + 1.5 * x - 1 ~ "Below",
+      TRUE ~ "Within"
+    ),
+    
+    # Assign icons based on category
+    icon = case_when(
+      category == "Above" ~ "arrow-up",
+      category == "Below" ~ "arrow-down",
+      category == "Within" ~ "circle"
+    ),
+    
+    # Size by distance from regression line
+    distance = abs(y - (2 + 1.5 * x)),
+    point_size = scales::rescale(distance, to = c(1, 4))
+  )
+
+# Fit model
+model <- lm(y ~ x, data = df_regression)
+predictions <- predict(model, interval = "confidence")
+df_regression$fitted <- predictions[, "fit"]
+df_regression$lwr <- predictions[, "lwr"]
+df_regression$upr <- predictions[, "upr"]
+
+# Plot with icons
+p2 <- ggplot(df_regression, aes(x = x, y = y)) +
+  # Confidence band
+  geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.2, fill = "steelblue") +
+  # Regression line
+  geom_line(aes(y = fitted), color = "steelblue", linewidth = 1) +
+  # Data points with icons
+  geom_icon_point(
+    aes(icon = icon, color = category, size = point_size),
+    dpi = 80,
+    legend_icons = TRUE
+  ) +
+  scale_color_manual(
+    values = c("Above" = "#e74c3c", "Below" = "#3498db", "Within" = "#2ecc71"),
+    name = "Position"
+  ) +
+  scale_size_continuous(range = c(1, 4), guide = "none") +
+  theme_minimal() +
+  labs(
+    title = "Linear Regression with Categorical Icon Points",
+    subtitle = "Icons show position relative to confidence band, size shows distance",
+    x = "Predictor (x)",
+    y = "Response (y)"
+  )
+
+print(p2)
+
+
+
+
+set.seed(2024)
+dates <- seq.Date(from = as.Date("2023-01-01"), to = as.Date("2023-12-31"), by = "day")
+
+df_timeseries <- data.frame(
+  date = dates,
+  value = cumsum(rnorm(length(dates), mean = 0.5, sd = 3))
+)
+
+# Add events
+events <- sample(dates, 20)
+df_timeseries <- df_timeseries %>%
+  mutate(
+    event_type = case_when(
+      date %in% events[1:7] ~ "High Impact",
+      date %in% events[8:14] ~ "Medium Impact",
+      date %in% events[15:20] ~ "Low Impact",
+      TRUE ~ "Normal"
+    ),
+    icon = case_when(
+      event_type == "High Impact" ~ "bolt",
+      event_type == "Medium Impact" ~ "triangle-exclamation",
+      event_type == "Low Impact" ~ "circle-info",
+      TRUE ~ "circle"
+    ),
+    point_size = case_when(
+      event_type == "High Impact" ~ 5,
+      event_type == "Medium Impact" ~ 3,
+      event_type == "Low Impact" ~ 2,
+      TRUE ~ 1
+    )
+  )
+
+p3 <- ggplot(df_timeseries, aes(x = date, y = value)) +
+  geom_line(color = "gray60", linewidth = 0.5) +
+  geom_icon_point(
+    aes(icon = icon, color = event_type, size = point_size),
+    dpi = 100,
+    legend_icons = TRUE
+  ) +
+  scale_color_manual(
+    values = c(
+      "High Impact" = "#e74c3c",
+      "Medium Impact" = "#f39c12",
+      "Low Impact" = "#3498db",
+      "Normal" = "gray70"
+    ),
+    name = "Event Type"
+  ) +
+  scale_size_continuous(range = c(1, 5), guide = "none") +
+  theme_minimal() +
+  labs(
+    title = "Time Series with Event Icons",
+    subtitle = "Different icons mark different event types throughout the year",
+    x = "Date",
+    y = "Cumulative Value"
+  )
+
+print(p3)
+
+
+
+
+set.seed(123)
+n_per_cluster <- 100
+
+df_clusters <- rbind(
+  data.frame(x = rnorm(n_per_cluster, mean = 0, sd = 1),
+             y = rnorm(n_per_cluster, mean = 0, sd = 1),
+             cluster = "A", icon = "heart"),
+  data.frame(x = rnorm(n_per_cluster, mean = 5, sd = 1.2),
+             y = rnorm(n_per_cluster, mean = 5, sd = 1.2),
+             cluster = "B", icon = "star"),
+  data.frame(x = rnorm(n_per_cluster, mean = 0, sd = 1),
+             y = rnorm(n_per_cluster, mean = 5, sd = 1),
+             cluster = "C", icon = "square"),
+  data.frame(x = rnorm(n_per_cluster, mean = 5, sd = 1.2),
+             y = rnorm(n_per_cluster, mean = 0, sd = 1.2),
+             cluster = "D", icon = "triangle-exclamation")
+)
+
+# Add distance from cluster center
+df_clusters <- df_clusters %>%
+  group_by(cluster) %>%
+  mutate(
+    center_x = mean(x),
+    center_y = mean(y),
+    distance_from_center = sqrt((x - center_x)^2 + (y - center_y)^2),
+    alpha_val = scales::rescale(distance_from_center, to = c(1, 0.3))
+  ) %>%
+  ungroup()
+
+p4 <- ggplot(df_clusters, aes(x = x, y = y)) +
+  geom_icon_point(
+    aes(icon = icon, color = cluster, alpha = alpha_val),
+    size = 2,
+    dpi = 80,
+    legend_icons = TRUE
+  ) +
+  scale_color_brewer(palette = "Set1", name = "Cluster") +
+  scale_alpha_continuous(range = c(0.3, 1), guide = "none") +
+  theme_minimal() +
+  labs(
+    title = "K-Means Clustering with Icon Markers",
+    subtitle = "Each cluster has a unique icon, alpha shows distance from centroid",
+    x = "X Coordinate",
+    y = "Y Coordinate"
+  )
+
+print(p4)
+
+
+set.seed(456)
+n_locations <- 200
+
+df_geo <- data.frame(
+  longitude = runif(n_locations, min = -10, max = 10),
+  latitude = runif(n_locations, min = -10, max = 10)
+) %>%
+  mutate(
+    location_type = sample(
+      c("Hospital", "School", "Park", "Station"),
+      n_locations,
+      replace = TRUE,
+      prob = c(0.2, 0.3, 0.3, 0.2)
+    ),
+    icon = case_when(
+      location_type == "Hospital" ~ "hospital",
+      location_type == "School" ~ "graduation-cap",
+      location_type == "Park" ~ "tree",
+      location_type == "Station" ~ "train"
+    ),
+    importance = sample(1:5, n_locations, replace = TRUE),
+    point_size = importance * 0.8
+  )
+
+p5 <- ggplot(df_geo, aes(x = longitude, y = latitude)) +
+  geom_icon_point(
+    aes(icon = icon, color = location_type, size = point_size),
+    dpi = 100,
+    legend_icons = TRUE
+  ) +
+  scale_color_manual(
+    values = c(
+      "Hospital" = "#e74c3c",
+      "School" = "#3498db",
+      "Park" = "#2ecc71",
+      "Station" = "#9b59b6"
+    ),
+    name = "Location Type"
+  ) +
+  scale_size_continuous(range = c(1, 5), guide = "none") +
+  coord_fixed() +
+  theme_minimal() +
+  labs(
+    title = "Geographic Distribution of Facilities",
+    subtitle = "Icon types represent facility categories, size shows importance",
+    x = "Longitude",
+    y = "Latitude"
+  )
+
+print(p5)
+
+
+
+# ==============================================================================
+# Example 6: Multi-variable Visualization (HARD)
+# ==============================================================================
+
+set.seed(789)
+n_complex <- 300
+
+df_complex <- data.frame(
+  x = rnorm(n_complex),
+  y = rnorm(n_complex)
+) %>%
+  mutate(
+    # Quadrant
+    quadrant = case_when(
+      x >= 0 & y >= 0 ~ "Q1",
+      x < 0 & y >= 0 ~ "Q2",
+      x < 0 & y < 0 ~ "Q3",
+      TRUE ~ "Q4"
+    ),
+    
+    # Distance from origin
+    distance = sqrt(x^2 + y^2),
+    
+    # Categorize by distance
+    distance_cat = cut(distance, breaks = c(0, 1, 2, Inf), labels = c("Near", "Mid", "Far")),
+    
+    # Icon based on quadrant AND distance
+    icon = case_when(
+      distance_cat == "Near" ~ "circle",
+      distance_cat == "Mid" & quadrant %in% c("Q1", "Q3") ~ "star",
+      distance_cat == "Mid" & quadrant %in% c("Q2", "Q4") ~ "heart",
+      distance_cat == "Far" ~ "triangle-exclamation"
+    ),
+    
+    # Color by quadrant
+    point_size = scales::rescale(distance, to = c(1, 4))
+  )
+
+ggplot(df_complex, aes(x = x, y = y)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_icon_point(
+    aes(icon = icon, color = icon, size = point_size, alpha = distance),
+    dpi = 80,
+    legend_icons = TRUE
+  ) +
+  scale_color_brewer(palette = "Set2", name = "Quadrant") +
+  scale_size_continuous(range = c(1, 4), guide = "none") +
+  scale_alpha_continuous(range = c(1, 0.3), guide = "none") +
+  coord_fixed() +
+  theme_minimal() +
+  labs(
+    title = "Multi-Variable Visualization",
+    subtitle = "Icon shows distance category, color shows quadrant, size and alpha show distance",
+    x = "X Coordinate",
+    y = "Y Coordinate"
+  )
+
+print(p6)
+
+
+# ==============================================================================
+# Example 7: Extreme Case - High Density with Varying Icons
+# ==============================================================================
+
+set.seed(2025)
+n_extreme <- 5000
+
+df_extreme <- data.frame(
+  x = c(rnorm(n_extreme/2, mean = 0, sd = 2), rnorm(n_extreme/2, mean = 5, sd = 1.5)),
+  y = c(rnorm(n_extreme/2, mean = 0, sd = 2), rnorm(n_extreme/2, mean = 5, sd = 1.5))
+) %>%
+  mutate(
+    group = rep(c("A", "B"), each = n_extreme/2),
+    icon = ifelse(group == "A", "circle", "square"),
+    density_local = fields::interp.surface(
+      MASS::kde2d(x, y, n = 100),
+      cbind(x, y)
+    ),
+    alpha_val = scales::rescale(1/density_local, to = c(0.1, 0.8))
+  )
+
+p7 <- ggplot(df_extreme, aes(x = x, y = y)) +
+  geom_icon_point(
+    aes(icon = icon, color = group, alpha = alpha_val),
+    size = 1,
+    dpi = 50,
+    legend_icons = TRUE
+  ) +
+  scale_color_manual(values = c("A" = "#3498db", "B" = "#e74c3c"), name = "Group") +
+  scale_alpha_continuous(range = c(0.1, 0.8), guide = "none") +
+  theme_minimal() +
+  labs(
+    title = "High Density Plot (5000 points)",
+    subtitle = "Icons vary by group, alpha adjusts for local density",
+    x = "X",
+    y = "Y"
+  )
+
+print(p7)
+
+# ==============================================================================
+# Example 8: Logistic Regression - Binary Classification with Icons
+# ==============================================================================
+
+set.seed(2024)
+n_logistic <- 300
+
+df_logistic <- data.frame(
+  x = rnorm(n_logistic, mean = 5, sd = 2)
+) %>%
+  mutate(
+    # Probability based on logistic function
+    prob = 1 / (1 + exp(-(x - 5))),
+    
+    # Binary outcome
+    y = rbinom(n_logistic, size = 1, prob = prob),
+    
+    # Classification categories
+    outcome = ifelse(y == 1, "Success", "Failure"),
+    
+    # Icons
+    icon = ifelse(outcome == "Success", "circle-check", "circle-xmark"),
+    
+    # Jitter y for visualization
+    y_jitter = y + runif(n_logistic, -0.1, 0.1),
+    
+    # Size by confidence (distance from 0.5 probability)
+    confidence = abs(prob - 0.5),
+    point_size = scales::rescale(confidence, to = c(1, 4))
+  )
+
+# Fit logistic regression
+model_logistic <- glm(y ~ x, data = df_logistic, family = binomial())
+
+# Predictions
+x_seq <- seq(min(df_logistic$x), max(df_logistic$x), length.out = 100)
+pred_logistic <- predict(model_logistic, 
+                         newdata = data.frame(x = x_seq), 
+                         type = "response")
+
+df_curve <- data.frame(x = x_seq, prob = pred_logistic)
+
+p8 <- ggplot(df_logistic, aes(x = x, y = y_jitter)) +
+  # Logistic curve
+  geom_line(data = df_curve, aes(x = x, y = prob), 
+            color = "steelblue", linewidth = 1.2) +
+  # Reference lines
+  geom_hline(yintercept = c(0, 1), linetype = "dashed", color = "gray60", alpha = 0.5) +
+  geom_hline(yintercept = 0.5, linetype = "dotted", color = "gray40") +
+  # Data points with icons
+  geom_icon_point(
+    aes(icon = icon, color = outcome, size = point_size),
+    dpi = 100,
+    legend_icons = TRUE
+  ) +
+  scale_color_manual(
+    values = c("Success" = "#2ecc71", "Failure" = "#e74c3c"),
+    name = "Outcome"
+  ) +
+  scale_size_continuous(range = c(1.5, 4), guide = "none") +
+  scale_y_continuous(breaks = c(0, 0.5, 1), limits = c(-0.2, 1.2)) +
+  theme_minimal() +
+  labs(
+    title = "Logistic Regression with Classification Icons",
+    subtitle = "Check marks for success, X marks for failure. Size shows prediction confidence",
+    x = "Predictor Variable",
+    y = "Probability / Outcome (jittered)"
+  )
+
+print(p8)
+
+# ==============================================================================
+# Example 9: Survival Analysis / Kaplan-Meier Style
+# ==============================================================================
+
+set.seed(999)
+n_survival <- 100
+
+df_survival <- data.frame(
+  time = rexp(n_survival, rate = 0.1),
+  group = sample(c("Treatment A", "Treatment B"), n_survival, replace = TRUE)
+) %>%
+  arrange(time) %>%
+  group_by(group) %>%
+  mutate(
+    event_num = row_number(),
+    survival_prob = 1 - (event_num / n()),
+    
+    # Event type
+    event_type = sample(
+      c("Death", "Censored", "Loss to Follow-up"),
+      n(),
+      replace = TRUE,
+      prob = c(0.6, 0.3, 0.1)
+    ),
+    
+    # Icons
+    icon = case_when(
+      event_type == "Death" ~ "skull-crossbones",
+      event_type == "Censored" ~ "circle",
+      event_type == "Loss to Follow-up" ~ "user-slash"
+    ),
+    
+    point_size = ifelse(event_type == "Death", 3, 1.5)
+  ) %>%
+  ungroup()
+
+p9 <- ggplot(df_survival, aes(x = time, y = survival_prob)) +
+  # Survival curves
+  geom_step(aes(color = group), linewidth = 1) +
+  # Events with icons
+  geom_icon_point(
+    aes(icon = icon, color = group, size = point_size),
+    dpi = 80,
+    legend_icons = TRUE
+  ) +
+  scale_color_manual(
+    values = c("Treatment A" = "#3498db", "Treatment B" = "#e74c3c"),
+    name = "Treatment"
+  ) +
+  scale_size_continuous(range = c(1.5, 3), guide = "none") +
+  scale_y_continuous(labels = scales::percent_format(), limits = c(0, 1)) +
+  theme_minimal() +
+  labs(
+    title = "Survival Analysis with Event Icons",
+    subtitle = "Skull for deaths, circles for censored, user-slash for loss to follow-up",
+    x = "Time",
+    y = "Survival Probability"
+  )
+
+print(p9)
+
+# ==============================================================================
+# Example 10: Network-style Layout with Categorical Icons
+# ==============================================================================
+
+set.seed(404)
+n_nodes <- 50
+
+# Create circular layout
+angles <- seq(0, 2*pi, length.out = n_nodes + 1)[1:n_nodes]
+
+df_network <- data.frame(
+  x = cos(angles) + rnorm(n_nodes, sd = 0.1),
+  y = sin(angles) + rnorm(n_nodes, sd = 0.1),
+  node_type = sample(
+    c("Server", "Client", "Router", "Database"),
+    n_nodes,
+    replace = TRUE,
+    prob = c(0.15, 0.5, 0.2, 0.15)
+  )
+) %>%
+  mutate(
+    icon = case_when(
+      node_type == "Server" ~ "server",
+      node_type == "Client" ~ "laptop",
+      node_type == "Router" ~ "network-wired",
+      node_type == "Database" ~ "database"
+    ),
+    
+    # Connection strength (random)
+    connections = sample(1:10, n_nodes, replace = TRUE),
+    point_size = scales::rescale(connections, to = c(2, 6)),
+    
+    # Status
+    status = sample(c("Active", "Idle", "Error"), n_nodes, 
+                    replace = TRUE, prob = c(0.7, 0.2, 0.1)),
+    alpha_val = case_when(
+      status == "Active" ~ 1.0,
+      status == "Idle" ~ 0.5,
+      status == "Error" ~ 0.3
+    )
+  )
+
+p10 <- ggplot(df_network, aes(x = x, y = y)) +
+  # Connection lines (simple radial)
+  geom_segment(
+    data = df_network,
+    aes(x = 0, y = 0, xend = x, yend = y),
+    color = "gray80",
+    alpha = 0.3
+  ) +
+  # Nodes with icons
+  geom_icon_point(
+    aes(icon = icon, color = node_type, size = point_size, alpha = alpha_val),
+    dpi = 100,
+    legend_icons = TRUE
+  ) +
+  scale_color_manual(
+    values = c(
+      "Server" = "#e74c3c",
+      "Client" = "#3498db",
+      "Router" = "#f39c12",
+      "Database" = "#9b59b6"
+    ),
+    name = "Node Type"
+  ) +
+  scale_size_continuous(range = c(2, 6), guide = "none") +
+  scale_alpha_continuous(range = c(0.3, 1), guide = "none") +
+  coord_fixed() +
+  theme_void() +
+  theme(legend.position = "right") +
+  labs(
+    title = "Network Topology Visualization",
+    subtitle = "Icon types show node roles, size shows connections, alpha shows status"
+  )
+
+print(p10)
+
+# ==============================================================================
+# Summary Statistics
+# ==============================================================================
+
+cat("\n")
+cat("===============================================\n")
+cat("Summary of Examples:\n")
+cat("===============================================\n")
+cat("1. Density Gradient: 2000 points with PCA coloring\n")
+cat("2. Regression: 150 points with confidence bands\n")
+cat("3. Time Series: 365 daily observations with events\n")
+cat("4. Clustering: 400 points across 4 clusters\n")
+cat("5. Geographic: 200 facility locations\n")
+cat("6. Multi-variable: 300 points with complex mapping\n")
+cat("7. High Density: 5000 points with local density adjustment\n")
+cat("8. Logistic Regression: 300 binary outcomes\n")
+cat("9. Survival Analysis: 100 time-to-event observations\n")
+cat("10. Network: 50 nodes in circular layout\n")
+cat("===============================================\n")
+cat("Total data points rendered: ", 
+    n + n_obs + length(dates) + nrow(df_clusters) + n_locations + 
+      n_complex + n_extreme + n_logistic + n_survival + n_nodes, "\n")
+cat("Unique icon types used: ", 
+    length(unique(c(d$icon, df_regression$icon, df_timeseries$icon, 
+                    df_clusters$icon, df_geo$icon, df_complex$icon,
+                    df_extreme$icon, df_logistic$icon, df_survival$icon,
+                    df_network$icon))), "\n")
+cat("===============================================\n")
