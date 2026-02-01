@@ -410,10 +410,14 @@ testthat::test_that("Warning: NA values in x coordinate (ggplot pattern)", {
   df_na$x[2] <- NA
   
   testthat::expect_warning(
-    print(
-      ggplot2::ggplot(df_na, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(dpi = 60)
-    ),
+    {
+      pdf(NULL)
+      print(
+        ggplot2::ggplot(df_na, ggplot2::aes(x = x, y = y, icon = icon)) +
+          geom_icon_point(dpi = 60)
+      )
+      dev.off()
+    },
     regexp = "Removed.*missing values"
   )
 })
@@ -426,13 +430,20 @@ testthat::test_that("Warning: NA values in y coordinate (geom pattern)", {
   df_na$y[3] <- NA
   
   testthat::expect_warning(
-    print(
-    ggplot2::ggplot() +
-      geom_icon_point(
-        data = df_na,
-        ggplot2::aes(x = x, y = y, icon = icon),
-        dpi = 60
-      )),
+    {
+      tmp <- tempfile(fileext = ".png")
+      png(tmp)
+      print(
+        ggplot2::ggplot() +
+          geom_icon_point(
+            data = df_na,
+            ggplot2::aes(x = x, y = y, icon = icon),
+            dpi = 60
+          )
+      )
+      dev.off()
+      unlink(tmp)
+    },
     regexp = "Removed.*missing values"
   )
 })
@@ -445,12 +456,19 @@ testthat::test_that("Warning: NA values in both coordinates (mixed pattern)", {
   df_na$y[4] <- NA
   
   testthat::expect_warning(
-    print(
-    ggplot2::ggplot(df_na, ggplot2::aes(x = x, y = y)) +
-      geom_icon_point(
-        ggplot2::aes(icon = icon, color = category),
-        dpi = 60
-      )),
+    {
+      tmp <- tempfile(fileext = ".png")
+      png(tmp)
+      print(
+        ggplot2::ggplot(df_na, ggplot2::aes(x = x, y = y)) +
+          geom_icon_point(
+            ggplot2::aes(icon = icon, color = category),
+            dpi = 60
+          )
+      )
+      dev.off()
+      unlink(tmp)
+    },
     regexp = "Removed.*missing values"
   )
 })

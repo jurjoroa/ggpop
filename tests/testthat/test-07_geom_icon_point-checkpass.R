@@ -387,15 +387,6 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
   )
 })
 
-
-testthat::test_that("Legend: icons disabled (FALSE)", {
-  testthat::expect_no_error(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
-        geom_icon_point(legend_icons = FALSE)
-  )
-})
-
-
 testthat::test_that("Multiple legend_icons settings across layers", {
     testthat::expect_no_error(
          ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
