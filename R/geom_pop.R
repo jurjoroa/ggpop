@@ -257,10 +257,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         "  # Use standard point markers:\n",
         "  geom_pop(..., legend_icons = FALSE)\n\n",
         "Common mistakes:\n",
-        "  legend_icons = 'yes'        # ✗ Character string not allowed\n",
-        "  legend_icons = 1            # ✗ Numeric not allowed\n",
-        "  legend_icons = c(TRUE, FALSE)  # ✗ Must be single value\n",
-        "  legend_icons = NA           # ✗ NA not allowed\n"
+        "  legend_icons = 'yes'        # Character string not allowed\n",
+        "  legend_icons = 1            # Numeric not allowed\n",
+        "  legend_icons = c(TRUE, FALSE)  # Must be single value\n",
+        "  legend_icons = NA           # NA not allowed\n"
       ),
       call. = FALSE
     )
@@ -718,9 +718,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         "\n",
         "Example:\n",
         "  # Before:\n",
-        "  df <- data.frame(sex = c('M', 'F'), pos = c(1, 2))  # ✗ 'pos' conflicts\n\n",
+        "  df <- data.frame(sex = c('M', 'F'), pos = c(1, 2))  # 'pos' conflicts\n\n",
         "  # After:\n",
-        "  df <- df %>% rename(position = pos)  # ✓ Renamed\n",
+        "  df <- df %>% rename(position = pos)  # Renamed\n",
         "  ggplot() + geom_pop(data = df, aes(icon = icon, group = sex))\n"
       ),
       call. = FALSE
@@ -994,8 +994,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         "Fix:\n",
         "- Use `aes(color = <variable>)` or `aes(colour = <variable>)` instead.\n\n",
         "Example:\n",
-        "  geom_pop(aes(icon = icon, group = sex, color = sex))  # ✓ Correct\n",
-        "  geom_pop(aes(icon = icon, group = sex, fill = sex))   # ✗ Not allowed\n"
+        "  geom_pop(aes(icon = icon, group = sex, color = sex))  # Correct\n",
+        "  geom_pop(aes(icon = icon, group = sex, fill = sex))   # Not allowed\n"
       ),
       call. = FALSE
     )
@@ -1004,7 +1004,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # -------------------------------------------------
   # Capture parameters in local scope BEFORE rowwise
   # -------------------------------------------------
-  local_stroke_width <- stroke_width  # ← DEFINE HERE, BEFORE df_final pipe
+  local_stroke_width <- stroke_width  # DEFINE HERE, BEFORE df_final pipe
   local_dpi <- dpi
   
   # ---- build per-row PNG path with color + alpha + stroke support ----
@@ -1091,7 +1091,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                 file = png_path,
                 height = local_dpi,
                 fill = rgba_color,
-                stroke = rgba_color,  # ← Same color as fill
+                stroke = rgba_color,  # Same color as fill
                 stroke_width = local_stroke_width
               )
             } else {
@@ -1224,7 +1224,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     position     = position,
     na.rm        = na.rm,
     inherit.aes  = inherit.aes,
-    by           = "width",     # ← Try "width" instead, or
+    by           = "width",
     asp          = 1,
     key_glyph    = if (legend_icons) key_glyph_pop else key_fn,
     ...
