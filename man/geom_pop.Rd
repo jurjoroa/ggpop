@@ -22,6 +22,7 @@ geom_pop(
   size = 3,
   dpi = 50,
   legend_icons = TRUE,
+  stroke_width = NULL,
   ...
 )
 }
@@ -108,6 +109,8 @@ the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{ann
 Higher values produce sharper icons. Defaults to 50. This affects \strong{image dpi}, not icon size in the plot.}
 
 \item{legend_icons}{Logical; if TRUE, the legend will display the selected icons by the user.}
+
+\item{stroke_width}{Numeric. Width of the black outline/border around icons in pixels.}
 
 \item{...}{additional parameters}
 }

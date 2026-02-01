@@ -4,7 +4,7 @@
 \alias{draw_key_pop_image}
 \title{Key drawing function for population-based image keys}
 \usage{
-draw_key_pop_image(data, params, size)
+draw_key_pop_image(data, params, size, stroke_width = NULL)
 }
 \arguments{
 \item{data}{A data frame containing the scaled aesthetics for the key.
@@ -14,6 +14,9 @@ and an \code{icon} column with the names of the icon files (without extension) t
 \item{params}{A list of additional parameters supplied to the geom.}
 
 \item{size}{The width and height of the key in mm. This value is not used directly in this function.}
+
+\item{stroke_width}{Numeric. Width of the black outline/border around icons in pixels.
+If NULL or 0, no outline is drawn. Default is NULL.}
 }
 \value{
 A grid grob containing the image icons with the specified colors and transparency.
@@ -25,7 +28,8 @@ Key drawing function for population-based image keys
 This function creates a custom key for displaying population-based image icons
 in the legend of a ggplot2 plot. Each group can be assigned a different icon
 based on the information in the \code{data$icon} column, and the icons can be colorized
-according to the specified \code{colour} and \code{alpha} aesthetics.
+according to the specified \code{colour} and \code{alpha} aesthetics. Optionally supports
+black outlines via the \code{stroke_width} parameter.
 
 This function relies on \code{ggimage:::color_image} and \code{ggplot2:::ggname}, which are internal functions.
 Their use is necessary for correct functionality, and no exported alternatives exist.
@@ -34,4 +38,7 @@ provide essential behavior for rendering images within ggplot2.
 
 NOTE: Legend icons are always rendered at a FIXED size, regardless of any size aesthetic
 mapped in the plot. This ensures consistent legend appearance.
+
+If \code{stroke_width} is provided, icons are rendered directly with FontAwesome's stroke
+parameter for consistent appearance between plot and legend.
 }
