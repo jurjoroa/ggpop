@@ -1,6 +1,6 @@
 # *****************************************************************************
 #
-# Script: test-geom_pop-clean.R
+# Script: test-03_geom_pop-checkpass.R
 #
 # Purpose: Ensure geom_pop() works robustly for all valid scenarios
 #          without warnings or errors.
@@ -45,8 +45,6 @@ testthat::test_that("Minimal raw mode", {
     )
   )
   
-  testthat::skip_on_cran()
-  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplotGrob(
@@ -61,6 +59,69 @@ testthat::test_that("Minimal raw mode", {
       )
     )
   )
+  
+  testthat::expect_no_error(
+    ggplot2::ggplot() +
+        geom_pop(
+          data = df,
+    ggplot2::aes(icon = icon, group = sex, color = sex),
+          color = "red",  # should overide mapped color
+          dpi = 100,
+          size = 5
+        )
+  )
+  
+  
+testthat::test_that("Data is a data.frame", {
+    df <- data.frame(
+      sex = c("male", "female"),
+      icon = c("male", "female"),
+      stringsAsFactors = FALSE
+    )
+    
+    testthat::expect_no_error(
+      ggplot2::ggplot() +
+        geom_pop(
+          data = df,
+          ggplot2::aes(icon = icon, group = sex)
+        )
+    )
+  })
+  
+  testthat::test_that("Data is a tibble", {
+    testthat::skip_if_not_installed("tibble")
+    
+    df <- tibble::tibble(
+      sex = c("male", "female"),
+      icon = c("male", "female")
+    )
+    
+    testthat::expect_no_error(
+      ggplot2::ggplot() +
+        geom_pop(
+          data = df,
+          ggplot2::aes(icon = icon, group = sex)
+        )
+    )
+  })
+  
+  testthat::test_that("Data is a data.table", {
+    testthat::skip_if_not_installed("data.table")
+    
+    df <- data.table::data.table(
+      sex = c("male", "female"),
+      icon = c("male", "female")
+    )
+    
+    testthat::expect_no_error(
+      ggplot2::ggplot() +
+        geom_pop(
+          data = df,
+          ggplot2::aes(icon = icon, group = sex)
+        )
+    )
+  })
+  
 })
 
 # ******************************************************************************
@@ -763,5 +824,276 @@ testthat::test_that("50 icons Legend draws one unique raster icon per unique", {
       "but found ", n_unique_rasters, ".\n",
       "Unique raster names: ", paste(sort(unique(raster_names)), collapse = ", ")
     )
+  )
+})
+
+
+
+# ******************************************************************************
+# 13 DPI parameter tests ------------------------------------------------
+# ******************************************************************************
+
+testthat::test_that("dpi parameter controls actual PNG resolution", {
+  
+  # Setup test data
+  test_data <- data.frame(
+    type = rep(c("A", "B"), each = 5),
+    icon = "user",
+    stringsAsFactors = FALSE
+  )
+  
+  # Test different DPI values
+  dpi_values <- c(50, 100, 600)
+  
+  for (dpi_val in dpi_values) {
+    
+    
+    # Create plot with specific DPI
+    p <- ggplot2::ggplot() +
+      geom_pop(
+        data = test_data,
+        ggplot2::aes(icon = icon, group = type, color = type),
+        dpi = dpi_val,
+        size = 10
+      )
+    
+    # Build the plot to trigger PNG generation
+    built <- ggplot2::ggplot_build(p)
+    
+    # Get the layer data which contains image paths
+    layer_data <- built$data[[1]]
+    
+    # Extract unique PNG paths
+    png_paths <- unique(layer_data$image)
+    png_paths <- png_paths[!is.na(png_paths) & file.exists(png_paths)]
+    
+    expect_true(
+      length(png_paths) > 0,
+      info = sprintf("No PNG files generated for DPI = %d", dpi_val)
+    )
+    
+    # Check each generated PNG
+    for (png_path in png_paths) {
+      
+      # Read PNG metadata
+      img_info <- png::readPNG(png_path, info = TRUE)
+      img_attr <- attributes(img_info)
+      
+      # Get actual dimensions
+      actual_height <- nrow(img_info)
+      
+      # Expected height should match DPI (fontawesome::fa_png uses height parameter)
+      expect_equal(
+        actual_height,
+        dpi_val,
+        tolerance = 0,
+        info = sprintf(
+          "PNG height mismatch for DPI = %d: expected %d pixels, got %d pixels\nFile: %s",
+          dpi_val, dpi_val, actual_height, png_path
+        )
+      )
+      
+      # Additional check: verify image is not empty
+      expect_true(
+        actual_height > 0,
+        info = sprintf("PNG has zero height for DPI = %d", dpi_val)
+      )
+      
+      # Verify the image has content (not all transparent/white)
+      pixel_values <- as.vector(img_info)
+      expect_true(
+        length(unique(pixel_values)) > 1,
+        info = sprintf("PNG appears to be blank for DPI = %d", dpi_val)
+      )
+    }
+  }
+})
+
+testthat::test_that("higher DPI produces larger file sizes (quality indicator)", {
+  
+  test_data <- data.frame(
+    type = "A",
+    icon = "user",
+    stringsAsFactors = FALSE
+  )
+  
+  file_sizes <- numeric(3)
+  dpi_vals <- c(50, 100, 200)
+  
+  for (i in seq_along(dpi_vals)) {
+    
+    # Clear cache to force regeneration
+    cache_dir <- file.path(tempdir(), "ggpop-icons")
+    if (dir.exists(cache_dir)) unlink(cache_dir, recursive = TRUE)
+    
+    p <- ggplot2::ggplot() +
+      geom_pop(
+        data = test_data,
+        ggplot2::aes(icon = icon, group = type),
+        dpi = dpi_vals[i],
+        size = 3
+      )
+    
+    built <- ggplot2::ggplot_build(p)
+    png_path <- built$data[[1]]$image[1]
+    
+    expect_true(file.exists(png_path))
+    file_sizes[i] <- file.info(png_path)$size
+  }
+  
+  # Higher DPI should produce larger files
+  expect_true(
+    file_sizes[2] > file_sizes[1],
+    info = sprintf(
+      "DPI 100 (%d bytes) should be larger than DPI 50 (%d bytes)",
+      file_sizes[2], file_sizes[1]
+    )
+  )
+  
+  expect_true(
+    file_sizes[3] > file_sizes[2],
+    info = sprintf(
+      "DPI 200 (%d bytes) should be larger than DPI 100 (%d bytes)",
+      file_sizes[3], file_sizes[2]
+    )
+  )
+})
+
+testthat::test_that("DPI is correctly embedded in PNG cache filename", {
+  
+  test_data <- data.frame(
+    type = "A",
+    icon = "user",
+    stringsAsFactors = FALSE
+  )
+  
+  dpi_val <- 150
+  
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data = test_data,
+      ggplot2::aes(icon = icon, group = type),
+      dpi = dpi_val,
+      size = 3
+    )
+  
+  built <- ggplot2::ggplot_build(p)
+  png_path <- built$data[[1]]$image[1]
+  png_filename <- basename(png_path)
+  
+  # Check that DPI is in the filename (e.g., "d150")
+  expect_true(
+    grepl(sprintf("d%d", dpi_val), png_filename),
+    info = sprintf(
+      "Filename '%s' should contain 'd%d' to indicate DPI = %d",
+      png_filename, dpi_val, dpi_val
+    )
+  )
+})
+
+testthat::test_that("same DPI reuses cached PNG (does not regenerate)", {
+  
+  test_data <- data.frame(
+    type = "A",
+    icon = "user",
+    stringsAsFactors = FALSE
+  )
+  
+  # First plot
+  p1 <- ggplot2::ggplot() +
+    geom_pop(
+      data = test_data,
+      ggplot2::aes(icon = icon, group = type),
+      dpi = 100,
+      size = 3
+    )
+  
+  built1 <- ggplot2::ggplot_build(p1)
+  png_path1 <- built1$data[[1]]$image[1]
+  mtime1 <- file.info(png_path1)$mtime
+  
+  # Wait to ensure different timestamp if regenerated
+  Sys.sleep(0.1)
+  
+  # Second plot with same DPI
+  p2 <- ggplot2::ggplot() +
+    geom_pop(
+      data = test_data,
+      ggplot2::aes(icon = icon, group = type),
+      dpi = 100,
+      size = 3
+    )
+  
+  built2 <- ggplot2::ggplot_build(p2)
+  png_path2 <- built2$data[[1]]$image[1]
+  mtime2 <- file.info(png_path2)$mtime
+  
+  # Should be the same file
+  expect_identical(png_path1, png_path2)
+  
+  # Should have the same modification time (not regenerated)
+  expect_equal(mtime1, mtime2)
+})
+
+testthat::test_that("different DPI values create different cache files", {
+  
+  test_data <- data.frame(
+    type = "A",
+    icon = "user",
+    stringsAsFactors = FALSE
+  )
+  
+  p1 <- ggplot2::ggplot() +
+    geom_pop(
+      data = test_data,
+      ggplot2::aes(icon = icon, group = type),
+      dpi = 50,
+      size = 3
+    )
+  
+  p2 <- ggplot2::ggplot() +
+    geom_pop(
+      data = test_data,
+      ggplot2::aes(icon = icon, group = type),
+      dpi = 100,
+      size = 3
+    )
+  
+  built1 <- ggplot2::ggplot_build(p1)
+  built2 <- ggplot2::ggplot_build(p2)
+  
+  png_path1 <- built1$data[[1]]$image[1]
+  png_path2 <- built2$data[[1]]$image[1]
+  
+  # Different DPI should create different files
+  expect_false(
+    identical(png_path1, png_path2),
+    info = "Different DPI values should create separate cached PNG files"
+  )
+  
+  # Both should exist
+  expect_true(file.exists(png_path1))
+  expect_true(file.exists(png_path2))
+})
+
+testthat::test_that("DPI validation errors work correctly", {
+  
+  test_data <- data.frame(
+    type = "A",
+    icon = "user",
+    stringsAsFactors = FALSE
+  )
+  
+  # DPI too low should error
+  expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = test_data,
+        aes(icon = icon, group = type),
+        dpi = 20,  # Below minimum of 30
+        size = 3
+      ),
+    "dpi.*too low",
+    ignore.case = TRUE
   )
 })
