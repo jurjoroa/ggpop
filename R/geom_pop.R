@@ -1224,7 +1224,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     position     = position,
     na.rm        = na.rm,
     inherit.aes  = inherit.aes,
-    by           = "height",
+    by           = "width",     # ← Try "width" instead, or
+    asp          = 1,
     key_glyph    = if (legend_icons) key_glyph_pop else key_fn,
     ...
   )
