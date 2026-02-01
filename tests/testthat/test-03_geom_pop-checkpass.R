@@ -1,6 +1,6 @@
 # *****************************************************************************
 #
-# Script: test-geom_pop-clean.R
+# Script: test-03_geom_pop-checkpass.R
 #
 # Purpose: Ensure geom_pop() works robustly for all valid scenarios
 #          without warnings or errors.

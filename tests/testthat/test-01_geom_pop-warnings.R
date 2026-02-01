@@ -1,6 +1,6 @@
 # *****************************************************************************
 #
-# Script: test-geom_pop-warnings.R
+# Script: test-01_geom_pop-warnings.R
 #
 # Purpose: Test warnings produced by geom_pop().
 #
