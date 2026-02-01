@@ -852,7 +852,7 @@ testthat::test_that("dpi parameter controls actual PNG resolution", {
     p <- ggplot2::ggplot() +
       geom_pop(
         data = test_data,
-        aes(icon = icon, group = type, color = type),
+        ggplot2::aes(icon = icon, group = type, color = type),
         dpi = dpi_val,
         size = 10
       )
@@ -929,7 +929,7 @@ testthat::test_that("higher DPI produces larger file sizes (quality indicator)",
     p <- ggplot2::ggplot() +
       geom_pop(
         data = test_data,
-        aes(icon = icon, group = type),
+        ggplot2::aes(icon = icon, group = type),
         dpi = dpi_vals[i],
         size = 3
       )
@@ -972,7 +972,7 @@ testthat::test_that("DPI is correctly embedded in PNG cache filename", {
   p <- ggplot2::ggplot() +
     geom_pop(
       data = test_data,
-      aes(icon = icon, group = type),
+      ggplot2::aes(icon = icon, group = type),
       dpi = dpi_val,
       size = 3
     )
@@ -1003,7 +1003,7 @@ testthat::test_that("same DPI reuses cached PNG (does not regenerate)", {
   p1 <- ggplot2::ggplot() +
     geom_pop(
       data = test_data,
-      aes(icon = icon, group = type),
+      ggplot2::aes(icon = icon, group = type),
       dpi = 100,
       size = 3
     )
@@ -1019,7 +1019,7 @@ testthat::test_that("same DPI reuses cached PNG (does not regenerate)", {
   p2 <- ggplot2::ggplot() +
     geom_pop(
       data = test_data,
-      aes(icon = icon, group = type),
+      ggplot2::aes(icon = icon, group = type),
       dpi = 100,
       size = 3
     )
@@ -1046,7 +1046,7 @@ testthat::test_that("different DPI values create different cache files", {
   p1 <- ggplot2::ggplot() +
     geom_pop(
       data = test_data,
-      aes(icon = icon, group = type),
+      ggplot2::aes(icon = icon, group = type),
       dpi = 50,
       size = 3
     )
@@ -1054,7 +1054,7 @@ testthat::test_that("different DPI values create different cache files", {
   p2 <- ggplot2::ggplot() +
     geom_pop(
       data = test_data,
-      aes(icon = icon, group = type),
+      ggplot2::aes(icon = icon, group = type),
       dpi = 100,
       size = 3
     )
