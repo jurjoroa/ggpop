@@ -38,10 +38,7 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
   
   if (!("colour" %in% names(data)) && ("color" %in% names(data))) data$colour <- data$color
   
-  # High-res PNG for legend keys (crisp even when key box is large)
   png_px <- 480L
-  
-  # Determine stroke usage OUTSIDE the lapply
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
   
   grobs <- lapply(seq_along(data$colour), function(i) {
@@ -55,21 +52,12 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
     this_alpha <- data$alpha[i]
     if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- 1
     
-    # -------------------------------------------------
-    # Decision: use stroke or colorize?
-    # -------------------------------------------------
     if (use_stroke) {
-      # -------------------------------------------------
-      # Path 1: Generate PNG with FontAwesome stroke (consistent with plot)
-      # -------------------------------------------------
-      
-      # Convert color to hex
       this_col_hex <- tryCatch({
         rgb_vals <- grDevices::col2rgb(this_col) / 255
         grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
       }, error = function(e) "#000000")
       
-      # Apply alpha to color
       rgb_vals <- grDevices::col2rgb(this_col_hex) / 255
       rgba_color <- grDevices::rgb(
         rgb_vals[1], 
@@ -78,7 +66,6 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
         alpha = this_alpha
       )
       
-      # Build cache key
       color_hex <- gsub("#", "", this_col_hex)
       alpha_str <- sprintf("%.2f", this_alpha)
       stroke_str <- sprintf("%.0f", stroke_width)
@@ -88,27 +75,21 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
         paste0(this_icon, "_c", color_hex, "_a", alpha_str, "_sw", stroke_str, "_", png_px, "px.png")
       )
       
-      # Generate if not cached
       if (!file.exists(png_path)) {
         fontawesome::fa_png(
           this_icon,
           file = png_path,
           height = png_px,
           fill = rgba_color,
-          stroke = rgba_color,  # ← CHANGED: same as fill instead of "black"
+          stroke = rgba_color,
           stroke_width = stroke_width
         )
       }
       
-      # Read and use directly (no colorization needed)
       img <- magick::image_read(png_path)
       ras <- as.raster(img)
       
     } else {
-      # -------------------------------------------------
-      # Path 2: Generate black PNG and colorize with magick (legacy approach)
-      # -------------------------------------------------
-      
       png_path <- file.path(cache_dir, paste0(this_icon, "__legend__", png_px, "px.png"))
       if (!file.exists(png_path)) {
         fontawesome::fa_png(this_icon, file = png_path, height = png_px)
@@ -121,21 +102,34 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
       ras <- as.raster(img)
     }
     
-    # IMPORTANT: Legend icons always have FIXED size (ignoring data$size)
-    # This ensures consistent legend appearance regardless of size mapping in plot
-    # Icons scale relative to the key box (npc), not absolute mm
+    # ========== NEW: Get actual icon dimensions and preserve aspect ratio ==========
+    img_info <- magick::image_info(img)
+    aspect_ratio <- img_info$width / img_info$height
+    
+    # Set a base height and calculate width to maintain aspect ratio
+    base_height <- grid::unit(0.9, "npc")
+    
+    if (aspect_ratio > 1) {
+      # Icon is wider than tall
+      icon_height <- base_height
+      icon_width <- grid::unit(0.9 * aspect_ratio, "npc")
+    } else {
+      # Icon is taller than wide (or square)
+      icon_width <- grid::unit(0.9, "npc")
+      icon_height <- grid::unit(0.9 / aspect_ratio, "npc")
+    }
+    
     grid::rasterGrob(
       x = 0.5, y = 0.5,
       image = ras,
-      width  = grid::unit(0.9, "npc"),
-      height = grid::unit(0.9, "npc"),
+      width  = icon_width,
+      height = icon_height,
       interpolate = TRUE
     )
   })
   
   class(grobs) <- "gList"
   
-  # Build unique name for gTree
   nm_parts <- c(
     "image_key",
     paste0(as.character(data$icon), collapse = "_"),
