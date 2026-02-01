@@ -676,22 +676,24 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
           .legend = as.character(.data[[legend_var]]),
           icon    = as.character(icon)
         ) %>%
-        dplyr::filter(!is.na(.legend), nzchar(.legend), !is.na(icon), nzchar(icon)) %>%
-        dplyr::group_by(.legend) %>%
+        dplyr::filter(!is.na(.data[[".legend"]]), nzchar(.data[[".legend"]]), 
+                      !is.na(.data$icon), nzchar(.data$icon)) %>%
+        dplyr::group_by(.data[[".legend"]]) %>%
         dplyr::summarise(
-          n_icons = dplyr::n_distinct(icon),
-          icons = paste(sort(unique(icon)), collapse = ", "),
+          n_icons = dplyr::n_distinct(.data$icon),
+          icons = paste(sort(unique(.data$icon)), collapse = ", "),
           .groups = "drop"
         ) %>%
-        dplyr::filter(n_icons > 1)
+        dplyr::filter(.data$n_icons > 1)  # ← Use .data$n_icons
       
       if (nrow(icon_counts) > 0) {
         # Build detailed message showing which groups have issues
         problem_groups <- icon_counts %>%
           dplyr::mutate(
-            msg = paste0("  - ", .legend, ": ", icons, " (", n_icons, " different icons)")
+            msg = paste0("  - ", .data[[".legend"]], ": ", .data$icons, 
+                         " (", .data$n_icons, " different icons)")
           ) %>%
-          dplyr::pull(msg) %>%
+          dplyr::pull(.data$msg) %>%  # ← Use .data$msg
           paste(collapse = "\n")
         
         warning(
