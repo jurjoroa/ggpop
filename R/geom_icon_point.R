@@ -349,12 +349,12 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
     }
     
-    data$icon_size <- data[[size_var]] * 0.02
+    data$icon_size <- data[[size_var]] * 0.0075
     
     # Remove size from layer mapping (but keep in inherited if it's there)
     mapping_list[["size"]] <- NULL
   } else {
-    data$icon_size <- size * 0.02
+    data$icon_size <- size * 0.0075
   }
   
   # -------------------------------------------------
@@ -804,7 +804,8 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     position     = position,
     na.rm        = na.rm,
     inherit.aes  = inherit.aes,
-    by           = "height",
+    by           = "width",     # ← Try "width" instead, or
+    asp          = 1,
     key_glyph    = if (legend_icons) key_glyph_icon_point else key_fn,
     ...
   )
@@ -816,3 +817,4 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   
   layer_out
 }
+
