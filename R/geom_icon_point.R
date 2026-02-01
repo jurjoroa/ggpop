@@ -377,19 +377,12 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # -------------------------------------------------
   
   # Auto-reset registry if it's getting too large (indicates stale state)
-  if (exists(".ggpop_legend_settings", envir = .GlobalEnv)) {
-    legend_settings <- get(".ggpop_legend_settings", envir = .GlobalEnv)
-    if (length(legend_settings) > 10) {
-      assign(".ggpop_legend_settings", list(), envir = .GlobalEnv)
-    }
-  }
-  
-  if (!exists(".ggpop_legend_settings", envir = .GlobalEnv)) {
-    assign(".ggpop_legend_settings", list(), envir = .GlobalEnv)
+  if (length(.ggpop_env$legend_settings) > 10) {
+    .ggpop_env$legend_settings <- list()
   }
   
   # Get existing settings
-  legend_settings <- get(".ggpop_legend_settings", envir = .GlobalEnv)
+  legend_settings <- .ggpop_env$legend_settings
   
   # Check if we have mixed settings (some TRUE, some FALSE)
   if (length(legend_settings) > 0) {
@@ -410,23 +403,22 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       )
       
       # Store current setting but mark that we've warned
-      legend_settings <- c(legend_settings, legend_icons)
-      assign(".ggpop_legend_settings", legend_settings, envir = .GlobalEnv)
+      .ggpop_env$legend_settings <- c(legend_settings, legend_icons)
       
       # Check if we now have both TRUE and FALSE - if so, reset for next plot
-      has_both <- any(unlist(legend_settings)) && any(!unlist(legend_settings))
+      has_both <- any(unlist(.ggpop_env$legend_settings)) && 
+        any(!unlist(.ggpop_env$legend_settings))
       if (has_both) {
         # Complete conflict detected - reset for next plot
-        assign(".ggpop_legend_settings", list(), envir = .GlobalEnv)
+        .ggpop_env$legend_settings <- list()
       }
     } else {
       # No conflict yet, continue accumulating
-      legend_settings <- c(legend_settings, legend_icons)
-      assign(".ggpop_legend_settings", legend_settings, envir = .GlobalEnv)
+      .ggpop_env$legend_settings <- c(legend_settings, legend_icons)
     }
   } else {
     # First layer
-    assign(".ggpop_legend_settings", list(legend_icons), envir = .GlobalEnv)
+    .ggpop_env$legend_settings <- list(legend_icons)
   }
   
   # -------------------------------------------------
