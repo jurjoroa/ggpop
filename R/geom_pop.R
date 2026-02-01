@@ -593,7 +593,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         "  # Map to a different column:\n",
         "  geom_pop(aes(icon = icon_type, group = sex))\n\n",
         "Common mistake:\n",
-        "  geom_pop(data = df, aes(group = sex))  # ✗ Missing icon mapping\n"
+        "  geom_pop(data = df, aes(group = sex))  # Missing icon mapping\n"
       ),
       call. = FALSE
     )
