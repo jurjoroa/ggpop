@@ -751,10 +751,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       rlang::as_name(inherited_mapping_list[["size"]])
     }
     if (!size_var %in% names(data)) stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
-    data$icon_size <- data[[size_var]] * 0.03
+    data$icon_size <- data[[size_var]] * 0.0075
     mapping_list[["size"]] <- NULL
   } else {
-    data$icon_size <- size * 0.03
+    data$icon_size <- size * 0.0075
   }
   
   # If user didn't pass facet=, but data has multiple `group`s, treat as faceting by `group`
