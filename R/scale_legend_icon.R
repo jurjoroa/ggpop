@@ -19,9 +19,10 @@ scale_legend_icon <- function(size = 10, margin = NULL, ...) {
 #' @importFrom ggplot2 ggplot_add
 ggplot_add.ggpop_legend_icon <- function(object, plot, ...) {
   
-  if (is.null(object$margin)) object$margin <- ggplot2::margin(0, 0, 30, 0)
+  if (is.null(object$margin)) object$margin <- ggplot2::margin(0, 0, 0, 0)
   
   key_mm <- object$size
+  
   if (!is.numeric(key_mm) || length(key_mm) != 1 || is.na(key_mm) || key_mm <= 0) key_mm <- 10
   
   # Apply the theme changes now
