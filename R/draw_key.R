@@ -41,6 +41,8 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
   png_px <- 480L
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
   
+  rsvg_version <- rsvg::librsvg_version()
+  
   grobs <- lapply(seq_along(data$colour), function(i) {
     
     this_icon <- as.character(data$icon[i])
