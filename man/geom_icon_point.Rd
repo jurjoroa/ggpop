@@ -10,9 +10,8 @@ geom_icon_point(
   stat = "identity",
   position = "identity",
   na.rm = FALSE,
-  show.legend = NA,
   inherit.aes = TRUE,
-  icon = "circle",
+  icon = NULL,
   size = 3,
   dpi = 50,
   legend_icons = TRUE,
@@ -67,14 +66,6 @@ to use \code{position_jitter()}, give the position as \code{"jitter"}.
 }}
 
 \item{na.rm}{logical, whether remove NA values}
-
-\item{show.legend}{logical. Should this layer be included in the legends?
-\code{NA}, the default, includes if any aesthetics are mapped.
-\code{FALSE} never includes, and \code{TRUE} always includes.
-It can also be a named logical vector to finely select the aesthetics to
-display. To include legend keys for all levels, even
-when no data exists, use \code{TRUE}.  If \code{NA}, all levels are shown in legend,
-but unobserved levels are omitted.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions

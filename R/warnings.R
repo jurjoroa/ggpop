@@ -90,7 +90,7 @@ warn_geom_pop_inputs <- function(data,
   }
   
   # ------------------------------------------------------------------
-  # 8) Legend ambiguity: >1 icon per color group (NO temp column names; NO bare symbols)
+  # 8) Legend ambiguity: >1 icon per color group
   # ------------------------------------------------------------------
   if (isTRUE(legend_icons) && icon_mapped) {
     
@@ -102,7 +102,6 @@ warn_geom_pop_inputs <- function(data,
       NULL
     }
     
-    # If there's no color/colour mapping, there is no legend grouping to be ambiguous about.
     if (!is.null(col_nm)) {
       
       col_var  <- tryCatch(rlang::as_name(mapping_list[[col_nm]]), error = function(e) NULL)
@@ -111,14 +110,17 @@ warn_geom_pop_inputs <- function(data,
       if (!is.null(col_var) && !is.null(icon_var) &&
           col_var %in% names(data) && icon_var %in% names(data)) {
         
-        n_icon_per_group <- data |>
-          dplyr::distinct(
-            group = .data[[col_var]],
-            icon  = .data[[icon_var]]
-          ) |>
-          dplyr::group_by(group) |>
-          dplyr::summarise(n_icons = dplyr::n(), .groups = "drop")
+        distinct_data <- dplyr::distinct(
+          data,
+          group = .data[[col_var]],
+          icon  = .data[[icon_var]]
+        )
         
+        n_icon_per_group <- dplyr::summarise(
+          dplyr::group_by(distinct_data, group),
+          n_icons = dplyr::n(),
+          .groups = "drop"
+        )
         
         if (any(n_icon_per_group$n_icons > 1)) {
           

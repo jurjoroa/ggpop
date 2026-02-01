@@ -192,7 +192,7 @@ testthat::test_that("Size: size mapped to variable", {
 
 testthat::test_that("Size: size and color both mapped", {
   testthat::expect_no_error(
-    ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size, color = category)) +
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size, color = category)) +
         geom_icon_point()
   )
 })
@@ -205,7 +205,7 @@ testthat::test_that("Size: size and color both mapped", {
 
 testthat::test_that("DPI: minimum valid (30)", {
   testthat::expect_no_error(
-    ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
         geom_icon_point(dpi = 30)
   )
 })
