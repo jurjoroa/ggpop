@@ -6,11 +6,12 @@
 \alias{ggpop-package}
 \title{ggpop: Visualizing Population Data (ggpop)}
 \description{
-ggpop is an R package that creates visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.
+Create in R visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.
 }
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://jurjoroa.github.io/ggpop/}
   \item Report bugs at \url{https://github.com/jurjoroa/ggpop/issues}
 }
 
