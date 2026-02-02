@@ -77,8 +77,6 @@ This release of `ggpop` includes critical bug fixes and improvements to enhance 
 ## Issues Resolved in v1.5.1
 
 Issues are listed in chronological merge order.
-Issues related to "Upload final set of parameters" or "Prerelease version vX.X.X"
-are intentionally excluded.
 
 - #189
 - #191
