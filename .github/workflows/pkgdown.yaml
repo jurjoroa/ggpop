@@ -27,6 +27,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch custom images from Dev branch
+        run: |
+          git fetch origin Dev
+          # Pull inst/figures from Dev (BEFORE pkgdown build)
+          mkdir -p inst/figures
+          git checkout origin/Dev -- inst/figures/ 2>/dev/null || echo "No custom figures from Dev"
+          ls -la inst/figures/ || true
+        continue-on-error: true
+
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
@@ -41,15 +50,6 @@ jobs:
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
-
-      - name: Fetch custom images from Dev branch
-        run: |
-          git fetch origin Dev
-          # Create directory structure
-          mkdir -p docs/inst/figures
-          # Pull images from Dev branch (after pkgdown build)
-          git checkout origin/Dev -- docs/inst/figures/ 2>/dev/null || echo "No custom figures from Dev"
-        continue-on-error: true
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'

@@ -4,9 +4,8 @@
 .Ruserdata
 .github/pull_request_template.md
 
-# Allow tracking docs/inst/figures/ on Dev
-docs/*
-!docs/inst/
-docs/inst/*
-!docs/inst/figures/
-!docs/inst/figures/*.png
+# Ignore ALL of docs (it's build output)
+docs
+
+# Allow inst/figures on Dev (this is SOURCE, not build output)
+# (no restriction on inst/figures here)
