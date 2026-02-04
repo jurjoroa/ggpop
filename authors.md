@@ -17,16 +17,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/jurjoroa/ggpop/blob/Dev/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/jurjoroa/ggpop/blob/main/DESCRIPTION)
 
 Roa-Contreras J, Soultanova R, Alarid-Escudero F, Pineda-Antunez C
 (2026). *ggpop: Visualizing Population Data (ggpop)*. R package version
-1.6.0, <https://jurjoroa.github.io/ggpop/>.
+1.6.0.
 
     @Manual{,
       title = {ggpop: Visualizing Population Data (ggpop)},
       author = {Jorge A. Roa-Contreras and Ralitza Soultanova and Fernando Alarid-Escudero and Carlos Pineda-Antunez},
       year = {2026},
       note = {R package version 1.6.0},
-      url = {https://jurjoroa.github.io/ggpop/},
     }

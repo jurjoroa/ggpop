@@ -41,7 +41,7 @@ install.packages("ggpop")
 ```
 
 Development version of the package can be installed from
-[GitHub](https://github.com/jurjoroa/ggpop) with:
+[Github](https://github.com/jurjoroa/ggpop) with:
 
 ``` r
 install.packages("remotes")
@@ -123,7 +123,7 @@ from the 1,000 samples. Notable columns:
 
 Here, we create a new column called `icon` in the `df_pop_mx_prop`
 dataset. The
-[`case_when()`](https://dplyr.tidyverse.org/reference/case_when.html)
+[`case_when()`](https://dplyr.tidyverse.org/reference/case-and-replace-when.html)
 function checks each row’s **type** (either “male” or “female”) and
 assigns a matching value (“ggmale” or “ggfemale”) to the `icon` column.
 
@@ -183,7 +183,7 @@ function creates a population chart using the `df_prop_mx_f` dataset.
 The object work as a
 [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
 figure plotted by determined x and y coordinates. We can also group and
-color the icons by the **type** variable or the variable that we are
+color the icons by the **type** variable or the varaible that we are
 grouping for.
 
 #### 5.1 Improve plot
