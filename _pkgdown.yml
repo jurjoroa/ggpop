@@ -7,6 +7,7 @@ template:
     primary: "#FF6B6B"
     #navbar-light-bg: "#9CBAE7"
     #navbar-dark-bg: "#183663"
+  assets: pkgdown/assets
   includes:
     in_header: |
       <link rel="stylesheet" href="extra.css">
