@@ -4,3 +4,5 @@
 .Ruserdata
 .github/pull_request_template.md
 
+# Ignore ALL docs on main (CRAN clean)
+docs
