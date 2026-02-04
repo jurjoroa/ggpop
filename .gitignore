@@ -4,5 +4,9 @@
 .Ruserdata
 .github/pull_request_template.md
 
-docs
-!docs/inst/figures/logo.png
+# Allow tracking docs/inst/figures/ on Dev
+docs/*
+!docs/inst/
+docs/inst/*
+!docs/inst/figures/
+!docs/inst/figures/*.png
