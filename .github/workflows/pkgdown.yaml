@@ -2,8 +2,9 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, Dev]
+    branches: [main]
   pull_request:
+    branches: [main]
   release:
     types: [published]
   workflow_dispatch:
@@ -15,7 +16,6 @@ permissions: read-all
 jobs:
   pkgdown:
     runs-on: ubuntu-latest
-    # Only restrict concurrency for non-PR jobs
     concurrency:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
@@ -24,6 +24,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -39,6 +41,15 @@ jobs:
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
+
+      - name: Fetch custom images from Dev branch
+        run: |
+          git fetch origin Dev
+          # Create directory structure
+          mkdir -p docs/inst/figures
+          # Pull images from Dev branch (after pkgdown build)
+          git checkout origin/Dev -- docs/inst/figures/ 2>/dev/null || echo "No custom figures from Dev"
+        continue-on-error: true
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
