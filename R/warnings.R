@@ -1,4 +1,3 @@
-
 # --- Internal warning function (API-aligned, ASCII-safe) ---
 warn_geom_pop_inputs <- function(data,
                                  mapping_list,
@@ -9,18 +8,17 @@ warn_geom_pop_inputs <- function(data,
                                  legend_icons = TRUE,
                                  dpi = 50,
                                  arrange = FALSE) {
-  
   .has <- function(x, nm) !is.null(x) && nm %in% names(x)
   .msg <- function(...) paste0(...)
-  
+
   warnings <- character(0)
-  
+
   # ------------------------------------------------------------------
   # 1) ICON HANDLING (single, clear source of truth)
   # ------------------------------------------------------------------
-  icon_mapped  <- .has(mapping_list, "icon")
+  icon_mapped <- .has(mapping_list, "icon")
   has_icon_col <- "icon" %in% names(data)
-  
+
   if (icon_mapped) {
     icon_var <- tryCatch(rlang::as_name(mapping_list[["icon"]]), error = function(e) NULL)
     if (!is.null(icon_var) && !icon_var %in% names(data)) {
@@ -31,7 +29,7 @@ warn_geom_pop_inputs <- function(data,
       ))
     }
   }
-  
+
   # ------------------------------------------------------------------
   # 3) x / y ARE NOT PART OF THE API
   # ------------------------------------------------------------------
@@ -39,7 +37,7 @@ warn_geom_pop_inputs <- function(data,
     union(names(mapping_list), names(inherited_mapping_list)),
     c("x", "y")
   )
-  
+
   if (length(xy_mapped) > 0) {
     warnings <- c(warnings, .msg(
       "[geom_pop] `x` and `y` aesthetics are not used by `geom_pop()`.\n",
@@ -48,7 +46,7 @@ warn_geom_pop_inputs <- function(data,
       "  -> Fix: remove `x` / `y` from `aes()` when using `geom_pop()`."
     ))
   }
-  
+
   # ------------------------------------------------------------------
   # 5) dpi validity + guidance
   # ------------------------------------------------------------------
@@ -66,7 +64,7 @@ warn_geom_pop_inputs <- function(data,
         "  -> Tip: use 50-200 for crisp icons (change `size` to resize, not `dpi`)."
       ))
     }
-    
+
     if (dpi > 600) {
       warnings <- c(warnings, .msg(
         "[geom_pop] `dpi = ", dpi, "` is very high.\n",
@@ -75,7 +73,7 @@ warn_geom_pop_inputs <- function(data,
       ))
     }
   }
-  
+
   # ------------------------------------------------------------------
   # 6) size validity (only when not missing / not mapped)
   # ------------------------------------------------------------------
@@ -88,12 +86,11 @@ warn_geom_pop_inputs <- function(data,
       ))
     }
   }
-  
+
   # ------------------------------------------------------------------
   # 8) Legend ambiguity: >1 icon per color group
   # ------------------------------------------------------------------
   if (isTRUE(legend_icons) && icon_mapped) {
-    
     col_nm <- if ("colour" %in% names(mapping_list)) {
       "colour"
     } else if ("color" %in% names(mapping_list)) {
@@ -101,34 +98,31 @@ warn_geom_pop_inputs <- function(data,
     } else {
       NULL
     }
-    
+
     if (!is.null(col_nm)) {
-      
-      col_var  <- tryCatch(rlang::as_name(mapping_list[[col_nm]]), error = function(e) NULL)
+      col_var <- tryCatch(rlang::as_name(mapping_list[[col_nm]]), error = function(e) NULL)
       icon_var <- tryCatch(rlang::as_name(mapping_list[["icon"]]), error = function(e) NULL)
-      
+
       if (!is.null(col_var) && !is.null(icon_var) &&
-          col_var %in% names(data) && icon_var %in% names(data)) {
-        
+        col_var %in% names(data) && icon_var %in% names(data)) {
         distinct_data <- dplyr::distinct(
           data,
           group = .data[[col_var]],
           icon  = .data[[icon_var]]
         )
-        
+
         n_icon_per_group <- dplyr::summarise(
           dplyr::group_by(distinct_data, group),
           n_icons = dplyr::n(),
           .groups = "drop"
         )
-        
+
         if (any(n_icon_per_group$n_icons > 1)) {
-          
           offenders <- paste0(
             n_icon_per_group$group[n_icon_per_group$n_icons > 1],
             collapse = ", "
           )
-          
+
           warnings <- c(warnings, .msg(
             "[geom_pop] Some legend groups map to multiple icons.\n",
             "  - Offenders: ", offenders, "\n",
@@ -138,13 +132,13 @@ warn_geom_pop_inputs <- function(data,
       }
     }
   }
-  
+
   # ------------------------------------------------------------------
   # Emit warnings (one per conceptual issue)
   # ------------------------------------------------------------------
   if (length(warnings)) {
     for (w in warnings) warning(w, call. = FALSE)
   }
-  
+
   invisible(NULL)
 }

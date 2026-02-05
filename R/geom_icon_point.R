@@ -27,40 +27,39 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             position = "identity", na.rm = FALSE,
                             inherit.aes = TRUE, icon = NULL,
                             size = 3, dpi = 50, legend_icons = TRUE, ...) {
-  
   extra_args <- list(...)
-  
+
   # -------------------------------------------------
   # HANDLE COMMON USAGE: geom_icon_point(data, aes(...))
   # -------------------------------------------------
-  if (!is.null(mapping) && !inherits(mapping, "uneval") && 
-      (is.data.frame(mapping) || (is.list(mapping) && !inherits(mapping, "uneval")))) {
+  if (!is.null(mapping) && !inherits(mapping, "uneval") &&
+    (is.data.frame(mapping) || (is.list(mapping) && !inherits(mapping, "uneval")))) {
     # User did: geom_icon_point(df, aes(...))
     # Swap them
     temp <- mapping
     mapping <- data
     data <- temp
   }
-  
+
   inherited_data <- tryCatch(
     ggplot2::ggplot_build(ggplot2::last_plot())$plot$data,
     error = function(e) NULL
   )
-  
+
   plot_obj <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot())$plot, error = function(e) NULL)
   inherited_mapping_list <- if (!is.null(plot_obj$mapping)) as.list(plot_obj$mapping) else list()
-  
+
   .missing_size <- missing(size)
-  
+
   if (is.null(data)) {
     data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
-  
+
   # Ensure data is a data frame
   if (!is.data.frame(data)) {
     stop("[geom_icon_point] `data` must be a data frame.", call. = FALSE)
   }
-  
+
   # -------------------------------------------------
   # HARD STOP: empty data frame
   # -------------------------------------------------
@@ -70,7 +69,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   # -------------------------------------------------
   # HARD STOP: dpi too low -> blurry icons
   # -------------------------------------------------
@@ -88,12 +87,12 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       )
     }
   }
-  
+
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
-  
+
   # Combine inherited and layer mappings
   combined_mapping <- c(inherited_mapping_list, mapping_list)
-  
+
   # -------------------------------------------------
   # HARD STOP: image aesthetic is not allowed
   # -------------------------------------------------
@@ -117,8 +116,8 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
-  
+
+
   # -------------------------------------------------
   # HARD STOP: size parameter validation
   # -------------------------------------------------
@@ -130,7 +129,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
         call. = FALSE
       )
     }
-    
+
     # Value checks
     if (is.na(size) || !is.finite(size) || size <= 0) {
       stop(
@@ -142,7 +141,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       )
     }
   }
-  
+
   # -------------------------------------------------
   # WARNING: alpha specified both in aes() and as argument
   # -------------------------------------------------
@@ -160,13 +159,13 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   # -------------------------------------------------
   # HARD STOP: alpha parameter validation
   # -------------------------------------------------
   if ("alpha" %in% names(extra_args)) {
     alpha_val <- extra_args$alpha
-    
+
     # Check if it's a name/symbol (user tried to pass a column name)
     if (is.symbol(alpha_val) || is.name(alpha_val)) {
       stop(
@@ -185,15 +184,15 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
         call. = FALSE
       )
     }
-    
+
     # Validate it's a single numeric value in valid range
-    if (!is.numeric(alpha_val) || length(alpha_val) != 1 || 
-        is.na(alpha_val) || alpha_val < 0 || alpha_val > 1) {
+    if (!is.numeric(alpha_val) || length(alpha_val) != 1 ||
+      is.na(alpha_val) || alpha_val < 0 || alpha_val > 1) {
       stop(
         paste0(
           "[geom_icon_point] Invalid `alpha` value.\n\n",
           "Expected: Single numeric value between 0 and 1 (e.g., alpha = 0.5)\n",
-          "Received: ", 
+          "Received: ",
           if (!is.numeric(alpha_val)) {
             class(alpha_val)[1]
           } else if (length(alpha_val) != 1) {
@@ -209,7 +208,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
         call. = FALSE
       )
     }
-    
+
     # SOFT WARNING: alpha too low
     if (alpha_val < 0.1 && alpha_val > 0) {
       warning(
@@ -228,7 +227,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       )
     }
   }
-  
+
   # -------------------------------------------------
   # WARNING: size specified both in aes() and as argument
   # -------------------------------------------------
@@ -246,7 +245,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   # -------------------------------------------------
   # SOFT WARNING: size too large
   # -------------------------------------------------
@@ -266,7 +265,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   # -------------------------------------------------
   # SOFT WARNING: size too small
   # -------------------------------------------------
@@ -286,14 +285,14 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
 
   # -------------------------------------------------
   # HARD STOP: icon is mandatory and must be explicit
   # -------------------------------------------------
-  icon_mapped  <- "icon" %in% names(combined_mapping)
+  icon_mapped <- "icon" %in% names(combined_mapping)
   has_icon_param <- !is.null(icon) && nzchar(as.character(icon))
-  
+
   # Icon must be EXPLICITLY mapped or provided as parameter
   # Having an 'icon' column in data is NOT enough - user must map it!
   if (!icon_mapped && !has_icon_param) {
@@ -313,12 +312,12 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   # Add icon to data ONLY if parameter was provided
   if (has_icon_param && !"icon" %in% names(data)) {
     data$icon <- icon
   }
-  
+
   # Add icon mapping
   if (!"icon" %in% names(mapping_list)) {
     if ("icon" %in% names(inherited_mapping_list)) {
@@ -334,7 +333,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       )
     }
   }
-  
+
   # Handle size (icon_size to avoid collision with coord size)
   # Check COMBINED mapping for size
   if ("size" %in% names(combined_mapping)) {
@@ -344,19 +343,19 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     } else {
       rlang::as_name(inherited_mapping_list[["size"]])
     }
-    
+
     if (!size_var %in% names(data)) {
       stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
     }
-    
+
     data$icon_size <- data[[size_var]] * 0.0075
-    
+
     # Remove size from layer mapping (but keep in inherited if it's there)
     mapping_list[["size"]] <- NULL
   } else {
     data$icon_size <- size * 0.0075
   }
-  
+
   # -------------------------------------------------
   # HARD STOP: legend_icons validation
   # -------------------------------------------------
@@ -364,9 +363,13 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     stop(
       sprintf(
         "[geom_icon_point] legend_icons must be TRUE or FALSE, got %s",
-        if (!is.logical(legend_icons)) class(legend_icons)[1]
-        else if (length(legend_icons) != 1) paste0("length-", length(legend_icons), " vector")
-        else "NA"
+        if (!is.logical(legend_icons)) {
+          class(legend_icons)[1]
+        } else if (length(legend_icons) != 1) {
+          paste0("length-", length(legend_icons), " vector")
+        } else {
+          "NA"
+        }
       ),
       call. = FALSE
     )
@@ -375,20 +378,20 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # -------------------------------------------------
   # WARNING: Mixed legend_icons settings detected
   # -------------------------------------------------
-  
+
   # Auto-reset registry if it's getting too large (indicates stale state)
   if (length(.ggpop_env$legend_settings) > 10) {
     .ggpop_env$legend_settings <- list()
   }
-  
+
   # Get existing settings
   legend_settings <- .ggpop_env$legend_settings
-  
+
   # Check if we have mixed settings (some TRUE, some FALSE)
   if (length(legend_settings) > 0) {
     has_true <- any(unlist(legend_settings))
     has_false <- any(!unlist(legend_settings))
-    
+
     # Warn if we now have BOTH TRUE and FALSE
     if ((has_true && !legend_icons) || (has_false && legend_icons)) {
       warning(
@@ -401,12 +404,12 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
         ),
         call. = FALSE
       )
-      
+
       # Store current setting but mark that we've warned
       .ggpop_env$legend_settings <- c(legend_settings, legend_icons)
-      
+
       # Check if we now have both TRUE and FALSE - if so, reset for next plot
-      has_both <- any(unlist(.ggpop_env$legend_settings)) && 
+      has_both <- any(unlist(.ggpop_env$legend_settings)) &&
         any(!unlist(.ggpop_env$legend_settings))
       if (has_both) {
         # Complete conflict detected - reset for next plot
@@ -420,7 +423,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     # First layer
     .ggpop_env$legend_settings <- list(legend_icons)
   }
-  
+
   # -------------------------------------------------
   # HARD STOP: missing / empty icons are not allowed
   # -------------------------------------------------
@@ -439,8 +442,8 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       )
     }
   }
-  
-  
+
+
   # -------------------------------------------------
   # HARD STOP & SOFT WARNING: dpi validation
   # -------------------------------------------------
@@ -449,7 +452,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       paste0(
         "[geom_icon_point] Invalid `dpi` parameter.\n\n",
         "Expected: Single numeric value (e.g., dpi = 50)\n",
-        "Received: ", 
+        "Received: ",
         if (!is.numeric(dpi)) {
           paste0(class(dpi)[1], " (", deparse(dpi)[1], ")")
         } else {
@@ -463,7 +466,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   if (is.na(dpi) || !is.finite(dpi)) {
     stop(
       paste0(
@@ -475,7 +478,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   if (dpi < 30) {
     stop(
       paste0(
@@ -488,7 +491,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   if (dpi > 300) {
     warning(
       paste0(
@@ -502,7 +505,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   # -------------------------------------------------
   # FINAL CHECK: icon column must exist in data
   # -------------------------------------------------
@@ -512,12 +515,12 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       call. = FALSE
     )
   }
-  
+
   # ---- build per-row PNG path from per-row icon ----
-  
+
   # Capture DPI in local scope BEFORE rowwise
   local_dpi <- dpi
-  
+
   data <- data %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
@@ -526,7 +529,6 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
         if (is.na(this_icon) || !nzchar(this_icon)) {
           NA_character_
         } else {
-          
           # Get color from aes mapping (if any)
           this_color <- if ("colour" %in% names(.)) {
             as.character(.data$colour)
@@ -535,69 +537,72 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
           } else {
             "black"
           }
-          
+
           # Get alpha from aes mapping (if any)
           this_alpha <- if ("alpha" %in% names(.)) {
             as.numeric(.data$alpha)
           } else {
             1.0
           }
-          
+
           # Convert color to hex
-          this_color <- tryCatch({
-            if (is.na(this_color) || !nzchar(this_color)) {
-              "#000000"
-            } else {
-              rgb_vals <- grDevices::col2rgb(this_color) / 255
-              grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
-            }
-          }, error = function(e) "#000000")
-          
+          this_color <- tryCatch(
+            {
+              if (is.na(this_color) || !nzchar(this_color)) {
+                "#000000"
+              } else {
+                rgb_vals <- grDevices::col2rgb(this_color) / 255
+                grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
+              }
+            },
+            error = function(e) "#000000"
+          )
+
           # Apply alpha to color
           rgb_vals <- grDevices::col2rgb(this_color) / 255
           rgba_color <- grDevices::rgb(
-            rgb_vals[1], 
-            rgb_vals[2], 
-            rgb_vals[3], 
+            rgb_vals[1],
+            rgb_vals[2],
+            rgb_vals[3],
             alpha = this_alpha
           )
-          
+
           cache_dir <- file.path(tempdir(), "ggpop-icons")
           if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
-          
+
           # Build cache key with color, alpha, AND DPI
           color_hex <- gsub("#", "", this_color)
           alpha_str <- sprintf("%.2f", this_alpha)
-          dpi_str <- sprintf("%.0f", local_dpi)  # ← Use local_dpi
-          
+          dpi_str <- sprintf("%.0f", local_dpi) # ← Use local_dpi
+
           cache_parts <- c(
             this_icon,
             paste0("c", color_hex),
             paste0("a", alpha_str),
-            paste0("d", dpi_str)  # ← Include DPI in filename
+            paste0("d", dpi_str) # ← Include DPI in filename
           )
-          
+
           png_path <- file.path(
-            cache_dir, 
+            cache_dir,
             paste0(paste(cache_parts, collapse = "_"), ".png")
           )
-          
+
           # Generate PNG if not cached
           if (!file.exists(png_path)) {
             fontawesome::fa_png(
               this_icon,
               file = png_path,
-              height = local_dpi,  # ← Use local_dpi
+              height = local_dpi, # ← Use local_dpi
               fill = rgba_color
             )
           }
-          
+
           png_path
         }
       }
     ) %>%
     dplyr::ungroup()
-  
+
   # -------------------------------------------------
   # LEGEND: map icons by the ACTUAL legend variable
   # -------------------------------------------------
@@ -608,11 +613,11 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       NULL
     }
   }
-  
+
   legend_var <- .get_mapped_var_combined("colour")
   if (is.null(legend_var)) legend_var <- .get_mapped_var_combined("color")
   if (is.null(legend_var)) legend_var <- .get_mapped_var_combined("group")
-  
+
   # Fallback to icon if we have multiple icons
   if (is.null(legend_var) || !legend_var %in% names(data)) {
     if ("icon" %in% names(data) && dplyr::n_distinct(data$icon) > 1) {
@@ -621,7 +626,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       legend_var <- NULL
     }
   }
-  
+
   icon_by_legend <- if (!is.null(legend_var) && legend_var %in% names(data)) {
     data %>%
       dplyr::mutate(
@@ -637,7 +642,9 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
         },
         .groups = "drop"
       ) %>%
-      { stats::setNames(.$icon, .$.legend) }
+      {
+        stats::setNames(.$icon, .$.legend)
+      }
   } else {
     # Fallback: use first icon from data or parameter
     first_icon <- if ("icon" %in% names(data) && nrow(data) > 0) {
@@ -645,19 +652,18 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     } else if (has_icon_param) {
       icon
     } else {
-      "circle"  # Ultimate fallback
+      "circle" # Ultimate fallback
     }
     stats::setNames(first_icon, "default")
   }
-  
+
   # -------------------------------------------------
   # SOFT WARNING: multiple icons per legend group
   # -------------------------------------------------
   if (legend_icons && !is.null(legend_var) && legend_var %in% names(data)) {
-    
     # Check if the legend variable is numeric (continuous scale)
     is_numeric_scale <- is.numeric(data[[legend_var]])
-    
+
     if (is_numeric_scale) {
       # For continuous scales, we can't have discrete legend groups
       # Skip the check - continuous color scales don't show discrete icons anyway
@@ -668,26 +674,30 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
           .legend = as.character(.data[[legend_var]]),
           icon    = as.character(icon)
         ) %>%
-        dplyr::filter(!is.na(.data[[".legend"]]), nzchar(.data[[".legend"]]), 
-                      !is.na(.data$icon), nzchar(.data$icon)) %>%
+        dplyr::filter(
+          !is.na(.data[[".legend"]]), nzchar(.data[[".legend"]]),
+          !is.na(.data$icon), nzchar(.data$icon)
+        ) %>%
         dplyr::group_by(.data[[".legend"]]) %>%
         dplyr::summarise(
           n_icons = dplyr::n_distinct(.data$icon),
           icons = paste(sort(unique(.data$icon)), collapse = ", "),
           .groups = "drop"
         ) %>%
-        dplyr::filter(.data$n_icons > 1)  # ← Use .data$n_icons
-      
+        dplyr::filter(.data$n_icons > 1) # ← Use .data$n_icons
+
       if (nrow(icon_counts) > 0) {
         # Build detailed message showing which groups have issues
         problem_groups <- icon_counts %>%
           dplyr::mutate(
-            msg = paste0("  - ", .data[[".legend"]], ": ", .data$icons, 
-                         " (", .data$n_icons, " different icons)")
+            msg = paste0(
+              "  - ", .data[[".legend"]], ": ", .data$icons,
+              " (", .data$n_icons, " different icons)"
+            )
           ) %>%
-          dplyr::pull(.data$msg) %>%  # ← Use .data$msg
+          dplyr::pull(.data$msg) %>% # ← Use .data$msg
           paste(collapse = "\n")
-        
+
         warning(
           paste0(
             "[geom_icon_point] Multiple icons per legend group.\n\n",
@@ -718,35 +728,34 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       }
     }
   }
-  
+
   key_glyph_icon_point <- function(key_data, params, size) {
-    
     if (!("colour" %in% names(key_data)) && ("color" %in% names(key_data))) {
       key_data$colour <- key_data$color
     }
-    
+
     if (!("alpha" %in% names(key_data))) key_data$alpha <- 1
     key_data$alpha[is.na(key_data$alpha)] <- 1
-    
+
     if (!("colour" %in% names(key_data))) key_data$colour <- "black"
     key_data$colour[is.na(key_data$colour)] <- "black"
-    
+
     lbl <- NA_character_
     if ("label" %in% names(key_data)) lbl <- as.character(key_data$label[1])
     if (is.na(lbl) || !nzchar(lbl)) lbl <- NA_character_
-    
+
     # Get icon_by_legend from params (passed through)
     icon_by_legend <- params$icon_by_legend
     plot_obj <- params$plot_obj
-    
+
     ic <- NA_character_
     if (!is.na(lbl) && lbl %in% names(icon_by_legend)) {
       ic <- icon_by_legend[[lbl]]
     }
-    
+
     if (is.na(ic) || !nzchar(ic)) {
       breaks <- names(icon_by_legend)
-      
+
       if (!is.null(plot_obj)) {
         sc <- plot_obj$scales$get_scales("colour")
         if (is.null(sc)) sc <- plot_obj$scales$get_scales("color")
@@ -756,40 +765,40 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
           if (length(br)) breaks <- as.character(br)
         }
       }
-      
+
       icon_levels <- unname(icon_by_legend[breaks])
-      
+
       idx <- NA_integer_
       if (".id" %in% names(key_data)) idx <- as.integer(key_data$.id[1])
       if (is.na(idx) && "group" %in% names(key_data)) idx <- as.integer(key_data$group[1])
       if (is.na(idx)) idx <- 1L
-      
+
       idx <- max(1L, min(length(icon_levels), idx))
       ic <- as.character(icon_levels[idx])
     }
-    
+
     if (is.na(ic) || !nzchar(ic)) ic <- "circle"
-    
+
     key_data$icon <- ic
     draw_key_pop_image(key_data, params, size)
   }
-  
+
   # -------------------------------------------------
   # THE ONLY REAL CHANGE: use x and y from aes instead of x1/y1
   # -------------------------------------------------
   mapping_list[["image"]] <- as.name("image")
-  mapping_list[["icon"]]  <- NULL
+  mapping_list[["icon"]] <- NULL
   # Keep x and y as they are (from user's aes)
-  
+
   final_mapping <- do.call(ggplot2::aes, mapping_list)
-  
+
   size_internal <- data$icon_size
-  
+
   key_fn <- function(data, params, size = 5) {
     data$size <- 5
     ggplot2::draw_key_point(data, params, size)
   }
-  
+
   layer_out <- ggimage::geom_image(
     mapping      = final_mapping,
     data         = data,
@@ -798,17 +807,16 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     position     = position,
     na.rm        = na.rm,
     inherit.aes  = inherit.aes,
-    by           = "width",     # ← Try "width" instead, or
+    by           = "width", # ← Try "width" instead, or
     asp          = 1,
     key_glyph    = if (legend_icons) key_glyph_icon_point else key_fn,
     ...
   )
-  
+
   # Pass icon_by_legend to layer params so key glyph can access it
   layer_out$geom_params$icon_by_legend <- icon_by_legend
   layer_out$geom_params$plot_obj <- plot_obj
   layer_out$geom_params$dpi <- dpi
-  
+
   layer_out
 }
-
