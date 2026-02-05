@@ -33,7 +33,7 @@ testthat::skip_if_not_installed("fontawesome")
 # ******************************************************************************
 
 df_raw <- data.frame(
-  sex  = c("male", "female", "male", "female"),
+  sex = c("male", "female", "male", "female"),
   icon = c("male", "female", "male", "female"),
   stringsAsFactors = FALSE
 )
@@ -64,14 +64,14 @@ df_processed <- data.frame(
 testthat::test_that("Warning: size inside aes() overrides geom_pop(size = ...)", {
   df_sz <- df_raw
   df_sz$size <- c(5, 2, 5, 2)
-  
+
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_pop(
         data = df_sz,
         ggplot2::aes(icon = icon, size = size, color = sex),
         size = 10,
-        dpi  = 100
+        dpi = 100
       )
   )
 })
@@ -86,7 +86,7 @@ testthat::test_that("Warning: size inside aes() overrides geom_pop(size = ...)",
 testthat::test_that("Warning: facet/group caution (data has group column)", {
   df_grp <- df_raw
   df_grp$group <- df_grp$sex
-  
+
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_pop(
@@ -101,11 +101,11 @@ testthat::test_that("Warning: facet/group caution (data has group column)", {
 testthat::test_that("Warning: facet specified inside geom_pop()", {
   df_facet <- df_processed
   df_facet$status <- c("A", "A", "B", "B")
-  
+
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_pop(
-        data  = df_facet,
+        data = df_facet,
         ggplot2::aes(icon = icon, group = type),
         facet = status
       )
@@ -117,7 +117,7 @@ testthat::test_that("Warning: facet specified inside geom_pop()", {
 testthat::test_that("Warning: facet variable has single level", {
   df_single <- df_raw
   df_single$region <- "North"
-  
+
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_pop(
@@ -145,7 +145,6 @@ testthat::test_that("Warning: x/y mapped are ignored", {
       )
   )
 })
-
 
 
 ### 03.03.02 stroke_width aesthetic mapped (use color instead) -------------------------
@@ -271,11 +270,11 @@ testthat::test_that("Edge case: size = 15.01 triggers warning", {
 
 testthat::test_that("Warning: multiple icons per color group", {
   df_icons <- data.frame(
-    sex  = c("A", "A", "B", "B"),
+    sex = c("A", "A", "B", "B"),
     icon = c("male", "female", "male", "female"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_pop(
@@ -304,7 +303,6 @@ testthat::test_that("Warning: stroke_width > 20", {
 })
 
 
-
 # ******************************************************************************
 ## 03.08 Smoke: warnings should still allow build ------------------------------
 # ******************************************************************************
@@ -314,7 +312,7 @@ testthat::test_that("Warning: stroke_width > 20", {
 testthat::test_that("Build: plot still builds when warning occurs", {
   df_grp <- df_raw
   df_grp$group <- df_grp$sex
-  
+
   testthat::expect_warning(
     p <- ggplot2::ggplot() +
       geom_pop(
@@ -323,7 +321,7 @@ testthat::test_that("Build: plot still builds when warning occurs", {
         dpi = 60
       )
   )
-  
+
   # Verify the plot object was created despite warning
   testthat::expect_s3_class(p, "ggplot")
 })
