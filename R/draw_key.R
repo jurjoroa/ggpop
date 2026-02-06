@@ -16,51 +16,70 @@
 #' @param stroke_width Numeric. Width of the black outline/border around icons in pixels.
 #'                     If NULL or 0, no outline is drawn. Default is NULL.
 #' @return A grid grob containing the image icons with the specified colors and transparency.
-#' @importFrom magick image_read image_quantize image_colorize
-#' @importFrom grid rasterGrob gTree
+#' @importFrom magick image_read image_quantize image_colorize image_info
+#' @importFrom grid rasterGrob gTree unit
 #' @importFrom grDevices as.raster
 #' @details
-#' This function relies on `ggimage:::color_image` and `ggplot2:::ggname`, which are internal functions.
-#' Their use is necessary for correct functionality, and no exported alternatives exist.
-#' We acknowledge the potential risks associated with `:::` usage, but at present, these functions
-#' provide essential behavior for rendering images within ggplot2.
-#'
-#' NOTE: Legend icons are always rendered at a FIXED size, regardless of any size aesthetic
-#' mapped in the plot. This ensures consistent legend appearance.
+#' Icons are automatically scaled to fill the available legend box space while preserving
+#' their aspect ratio. Wide icons fill horizontally, tall icons fill vertically.
 #'
 #' If `stroke_width` is provided, icons are rendered directly with FontAwesome's stroke
 #' parameter for consistent appearance between plot and legend.
 #' @export
 draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
+  
+  # ==============================================================================
+  # SETUP: Cache directory and defaults
+  # ==============================================================================
+  
   cache_dir <- file.path(tempdir(), "ggpop-legend-icons")
   if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
-
-  if (!("colour" %in% names(data)) && ("color" %in% names(data))) data$colour <- data$color
-
+  
+  # Normalize color column name
+  if (!("colour" %in% names(data)) && ("color" %in% names(data))) {
+    data$colour <- data$color
+  }
+  
+  # ==============================================================================
+  # CONFIGURATION
+  # ==============================================================================
+  
   png_px <- 480L
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
-
-  rsvg_version <- rsvg::librsvg_version()
-
+  
+  # Maximum fill percentage of legend box (prevents touching edges)
+  max_fill <- 0.90  # Use 90% of available space
+  
+  # ==============================================================================
+  # ICON RENDERING: Create grobs for each icon
+  # ==============================================================================
+  
   grobs <- lapply(seq_along(data$colour), function(i) {
+    
+    # Extract icon name
     this_icon <- as.character(data$icon[i])
     if (is.na(this_icon) || !nzchar(this_icon)) this_icon <- "user"
-
+    
+    # Extract color
     this_col <- data$colour[i]
     if (is.na(this_col) || !nzchar(as.character(this_col))) this_col <- "black"
-
+    
+    # Extract alpha
     this_alpha <- data$alpha[i]
     if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- 1
-
+    
+    # ==========================================================================
+    # PATH 1: With stroke (render with FontAwesome directly)
+    # ==========================================================================
+    
     if (use_stroke) {
-      this_col_hex <- tryCatch(
-        {
-          rgb_vals <- grDevices::col2rgb(this_col) / 255
-          grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
-        },
-        error = function(e) "#000000"
-      )
-
+      # Convert color to hex
+      this_col_hex <- tryCatch({
+        rgb_vals <- grDevices::col2rgb(this_col) / 255
+        grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
+      }, error = function(e) "#000000")
+      
+      # Apply alpha to color
       rgb_vals <- grDevices::col2rgb(this_col_hex) / 255
       rgba_color <- grDevices::rgb(
         rgb_vals[1],
@@ -68,16 +87,19 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
         rgb_vals[3],
         alpha = this_alpha
       )
-
+      
+      # Build cache key
       color_hex <- gsub("#", "", this_col_hex)
       alpha_str <- sprintf("%.2f", this_alpha)
       stroke_str <- sprintf("%.0f", stroke_width)
-
+      
       png_path <- file.path(
         cache_dir,
-        paste0(this_icon, "_c", color_hex, "_a", alpha_str, "_sw", stroke_str, "_", png_px, "px.png")
+        paste0(this_icon, "_c", color_hex, "_a", alpha_str, 
+               "_sw", stroke_str, "_", png_px, "px.png")
       )
-
+      
+      # Generate PNG if not cached
       if (!file.exists(png_path)) {
         fontawesome::fa_png(
           this_icon,
@@ -88,39 +110,64 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
           stroke_width = stroke_width
         )
       }
-
+      
       img <- magick::image_read(png_path)
       ras <- as.raster(img)
+      
+      # ==========================================================================
+      # PATH 2: Without stroke (use magick for colorization)
+      # ==========================================================================
+      
     } else {
-      png_path <- file.path(cache_dir, paste0(this_icon, "__legend__", png_px, "px.png"))
+      png_path <- file.path(
+        cache_dir, 
+        paste0(this_icon, "__legend__", png_px, "px.png")
+      )
+      
       if (!file.exists(png_path)) {
         fontawesome::fa_png(this_icon, file = png_path, height = png_px)
       }
-
+      
       img <- magick::image_read(png_path)
       img <- magick::image_quantize(img, colorspace = "gray")
       img <- magick::image_colorize(img, opacity = this_alpha * 100, color = this_col)
-
+      
       ras <- as.raster(img)
     }
-
-    # ========== NEW: Get actual icon dimensions and preserve aspect ratio ==========
+    
+    # ==========================================================================
+    # SMART SIZE CALCULATION: Fill legend box based on icon's aspect ratio
+    # ==========================================================================
+    
     img_info <- magick::image_info(img)
     aspect_ratio <- img_info$width / img_info$height
-
-    # Set a base height and calculate width to maintain aspect ratio
-    base_height <- grid::unit(0.9, "npc")
-
+    
+    # Strategy: Fill the constraining dimension to max_fill, 
+    # then scale the other dimension proportionally
+    
     if (aspect_ratio > 1) {
-      # Icon is wider than tall
-      icon_height <- base_height
-      icon_width <- grid::unit(0.9 * aspect_ratio, "npc")
+      # Icon is WIDER than tall (landscape orientation)
+      # → Fill width to max_fill, calculate height proportionally
+      icon_width  <- grid::unit(max_fill, "npc")
+      icon_height <- grid::unit(max_fill / aspect_ratio, "npc")
+      
+    } else if (aspect_ratio < 1) {
+      # Icon is TALLER than wide (portrait orientation)
+      # → Fill height to max_fill, calculate width proportionally
+      icon_height <- grid::unit(max_fill, "npc")
+      icon_width  <- grid::unit(max_fill * aspect_ratio, "npc")
+      
     } else {
-      # Icon is taller than wide (or square)
-      icon_width <- grid::unit(0.9, "npc")
-      icon_height <- grid::unit(0.9 / aspect_ratio, "npc")
+      # Icon is SQUARE (aspect_ratio == 1)
+      # → Fill both dimensions equally
+      icon_width  <- grid::unit(max_fill, "npc")
+      icon_height <- grid::unit(max_fill, "npc")
     }
-
+    
+    # ==========================================================================
+    # CREATE GROB
+    # ==========================================================================
+    
     grid::rasterGrob(
       x = 0.5, y = 0.5,
       image = ras,
@@ -129,22 +176,26 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
       interpolate = TRUE
     )
   })
-
+  
+  # ==============================================================================
+  # FINALIZE: Create gTree with unique name
+  # ==============================================================================
+  
   class(grobs) <- "gList"
-
+  
   nm_parts <- c(
     "image_key",
     paste0(as.character(data$icon), collapse = "_"),
     paste0(as.character(data$colour), collapse = "_"),
     paste0(as.character(data$alpha), collapse = "_")
   )
-
+  
   if (use_stroke) {
     nm_parts <- c(nm_parts, paste0("sw", stroke_width))
   }
-
+  
   nm <- paste(nm_parts, collapse = "__")
   nm <- gsub("[^A-Za-z0-9_]", "_", nm)
-
+  
   grid::gTree(children = grobs, name = nm)
 }
