@@ -545,6 +545,36 @@ validate_icon_column <- function(data, icon_var) {
 }
 
 # ******************************************************************************
+## 02.04 Empty Data Frame ------------------------------------------------------
+# ******************************************************************************
+
+#' Validate data is not empty
+#' 
+#' @param data Data frame to check
+#' @return Invisible data if valid
+#' @keywords internal
+#' @noRd
+validate_data_not_empty <- function(data) {
+  
+  if (!is.null(data) && is.data.frame(data) && nrow(data) == 0) {
+    cli::cli_abort(c(
+      "Empty data detected.",
+      "x" = "Cannot create plot with 0 rows.",
+      " " = "",
+      "i" = "Fix:",
+      " " = "  - Ensure your data has at least one row",
+      " " = "  - Check your filtering operations",
+      " " = "",
+      "i" = "Example:",
+      " " = "  {.code df <- data.frame(x = 1:10, y = 1:10, icon = 'circle')}",
+      " " = "  {.code geom_icon_point(data = df, aes(x = x, y = y))}"
+    ))
+  }
+  
+  invisible(data)
+}
+
+# ******************************************************************************
 # 03 Aesthetic mapping validators ----------------------------------------------
 # ******************************************************************************
 
@@ -1260,6 +1290,176 @@ warn_multiple_icons_per_group <- function(data, legend_var, icon_var) {
       " " = "  Option 3: Set legend_icons = FALSE to use point markers",
       " " = "    {.code geom_pop(..., legend_icons = FALSE)}"
     ))
+  }
+  
+  invisible(NULL)
+}
+
+
+# ******************************************************************************
+## 06.05 Alpha Parameter Validation --------------------------------------------
+# ******************************************************************************
+
+#' Validate alpha parameter (for geom_icon_point)
+#' 
+#' @param alpha_val Alpha parameter value
+#' @return Invisible alpha_val if valid
+#' @keywords internal
+#' @noRd
+validate_alpha_parameter <- function(alpha_val) {
+  
+  if (is.null(alpha_val)) return(invisible(NULL))
+  
+  # Check if it's a name/symbol (user tried to pass a column name)
+  if (is.symbol(alpha_val) || is.name(alpha_val)) {
+    cli::cli_abort(c(
+      "Invalid `alpha` parameter.",
+      "x" = "You passed: {.code alpha = {deparse(alpha_val)}}",
+      " " = "",
+      "!" = "Problem:",
+      " " = "  Parameters expect a single numeric value (e.g., {.code alpha = 0.5})",
+      " " = "  To map alpha to a data column, use {.code aes()} instead",
+      " " = "",
+      "i" = "Fix:",
+      " " = "  {.code # Wrong:}",
+      " " = "  {.code geom_icon_point(alpha = point_size, color = 'blue')}",
+      " " = "",
+      " " = "  {.code # Correct:}",
+      " " = "  {.code geom_icon_point(aes(alpha = point_size), color = 'blue')}"
+    ))
+  }
+  
+  # Validate it's a single numeric value in valid range
+  if (!is.numeric(alpha_val) || length(alpha_val) != 1 ||
+      is.na(alpha_val) || alpha_val < 0 || alpha_val > 1) {
+    
+    invalid_reason <- if (!is.numeric(alpha_val)) {
+      class(alpha_val)[1]
+    } else if (length(alpha_val) != 1) {
+      paste0("vector of length ", length(alpha_val))
+    } else if (is.na(alpha_val)) {
+      "NA"
+    } else {
+      as.character(alpha_val)
+    }
+    
+    cli::cli_abort(c(
+      "Invalid `alpha` value.",
+      "x" = "Expected: Single numeric value between 0 and 1",
+      "i" = "Received: {invalid_reason}",
+      " " = "",
+      "i" = "Valid range: 0 (transparent) to 1 (opaque)",
+      " " = "",
+      "i" = "Examples:",
+      " " = "  {.code alpha = 0.5}   # Semi-transparent",
+      " " = "  {.code alpha = 1.0}   # Fully opaque (default)",
+      " " = "  {.code alpha = 0.3}   # More transparent"
+    ))
+  }
+  
+  # Soft warning: alpha too low
+  if (alpha_val < 0.1 && alpha_val > 0) {
+    cli::cli_warn(c(
+      "Very low `alpha` value.",
+      "!" = "{.val {alpha_val}} is very low.",
+      "i" = "Icons may be nearly invisible.",
+      " " = "",
+      "i" = "Recommended:",
+      " " = "  Use alpha >= 0.1 for visible icons",
+      " " = "  Default is 1.0 (fully opaque)",
+      " " = "  Typical range: 0.3-1.0"
+    ))
+  }
+  
+  invisible(alpha_val)
+}
+
+# ******************************************************************************
+## 06.06 Alpha Conflict Warning ------------------------------------------------
+# ******************************************************************************
+
+#' Warn about alpha specified both in aes() and as parameter
+#' 
+#' @param combined_mapping Combined aesthetic mappings
+#' @param extra_args Additional arguments (...)
+#' @return Invisible NULL
+#' @keywords internal
+#' @noRd
+warn_alpha_conflict <- function(combined_mapping, extra_args) {
+  
+  if ("alpha" %in% names(combined_mapping) && "alpha" %in% names(extra_args)) {
+    cli::cli_warn(c(
+      "`alpha` specified both in {.code aes()} and as a parameter.",
+      " " = "",
+      "!" = "What happens:",
+      " " = "  - {.code aes(alpha = <variable>)} controls transparency per row",
+      " " = "  - The parameter {.code alpha = {extra_args$alpha}} will be IGNORED",
+      " " = "",
+      "i" = "Tip:",
+      " " = "  - Use ONLY {.code aes(alpha = <variable>)} for data-driven transparency, OR",
+      " " = "  - Remove {.field alpha} from {.code aes()} and set fixed alpha via parameter"
+    ))
+  }
+  
+  invisible(NULL)
+}
+
+# ******************************************************************************
+## 06.07 Mixed Legend Icons Warning --------------------------------------------
+# ******************************************************************************
+
+#' Warn about mixed legend_icons settings across layers
+#' 
+#' @param legend_icons Current legend_icons setting
+#' @return Invisible NULL
+#' @keywords internal
+#' @noRd
+warn_mixed_legend_icons <- function(legend_icons) {
+  
+  # Auto-reset registry if it's getting too large (indicates stale state)
+  if (length(.ggpop_env$legend_settings) > 10) {
+    .ggpop_env$legend_settings <- list()
+  }
+  
+  # Get existing settings
+  legend_settings <- .ggpop_env$legend_settings
+  
+  # Check if we have mixed settings (some TRUE, some FALSE)
+  if (length(legend_settings) > 0) {
+    has_true <- any(unlist(legend_settings))
+    has_false <- any(!unlist(legend_settings))
+    
+    # Warn if we now have BOTH TRUE and FALSE
+    if ((has_true && !legend_icons) || (has_false && legend_icons)) {
+      cli::cli_warn(c(
+        "Mixed {.field legend_icons} settings detected.",
+        " " = "",
+        "!" = "Layers have inconsistent settings:",
+        " " = "  - Previous layer(s): {.val {ifelse(has_true, 'TRUE', 'FALSE')}}",
+        " " = "  - Current layer: {.val {legend_icons}}",
+        " " = "",
+        "i" = "Recommendation:",
+        " " = "  Use consistent settings across all {.fn geom_icon_point} layers",
+        " " = "  Either all TRUE, or all FALSE (not mixed)"
+      ))
+      
+      # Store current setting but mark that we've warned
+      .ggpop_env$legend_settings <- c(legend_settings, legend_icons)
+      
+      # Check if we now have both TRUE and FALSE - if so, reset for next plot
+      has_both <- any(unlist(.ggpop_env$legend_settings)) &&
+        any(!unlist(.ggpop_env$legend_settings))
+      if (has_both) {
+        # Complete conflict detected - reset for next plot
+        .ggpop_env$legend_settings <- list()
+      }
+    } else {
+      # No conflict yet, continue accumulating
+      .ggpop_env$legend_settings <- c(legend_settings, legend_icons)
+    }
+  } else {
+    # First layer
+    .ggpop_env$legend_settings <- list(legend_icons)
   }
   
   invisible(NULL)
