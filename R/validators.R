@@ -1,3 +1,24 @@
+# *****************************************************************************
+#
+# Script: validators.R
+#
+# Purpose: Validation functions for geom_pop() - parameter and data validation
+#
+# Author: Jorge Roa
+# Email: jorgeroa@stanford.edu
+#
+# Date Created: 02-Jan-2026
+#
+# *****************************************************************************
+#
+# Notes:
+#   - Internal validators for geom_pop() function
+#   - All functions are @keywords internal and @noRd
+#   - Hard stops use cli::cli_abort(), soft warnings use cli::cli_warn()
+#   - Organized by validation type: Parameters, Data, Aesthetics, Grouping, etc.
+#
+# *****************************************************************************
+
 #' Validation Functions for geom_pop
 #' 
 #' Internal validators for parameter and data validation in geom_pop().
@@ -7,9 +28,13 @@
 #' @keywords internal
 NULL
 
-# ==============================================================================
-# PARAMETER VALIDATORS
-# ==============================================================================
+# ******************************************************************************
+# 01 Parameter Validators ------------------------------------------------------
+# ******************************************************************************
+
+# ******************************************************************************
+## 01.01 Stroke Width ----------------------------------------------------------
+# ******************************************************************************
 
 #' Validate stroke_width parameter
 #' 
@@ -65,6 +90,10 @@ validate_stroke_width <- function(stroke_width, arg_name = "stroke_width") {
   invisible(stroke_width)
 }
 
+# ******************************************************************************
+## 01.02 DPI -------------------------------------------------------------------
+# ******************************************************************************
+
 #' Validate dpi parameter
 #' 
 #' @param dpi DPI value for icon rendering
@@ -102,7 +131,7 @@ validate_dpi <- function(dpi, arg_name = "dpi") {
     ))
   }
   
-  # SOFT WARNING: Borderline low DPI (30-50) - ADD THIS BLOCK
+  # Soft warning: Borderline low DPI (30-50)
   if (dpi >= 30 && dpi < 50) {
     cli::cli_warn(c(
       "Borderline low `{arg_name}` value.",
@@ -130,6 +159,10 @@ validate_dpi <- function(dpi, arg_name = "dpi") {
   
   invisible(dpi)
 }
+
+# ******************************************************************************
+## 01.03 Size ------------------------------------------------------------------
+# ******************************************************************************
 
 #' Validate size parameter
 #' 
@@ -222,6 +255,10 @@ validate_size <- function(size, missing_size = FALSE, arg_name = "size") {
   invisible(size)
 }
 
+# ******************************************************************************
+## 01.04 Arrange ---------------------------------------------------------------
+# ******************************************************************************
+
 #' Validate arrange parameter
 #' 
 #' @param arrange Logical value for arrange parameter
@@ -245,6 +282,10 @@ validate_arrange <- function(arrange, arg_name = "arrange") {
   
   invisible(arrange)
 }
+
+# ******************************************************************************
+## 01.05 Legend Icons ----------------------------------------------------------
+# ******************************************************************************
 
 #' Validate legend_icons parameter
 #' 
@@ -280,6 +321,10 @@ validate_legend_icons <- function(legend_icons, arg_name = "legend_icons") {
   invisible(legend_icons)
 }
 
+# ******************************************************************************
+## 01.06 Seed ------------------------------------------------------------------
+# ******************************************************************************
+
 #' Validate seed parameter
 #' 
 #' @param seed Numeric seed value or NULL
@@ -306,9 +351,13 @@ validate_seed <- function(seed, arg_name = "seed") {
   invisible(seed)
 }
 
-# ==============================================================================
-# DATA VALIDATORS
-# ==============================================================================
+# ******************************************************************************
+# 02 Data Validators -----------------------------------------------------------
+# ******************************************************************************
+
+# ******************************************************************************
+## 02.01 Data Frame Validation -------------------------------------------------
+# ******************************************************************************
 
 #' Validate data is a data frame
 #' 
@@ -375,6 +424,10 @@ validate_data_is_dataframe <- function(data) {
   invisible(data)
 }
 
+# ******************************************************************************
+## 02.02 Reserved Column Names -------------------------------------------------
+# ******************************************************************************
+
 #' Validate no reserved column names in data
 #' 
 #' @param data Data frame to check
@@ -432,6 +485,10 @@ validate_no_reserved_columns <- function(data) {
   invisible(data)
 }
 
+# ******************************************************************************
+## 02.03 Icon Column Validation ------------------------------------------------
+# ******************************************************************************
+
 #' Validate icon column exists and has valid values
 #' 
 #' @param data Data frame to check
@@ -487,9 +544,13 @@ validate_icon_column <- function(data, icon_var) {
   invisible(data)
 }
 
-# ==============================================================================
-# AESTHETIC MAPPING VALIDATORS
-# ==============================================================================
+# ******************************************************************************
+# 03 Aesthetic mapping validators ----------------------------------------------
+# ******************************************************************************
+
+# ******************************************************************************
+## 03.01 Icon Aesthetic --------------------------------------------------------
+# ******************************************************************************
 
 #' Validate icon aesthetic is mapped
 #' 
@@ -560,6 +621,10 @@ validate_icon_aesthetic <- function(mapping_list, inherited_mapping_list, data) 
   invisible(icon_var)
 }
 
+# ******************************************************************************
+## 03.02 Image Aesthetic (Not Allowed) -----------------------------------------
+# ******************************************************************************
+
 #' Validate that 'image' aesthetic is not used directly
 #' 
 #' @param mapping_list List of aesthetic mappings
@@ -580,6 +645,10 @@ validate_no_image_aesthetic <- function(mapping_list) {
   
   invisible(NULL)
 }
+
+# ******************************************************************************
+## 03.03 Alpha Parameter (Not Allowed) -----------------------------------------
+# ******************************************************************************
 
 #' Validate alpha is not used as a parameter
 #' 
@@ -612,6 +681,10 @@ validate_alpha_not_parameter <- function(dots) {
   invisible(NULL)
 }
 
+# ******************************************************************************
+## 03.04 Fill Aesthetic (Not Allowed) ------------------------------------------
+# ******************************************************************************
+
 #' Validate fill aesthetic is not used
 #' 
 #' @param combined_mapping Combined list of aesthetic mappings
@@ -640,6 +713,10 @@ validate_no_fill_aesthetic <- function(combined_mapping) {
   
   invisible(NULL)
 }
+
+# ******************************************************************************
+## 03.05 Stroke Width in aes() (Warning) ---------------------------------------
+# ******************************************************************************
 
 #' Validate stroke_width is not in aes()
 #' 
@@ -686,9 +763,13 @@ validate_stroke_width_not_aesthetic <- function(combined_mapping) {
   invisible(NULL)
 }
 
-# ==============================================================================
-# GROUPING & FACETING VALIDATORS
-# ==============================================================================
+# ******************************************************************************
+# 04 Grouping & faceting validators --------------------------------------------
+# ******************************************************************************
+
+# ******************************************************************************
+## 04.01 Raw Data Grouping -----------------------------------------------------
+# ******************************************************************************
 
 #' Validate grouping variable for raw data mode
 #' 
@@ -714,6 +795,8 @@ validate_raw_data_grouping <- function(data, mapping_list, inherited_mapping_lis
       NULL
     }
   }
+  
+  `%||%` <- function(x, y) if (is.null(x)) y else x
   
   group_var_m <- .get_mapped_var("group")
   col_var_m   <- .get_mapped_var("colour")
@@ -758,6 +841,10 @@ validate_raw_data_grouping <- function(data, mapping_list, inherited_mapping_lis
   invisible(src_var)
 }
 
+# ******************************************************************************
+## 04.02 Facet Column ----------------------------------------------------------
+# ******************************************************************************
+
 #' Validate facet column exists in data
 #' 
 #' @param data Data frame
@@ -786,6 +873,10 @@ validate_facet_column <- function(data, facet_col) {
   
   invisible(facet_col)
 }
+
+# ******************************************************************************
+## 04.03 Facet Consistency -----------------------------------------------------
+# ******************************************************************************
 
 #' Validate facet consistency between geom_pop and plot
 #' 
@@ -816,6 +907,10 @@ validate_facet_consistency <- function(facet_col, inferred_plot_facet, facet_exp
   
   invisible(NULL)
 }
+
+# ******************************************************************************
+## 04.04 Maximum Icons ---------------------------------------------------------
+# ******************************************************************************
 
 #' Validate maximum number of icons per group
 #' 
@@ -864,9 +959,13 @@ validate_max_icons <- function(data, has_facet, facet_col, max_icons = 1000L) {
   invisible(data)
 }
 
-# ==============================================================================
-# LAYER VALIDATORS
-# ==============================================================================
+# ******************************************************************************
+# 05 Layer validators ----------------------------------------------------------
+# ******************************************************************************
+
+# ******************************************************************************
+## 05.01 Single geom_pop Layer -------------------------------------------------
+# ******************************************************************************
 
 #' Validate only one geom_pop per plot
 #' 
@@ -915,9 +1014,13 @@ validate_single_geom_pop <- function(plot_obj) {
   invisible(NULL)
 }
 
-# ==============================================================================
-# WARNING VALIDATORS (SOFT)
-# ==============================================================================
+# ******************************************************************************
+# 06 Warning validators (soft) -------------------------------------------------
+# ******************************************************************************
+
+# ******************************************************************************
+## 06.01 Size Conflict ---------------------------------------------------------
+# ******************************************************************************
 
 #' Warn about size specified both in aes() and as parameter
 #' 
@@ -945,6 +1048,10 @@ warn_size_conflict <- function(combined_mapping, missing_size, size) {
   
   invisible(NULL)
 }
+
+# ******************************************************************************
+## 06.02 X/Y Aesthetics Ignored ------------------------------------------------
+# ******************************************************************************
 
 #' Warn if x or y aesthetics are mapped (they will be ignored)
 #' 
@@ -991,6 +1098,7 @@ warn_xy_aesthetics_ignored <- function(combined_mapping) {
       " " = "  {.code # Before:}",
       " " = "  {.code aes(icon = icon, group = sex, x = sex, y = sex)}",
       " " = "",
+      " " = "",
       " " = "  {.code # After:}",
       " " = "  {.code aes(icon = icon, group = sex)}",
       " " = "",
@@ -1003,6 +1111,9 @@ warn_xy_aesthetics_ignored <- function(combined_mapping) {
   invisible(NULL)
 }
 
+# ******************************************************************************
+## 06.03 Faceting Caution ------------------------------------------------------
+# ******************************************************************************
 
 #' Warn about faceting/grouping caution
 #' 
@@ -1077,6 +1188,9 @@ warn_faceting_caution <- function(data, facet_explicit, facet_col) {
   invisible(NULL)
 }
 
+# ******************************************************************************
+## 06.04 Multiple Icons Per Group ----------------------------------------------
+# ******************************************************************************
 
 #' Warn if multiple different icons exist per legend group
 #' 
@@ -1151,10 +1265,13 @@ warn_multiple_icons_per_group <- function(data, legend_var, icon_var) {
   invisible(NULL)
 }
 
+# ******************************************************************************
+# 07 Composite validators ------------------------------------------------------
+# ******************************************************************************
 
-# ==============================================================================
-# COMPOSITE VALIDATORS (CONVENIENCE WRAPPERS)
-# ==============================================================================
+# ******************************************************************************
+## 07.01 All Parameters --------------------------------------------------------
+# ******************************************************************************
 
 #' Run all parameter validations for geom_pop
 #' 
@@ -1183,6 +1300,10 @@ validate_all_parameters <- function(stroke_width, dpi, size, missing_size,
   invisible(NULL)
 }
 
+# ******************************************************************************
+## 07.02 All Data --------------------------------------------------------------
+# ******************************************************************************
+
 #' Run all data validations for geom_pop
 #' 
 #' @param data Data frame
@@ -1198,6 +1319,10 @@ validate_all_data <- function(data, icon_var) {
   
   invisible(data)
 }
+
+# ******************************************************************************
+## 07.03 All Aesthetics --------------------------------------------------------
+# ******************************************************************************
 
 #' Run all aesthetic mapping validations for geom_pop
 #' 
@@ -1219,6 +1344,10 @@ validate_all_aesthetics <- function(mapping_list, inherited_mapping_list, data) 
   invisible(icon_var)
 }
 
+# ******************************************************************************
+## 07.04 All Warnings ----------------------------------------------------------
+# ******************************************************************************
+
 #' Run all warning checks for geom_pop
 #' 
 #' @param combined_mapping Combined aesthetic mappings
@@ -1234,8 +1363,12 @@ warn_all_geom_pop <- function(combined_mapping, missing_size, size,
                               data, facet_explicit, facet_col) {
   
   warn_size_conflict(combined_mapping, missing_size, size)
-  warn_xy_aesthetics_ignored(combined_mapping)  # ADD THIS LINE
+  warn_xy_aesthetics_ignored(combined_mapping)
   warn_faceting_caution(data, facet_explicit, facet_col)
   
   invisible(NULL)
 }
+
+# ******************************************************************************
+# End of file ------------------------------------------------------------------
+# ******************************************************************************
