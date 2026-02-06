@@ -39,7 +39,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      seed = NULL,
                      sum_var = NULL,
                      facet = NULL,
-                     size = 3,
+                     size = 1,
                      dpi = 50,
                      legend_icons = TRUE,
                      stroke_width = NULL,
@@ -242,10 +242,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       )
     }
     
-    data$icon_size <- data[[size_var]] * 0.0075
+    data$icon_size <- data[[size_var]] * 0.03
     mapping_list[["size"]] <- NULL
   } else {
-    data$icon_size <- size * 0.0075
+    data$icon_size <- size * 0.03
   }
   
   # ==============================================================================

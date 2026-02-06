@@ -26,7 +26,7 @@
 geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             position = "identity", na.rm = FALSE,
                             inherit.aes = TRUE, icon = NULL,
-                            size = 3, dpi = 50, legend_icons = TRUE, ...) {
+                            size = 1, dpi = 50, legend_icons = TRUE, ...) {
   
   extra_args <- list(...)
   
@@ -165,10 +165,10 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       cli::cli_abort("Variable {.field {size_var}} used for size not found in the dataset.")
     }
     
-    data$icon_size <- data[[size_var]] * 0.0075
+    data$icon_size <- data[[size_var]] * 0.03
     mapping_list[["size"]] <- NULL
   } else {
-    data$icon_size <- size * 0.0075
+    data$icon_size <- size * 0.03
   }
   
   # ==============================================================================
