@@ -2,6 +2,47 @@
 
 `ggpop` is an R package built on top of `ggplot2` that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users easily visualize population data using proportional, customizable icons arranged in intuitive, circular layouts. The package also includes functionality for adding clear, icon-enhanced captions, which makes charts easier to understand and visually attractive. Designed primarily for visual storytelling, `ggpop` helps users communicate complex population statistics in a straightforward and appealing manner.
 
+# ggpop 1.6.1
+
+This release of `ggpop` introduces a set of targeted updates addressing multiple reported issues related to icon rendering, size handling, validation logic, and internal refactoring. The changes improve robustness, consistency, and maintainability while preserving expected user-facing behavior.
+
+## Bug Fixes
+
+- Fixed icon column mapping in `geom_pop` and `geom_icon_point`, ensuring users can map icons from any custom column name without rendering errors or unexpected behavior (#255).
+- Fixed aspect ratio preservation in legend icon rendering, ensuring icons scale intelligently within the legend box while maintaining their proportions (#254).
+
+## Improvements
+
+- Refactored `process_data` function with comprehensive input validation, enhanced error handling, and improved calculation of proportions, including proper handling of `NA` values and filtering of invalid data (#243).
+- Enhanced legend icon sizing logic to automatically scale icons within the legend box while preserving aspect ratio, with wide icons filling horizontally and tall icons filling vertically (#253).
+- Improved error and warning message formatting throughout the package for better readability and consistency, including multi-line formatting and actionable guidance (#253).
+- Added comprehensive unit tests for `process_data` function covering various scenarios including hierarchical grouping, input validation, edge cases, and reproducibility (#242).
+- Improved code clarity and structure across multiple functions by refactoring argument formatting, removing unnecessary whitespace, and adding thematic sections with comments (#253).
+- Enhanced cross-layer validation by moving legend icon consistency checks to the plot-add hook, ensuring all layers are considered when detecting mixed `legend_icons` settings (#258).
+
+## New Features
+
+- Added new `ggplot_add.ggpop_icon_point_layer` method to handle addition of icon point layers with consistency checks for legend icon settings and clear error messages (#258).
+
+## Breaking Changes
+
+- Changed default `size` parameter from `3` to `1` in `geom_icon_point` and `geom_pop` to align with new icon scaling logic. This may affect existing plots relying on the previous default value (#254).
+
+## Issues Resolved in v1.6.1
+
+Issues are listed in chronological merge order.
+
+- #243
+- #242
+- #254
+- #255
+- #258
+- #253
+
+## Version
+
+- #236
+
 # ggpop 1.6.0
 
 This release of `ggpop` introduces significant enhancements including a new geom function for flexible data plotting, improved DPI handling, new customization options for Font Awesome icons, and multiple bug fixes to enhance stability and user experience.
