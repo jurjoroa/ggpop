@@ -58,7 +58,8 @@ ggplot_add.ggpop_geom_pop <- function(object, plot, object_name, ...) {
 
 
 #' @export
-ggplot_add.ggpop_icon_point_layer <- function(object, plot, object_name) {
+#' @importFrom ggplot2 ggplot_add
+ggplot_add.ggpop_icon_point_layer <- function(object, plot, object_name, ...) {
   plot$layers <- append(plot$layers, list(object))
   
   vals <- vapply(plot$layers, function(l) {

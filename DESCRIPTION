@@ -43,7 +43,9 @@ Imports:
     purrr,
     ggtext,
     fontawesome,
-    rsvg
+    rsvg,
+    cli,
+    data.table
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
 URL: https://jurjoroa.github.io/ggpop/
