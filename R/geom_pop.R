@@ -177,6 +177,20 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   validate_icon_column(data, icon_var)
   
   # ==============================================================================
+  # FIX: RENAME icon column to "icon" for consistency in rendering pipeline
+  # This ensures that aes(icon = icon_2) or aes(icon = my_icons) works correctly
+  # ==============================================================================
+  
+  if (!is.null(icon_var) && icon_var != "icon") {
+    data$icon <- data[[icon_var]]
+  }
+  
+  # Now ensure the mapping uses "icon" as the aesthetic name
+  if (!"icon" %in% names(mapping_list)) {
+    mapping_list[["icon"]] <- as.name("icon")
+  }
+  
+  # ==============================================================================
   # DATA PREPARATION: Mode detection and type assignment
   # ==============================================================================
   
@@ -223,10 +237,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # ==============================================================================
   # SIZE HANDLING
   # ==============================================================================
-  
-  if (!"icon" %in% names(mapping_list)) {
-    mapping_list[["icon"]] <- as.name("icon")
-  }
   
   # Handle size aesthetic vs parameter
   if ("size" %in% names(combined_mapping)) {
@@ -547,8 +557,12 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (is.null(legend_var)) legend_var <- .get_mapped_var2("group")
   if (is.null(legend_var) || !legend_var %in% names(df_final)) legend_var <- "type"
   
+  # ==============================================================================
+  # WARNING: Multiple icons per legend group
+  # FIX: In df_final, the icon column is ALWAYS named "icon" (standardized)
+  # ==============================================================================
   
-  warn_multiple_icons_per_group(df_final, legend_var, icon_var)
+  warn_multiple_icons_per_group(df_final, legend_var, "icon")
   
   
   icon_by_legend <- df_final %>%
