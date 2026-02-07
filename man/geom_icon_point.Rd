@@ -12,7 +12,7 @@ geom_icon_point(
   na.rm = FALSE,
   inherit.aes = TRUE,
   icon = NULL,
-  size = 3,
+  size = 1,
   dpi = 50,
   legend_icons = TRUE,
   ...
@@ -72,7 +72,7 @@ rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
-\item{icon}{Default Font Awesome icon (default: "circle").}
+\item{icon}{Default Font Awesome icon (default: NULL).}
 
 \item{size}{Default icon size (default: 3).}
 

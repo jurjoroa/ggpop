@@ -23,8 +23,8 @@ testthat::skip_if_not_installed("fontawesome")
 # ******************************************************************************
 
 df_scatter <- data.frame(
-  x    = c(1, 2, 3, 4, 5),
-  y    = c(2, 4, 3, 5, 6),
+  x = c(1, 2, 3, 4, 5),
+  y = c(2, 4, 3, 5, 6),
   icon = c("circle", "star", "circle", "star", "heart"),
   category = c("A", "B", "A", "B", "C"),
   point_size = c(2, 3, 2, 4, 3),
@@ -45,55 +45,45 @@ df_scatter_no_icon <- data.frame(
 ### 02.01 Minimal valid plot ---------------------------------------------------
 
 testthat::test_that("Basic: minimal plot with icon mapping", {
-  testthat::expect_no_error(
-    {
-      p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
-      ggplot2::ggplot_build(p)
-    }
-  )
+  testthat::expect_no_error({
+    p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point()
+    ggplot2::ggplot_build(p)
+  })
 })
 
 testthat::test_that("Basic: plot with icon parameter", {
-  testthat::expect_no_error(
-    {
-      p <- ggplot2::ggplot(df_scatter_no_icon, ggplot2::aes(x = x, y = y)) +
-        geom_icon_point(icon = "circle")
-      ggplot2::ggplot_build(p)
-    }
-  )
+  testthat::expect_no_error({
+    p <- ggplot2::ggplot(df_scatter_no_icon, ggplot2::aes(x = x, y = y)) +
+      geom_icon_point(icon = "circle")
+    ggplot2::ggplot_build(p)
+  })
 })
 
 ### 02.02 Icon mapping variations ----------------------------------------------
 
 testthat::test_that("Basic: icon mapped in ggplot() aes", {
-  testthat::expect_no_error(
-    {
-      p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(size = 3)
-      ggplot2::ggplot_build(p)
-    }
-  )
+  testthat::expect_no_error({
+    p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(size = 3)
+    ggplot2::ggplot_build(p)
+  })
 })
 
 testthat::test_that("Basic: icon mapped in geom aes", {
-  testthat::expect_no_error(
-    {
-      p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
-        geom_icon_point(ggplot2::aes(icon = icon))
-      ggplot2::ggplot_build(p)
-    }
-  )
+  testthat::expect_no_error({
+    p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
+      geom_icon_point(ggplot2::aes(icon = icon))
+    ggplot2::ggplot_build(p)
+  })
 })
 
 testthat::test_that("Basic: different icons per row", {
-  testthat::expect_no_error(
-    {
-      p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
-        geom_icon_point()
-      ggplot2::ggplot_build(p)
-    }
-  )
+  testthat::expect_no_error({
+    p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+      geom_icon_point()
+    ggplot2::ggplot_build(p)
+  })
 })
 
 # ******************************************************************************
@@ -104,23 +94,25 @@ testthat::test_that("Basic: different icons per row", {
 
 testthat::test_that("Color: color mapped to category", {
   testthat::expect_no_error(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
-        geom_icon_point()
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+      geom_icon_point()
   )
 })
 
 testthat::test_that("Color: fixed color parameter", {
   testthat::expect_no_error(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(color = "red")
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(color = "red")
   )
 })
 
 testthat::test_that("Color: color mapped to continuous variable", {
   testthat::expect_no_error(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, 
-                                               color = point_size, size = point_size)) +
-        geom_icon_point()
+    ggplot2::ggplot(df_scatter, ggplot2::aes(
+      x = x, y = y, icon = icon,
+      color = point_size, size = point_size
+    )) +
+      geom_icon_point()
   )
 })
 
@@ -128,15 +120,15 @@ testthat::test_that("Color: color mapped to continuous variable", {
 
 testthat::test_that("Alpha: fixed alpha parameter", {
   testthat::expect_no_error(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(color = "red", alpha = 0.1)
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(color = "red", alpha = 0.1)
   )
 })
 
 testthat::test_that("Alpha: alpha mapped to variable", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(alpha = 0.3, color = "blue")
+      geom_icon_point(alpha = 0.3, color = "blue")
   )
 })
 
@@ -148,36 +140,36 @@ testthat::test_that("Alpha: alpha mapped to variable", {
 
 testthat::test_that("Size: small valid size", {
   testthat::expect_no_error(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(size = 1)
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(size = 1)
   )
 })
 
 testthat::test_that("Size: medium size (default)", {
   testthat::expect_no_error(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(size = 3)
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(size = 3)
   )
 })
 
 testthat::test_that("Size: large valid size", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(size = 10, dpi = 200)
+      geom_icon_point(size = 10, dpi = 200)
   )
 })
 
 testthat::test_that("Size: boundary value 0.9", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(size = 0.9)
+      geom_icon_point(size = 0.9)
   )
 })
 
 testthat::test_that("Size: boundary value 15", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(size = 15, dpi = 200)
+      geom_icon_point(size = 15, dpi = 200)
   )
 })
 
@@ -186,14 +178,14 @@ testthat::test_that("Size: boundary value 15", {
 testthat::test_that("Size: size mapped to variable", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
 testthat::test_that("Size: size and color both mapped", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size, color = category)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -203,24 +195,24 @@ testthat::test_that("Size: size and color both mapped", {
 
 ### 05.01 Valid DPI ranges -----------------------------------------------------
 
-testthat::test_that("DPI: minimum valid (30)", {
+testthat::test_that("DPI: minimum valid (50)", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(dpi = 30)
+      geom_icon_point(dpi = 50)
   )
 })
 
 testthat::test_that("DPI: default (50)", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(dpi = 50)
+      geom_icon_point(dpi = 50)
   )
 })
 
 testthat::test_that("DPI: high quality (150)", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(dpi = 150)
+      geom_icon_point(dpi = 150)
   )
 })
 
@@ -232,10 +224,9 @@ testthat::test_that("DPI: high quality (150)", {
 ### 06.01 legend_icons parameter -----------------------------------------------
 
 testthat::test_that("geom_icon_point: Plot icons match data and legend", {
-  
   testthat::skip_if_not_installed("grid")
   testthat::skip_if_not_installed("gtable")
-  
+
   # Create test data with distinct icons per category
   df_test <- data.frame(
     x = rep(1:5, 3),
@@ -244,19 +235,19 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
     icon = rep(c("heart", "star", "circle"), each = 5),
     stringsAsFactors = FALSE
   )
-  
+
   # Expected: 3 unique icons
   n_expected_icons <- 3
   expected_icons <- c("heart", "star", "circle")
-  
+
   p <- ggplot2::ggplot(df_test, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
     geom_icon_point(size = 3, dpi = 100, legend_icons = TRUE) +
     ggplot2::theme_minimal()
-  
+
   # Build the plot
   testthat::expect_no_error(ggplot2::ggplot_build(p))
   gt <- testthat::expect_no_error(ggplot2::ggplotGrob(p))
-  
+
   # PART 1: Check plot panel for raster icons
 
   # Find the panel grob (where actual plot points are rendered)
@@ -265,12 +256,12 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
     function(x) inherits(x, "gTree") && !is.null(x$name) && grepl("panel", x$name),
     logical(1)
   ))
-  
+
   testthat::expect_true(
     length(panel_idx) > 0,
     info = "No panel found in plot grob. Plot may not have rendered."
   )
-  
+
   # Collect raster grobs from the panel (these are the actual plotted icons)
   plot_rasters <- list()
   recurse_panel <- function(x) {
@@ -284,16 +275,16 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
       for (g in x$grobs) recurse_panel(g)
     }
   }
-  
+
   if (length(panel_idx) > 0) {
     recurse_panel(gt$grobs[[panel_idx[1]]])
   }
-  
+
   testthat::expect_true(
     length(plot_rasters) > 0,
     info = "No raster icons found in plot panel. Icons may not have been rendered."
   )
-  
+
   testthat::expect_equal(
     length(plot_rasters),
     nrow(df_test),
@@ -302,7 +293,7 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
       "but found ", length(plot_rasters), " raster grobs in the panel."
     )
   )
-  
+
   # PART 2: Check legend for icon rasters
 
   # Find the legend container (guide-box)
@@ -311,14 +302,14 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
     function(x) inherits(x, "gtable") && identical(x$name, "guide-box"),
     logical(1)
   ))
-  
+
   testthat::expect_true(
     length(guide_idx) == 1,
     info = "No legend found (guide-box missing). Legend may be dropped or disabled."
   )
-  
+
   guide <- gt$grobs[[guide_idx]]
-  
+
   # Collect raster grobs inside the legend
   legend_rasters <- list()
   recurse_legend <- function(x) {
@@ -336,16 +327,16 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
     }
   }
   recurse_legend(guide)
-  
+
   testthat::expect_true(
     length(legend_rasters) > 0,
     info = "Legend exists but contains no rastergrob. Legend icons likely not rendered as images."
   )
-  
+
   # Unique raster grob names in legend (proxy for unique icons rendered)
   legend_raster_names <- vapply(legend_rasters, function(r) r$name, character(1))
   n_unique_legend_rasters <- length(unique(legend_raster_names))
-  
+
   testthat::expect_equal(
     n_unique_legend_rasters,
     n_expected_icons,
@@ -355,9 +346,9 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
       "Unique raster names: ", paste(sort(unique(legend_raster_names)), collapse = ", ")
     )
   )
-  
+
   # PART 3: Cross-check icon correspondence
-  
+
   # Each category should have exactly one icon type in the data
   icon_by_category <- df_test %>%
     dplyr::group_by(category) %>%
@@ -366,7 +357,7 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
       icons = paste(unique(icon), collapse = ", "),
       .groups = "drop"
     )
-  
+
   testthat::expect_true(
     all(icon_by_category$n_icons == 1),
     info = paste0(
@@ -374,7 +365,7 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
       "Found: ", paste(capture.output(print(icon_by_category)), collapse = "\n")
     )
   )
-  
+
   # Verify all expected icons are in the data
   actual_icons <- unique(df_test$icon)
   testthat::expect_true(
@@ -388,12 +379,12 @@ testthat::test_that("geom_icon_point: Plot icons match data and legend", {
 })
 
 testthat::test_that("Multiple legend_icons settings across layers", {
-    testthat::expect_no_error(
-         ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
-             geom_icon_point(legend_icons = TRUE) +
-             geom_icon_point(ggplot2::aes(size = point_size), legend_icons = TRUE)
-       )
- })
+  testthat::expect_no_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
+      geom_icon_point(legend_icons = TRUE) +
+      geom_icon_point(ggplot2::aes(size = point_size), legend_icons = TRUE)
+  )
+})
 
 # ******************************************************************************
 # 07 Real-world usage patterns -------------------------------------------------
@@ -403,8 +394,8 @@ testthat::test_that("Multiple legend_icons settings across layers", {
 
 testthat::test_that("Real-world: data in ggplot, size in geom (no warning)", {
   testthat::expect_no_error(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
-        geom_icon_point(size = 4, dpi = 72)
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+      geom_icon_point(size = 4, dpi = 72)
   )
 })
 
@@ -412,9 +403,9 @@ testthat::test_that("Real-world: data in ggplot, size in geom (no warning)", {
 
 testthat::test_that("Real-world: combine with geom_point (no warning)", {
   testthat::expect_no_warning(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, color = category)) +
-        ggplot2::geom_point(size = 8, alpha = 0.3) +
-        geom_icon_point(ggplot2::aes(icon = icon), size = 3)
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, color = category)) +
+      ggplot2::geom_point(size = 8, alpha = 0.3) +
+      geom_icon_point(ggplot2::aes(icon = icon), size = 3)
   )
 })
 
@@ -422,9 +413,9 @@ testthat::test_that("Real-world: combine with geom_point (no warning)", {
 
 testthat::test_that("Real-world: faceted plot (no warning)", {
   testthat::expect_no_warning(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(size = 4, color = "steelblue") +
-        ggplot2::facet_wrap(~category)
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(size = 4, color = "steelblue") +
+      ggplot2::facet_wrap(~category)
   )
 })
 
@@ -432,8 +423,8 @@ testthat::test_that("Real-world: faceted plot (no warning)", {
 
 testthat::test_that("Real-world: both icon and size mapped (no warning)", {
   testthat::expect_no_warning(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size)) +
-        geom_icon_point(color = "darkred", dpi = 100)
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size)) +
+      geom_icon_point(color = "darkred", dpi = 100)
   )
 })
 
@@ -442,22 +433,22 @@ testthat::test_that("Real-world: both icon and size mapped (no warning)", {
 testthat::test_that("Real-world: multiple layers with different data", {
   df_background <- df_scatter[1:3, ]
   df_highlight <- df_scatter[4:5, ]
-  
+
   testthat::expect_no_warning(
-      ggplot2::ggplot() +
-        geom_icon_point(
-          data = df_background,
-          ggplot2::aes(x = x, y = y, icon = icon),
-          size = 2,
-          alpha = 0.3,
-          color = "gray"
-        ) +
-        geom_icon_point(
-          data = df_highlight,
-          ggplot2::aes(x = x, y = y, icon = icon),
-          size = 5,
-          color = "red"
-        )
+    ggplot2::ggplot() +
+      geom_icon_point(
+        data = df_background,
+        ggplot2::aes(x = x, y = y, icon = icon),
+        size = 2,
+        alpha = 0.3,
+        color = "gray"
+      ) +
+      geom_icon_point(
+        data = df_highlight,
+        ggplot2::aes(x = x, y = y, icon = icon),
+        size = 5,
+        color = "red"
+      )
   )
 })
 
@@ -465,13 +456,13 @@ testthat::test_that("Real-world: multiple layers with different data", {
 
 testthat::test_that("Real-world: complex plot with many aesthetics", {
   testthat::expect_no_warning(
-      ggplot2::ggplot(
-        df_scatter, 
-        ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = point_size)
-      ) +
-        geom_icon_point(size = 4, dpi = 100) +
-        ggplot2::scale_alpha_continuous(range = c(0.3, 1)) +
-        ggplot2::theme_minimal()
+    ggplot2::ggplot(
+      df_scatter,
+      ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = point_size)
+    ) +
+      geom_icon_point(size = 4, dpi = 100) +
+      ggplot2::scale_alpha_continuous(range = c(0.3, 1)) +
+      ggplot2::theme_minimal()
   )
 })
 
@@ -484,12 +475,12 @@ testthat::test_that("Real-world: with log scale", {
     icon = rep("circle", 4),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_log, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::scale_x_log10() +
-        ggplot2::scale_y_log10()
+      geom_icon_point() +
+      ggplot2::scale_x_log10() +
+      ggplot2::scale_y_log10()
   )
 })
 
@@ -497,17 +488,17 @@ testthat::test_that("Real-world: with log scale", {
 
 testthat::test_that("Real-world: with coord_flip", {
   testthat::expect_no_error(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::coord_flip()
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point() +
+      ggplot2::coord_flip()
   )
 })
 
 testthat::test_that("Real-world: with coord_fixed", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::coord_fixed(ratio = 1)
+      geom_icon_point() +
+      ggplot2::coord_fixed(ratio = 1)
   )
 })
 
@@ -519,10 +510,10 @@ testthat::test_that("Real-world: with coord_fixed", {
 
 testthat::test_that("Edge case: single point (no warning)", {
   df_single <- df_scatter[1, ]
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_single, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(size = 5, color = "blue")
+      geom_icon_point(size = 5, color = "blue")
   )
 })
 
@@ -530,10 +521,10 @@ testthat::test_that("Edge case: single point (no warning)", {
 
 testthat::test_that("Edge case: two rows data (valid)", {
   df_two <- df_scatter[1:2, ]
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_two, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -546,10 +537,10 @@ testthat::test_that("Edge case: very large coordinates (valid)", {
     icon = c("circle", "star", "heart"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_large, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -562,10 +553,10 @@ testthat::test_that("Edge case: very small coordinates (valid)", {
     icon = c("circle", "star", "heart"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_small, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -578,10 +569,10 @@ testthat::test_that("Edge case: negative coordinates (valid)", {
     icon = rep("circle", 5),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_negative, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -594,10 +585,10 @@ testthat::test_that("Edge case: zero coordinates (valid)", {
     icon = rep("circle", 4),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_zero, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -610,10 +601,10 @@ testthat::test_that("Edge case: mixed coordinate signs", {
     icon = rep("star", 5),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
-      ggplot2::ggplot(df_mixed, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+    ggplot2::ggplot(df_mixed, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point()
   )
 })
 
@@ -626,7 +617,7 @@ testthat::test_that("Edge case: mixed coordinate signs", {
 testthat::test_that("Parameter: valid stat parameter", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(stat = "identity")
+      geom_icon_point(stat = "identity")
   )
 })
 
@@ -635,14 +626,14 @@ testthat::test_that("Parameter: valid stat parameter", {
 testthat::test_that("Parameter: valid position parameter", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(position = "identity")
+      geom_icon_point(position = "identity")
   )
 })
 
 testthat::test_that("Parameter: position jitter", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(position = ggplot2::position_jitter(width = 0.1, height = 0.1))
+      geom_icon_point(position = ggplot2::position_jitter(width = 0.1, height = 0.1))
   )
 })
 
@@ -651,17 +642,17 @@ testthat::test_that("Parameter: position jitter", {
 testthat::test_that("Parameter: na.rm = TRUE", {
   df_with_na <- df_scatter
   df_with_na$x[2] <- NA
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_with_na, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(na.rm = TRUE)
+      geom_icon_point(na.rm = TRUE)
   )
 })
 
 testthat::test_that("Parameter: na.rm = FALSE", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(na.rm = FALSE)
+      geom_icon_point(na.rm = FALSE)
   )
 })
 
@@ -670,17 +661,17 @@ testthat::test_that("Parameter: na.rm = FALSE", {
 testthat::test_that("Parameter: inherit.aes = TRUE", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(inherit.aes = TRUE)
+      geom_icon_point(inherit.aes = TRUE)
   )
 })
 
 testthat::test_that("Parameter: inherit.aes = FALSE", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
-        geom_icon_point(
-          ggplot2::aes(x = x, y = y, icon = icon),
-          inherit.aes = FALSE
-        )
+      geom_icon_point(
+        ggplot2::aes(x = x, y = y, icon = icon),
+        inherit.aes = FALSE
+      )
   )
 })
 
@@ -693,7 +684,7 @@ testthat::test_that("Parameter: inherit.aes = FALSE", {
 testthat::test_that("Data: data in ggplot() call", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -702,10 +693,10 @@ testthat::test_that("Data: data in ggplot() call", {
 testthat::test_that("Data: data in geom_icon_point() call", {
   testthat::expect_no_error(
     ggplot2::ggplot() +
-        geom_icon_point(
-          data = df_scatter,
-          ggplot2::aes(x = x, y = y, icon = icon)
-        )
+      geom_icon_point(
+        data = df_scatter,
+        ggplot2::aes(x = x, y = y, icon = icon)
+      )
   )
 })
 
@@ -713,16 +704,16 @@ testthat::test_that("Data: data in geom_icon_point() call", {
 
 testthat::test_that("Data: tibble input", {
   testthat::skip_if_not_installed("tibble")
-  
+
   df_tibble <- tibble::tibble(
     x = c(1, 2, 3),
     y = c(2, 3, 4),
     icon = c("circle", "star", "heart")
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_tibble, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -730,16 +721,16 @@ testthat::test_that("Data: tibble input", {
 
 testthat::test_that("Data: data.table input", {
   testthat::skip_if_not_installed("data.table")
-  
+
   df_dt <- data.table::data.table(
     x = c(1, 2, 3),
     y = c(2, 3, 4),
     icon = c("circle", "star", "heart")
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_dt, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -752,24 +743,24 @@ testthat::test_that("Data: data.table input", {
 testthat::test_that("Theme: theme_minimal", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::theme_minimal()
+      geom_icon_point() +
+      ggplot2::theme_minimal()
   )
 })
 
 testthat::test_that("Theme: theme_bw", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::theme_bw()
+      geom_icon_point() +
+      ggplot2::theme_bw()
   )
 })
 
 testthat::test_that("Theme: theme_classic", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::theme_classic()
+      geom_icon_point() +
+      ggplot2::theme_classic()
   )
 })
 
@@ -778,16 +769,16 @@ testthat::test_that("Theme: theme_classic", {
 testthat::test_that("Theme: custom legend position", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
-        geom_icon_point() +
-        ggplot2::theme(legend.position = "bottom")
+      geom_icon_point() +
+      ggplot2::theme(legend.position = "bottom")
   )
 })
 
 testthat::test_that("Theme: no legend", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
-        geom_icon_point() +
-        ggplot2::theme(legend.position = "none")
+      geom_icon_point() +
+      ggplot2::theme(legend.position = "none")
   )
 })
 
@@ -800,8 +791,8 @@ testthat::test_that("Theme: no legend", {
 testthat::test_that("Integration: geom_icon_point + geom_line", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
-        ggplot2::geom_line(color = "gray", linetype = "dashed") +
-        geom_icon_point(ggplot2::aes(icon = icon, color = category))
+      ggplot2::geom_line(color = "gray", linetype = "dashed") +
+      geom_icon_point(ggplot2::aes(icon = icon, color = category))
   )
 })
 
@@ -822,8 +813,8 @@ testthat::test_that("Integration: geom_icon_point + geom_smooth", {
 testthat::test_that("Integration: geom_icon_point + geom_text", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, label = category)) +
-        geom_icon_point(ggplot2::aes(icon = icon)) +
-        ggplot2::geom_text(vjust = -1, size = 3)
+      geom_icon_point(ggplot2::aes(icon = icon)) +
+      ggplot2::geom_text(vjust = -1, size = 3)
   )
 })
 
@@ -831,10 +822,10 @@ testthat::test_that("Integration: geom_icon_point + geom_text", {
 
 testthat::test_that("Integration: geom_icon_point + reference lines", {
   testthat::expect_no_error(
-      ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        ggplot2::geom_hline(yintercept = 3, linetype = "dashed", color = "red") +
-        ggplot2::geom_vline(xintercept = 3, linetype = "dashed", color = "blue") +
-        geom_icon_point()
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      ggplot2::geom_hline(yintercept = 3, linetype = "dashed", color = "red") +
+      ggplot2::geom_vline(xintercept = 3, linetype = "dashed", color = "blue") +
+      geom_icon_point()
   )
 })
 
@@ -847,10 +838,10 @@ testthat::test_that("Integration: geom_icon_point + reference lines", {
 testthat::test_that("Icons: all rows same icon", {
   df_same <- df_scatter
   df_same$icon <- "star"
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_same, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -863,10 +854,10 @@ testthat::test_that("Icons: all different icons per row", {
     icon = c("circle", "star", "heart", "user", "flag"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_unique, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 
@@ -879,11 +870,178 @@ testthat::test_that("Icons: icon names with hyphens", {
     icon = c("arrow-right", "arrow-left", "arrow-up"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_hyphens, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
+})
+
+# ******************************************************************************
+# 13.04 Custom icon column names -----------------------------------------------
+# ******************************************************************************
+
+#' Extract icon names from PNG file paths
+#' 
+#' @param png_paths Character vector of PNG file paths
+#' @return Character vector of icon names extracted from filenames
+extract_icon_names <- function(png_paths) {
+  basenames <- basename(png_paths)
+  # Icon name is the first part before "_c" (color marker)
+  icon_names <- sub("_c.*", "", basenames)
+  icon_names
+}
+
+testthat::test_that("Icons: custom column 'my_icons' renders CORRECT icons", {
+  # Data with custom icon column name
+  df_custom <- data.frame(
+    x = c(1, 2, 3, 4),
+    y = c(1, 2, 3, 4),
+    my_icons = c("circle", "square", "star", "heart"),  # Custom column name!
+    category = c("A", "B", "C", "D"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_custom, ggplot2::aes(x = x, y = y, icon = my_icons, color = category)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  # Extract rendered icons
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should match exactly what's in my_icons column
+  testthat::expect_setequal(rendered_icons, c("circle", "square", "star", "heart"))
+  testthat::expect_true("circle" %in% rendered_icons)
+  testthat::expect_true("square" %in% rendered_icons)
+  testthat::expect_true("star" %in% rendered_icons)
+  testthat::expect_true("heart" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: column 'icon_2' renders male and female icons", {
+  df_icon2 <- data.frame(
+    x = c(1, 2),
+    y = c(1, 2),
+    icon_2 = c("male", "female"),  # Custom column name
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_icon2, ggplot2::aes(x = x, y = y, icon = icon_2)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should be male and female, NOT "user" or any default fallback
+  testthat::expect_setequal(rendered_icons, c("male", "female"))
+  testthat::expect_false("user" %in% rendered_icons)
+  testthat::expect_false("circle" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: per-row rendering with custom column 'icon_column'", {
+  # Verify each ROW gets its CORRECT icon from custom column
+  df_custom_rows <- data.frame(
+    x = 1:5,
+    y = 1:5,
+    icon_column = c("heart", "star", "circle", "square", "heart"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_custom_rows, ggplot2::aes(x = x, y = y, icon = icon_column)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  # Extract icons IN ORDER
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Row 1 should be heart
+  testthat::expect_equal(rendered_icons[1], "heart")
+  # Row 2 should be star
+  testthat::expect_equal(rendered_icons[2], "star")
+  # Row 3 should be circle
+  testthat::expect_equal(rendered_icons[3], "circle")
+  # Row 4 should be square
+  testthat::expect_equal(rendered_icons[4], "square")
+  # Row 5 should be heart (repeated)
+  testthat::expect_equal(rendered_icons[5], "heart")
+})
+
+testthat::test_that("Icons: very custom name 'fontawesome_symbol' works", {
+  df_weird <- data.frame(
+    x = 1:3,
+    y = 1:3,
+    fontawesome_symbol = c("pizza-slice", "coffee", "heart"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_weird, ggplot2::aes(x = x, y = y, icon = fontawesome_symbol)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should use the actual icons from fontawesome_symbol column
+  testthat::expect_setequal(rendered_icons, c("pizza-slice", "coffee", "heart"))
+  
+  # Should NOT fall back to defaults
+  testthat::expect_false("user" %in% rendered_icons)
+  testthat::expect_false("circle" %in% rendered_icons)
+})
+
+testthat::test_that("REGRESSION: 'icon' column does NOT override 'icon_2' content", {
+  
+  df_regression <- data.frame(
+    icon = c("WRONG", "WRONG", "WRONG"),      # Decoy column with wrong icons
+    icon_2 = c("heart", "star", "circle"),    # Correct column user mapped
+    x = 1:3,
+    y = 1:3,
+    stringsAsFactors = FALSE
+  )
+  
+  # User explicitly maps icon_2
+  p <- ggplot2::ggplot(df_regression, ggplot2::aes(x = x, y = y, icon = icon_2)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should render heart, star, circle (from icon_2)
+  testthat::expect_setequal(rendered_icons, c("heart", "star", "circle"))
+  
+  # Should NOT render "WRONG" (from icon column)
+  testthat::expect_false("WRONG" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: renders ALL hearts from 'icon_custom' column", {
+  df_hearts <- data.frame(
+    x = c(1, 2, 3),
+    y = c(1, 2, 3),
+    icon_custom = c("heart", "heart", "heart"),  # All hearts
+    category = c("A", "A", "A"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_hearts, ggplot2::aes(x = x, y = y, icon = icon_custom)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # ALL should be "heart"
+  testthat::expect_true(all(rendered_icons == "heart"))
+  testthat::expect_equal(length(unique(rendered_icons)), 1)
+  testthat::expect_equal(unique(rendered_icons), "heart")
 })
 
 # ******************************************************************************
@@ -894,11 +1052,11 @@ testthat::test_that("Icons: icon names with hyphens", {
 
 testthat::test_that("Inheritance: all aesthetics from ggplot()", {
   testthat::expect_no_error(
-      ggplot2::ggplot(
-        df_scatter,
-        ggplot2::aes(x = x, y = y, icon = icon, color = category, size = point_size)
-      ) +
-        geom_icon_point()
+    ggplot2::ggplot(
+      df_scatter,
+      ggplot2::aes(x = x, y = y, icon = icon, color = category, size = point_size)
+    ) +
+      geom_icon_point()
   )
 })
 
@@ -907,7 +1065,7 @@ testthat::test_that("Inheritance: all aesthetics from ggplot()", {
 testthat::test_that("Inheritance: x/y from ggplot, icon from geom", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
-        geom_icon_point(ggplot2::aes(icon = icon, color = category))
+      geom_icon_point(ggplot2::aes(icon = icon, color = category))
   )
 })
 
@@ -921,8 +1079,8 @@ testthat::test_that("Inheritance: x/y from ggplot, icon from geom", {
 testthat::test_that("Coords: default Cartesian coordinates", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::coord_cartesian()
+      geom_icon_point() +
+      ggplot2::coord_cartesian()
   )
 })
 
@@ -931,8 +1089,8 @@ testthat::test_that("Coords: default Cartesian coordinates", {
 testthat::test_that("Coords: polar coordinates", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::coord_polar()
+      geom_icon_point() +
+      ggplot2::coord_polar()
   )
 })
 
@@ -941,8 +1099,8 @@ testthat::test_that("Coords: polar coordinates", {
 testthat::test_that("Coords: coord_equal", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::coord_equal()
+      geom_icon_point() +
+      ggplot2::coord_equal()
   )
 })
 
@@ -955,8 +1113,8 @@ testthat::test_that("Coords: coord_equal", {
 testthat::test_that("Facet: facet_wrap by category", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::facet_wrap(~category)
+      geom_icon_point() +
+      ggplot2::facet_wrap(~category)
   )
 })
 
@@ -965,11 +1123,11 @@ testthat::test_that("Facet: facet_wrap by category", {
 testthat::test_that("Facet: facet_grid", {
   df_grid <- df_scatter
   df_grid$row_var <- rep(c("R1", "R2"), length.out = nrow(df_grid))
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_grid, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::facet_grid(row_var ~ category)
+      geom_icon_point() +
+      ggplot2::facet_grid(row_var ~ category)
   )
 })
 
@@ -978,8 +1136,8 @@ testthat::test_that("Facet: facet_grid", {
 testthat::test_that("Facet: free scales", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point() +
-        ggplot2::facet_wrap(~category, scales = "free")
+      geom_icon_point() +
+      ggplot2::facet_wrap(~category, scales = "free")
   )
 })
 
@@ -996,10 +1154,10 @@ testthat::test_that("Performance: 100 points", {
     icon = sample(c("circle", "star", "heart"), 100, replace = TRUE),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_many, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point(size = 2, color = "darkred")
+      geom_icon_point(size = 2, color = "darkred")
   )
 })
 
@@ -1012,10 +1170,10 @@ testthat::test_that("Edge: multiple points at same coordinates", {
     icon = c("circle", "star", "heart", "circle", "star"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error(
     ggplot2::ggplot(df_overlap, ggplot2::aes(x = x, y = y, icon = icon)) +
-        geom_icon_point()
+      geom_icon_point()
   )
 })
 

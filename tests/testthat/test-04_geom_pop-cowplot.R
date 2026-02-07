@@ -25,48 +25,47 @@ testthat::skip_if_not_installed("cowplot")
 # ******************************************************************************
 
 testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group panels)", {
-  
   # Panel 1: Arrivals hall (mix of passengers, crew, families)
   df_arrivals <- data.frame(
     stage = "1.- Arrivals Hall",
-    type  = c("Passengers", "Crew", "Families"),
-    n     = c(70, 10, 20),
-    icon  = c("person-walking-luggage", "user-tie", "people-group"),
+    type = c("Passengers", "Crew", "Families"),
+    n = c(70, 10, 20),
+    icon = c("person-walking-luggage", "user-tie", "people-group"),
     stringsAsFactors = FALSE
   )
-  
+
   # Panel 2: Check-in (economy vs business vs special assistance)
   df_checkin <- data.frame(
     stage = "2.- Check-in",
-    type  = c("Economy", "Business", "Assistance"),
-    n     = c(75, 15, 10),
-    icon  = c("ticket", "briefcase", "wheelchair"),
+    type = c("Economy", "Business", "Assistance"),
+    n = c(75, 15, 10),
+    icon = c("ticket", "briefcase", "wheelchair"),
     stringsAsFactors = FALSE
   )
-  
+
   # Panel 3: Security (clear vs standard vs secondary screening)
   df_security <- data.frame(
     stage = "3.- Security",
-    type  = c("Standard", "PreCheck", "Secondary"),
-    n     = c(65, 25, 10),
-    icon  = c("shield", "shield-halved", "triangle-exclamation"),
+    type = c("Standard", "PreCheck", "Secondary"),
+    n = c(65, 25, 10),
+    icon = c("shield", "shield-halved", "triangle-exclamation"),
     stringsAsFactors = FALSE
   )
-  
+
   # Panel 4: Gates (waiting vs shopping vs lounge)
   df_gates <- data.frame(
     stage = "4.- Gates",
-    type  = c("Waiting", "Shopping", "Lounge"),
-    n     = c(60, 25, 15),
-    icon  = c("clock", "bag-shopping", "couch"),
+    type = c("Waiting", "Shopping", "Lounge"),
+    n = c(60, 25, 15),
+    icon = c("clock", "bag-shopping", "couch"),
     stringsAsFactors = FALSE
   )
-  
+
   # Panel 5: Boarding (zone groups)
   df_boarding <- data.frame(
     stage = "5.- Boarding",
-    type  = c("Zone 1", "Zone 2", "Zone 3", "Zone 4"),
-    n     = c(10, 25, 35, 30),
+    type = c("Zone 1", "Zone 2", "Zone 3", "Zone 4"),
+    n = c(10, 25, 35, 30),
     # NOTE: use known FA icons for digits to avoid fontawesome lookup edge-cases
     icon = c(
       "user",
@@ -76,24 +75,24 @@ testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group pan
     ),
     stringsAsFactors = FALSE
   )
-  
+
   # Panel 6: Flight outcome (on-time vs delayed vs diverted)
   df_outcome <- data.frame(
     stage = "6.- Flight Outcome",
-    type  = c("On-time", "Delayed", "Diverted"),
-    n     = c(70, 25, 5),
-    icon  = c("plane", "clock-rotate-left", "route"),
+    type = c("On-time", "Delayed", "Diverted"),
+    n = c(70, 25, 5),
+    icon = c("plane", "clock-rotate-left", "route"),
     stringsAsFactors = FALSE
   )
-  
+
   df_story <- dplyr::bind_rows(
     df_arrivals, df_checkin, df_security, df_gates, df_boarding, df_outcome
   )
-  
+
   # Expand counts into "people" rows (raw mode)
   df_story <- df_story[rep(seq_len(nrow(df_story)), df_story$n), ]
   rownames(df_story) <- NULL
-  
+
   df_story$stage <- factor(
     df_story$stage,
     levels = c(
@@ -101,15 +100,15 @@ testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group pan
       "4.- Gates", "5.- Boarding", "6.- Flight Outcome"
     )
   )
-  
+
   # Consistent color mapping across panels (overall palette by type label)
   all_types <- unique(as.character(df_story$type))
   pal <- setNames(grDevices::hcl.colors(length(all_types), "Dark 3"), all_types)
-  
+
   # ---------------------------------------------------------------------------
   # Build panels (NO helper function): each panel is an explicit ggplot object
   # ---------------------------------------------------------------------------
-  
+
   df_s1 <- df_story[df_story$stage == "1.- Arrivals Hall", , drop = FALSE]
   p1 <- ggplot2::ggplot(df_s1) +
     geom_pop(
@@ -134,7 +133,7 @@ testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group pan
       plot.caption = ggplot2::element_text(hjust = 0.5),
       plot.margin = ggplot2::margin(5, 5, 5, 5)
     )
-  
+
   df_s2 <- df_story[df_story$stage == "2.- Check-in", , drop = FALSE]
   p2 <- ggplot2::ggplot(df_s2) +
     geom_pop(
@@ -159,7 +158,7 @@ testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group pan
       plot.caption = ggplot2::element_text(hjust = 0.5),
       plot.margin = ggplot2::margin(5, 5, 5, 5)
     )
-  
+
   df_s3 <- df_story[df_story$stage == "3.- Security", , drop = FALSE]
   p3 <- ggplot2::ggplot(df_s3) +
     geom_pop(
@@ -184,7 +183,7 @@ testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group pan
       plot.caption = ggplot2::element_text(hjust = 0.5),
       plot.margin = ggplot2::margin(5, 5, 5, 5)
     )
-  
+
   df_s4 <- df_story[df_story$stage == "4.- Gates", , drop = FALSE]
   p4 <- ggplot2::ggplot(df_s4) +
     geom_pop(
@@ -209,7 +208,7 @@ testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group pan
       plot.caption = ggplot2::element_text(hjust = 0.5),
       plot.margin = ggplot2::margin(5, 5, 5, 5)
     )
-  
+
   df_s5 <- df_story[df_story$stage == "5.- Boarding", , drop = FALSE]
   p5 <- ggplot2::ggplot(df_s5) +
     geom_pop(
@@ -234,7 +233,7 @@ testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group pan
       plot.caption = ggplot2::element_text(hjust = 0.5),
       plot.margin = ggplot2::margin(5, 5, 5, 5)
     )
-  
+
   df_s6 <- df_story[df_story$stage == "6.- Flight Outcome", , drop = FALSE]
   p6 <- ggplot2::ggplot(df_s6) +
     geom_pop(
@@ -259,33 +258,28 @@ testthat::test_that("geom_pop clean: cowplot airports narrative (multi-group pan
       plot.caption = ggplot2::element_text(hjust = 0.5),
       plot.margin = ggplot2::margin(5, 5, 5, 5)
     )
-  
+
   # ---------------------------------------------------------------------------
   # Compose story with cowplot and ensure it builds cleanly
   # ---------------------------------------------------------------------------
 
-    testthat::expect_no_error(
-      suppressWarnings(
-      {
-        g <- cowplot::plot_grid(
-          p1, p2, p3,
-          p4, p5, p6,
-          ncol  = 3,
-          align = "hv"
+  testthat::expect_no_error(
+    suppressWarnings({
+      g <- cowplot::plot_grid(
+        p1, p2, p3,
+        p4, p5, p6,
+        ncol  = 3,
+        align = "hv"
+      )
+
+      g2 <- cowplot::ggdraw(g) +
+        cowplot::draw_label(
+          "Airport Journey: a Multi-Group Population Story (geom_pop + cowplot)",
+          x = 0.5, y = 0.99,
+          hjust = 0.5, vjust = 1,
+          fontface = "bold",
+          size = 16
         )
-        
-        g2 <- cowplot::ggdraw(g) +
-          cowplot::draw_label(
-            "Airport Journey: a Multi-Group Population Story (geom_pop + cowplot)",
-            x = 0.5, y = 0.99,
-            hjust = 0.5, vjust = 1,
-            fontface = "bold",
-            size = 16
-          )
-      }
-    )
+    })
   )
-  
 })
-
-

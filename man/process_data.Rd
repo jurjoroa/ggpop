@@ -7,7 +7,7 @@
 process_data(
   data,
   high_group_var = NULL,
-  group_var = NULL,
+  group_var,
   sum_var = NULL,
   sample_size = 100
 )

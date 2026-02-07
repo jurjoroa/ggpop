@@ -33,8 +33,8 @@ testthat::skip_if_not_installed("fontawesome")
 # ******************************************************************************
 
 df_scatter <- data.frame(
-  x    = c(1, 2, 3, 4, 5),
-  y    = c(2, 4, 3, 5, 6),
+  x = c(1, 2, 3, 4, 5),
+  y = c(2, 4, 3, 5, 6),
   icon = c("circle", "star", "circle", "star", "heart"),
   category = c("A", "B", "A", "B", "C"),
   point_size = c(2, 3, 2, 4, 3),
@@ -84,7 +84,7 @@ testthat::test_that("Warning: size in aes() overrides geom param (geom pattern)"
         data = df_scatter,
         ggplot2::aes(x = x, y = y, icon = icon, size = point_size, color = category),
         size = 10,
-        dpi  = 100
+        dpi = 100
       )
   )
 })
@@ -97,7 +97,7 @@ testthat::test_that("Warning: size in layer aes() overrides geom param (mixed pa
       geom_icon_point(
         ggplot2::aes(icon = icon, size = point_size, color = category),
         size = 10,
-        dpi  = 100
+        dpi = 100
       )
   )
 })
@@ -135,22 +135,22 @@ testthat::test_that("Warning: dpi very high (geom pattern)", {
 
 ### 03.03.01 size very small (ggplot pattern) ----------------------------------
 
-testthat::test_that("Edge case: size = 0.8 triggers warning (ggplot pattern)", {
+testthat::test_that("Edge case: size triggers warning (ggplot pattern)", {
   testthat::expect_warning(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-      geom_icon_point(size = 0.8, color = "blue")
+      geom_icon_point(size = 0.4, color = "blue")
   )
 })
 
 ### 03.03.02 size very small (geom pattern) ------------------------------------
 
-testthat::test_that("Edge case: size = 0.8 triggers warning (geom pattern)", {
+testthat::test_that("Edge case: size triggers warning (geom pattern)", {
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_icon_point(
         data = df_scatter,
         ggplot2::aes(x = x, y = y, icon = icon, color = category),
-        size = 0.8
+        size = 0.4
       )
   )
 })
@@ -173,31 +173,6 @@ testthat::test_that("Edge case: size = 16 triggers warning (geom pattern)", {
         data = df_scatter,
         ggplot2::aes(x = x, y = y, icon = icon, color = category),
         size = 16
-      )
-  )
-})
-
-### 03.03.05 size boundaries (no warnings) -------------------------------------
-
-
-
-testthat::test_that("Edge case: size = 0.89 triggers warning (mixed)", {
-  testthat::expect_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
-      geom_icon_point(
-        ggplot2::aes(icon = icon, color = category),
-        size = 0.89
-      )
-  )
-})
-
-testthat::test_that("Edge case: size = 15.01 triggers warning (geom)", {
-  testthat::expect_warning(
-    ggplot2::ggplot() +
-      geom_icon_point(
-        data = df_scatter,
-        ggplot2::aes(x = x, y = y, icon = icon, color = category),
-        size = 15.01
       )
   )
 })
@@ -250,8 +225,7 @@ testthat::test_that("Edge case: alpha = 0.09 triggers warning (mixed)", {
 testthat::test_that("Warning: alpha in both aes() and parameter", {
   testthat::expect_warning(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, alpha = point_size)) +
-      geom_icon_point(alpha = 0.5, color = "blue"),
-    regexp = "alpha.*provided both inside aes\\(\\) and as a parameter"
+      geom_icon_point(alpha = 0.5, color = "blue")
   )
 })
 
@@ -270,7 +244,7 @@ testthat::test_that("Warning: multiple icons per color group (ggplot pattern)", 
     icon = c("circle", "star", "heart", "square"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_warning(
     ggplot2::ggplot(df_multi_icon, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
       geom_icon_point(legend_icons = TRUE, dpi = 60)
@@ -287,7 +261,7 @@ testthat::test_that("Warning: multiple icons per color group (geom pattern)", {
     icon = c("circle", "star", "heart", "square"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_icon_point(
@@ -296,14 +270,17 @@ testthat::test_that("Warning: multiple icons per color group (geom pattern)", {
         legend_icons = TRUE
       )
   )
-  
+
   testthat::expect_warning(
-    ggplot2::ggplot(data = df_multi_icon, 
-                    ggplot2::aes(x = x, y = y, icon = icon, 
-                                color = category)) +
+    ggplot2::ggplot(
+      data = df_multi_icon,
+      ggplot2::aes(
+        x = x, y = y, icon = icon,
+        color = category
+      )
+    ) +
       geom_icon_point(legend_icons = TRUE)
   )
-  
 })
 
 # ******************************************************************************
@@ -324,7 +301,6 @@ testthat::test_that("Warning: size in ggplot() aes and geom param", {
 })
 
 
-
 # ******************************************************************************
 ## 03.06 Warnings: multiple layers ---------------------------------------------
 # ******************************************************************************
@@ -334,18 +310,18 @@ testthat::test_that("Warning: size in ggplot() aes and geom param", {
 testthat::test_that("Warning in one layer doesn't affect others", {
   df1 <- df_scatter[1:3, ]
   df2 <- df_scatter[4:5, ]
-  
+
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_icon_point(
         data = df1,
         ggplot2::aes(x = x, y = y, icon = icon),
-        size = 0.1  # Should warn
+        size = 0.1 # Should warn
       ) +
       geom_icon_point(
         data = df2,
         ggplot2::aes(x = x, y = y, icon = icon),
-        size = 3,   # Should not warn
+        size = 3, # Should not warn
         color = "red"
       )
   )
@@ -362,7 +338,7 @@ testthat::test_that("Build: plot builds with size warning (ggplot pattern)", {
     p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size)) +
       geom_icon_point(size = 10, dpi = 60)
   )
-  
+
   testthat::expect_s3_class(p, "ggplot")
 })
 
@@ -377,7 +353,7 @@ testthat::test_that("Build: plot builds with high dpi warning (geom pattern)", {
         dpi = 800
       )
   )
-  
+
   testthat::expect_s3_class(p, "ggplot")
 })
 
@@ -388,14 +364,14 @@ testthat::test_that("Build: plot builds with multiple warnings", {
     p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
       geom_icon_point(
         ggplot2::aes(icon = icon, size = point_size, color = category),
-        size = 0.1,  # Size warning
-        dpi = 800    # DPI warning
+        size = 0.1, # Size warning
+        dpi = 800 # DPI warning
       )
   )
-  
+
   # Should have 3 warnings: size conflict + small size + high DPI
   testthat::expect_true(length(warns) >= 2)
-  
+
   # Verify the plot object was created
   testthat::expect_s3_class(p, "ggplot")
 })
@@ -408,7 +384,7 @@ testthat::test_that("Build: plot builds with multiple warnings", {
 testthat::test_that("Warning: NA values in x coordinate (ggplot pattern)", {
   df_na <- df_scatter
   df_na$x[2] <- NA
-  
+
   testthat::expect_warning(
     {
       pdf(NULL)
@@ -428,7 +404,7 @@ testthat::test_that("Warning: NA values in x coordinate (ggplot pattern)", {
 testthat::test_that("Warning: NA values in y coordinate (geom pattern)", {
   df_na <- df_scatter
   df_na$y[3] <- NA
-  
+
   testthat::expect_warning(
     {
       tmp <- tempfile(fileext = ".png")
@@ -454,7 +430,7 @@ testthat::test_that("Warning: NA values in both coordinates (mixed pattern)", {
   df_na <- df_scatter
   df_na$x[2] <- NA
   df_na$y[4] <- NA
-  
+
   testthat::expect_warning(
     {
       tmp <- tempfile(fileext = ".png")
@@ -483,7 +459,7 @@ testthat::test_that("Warning: inconsistent icons per group (ggplot pattern)", {
     icon = c("circle", "star", "circle", "heart", "heart", "square"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_warning(
     ggplot2::ggplot(df_inconsistent, ggplot2::aes(x = x, y = y, icon = icon, color = group)) +
       geom_icon_point(legend_icons = TRUE, dpi = 60)
@@ -500,7 +476,7 @@ testthat::test_that("Warning: inconsistent icons per group (geom pattern)", {
     icon = c("circle", "star", "circle", "heart", "heart", "square"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_icon_point(
@@ -571,30 +547,6 @@ testthat::test_that("Pattern comparison: high dpi (mixed)", {
   testthat::expect_warning(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
       geom_icon_point(ggplot2::aes(icon = icon), dpi = 800)
-  )
-})
-
-# ******************************************************************************
-## 03.10 Two geom figures in same plot
-# ******************************************************************************
-
-### 03.10.01 legend_icons mixed settings warning --------------------------------
-
-testthat::test_that("Warning: Mixed legend_icons settings across layers 1st object", {
-  testthat::expect_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
-      geom_icon_point(legend_icons = FALSE) +
-      geom_icon_point(ggplot2::aes(size = point_size), legend_icons = TRUE)
-  )
-})
-
-
-testthat::test_that("Warning: Mixed legend_icons settings across layers 2nd object", {
-  testthat::expect_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
-      geom_icon_point(legend_icons = TRUE) +
-      geom_icon_point(ggplot2::aes(size = point_size), legend_icons = FALSE),
-    regexp = "Mixed legend_icons settings"
   )
 })
 

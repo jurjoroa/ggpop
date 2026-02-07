@@ -44,7 +44,7 @@ install.packages("ggpop")
 ```
 
 Development version of the package can be installed from
-[Github](https://github.com/jurjoroa/ggpop) with:
+[GitHub](https://github.com/jurjoroa/ggpop) with:
 
 ``` r
 install.packages("remotes")
@@ -165,7 +165,7 @@ ggplot() +
 ![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png)
 
 
-The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. The object work as a `geom_point()` figure plotted by determined x and y coordinates. We can also group and color the icons by the **type** variable or the varaible that we are grouping for.
+The `geom_pop()` function creates a population chart using the `df_prop_mx_f` dataset. The object work as a `geom_point()` figure plotted by determined x and y coordinates. We can also group and color the icons by the **type** variable or the variable that we are grouping for.
 
 #### 5.1 Improve plot 
 
