@@ -808,9 +808,279 @@ testthat::test_that("50 icons Legend draws one unique raster icon per unique", {
 
 
 # ******************************************************************************
-# 13 DPI parameter tests ------------------------------------------------
+# 12.5 Custom icon column names ------------------------------------------------
 # ******************************************************************************
 
+#' Extract icon names from PNG file paths
+#' 
+#' @param png_paths Character vector of PNG file paths
+#' @return Character vector of icon names extracted from filenames
+extract_icon_names <- function(png_paths) {
+  basenames <- basename(png_paths)
+  # Icon name is the first part before "_c" (color marker)
+  icon_names <- sub("_c.*", "", basenames)
+  icon_names
+}
+
+testthat::test_that("Icons: custom column 'my_icons' renders CORRECT icons", {
+  # Data with custom icon column name
+  df_custom <- data.frame(
+    sex = c("M", "M", "F", "F"),
+    my_icons = c("male", "male", "female", "female"),  # Custom column name!
+    stringsAsFactors = FALSE
+  )
+  
+  p <- suppressWarnings(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_custom,
+        ggplot2::aes(icon = my_icons, group = sex, color = sex),
+        dpi = 60
+      )
+  )
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  # Extract rendered icons
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should match exactly what's in my_icons column
+  testthat::expect_setequal(unique(rendered_icons), c("male", "female"))
+  testthat::expect_true("male" %in% rendered_icons)
+  testthat::expect_true("female" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: column 'icon_2' renders circle and square icons", {
+  df_icon2 <- data.frame(
+    category = c("A", "A", "B", "B"),
+    icon_2 = c("circle", "circle", "square", "square"),  # Custom column name
+    stringsAsFactors = FALSE
+  )
+  
+  p <- suppressWarnings(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_icon2,
+        ggplot2::aes(icon = icon_2, group = category, color = category),
+        dpi = 60
+      )
+  )
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should be circle and square, NOT "user" or any default fallback
+  testthat::expect_setequal(unique(rendered_icons), c("circle", "square"))
+  testthat::expect_false("user" %in% rendered_icons)
+  testthat::expect_false("ggmale" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: very custom name 'fontawesome_symbol' works", {
+  df_weird <- data.frame(
+    grp = c("A", "A", "B", "B", "C", "C"),
+    fontawesome_symbol = c("pizza-slice", "pizza-slice", "coffee", "coffee", "heart", "heart"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- suppressWarnings(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_weird,
+        ggplot2::aes(icon = fontawesome_symbol, group = grp, color = grp),
+        dpi = 60
+      )
+  )
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should use the actual icons from fontawesome_symbol column
+  testthat::expect_setequal(unique(rendered_icons), c("pizza-slice", "coffee", "heart"))
+  
+  # Should NOT fall back to defaults
+  testthat::expect_false("user" %in% rendered_icons)
+  testthat::expect_false("circle" %in% rendered_icons)
+  testthat::expect_false("ggmale" %in% rendered_icons)
+})
+
+testthat::test_that("REGRESSION: 'icon' column does NOT override 'icon_custom' content", {
+  # This is the bug we fixed: having a column named 'icon' should not
+  # interfere when user maps aes(icon = icon_custom)
+  
+  df_regression <- data.frame(
+    type = c("A", "A", "A", "B", "B", "B"),
+    icon = c("WRONG", "WRONG", "WRONG", "WRONG", "WRONG", "WRONG"),  # Decoy column
+    icon_custom = c("star", "star", "star", "heart", "heart", "heart"),  # Correct column
+    stringsAsFactors = FALSE
+  )
+  
+  # User explicitly maps icon_custom
+  p <- suppressWarnings(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_regression,
+        ggplot2::aes(icon = icon_custom, group = type, color = type),
+        dpi = 60
+      )
+  )
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should render star and heart (from icon_custom)
+  testthat::expect_setequal(unique(rendered_icons), c("star", "heart"))
+  
+  # Should NOT render "WRONG" (from icon column)
+  testthat::expect_false("WRONG" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: renders ALL hearts from 'icon_column' with custom name", {
+  df_hearts <- data.frame(
+    sex = c("A", "A", "A", "A"),
+    icon_column = c("heart", "heart", "heart", "heart"),  # Custom column, all hearts
+    stringsAsFactors = FALSE
+  )
+  
+  p <- suppressWarnings(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_hearts,
+        ggplot2::aes(icon = icon_column, group = sex),
+        dpi = 60
+      )
+  )
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # ALL should be "heart"
+  testthat::expect_true(all(rendered_icons == "heart"))
+  testthat::expect_equal(length(unique(rendered_icons)), 1)
+  testthat::expect_equal(unique(rendered_icons), "heart")
+})
+
+testthat::test_that("Icons: consistent per-group rendering with custom column", {
+  # Group A should have ALL circles, Group B should have ALL squares
+  df_groups <- data.frame(
+    type = c("A", "A", "A", "B", "B", "B"),
+    my_icon_col = c("circle", "circle", "circle", "square", "square", "square"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- suppressWarnings(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_groups,
+        ggplot2::aes(icon = my_icon_col, group = type, color = type),
+        dpi = 60
+      )
+  )
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # All should be circle or square
+  testthat::expect_true(all(rendered_icons %in% c("circle", "square")))
+  
+  # Should have both icons
+  testthat::expect_setequal(unique(rendered_icons), c("circle", "square"))
+  
+  # Verify counts (6 rows total)
+  testthat::expect_equal(sum(rendered_icons == "circle"), 3)
+  testthat::expect_equal(sum(rendered_icons == "square"), 3)
+})
+
+testthat::test_that("Icons: with process_data and custom icon column", {
+  df_raw <- data.frame(
+    sex = c("M", "F", "M", "F"),
+    custom_icons = c("male", "female", "male", "female"),  # Custom column name
+    count = c(30, 70, 30, 70),
+    stringsAsFactors = FALSE
+  )
+
+  df_processed <- process_data(
+    df_raw,
+    group_var = sex,
+    sum_var = count,
+    sample_size = 20
+  )
+  
+  # Add custom icon column to processed data
+  df_processed$my_icon_var <- ifelse(df_processed$type == "M", "male", "female")
+  
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_processed,
+      ggplot2::aes(icon = my_icon_var, group = type, color = type),
+      dpi = 60
+    )
+  
+  testthat::expect_no_error(ggplot2::ggplot_build(p))
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should have male and female icons
+  testthat::expect_setequal(unique(rendered_icons), c("male", "female"))
+  testthat::expect_false("user" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: multiple custom columns in same dataset", {
+  # Dataset with multiple icon columns - user picks which one to use
+  df_multi <- data.frame(
+    category = c("A", "A", "B", "B"),
+    icons_v1 = c("heart", "heart", "star", "star"),      # Option 1
+    icons_v2 = c("circle", "circle", "square", "square"), # Option 2
+    stringsAsFactors = FALSE
+  )
+  
+  # Test using icons_v1
+  p1 <- suppressWarnings(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_multi,
+        ggplot2::aes(icon = icons_v1, group = category, color = category),
+        dpi = 60
+      )
+  )
+  
+  built1 <- ggplot2::ggplot_build(p1)
+  rendered1 <- extract_icon_names(built1$data[[1]]$image)
+  
+  testthat::expect_setequal(unique(rendered1), c("heart", "star"))
+  
+  # Test using icons_v2
+  p2 <- suppressWarnings(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_multi,
+        ggplot2::aes(icon = icons_v2, group = category, color = category),
+        dpi = 60
+      )
+  )
+  
+  built2 <- ggplot2::ggplot_build(p2)
+  rendered2 <- extract_icon_names(built2$data[[1]]$image)
+  
+  testthat::expect_setequal(unique(rendered2), c("circle", "square"))
+})
+
+# ******************************************************************************
+# 13 DPI parameter tests ------------------------------------------------
+# ******************************************************************************
 testthat::test_that("dpi parameter controls actual PNG resolution", {
   # Setup test data
   test_data <- data.frame(
@@ -818,44 +1088,47 @@ testthat::test_that("dpi parameter controls actual PNG resolution", {
     icon = "user",
     stringsAsFactors = FALSE
   )
-
+  
   # Test different DPI values
   dpi_values <- c(50, 100, 600)
-
+  
   for (dpi_val in dpi_values) {
     # Create plot with specific DPI
-    p <- ggplot2::ggplot() +
-      geom_pop(
-        data = test_data,
-        ggplot2::aes(icon = icon, group = type, color = type),
-        dpi = dpi_val,
-        size = 10
-      )
-
+    # Suppress warnings for high DPI (600) - we're testing functionality, not validation
+    p <- suppressWarnings(
+      ggplot2::ggplot() +
+        geom_pop(
+          data = test_data,
+          ggplot2::aes(icon = icon, group = type, color = type),
+          dpi = dpi_val,
+          size = 10
+        )
+    )
+    
     # Build the plot to trigger PNG generation
     built <- ggplot2::ggplot_build(p)
-
+    
     # Get the layer data which contains image paths
     layer_data <- built$data[[1]]
-
+    
     # Extract unique PNG paths
     png_paths <- unique(layer_data$image)
     png_paths <- png_paths[!is.na(png_paths) & file.exists(png_paths)]
-
+    
     expect_true(
       length(png_paths) > 0,
       info = sprintf("No PNG files generated for DPI = %d", dpi_val)
     )
-
+    
     # Check each generated PNG
     for (png_path in png_paths) {
       # Read PNG metadata
       img_info <- png::readPNG(png_path, info = TRUE)
       img_attr <- attributes(img_info)
-
+      
       # Get actual dimensions
       actual_height <- nrow(img_info)
-
+      
       # Expected height should match DPI (fontawesome::fa_png uses height parameter)
       expect_equal(
         actual_height,
@@ -866,13 +1139,13 @@ testthat::test_that("dpi parameter controls actual PNG resolution", {
           dpi_val, dpi_val, actual_height, png_path
         )
       )
-
+      
       # Additional check: verify image is not empty
       expect_true(
         actual_height > 0,
         info = sprintf("PNG has zero height for DPI = %d", dpi_val)
       )
-
+      
       # Verify the image has content (not all transparent/white)
       pixel_values <- as.vector(img_info)
       expect_true(

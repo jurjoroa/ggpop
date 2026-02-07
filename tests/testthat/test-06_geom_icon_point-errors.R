@@ -244,13 +244,16 @@ testthat::test_that("Error: alpha = NA throws error", {
     regexp = "Invalid `alpha` value"
   )
 })
+p <- ggplot2::ggplot(df_scatter, ggplot2::aes(icon = icon)) +
+  geom_icon_point()
 
 testthat::test_that("Error: alpha = NULL throws error", {
-  testthat::expect_error(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-      geom_icon_point(alpha = NULL, color = "blue"),
-    regexp = "Invalid `alpha` value"
-  )
+  testthat::expect_warning({
+    p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(alpha = NULL, color = "blue")
+    ggplot2::ggplot_build(p)
+    
+  })
 })
 
 testthat::test_that("Error: alpha = point_size (bare name) throws error", {

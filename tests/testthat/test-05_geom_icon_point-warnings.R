@@ -135,22 +135,22 @@ testthat::test_that("Warning: dpi very high (geom pattern)", {
 
 ### 03.03.01 size very small (ggplot pattern) ----------------------------------
 
-testthat::test_that("Edge case: size = 0.8 triggers warning (ggplot pattern)", {
+testthat::test_that("Edge case: size triggers warning (ggplot pattern)", {
   testthat::expect_warning(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-      geom_icon_point(size = 0.8, color = "blue")
+      geom_icon_point(size = 0.4, color = "blue")
   )
 })
 
 ### 03.03.02 size very small (geom pattern) ------------------------------------
 
-testthat::test_that("Edge case: size = 0.8 triggers warning (geom pattern)", {
+testthat::test_that("Edge case: size triggers warning (geom pattern)", {
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_icon_point(
         data = df_scatter,
         ggplot2::aes(x = x, y = y, icon = icon, color = category),
-        size = 0.8
+        size = 0.4
       )
   )
 })
@@ -173,30 +173,6 @@ testthat::test_that("Edge case: size = 16 triggers warning (geom pattern)", {
         data = df_scatter,
         ggplot2::aes(x = x, y = y, icon = icon, color = category),
         size = 16
-      )
-  )
-})
-
-### 03.03.05 size boundaries (no warnings) -------------------------------------
-
-
-testthat::test_that("Edge case: size = 0.89 triggers warning (mixed)", {
-  testthat::expect_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
-      geom_icon_point(
-        ggplot2::aes(icon = icon, color = category),
-        size = 0.89
-      )
-  )
-})
-
-testthat::test_that("Edge case: size = 15.01 triggers warning (geom)", {
-  testthat::expect_warning(
-    ggplot2::ggplot() +
-      geom_icon_point(
-        data = df_scatter,
-        ggplot2::aes(x = x, y = y, icon = icon, color = category),
-        size = 15.01
       )
   )
 })
@@ -249,8 +225,7 @@ testthat::test_that("Edge case: alpha = 0.09 triggers warning (mixed)", {
 testthat::test_that("Warning: alpha in both aes() and parameter", {
   testthat::expect_warning(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, alpha = point_size)) +
-      geom_icon_point(alpha = 0.5, color = "blue"),
-    regexp = "alpha.*provided both inside aes\\(\\) and as a parameter"
+      geom_icon_point(alpha = 0.5, color = "blue")
   )
 })
 

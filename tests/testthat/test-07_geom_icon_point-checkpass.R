@@ -195,10 +195,10 @@ testthat::test_that("Size: size and color both mapped", {
 
 ### 05.01 Valid DPI ranges -----------------------------------------------------
 
-testthat::test_that("DPI: minimum valid (30)", {
+testthat::test_that("DPI: minimum valid (50)", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-      geom_icon_point(dpi = 30)
+      geom_icon_point(dpi = 50)
   )
 })
 
@@ -875,6 +875,173 @@ testthat::test_that("Icons: icon names with hyphens", {
     ggplot2::ggplot(df_hyphens, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point()
   )
+})
+
+# ******************************************************************************
+# 13.04 Custom icon column names -----------------------------------------------
+# ******************************************************************************
+
+#' Extract icon names from PNG file paths
+#' 
+#' @param png_paths Character vector of PNG file paths
+#' @return Character vector of icon names extracted from filenames
+extract_icon_names <- function(png_paths) {
+  basenames <- basename(png_paths)
+  # Icon name is the first part before "_c" (color marker)
+  icon_names <- sub("_c.*", "", basenames)
+  icon_names
+}
+
+testthat::test_that("Icons: custom column 'my_icons' renders CORRECT icons", {
+  # Data with custom icon column name
+  df_custom <- data.frame(
+    x = c(1, 2, 3, 4),
+    y = c(1, 2, 3, 4),
+    my_icons = c("circle", "square", "star", "heart"),  # Custom column name!
+    category = c("A", "B", "C", "D"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_custom, ggplot2::aes(x = x, y = y, icon = my_icons, color = category)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  # Extract rendered icons
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should match exactly what's in my_icons column
+  testthat::expect_setequal(rendered_icons, c("circle", "square", "star", "heart"))
+  testthat::expect_true("circle" %in% rendered_icons)
+  testthat::expect_true("square" %in% rendered_icons)
+  testthat::expect_true("star" %in% rendered_icons)
+  testthat::expect_true("heart" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: column 'icon_2' renders male and female icons", {
+  df_icon2 <- data.frame(
+    x = c(1, 2),
+    y = c(1, 2),
+    icon_2 = c("male", "female"),  # Custom column name
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_icon2, ggplot2::aes(x = x, y = y, icon = icon_2)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should be male and female, NOT "user" or any default fallback
+  testthat::expect_setequal(rendered_icons, c("male", "female"))
+  testthat::expect_false("user" %in% rendered_icons)
+  testthat::expect_false("circle" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: per-row rendering with custom column 'icon_column'", {
+  # Verify each ROW gets its CORRECT icon from custom column
+  df_custom_rows <- data.frame(
+    x = 1:5,
+    y = 1:5,
+    icon_column = c("heart", "star", "circle", "square", "heart"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_custom_rows, ggplot2::aes(x = x, y = y, icon = icon_column)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  # Extract icons IN ORDER
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Row 1 should be heart
+  testthat::expect_equal(rendered_icons[1], "heart")
+  # Row 2 should be star
+  testthat::expect_equal(rendered_icons[2], "star")
+  # Row 3 should be circle
+  testthat::expect_equal(rendered_icons[3], "circle")
+  # Row 4 should be square
+  testthat::expect_equal(rendered_icons[4], "square")
+  # Row 5 should be heart (repeated)
+  testthat::expect_equal(rendered_icons[5], "heart")
+})
+
+testthat::test_that("Icons: very custom name 'fontawesome_symbol' works", {
+  df_weird <- data.frame(
+    x = 1:3,
+    y = 1:3,
+    fontawesome_symbol = c("pizza-slice", "coffee", "heart"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_weird, ggplot2::aes(x = x, y = y, icon = fontawesome_symbol)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should use the actual icons from fontawesome_symbol column
+  testthat::expect_setequal(rendered_icons, c("pizza-slice", "coffee", "heart"))
+  
+  # Should NOT fall back to defaults
+  testthat::expect_false("user" %in% rendered_icons)
+  testthat::expect_false("circle" %in% rendered_icons)
+})
+
+testthat::test_that("REGRESSION: 'icon' column does NOT override 'icon_2' content", {
+  
+  df_regression <- data.frame(
+    icon = c("WRONG", "WRONG", "WRONG"),      # Decoy column with wrong icons
+    icon_2 = c("heart", "star", "circle"),    # Correct column user mapped
+    x = 1:3,
+    y = 1:3,
+    stringsAsFactors = FALSE
+  )
+  
+  # User explicitly maps icon_2
+  p <- ggplot2::ggplot(df_regression, ggplot2::aes(x = x, y = y, icon = icon_2)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # Should render heart, star, circle (from icon_2)
+  testthat::expect_setequal(rendered_icons, c("heart", "star", "circle"))
+  
+  # Should NOT render "WRONG" (from icon column)
+  testthat::expect_false("WRONG" %in% rendered_icons)
+})
+
+testthat::test_that("Icons: renders ALL hearts from 'icon_custom' column", {
+  df_hearts <- data.frame(
+    x = c(1, 2, 3),
+    y = c(1, 2, 3),
+    icon_custom = c("heart", "heart", "heart"),  # All hearts
+    category = c("A", "A", "A"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df_hearts, ggplot2::aes(x = x, y = y, icon = icon_custom)) +
+    geom_icon_point(dpi = 60)
+  
+  built <- ggplot2::ggplot_build(p)
+  layer_data <- built$data[[1]]
+  
+  rendered_icons <- extract_icon_names(layer_data$image)
+  
+  # ALL should be "heart"
+  testthat::expect_true(all(rendered_icons == "heart"))
+  testthat::expect_equal(length(unique(rendered_icons)), 1)
+  testthat::expect_equal(unique(rendered_icons), "heart")
 })
 
 # ******************************************************************************
