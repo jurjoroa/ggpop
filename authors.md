@@ -21,11 +21,12 @@ Source:
 
 Roa-Contreras J, Soultanova R, Alarid-Escudero F, Pineda-Antunez C
 (2026). *ggpop: Visualizing Population Data (ggpop)*. R package version
-1.6.0.
+1.6.1, <https://jurjoroa.github.io/ggpop/>.
 
     @Manual{,
       title = {ggpop: Visualizing Population Data (ggpop)},
       author = {Jorge A. Roa-Contreras and Ralitza Soultanova and Fernando Alarid-Escudero and Carlos Pineda-Antunez},
       year = {2026},
-      note = {R package version 1.6.0},
+      note = {R package version 1.6.1},
+      url = {https://jurjoroa.github.io/ggpop/},
     }

@@ -1,13 +1,15 @@
 # ggpop: Visualizing Population Data (ggpop)
 
-ggpop is an R package that creates visually engaging and informative
-population charts. ggpop allows users to represent population data
-proportionally using customizable icons, facilitating the creation of
-circular representative population charts.
+Create in R visually engaging and informative population charts. ggpop
+allows users to represent population data proportionally using
+customizable icons, facilitating the creation of circular representative
+population charts.
 
 ## See also
 
 Useful links:
+
+- <https://jurjoroa.github.io/ggpop/>
 
 - Report bugs at <https://github.com/jurjoroa/ggpop/issues>
 

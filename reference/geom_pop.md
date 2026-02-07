@@ -23,7 +23,7 @@ geom_pop(
   seed = NULL,
   sum_var = NULL,
   facet = NULL,
-  size = 3,
+  size = 1,
   dpi = 50,
   legend_icons = TRUE,
   stroke_width = NULL,

@@ -15,7 +15,7 @@ geom_icon_point(
   na.rm = FALSE,
   inherit.aes = TRUE,
   icon = NULL,
-  size = 3,
+  size = 1,
   dpi = 50,
   legend_icons = TRUE,
   ...
@@ -104,7 +104,7 @@ geom_icon_point(
 
 - icon:
 
-  Default Font Awesome icon (default: "circle").
+  Default Font Awesome icon (default: NULL).
 
 - size:
 

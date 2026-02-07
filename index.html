@@ -12,8 +12,8 @@
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Visualizing Population Data (ggpop)">
-<meta name="description" content="ggpop is an R package that creates visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.">
-<meta property="og:description" content="ggpop is an R package that creates visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.">
+<meta name="description" content="Create in R visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.">
+<meta property="og:description" content="Create in R visually engaging and informative population charts. ggpop allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.">
 <link rel="stylesheet" href="extra.css">
 </head>
 <body>
@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggpop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@
 <p>You can install <code>ggpop</code> from <a href="https://cran.r-project.org/" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggpop"</span><span class="op">)</span></span></code></pre></div>
-<p>Development version of the package can be installed from <a href="https://github.com/jurjoroa/ggpop" class="external-link">Github</a> with:</p>
+<p>Development version of the package can be installed from <a href="https://github.com/jurjoroa/ggpop" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jurjoroa/ggpop"</span><span class="op">)</span></span></code></pre></div>
@@ -127,7 +127,7 @@ A constant value <code>"America"</code>, indicating the continent these observat
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ggpop</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_pop_mx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span>,</span>
 <span>                        n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">63459580</span>, <span class="fl">67401427</span><span class="op">)</span>,</span>
@@ -236,7 +236,7 @@ A constant value <code>"America"</code>, indicating the continent these observat
 <div class="float">
 <img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png" alt="Example Plot"><div class="figcaption">Example Plot</div>
 </div>
-<p>The <code><a href="reference/geom_pop.html">geom_pop()</a></code> function creates a population chart using the <code>df_prop_mx_f</code> dataset. The object work as a <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point()</a></code> figure plotted by determined x and y coordinates. We can also group and color the icons by the <strong>type</strong> variable or the varaible that we are grouping for.</p>
+<p>The <code><a href="reference/geom_pop.html">geom_pop()</a></code> function creates a population chart using the <code>df_prop_mx_f</code> dataset. The object work as a <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point()</a></code> figure plotted by determined x and y coordinates. We can also group and color the icons by the <strong>type</strong> variable or the variable that we are grouping for.</p>
 <div class="section level4">
 <h4 id="id_51-improve-plot">5.1 Improve plot<a class="anchor" aria-label="anchor" href="#id_51-improve-plot"></a>
 </h4>
