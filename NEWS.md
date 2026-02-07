@@ -43,6 +43,9 @@ Issues are listed in chronological merge order.
 
 - #236
 
+
+**Full Changelog**: https://github.com/jurjoroa/ggpop/compare/v1.6.0...v1.6.1
+
 # ggpop 1.6.0
 
 This release of `ggpop` introduces significant enhancements including a new geom function for flexible data plotting, improved DPI handling, new customization options for Font Awesome icons, and multiple bug fixes to enhance stability and user experience.
