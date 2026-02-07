@@ -81,6 +81,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # Data must be a data frame
   validate_data_is_dataframe(data)
   
+  # NEW: Data must not be empty
+  validate_data_not_empty(data)
+  
   # No reserved column names
   validate_no_reserved_columns(data)
   
@@ -89,6 +92,12 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # ==============================================================================
   
   dots <- list(...)
+  
+  # NEW: Validate alpha parameter if provided
+  if ("alpha" %in% names(dots)) {
+    validate_alpha_parameter(dots$alpha)
+  }
+  
   validate_all_parameters(
     stroke_width = stroke_width,
     dpi = dpi,
@@ -170,6 +179,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   combined_mapping <- c(inherited_mapping_list, mapping_list)
   
+  # NEW: Validate no image aesthetic
+  validate_no_image_aesthetic(mapping_list)
+  
   # Validate icon aesthetic and get icon variable name
   icon_var <- validate_all_aesthetics(mapping_list, inherited_mapping_list, data)
   
@@ -231,7 +243,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     size = size,
     data = data,
     facet_explicit = .facet_explicit,
-    facet_col = facet_col
+    facet_col = facet_col,
+    dots = dots 
   )
   
   # ==============================================================================

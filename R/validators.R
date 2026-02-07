@@ -1416,50 +1416,41 @@ warn_alpha_conflict <- function(combined_mapping, extra_args) {
 #' @noRd
 warn_mixed_legend_icons <- function(legend_icons) {
   
-  # Auto-reset registry if it's getting too large (indicates stale state)
-  if (length(.ggpop_env$legend_settings) > 10) {
+  # Initialize if needed
+  if (is.null(.ggpop_env$legend_settings)) {
     .ggpop_env$legend_settings <- list()
   }
   
-  # Get existing settings
-  legend_settings <- .ggpop_env$legend_settings
+  # Add current setting
+  .ggpop_env$legend_settings <- c(.ggpop_env$legend_settings, legend_icons)
   
-  # Check if we have mixed settings (some TRUE, some FALSE)
-  if (length(legend_settings) > 0) {
-    has_true <- any(unlist(legend_settings))
-    has_false <- any(!unlist(legend_settings))
+  # Check for mixed settings
+  settings_vec <- unlist(.ggpop_env$legend_settings)
+  
+  if (length(settings_vec) > 1 && 
+      any(settings_vec) && 
+      any(!settings_vec) &&
+      !isTRUE(.ggpop_env$has_warned_mixed_legend)) {
     
-    # Warn if we now have BOTH TRUE and FALSE
-    if ((has_true && !legend_icons) || (has_false && legend_icons)) {
-      cli::cli_warn(c(
-        "Mixed {.field legend_icons} settings detected.",
-        " " = "",
-        "!" = "Layers have inconsistent settings:",
-        " " = "  - Previous layer(s): {.val {ifelse(has_true, 'TRUE', 'FALSE')}}",
-        " " = "  - Current layer: {.val {legend_icons}}",
-        " " = "",
-        "i" = "Recommendation:",
-        " " = "  Use consistent settings across all {.fn geom_icon_point} layers",
-        " " = "  Either all TRUE, or all FALSE (not mixed)"
-      ))
-      
-      # Store current setting but mark that we've warned
-      .ggpop_env$legend_settings <- c(legend_settings, legend_icons)
-      
-      # Check if we now have both TRUE and FALSE - if so, reset for next plot
-      has_both <- any(unlist(.ggpop_env$legend_settings)) &&
-        any(!unlist(.ggpop_env$legend_settings))
-      if (has_both) {
-        # Complete conflict detected - reset for next plot
-        .ggpop_env$legend_settings <- list()
-      }
-    } else {
-      # No conflict yet, continue accumulating
-      .ggpop_env$legend_settings <- c(legend_settings, legend_icons)
-    }
-  } else {
-    # First layer
-    .ggpop_env$legend_settings <- list(legend_icons)
+    cli::cli_warn(c(
+      "Mixed {.field legend_icons} settings detected.",
+      " " = "",
+      "!" = "Layers have inconsistent settings:",
+      " " = "  - Some layer(s): {.val TRUE}",
+      " " = "  - Other layer(s): {.val FALSE}",
+      " " = "",
+      "i" = "Recommendation:",
+      " " = "  Use consistent settings across all {.fn geom_icon_point} layers",
+      " " = "  Either all TRUE, or all FALSE (not mixed)"
+    ))
+    
+    .ggpop_env$has_warned_mixed_legend <- TRUE
+  }
+  
+  # Auto-reset after reasonable accumulation
+  if (length(.ggpop_env$legend_settings) > 20) {
+    .ggpop_env$legend_settings <- list()
+    .ggpop_env$has_warned_mixed_legend <- FALSE
   }
   
   invisible(NULL)
@@ -1560,9 +1551,10 @@ validate_all_aesthetics <- function(mapping_list, inherited_mapping_list, data) 
 #' @keywords internal
 #' @noRd
 warn_all_geom_pop <- function(combined_mapping, missing_size, size, 
-                              data, facet_explicit, facet_col) {
+                              data, facet_explicit, facet_col, dots = list()) {
   
   warn_size_conflict(combined_mapping, missing_size, size)
+  warn_alpha_conflict(combined_mapping, dots)
   warn_xy_aesthetics_ignored(combined_mapping)
   warn_faceting_caution(data, facet_explicit, facet_col)
   
