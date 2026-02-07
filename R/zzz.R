@@ -12,7 +12,7 @@ if (getRversion() >= "2.15.1") {
 .onLoad <- function(libname, pkgname) {
   # Suppress additional dplyr-generated variables
   utils::globalVariables(c(".legend"))
-  
+
   # Initialize legend settings registry
   # Used to track legend_icons settings across multiple geom_icon_point() layers
   .ggpop_env$legend_settings <- list()

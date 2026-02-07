@@ -39,57 +39,31 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      seed = NULL,
                      sum_var = NULL,
                      facet = NULL,
-                     size = 3,
+                     size = 1,
                      dpi = 50,
                      legend_icons = TRUE,
-                     stroke_width = NULL,  # NEW PARAMETER
+                     stroke_width = NULL,
                      ...) {
+  
+  # ==============================================================================
+  # SETUP: Extract plot context and mappings
+  # ==============================================================================
   
   inherited_data <- tryCatch(
     ggplot2::ggplot_build(ggplot2::last_plot())$plot$data,
     error = function(e) NULL
   )
   
-  plot_obj <- tryCatch(ggplot2::ggplot_build(ggplot2::last_plot())$plot, error = function(e) NULL)
-  inherited_mapping_list <- if (!is.null(plot_obj$mapping)) as.list(plot_obj$mapping) else list()
+  plot_obj <- tryCatch(
+    ggplot2::ggplot_build(ggplot2::last_plot())$plot, 
+    error = function(e) NULL
+  )
   
-  
-  # -------------------------------------------------
-  # HARD STOP: only one geom_pop() per plot
-  # -------------------------------------------------
-  if (!is.null(plot_obj) && length(plot_obj$layers) > 0) {
-    # Check if any existing layer is a geom_pop
-    has_geom_pop <- any(vapply(plot_obj$layers, function(layer) {
-      inherits(layer$geom, "GeomImage") && 
-        !is.null(layer$aes_params) || 
-        inherits(layer, "ggpop_geom_pop") ||
-        ("ggpop_geom_pop" %in% class(layer))
-    }, logical(1)))
-    
-    if (has_geom_pop) {
-      stop(
-        paste0(
-          "[geom_pop] Multiple geom_pop() layers detected.\n\n",
-          "Why this is an error:\n",
-          "- Only ONE geom_pop() layer is allowed per plot.\n",
-          "- Multiple layers create legend conflicts where only the last layer's icons are shown.\n",
-          "Fix:\n",
-          "Option 1: Combine all data into one geom_pop() call:\n",
-          "  df_all <- bind_rows(df1, df2, df3)\n",
-          "  ggplot() + geom_pop(data = df_all, aes(icon = icon, color = group))\n\n",
-          "Option 2: Create separate plots and combine with patchwork:\n",
-          "  library(patchwork)\n",
-          "  p1 <- ggplot() + geom_pop(data = df1, ...)\n",
-          "  p2 <- ggplot() + geom_pop(data = df2, ...)\n",
-          "  p1 | p2\n\n",
-          "Option 3: Use faceting if appropriate:\n",
-          "  ggplot() + geom_pop(data = df_all, aes(...)) + facet_wrap(~ group)\n"
-        ),
-        call. = FALSE
-      )
-    }
+  inherited_mapping_list <- if (!is.null(plot_obj$mapping)) {
+    as.list(plot_obj$mapping)
+  } else {
+    list()
   }
-  
   
   .missing_size <- missing(size)
   
@@ -97,55 +71,50 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
   
-  # -------------------------------------------------
-  # HARD STOP: data must be a data frame
-  # -------------------------------------------------
-  if (!is.null(data)) {
-    is_valid_data <- inherits(data, "data.frame") || 
-      inherits(data, "tbl_df") || 
-      inherits(data, "tbl") ||
-      inherits(data, "data.table")
-    
-    if (!is_valid_data) {
-      data_class <- class(data)[1]
-      data_type <- typeof(data)
-      
-      stop(
-        paste0(
-          "[geom_pop] Invalid `data` type.\n\n",
-          "Why this is an error:\n",
-          "- `data` must be a data frame, tibble, or data.table.\n",
-          "- You provided: ", data_class, " (type: ", data_type, ")\n\n",
-          "Fix:\n",
-          "- Convert your data to a data frame:\n\n",
-          if (is.matrix(data)) {
-            "  # For matrix:\n  data <- as.data.frame(your_matrix)\n\n"
-          } else if (is.list(data) && !is.data.frame(data)) {
-            "  # For list:\n  data <- as.data.frame(your_list)\n  # or\n  data <- dplyr::bind_rows(your_list)\n\n"
-          } else if (is.vector(data)) {
-            "  # For vector:\n  data <- data.frame(value = your_vector)\n\n"
-          } else {
-            "  data <- as.data.frame(your_data)\n\n"
-          },
-          "Accepted types:\n",
-          "  - data.frame (base R)\n",
-          "  - tibble / tbl_df (tidyverse)\n",
-          "  - data.table (data.table package)\n\n",
-          "Examples:\n",
-          "  # Base R data frame:\n",
-          "  df <- data.frame(sex = c('M', 'F'), icon = c('male', 'female'))\n",
-          "  geom_pop(data = df, aes(icon = icon, group = sex))\n\n",
-          "  # Tibble:\n",
-          "  df <- tibble::tibble(sex = c('M', 'F'), icon = c('male', 'female'))\n",
-          "  geom_pop(data = df, aes(icon = icon, group = sex))\n"
-        ),
-        call. = FALSE
-      )
-    }
+  # ==============================================================================
+  # VALIDATION: Layer & Data
+  # ==============================================================================
+  
+  # Only one geom_pop per plot
+  validate_single_geom_pop(plot_obj)
+  
+  # Data must be a data frame
+  validate_data_is_dataframe(data)
+  
+  # NEW: Data must not be empty
+  validate_data_not_empty(data)
+  
+  # No reserved column names
+  validate_no_reserved_columns(data)
+  
+  # ==============================================================================
+  # VALIDATION: Parameters
+  # ==============================================================================
+  
+  dots <- list(...)
+  
+  # NEW: Validate alpha parameter if provided
+  if ("alpha" %in% names(dots)) {
+    validate_alpha_parameter(dots$alpha)
   }
-  # --- infer facet from facet_wrap/facet_grid if facet= not supplied ---
+  
+  validate_all_parameters(
+    stroke_width = stroke_width,
+    dpi = dpi,
+    size = size,
+    missing_size = .missing_size,
+    arrange = arrange,
+    legend_icons = legend_icons,
+    seed = seed,
+    dots = dots
+  )
+  
+  # ==============================================================================
+  # FACETING: Infer and validate
+  # ==============================================================================
+  
+  # Helper: infer facet from facet_wrap/facet_grid
   infer_facet_var <- function(plot_obj) {
-    
     if (is.null(plot_obj) || is.null(plot_obj$facet)) return(NULL)
     
     f <- plot_obj$facet
@@ -170,8 +139,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     NULL
   }
   
-  # --- facet handling ---
   facet_expr <- rlang::enexpr(facet)
+  
   if (rlang::is_missing(facet_expr) || rlang::is_null(facet_expr)) {
     inferred <- infer_facet_var(plot_obj)
     if (!is.null(inferred)) {
@@ -183,456 +152,67 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     }
   } else {
     has_facet <- TRUE
-    if (rlang::is_symbol(facet_expr)) facet_col <- rlang::as_name(facet_expr)
-    else if (rlang::is_string(facet_expr)) facet_col <- facet_expr
-    else stop("`facet` must be a column name (facet = variable) or a single string (facet = \"variable\").")
-  }
-  
-  if (has_facet && !is.null(facet_col) && !facet_col %in% names(data)) {
-    stop(sprintf("Facet column '%s' not found in `data`.", facet_col))
-  }
-  
-  # -------------------------------------------------
-  # NOTE:
-  # We do NOT hard-stop here based on ggplot facet_wrap/grid,
-  # because ggplot adds facets after layers (left-to-right).
-  # The mandatory check is enforced by your validator on the final plot.
-  #
-  # We DO still prevent mismatches when we can detect a facet already.
-  # -------------------------------------------------
-  .facet_explicit <- !(rlang::is_missing(facet_expr) || rlang::is_null(facet_expr))
-  if (.facet_explicit) {
-    inferred_plot_facet <- infer_facet_var(plot_obj)
-    if (!is.null(inferred_plot_facet) && !identical(inferred_plot_facet, facet_col)) {
-      stop(
-        paste0(
-          "[geom_pop] Facet mismatch.\n\n",
-          "geom_pop(facet = ", facet_col, ") but the plot is faceted by `", inferred_plot_facet, "`.\n\n",
-          "Fix:\n",
-          "- Make them match, e.g. `facet_wrap(~ ", facet_col, ")`.\n"
-        ),
-        call. = FALSE
+    if (rlang::is_symbol(facet_expr)) {
+      facet_col <- rlang::as_name(facet_expr)
+    } else if (rlang::is_string(facet_expr)) {
+      facet_col <- facet_expr
+    } else {
+      cli::cli_abort(
+        "`facet` must be a column name (facet = variable) or a string (facet = \"variable\")."
       )
     }
   }
-  
-  # -------------------------------------------------
-  # HARD STOP: arrange must be logical
-  # -------------------------------------------------
-  if (!is.logical(arrange) || length(arrange) != 1 || is.na(arrange)) {
-    stop(
-      paste0(
-        "[geom_pop] Invalid `arrange` parameter.\n\n",
-        "Why this is an error:\n",
-        "- `arrange` must be a single logical value (TRUE or FALSE).\n",
-        "- You provided: ", 
-        if (is.character(arrange)) paste0('"', arrange, '"') else deparse(arrange),
-        " (", class(arrange)[1], ")\n\n",
-        "Fix:\n",
-        "- Use `arrange = TRUE` to sort icons by group.\n",
-        "- Use `arrange = FALSE` for randomized layouts (default).\n"
-      ),
-      call. = FALSE
-    )
-  }
-  
-  # -------------------------------------------------
-  # HARD STOP: legend_icons must be logical
-  # -------------------------------------------------
-  if (!is.logical(legend_icons) || length(legend_icons) != 1 || is.na(legend_icons)) {
-    stop(
-      paste0(
-        "[geom_pop] Invalid `legend_icons` parameter.\n\n",
-        "Why this is an error:\n",
-        "- `legend_icons` must be a single logical value (TRUE or FALSE).\n",
-        "- You provided: ", 
-        if (is.character(legend_icons)) paste0('"', legend_icons, '"') else deparse(legend_icons),
-        " (", class(legend_icons)[1], ")\n\n",
-        "Fix:\n",
-        "- Use `legend_icons = TRUE` to show Font Awesome icons in the legend.\n",
-        "- Use `legend_icons = FALSE` to show standard ggplot2 point markers (default).\n\n",
-        "Examples:\n",
-        "  # Show icons in legend (recommended):\n",
-        "  geom_pop(..., legend_icons = TRUE)\n\n",
-        "  # Use standard point markers:\n",
-        "  geom_pop(..., legend_icons = FALSE)\n\n",
-        "Common mistakes:\n",
-        "  legend_icons = 'yes'        # Character string not allowed\n",
-        "  legend_icons = 1            # Numeric not allowed\n",
-        "  legend_icons = c(TRUE, FALSE)  # Must be single value\n",
-        "  legend_icons = NA           # NA not allowed\n"
-      ),
-      call. = FALSE
-    )
-  }
-  
-  
-  # -------------------------------------------------
-  # HARD STOP: size parameter validation
-  # -------------------------------------------------
-  
-  
-  if (!missing(size)) {
-    # Type check
-    if (!is.numeric(size) || length(size) != 1) {
-      stop(
-        paste0(
-          "[geom_pop] Invalid `size` parameter.\n\n",
-          "Why this is an error:\n",
-          "- `size` must be a single numeric value.\n",
-          "- You provided: ", deparse(size), " (", class(size)[1], ")\n\n",
-          "Fix:\n",
-          "- Use a positive number: size = 3\n",
-          "- Default is 3 if not specified\n\n",
-          "Examples:\n",
-          "  geom_pop(..., size = 5)      # Larger icons\n",
-          "  geom_pop(..., size = 1)      # Smaller icons\n",
-          "  geom_pop(aes(size = var))    # Map to variable (in aes)\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
-    # Value checks
-    if (is.na(size)) {
-      stop(
-        paste0(
-          "[geom_pop] Invalid `size` value.\n\n",
-          "Why this is an error:\n",
-          "- `size` cannot be NA.\n\n",
-          "Fix:\n",
-          "- Use a numeric value: size = 3\n",
-          "- Or omit `size` to use the default (size = 3)\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
-    if (!is.finite(size)) {
-      stop(
-        paste0(
-          "[geom_pop] Invalid `size` value.\n\n",
-          "Why this is an error:\n",
-          "- `size` cannot be Inf or -Inf.\n",
-          "- You provided: ", size, "\n\n",
-          "Fix:\n",
-          "- Use a finite numeric value: size = 3\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
-    if (size <= 0) {
-      stop(
-        paste0(
-          "[geom_pop] Invalid `size` value.\n\n",
-          "Why this is an error:\n",
-          "- `size` must be positive (> 0).\n",
-          "- You provided: ", size, "\n\n",
-          "Fix:\n",
-          "- Use a positive number: size = 3\n",
-          "- Typical range: 1 to 10\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
-    # -------------------------------------------------
-    # SOFT WARNING : size extreme values
-    # -------------------------------------------------
-    
-    # Warning for extreme values
-    if (size > 15) {
-      warning(
-        paste0(
-          "[geom_pop] Very large `size` value.\n\n",
-          "Why you are seeing this warning:\n",
-          "- size = ", size, " is unusually large.\n",
-          "- Icons may overlap or extend beyond the plot area.\n\n",
-          "Typical values:\n",
-          "- Small icons: 1-2\n",
-          "- Medium icons: 3-5 (default: 3)\n",
-          "- Large icons: 6-10\n\n",
-          "If this is intentional, you can ignore this warning.\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
-    if (size < 0.5) {
-      warning(
-        paste0(
-          "[geom_pop] Very small `size` value.\n\n",
-          "Why you are seeing this warning:\n",
-          "- size = ", size, " is very small.\n",
-          "- Icons may be difficult to see or distinguish.\n\n",
-          "Recommended:\n",
-          "- Use size >= 1 for visible icons\n",
-          "- Default is 3\n"
-        ),
-        call. = FALSE
-      )
-    }
-  }
-  
-  # -------------------------------------------------
-  # HARD STOP: stroke_width parameter validation
-  # -------------------------------------------------
-  if (!is.null(stroke_width)) {
-    # Type check
-    if (!is.numeric(stroke_width) || length(stroke_width) != 1) {
-      stop(
-        paste0(
-          "[geom_pop] Invalid `stroke_width` parameter.\n\n",
-          "Why this is an error:\n",
-          "- `stroke_width` must be a single numeric value.\n",
-          "- You provided: ", deparse(stroke_width), " (", class(stroke_width)[1], ")\n\n",
-          "Fix:\n",
-          "- Use a positive number: stroke_width = 2\n",
-          "- Use NULL for no stroke (default): stroke_width = NULL\n\n",
-          "Examples:\n",
-          "  geom_pop(..., stroke_width = 1)      # Thin outline\n",
-          "  geom_pop(..., stroke_width = 5)      # Thick outline\n",
-          "  geom_pop(..., stroke_width = NULL)   # No outline (default)\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
-    # Value checks (NA, Inf, negative)
-    if (is.na(stroke_width) || !is.finite(stroke_width) || stroke_width < 0) {
-      stop(
-        paste0(
-          "[geom_pop] Invalid `stroke_width` value.\n\n",
-          "Why this is an error:\n",
-          "- `stroke_width` must be a non-negative finite number.\n",
-          "- You provided: ", stroke_width, "\n\n",
-          "Fix:\n",
-          "- Use a positive number: stroke_width = 2\n",
-          "- Use 0 or NULL for no stroke\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
-    # -------------------------------------------------
-    # SOFT WARNING: stroke_width extreme values
-    # -------------------------------------------------
-    if (stroke_width > 20) {
-      warning(
-        paste0(
-          "[geom_pop] Very large `stroke_width` value.\n\n",
-          "Why you are seeing this warning:\n",
-          "- stroke_width = ", stroke_width, " is unusually large.\n",
-          "- The stroke may overwhelm the icon fill, making it hard to see.\n\n",
-          "Typical values:\n",
-          "- Subtle outline: 1-2\n",
-          "- Medium outline: 3-5\n",
-          "- Bold outline: 6-10\n\n",
-          "If this is intentional, you can ignore this warning.\n"
-        ),
-        call. = FALSE
-      )
-    }
-  }
-  
-  
-  # -------------------------------------------------
-  # HARD STOP: dpi too low -> blurry icons
-  # -------------------------------------------------
-  if (is.numeric(dpi) && length(dpi) == 1 && !is.na(dpi) && is.finite(dpi)) {
-    if (dpi < 30) {
-      stop(
-        paste0(
-          "[geom_pop] `dpi = ", dpi, "` is too low.\n",
-          "Icons will look blurry when rendered with fontawesome::fa_png().\n\n",
-          "Fix:\n",
-          "- Use dpi >= 30 (recommended: 50-200 for crisp icons).\n",
-          "- If you want smaller icons, change `size`, not `dpi`.\n"
-        ),
-        call. = FALSE
-      )
-    }
-  }
-  
-  # -------------------------------------------------
-  # SOFT WARNING (single, ASCII-safe)
-  # -------------------------------------------------
-  `%||%` <- function(x, y) if (is.null(x) || !nzchar(as.character(x))) y else x
-  
-  facet_expr <- rlang::enexpr(facet)
-  
-  .has_multi_groups <- "group" %in% names(data) &&
-    dplyr::n_distinct(data$group) > 1
   
   .facet_explicit <- !(rlang::is_missing(facet_expr) || rlang::is_null(facet_expr))
   
-  .group_var_msg <- if (.facet_explicit) {
-    facet_col
-  } else if (.has_multi_groups) {
-    "group"
-  } else {
-    NULL
-  }
+  # Validate facet column exists
+  validate_facet_column(data, facet_col)
   
-  if (.has_multi_groups || .facet_explicit) {
-    warning(
-      paste0(
-        "[geom_pop] Facet / grouping caution.\n\n",
-        "Why you are seeing this warning:\n",
-        if (.has_multi_groups && !.facet_explicit) paste0(
-          "- The data contains multiple groups in data$group ",
-          "(often created by process_data(high_group_var = ...)).\n",
-          "  If the plot is not faceted, icons from different groups ",
-          "may overlap in the same panel.\n\n"
-        ) else "",
-        if (.facet_explicit) paste0(
-          "- You provided facet = ", facet_col, " inside geom_pop().\n",
-          "  Icons are positioned per ", facet_col, ".\n",
-          "  If the final plot is not faceted with facet_wrap() or facet_grid(), ",
-          "everything may render into a single panel.\n\n"
-        ) else "",
-        "Recommended patterns:\n",
-        if (!is.null(.group_var_msg)) paste0(
-          "- Facet in ggplot2:\n",
-          "  ggplot() + geom_pop(..., facet = ", .group_var_msg,
-          ") + facet_wrap(~ ", .group_var_msg, ")\n\n"
-        ) else "",
-        "- Alternative layout:\n",
-        "  Create one plot per subgroup and combine them with cowplot ",
-        "or patchwork.\n\n",
-        "If you want one pooled circle:\n",
-        "- Re-run process_data() without high_group_var.\n"
-      ),
-      call. = FALSE
-    )
-  }
+  # Validate facet consistency with plot
+  inferred_plot_facet <- infer_facet_var(plot_obj)
+  validate_facet_consistency(facet_col, inferred_plot_facet, .facet_explicit)
+  
+  # ==============================================================================
+  # VALIDATION: Aesthetic Mappings
+  # ==============================================================================
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
-  
-  # Combine inherited and layer mappings for checking
   combined_mapping <- c(inherited_mapping_list, mapping_list)
   
-  # -------------------------------------------------
-  # WARNING: size specified both in aes() and as argument
-  # -------------------------------------------------
-  if ("size" %in% names(combined_mapping) && !missing(size)) {
-    warning(
-      paste0(
-        "[geom_pop] `size` was provided both inside aes() and as a parameter.\n\n",
-        "What happens:\n",
-        "- `aes(size = <variable>)` controls icon size per row.\n",
-        "- The argument `geom_pop(aes(), size = ", size, ")` will be ignored.\n\n",
-        "Tip:\n",
-        "- Use ONLY `aes(size = <variable>)` for data-driven sizes, OR\n",
-        "- Remove `size` from aes() and set a fixed size via geom_pop(size = ...).\n"
-      ),
-      call. = FALSE
-    )
+  # NEW: Validate no image aesthetic
+  validate_no_image_aesthetic(mapping_list)
+  
+  # Validate icon aesthetic and get icon variable name
+  icon_var <- validate_all_aesthetics(mapping_list, inherited_mapping_list, data)
+  
+  # Validate icon column has valid values
+  validate_icon_column(data, icon_var)
+  
+  # ==============================================================================
+  # FIX: RENAME icon column to "icon" for consistency in rendering pipeline
+  # This ensures that aes(icon = icon_2) or aes(icon = my_icons) works correctly
+  # ==============================================================================
+  
+  if (!is.null(icon_var) && icon_var != "icon") {
+    data$icon <- data[[icon_var]]
   }
   
-  # -------------------------------------------------
-  # WARNING: stroke_width in aes() will be ignored
-  # -------------------------------------------------
-  if ("stroke_width" %in% names(combined_mapping)) {
-    
-    # Extract the value they tried to use
-    stroke_attempted <- tryCatch({
-      stroke_expr <- combined_mapping[["stroke_width"]]
-      if (rlang::is_symbol(stroke_expr)) {
-        paste0("<variable: ", rlang::as_name(stroke_expr), ">")
-      } else if (is.numeric(stroke_expr)) {
-        as.character(stroke_expr)
-      } else {
-        deparse(stroke_expr)
-      }
-    }, error = function(e) "<unknown>")
-    
-    warning(
-      paste0(
-        "[geom_pop] `stroke_width` inside aes() will be IGNORED.\n\n",
-        "What you did:\n",
-        "- You provided: aes(stroke_width = ", stroke_attempted, ")\n\n",
-        "Why this doesn't work:\n",
-        "- `stroke_width` is a PARAMETER, not an aesthetic.\n",
-        "- It must be specified OUTSIDE aes() to take effect.\n",
-        "- Values inside aes() are not applied to icon rendering.\n\n",
-        "Fix:\n",
-        "- Move stroke_width OUTSIDE aes():\n\n",
-        "Note:\n",
-        "- Variable stroke widths per row are not yet supported.\n",
-        "- All icons in one geom_pop() layer must have the same stroke_width.\n"
-      ),
-      call. = FALSE
-    )
-    
-    # Remove stroke_width from mapping so it doesn't interfere
-    mapping_list[["stroke_width"]] <- NULL
-    combined_mapping[["stroke_width"]] <- NULL
+  # Now ensure the mapping uses "icon" as the aesthetic name
+  if (!"icon" %in% names(mapping_list)) {
+    mapping_list[["icon"]] <- as.name("icon")
   }
   
-  # -------------------------------------------------
-  # HARD STOP: icon is mandatory (MOVED UP - CHECK BEFORE FALLBACK)
-  # -------------------------------------------------
-  icon_mapped  <- "icon" %in% names(combined_mapping)
-  has_icon_col <- "icon" %in% names(data)
+  # ==============================================================================
+  # DATA PREPARATION: Mode detection and type assignment
+  # ==============================================================================
   
-  # Don't allow silent fallback to data column - require explicit mapping
-  if (!icon_mapped) {
-    stop(
-      paste0(
-        "[geom_pop] No icon aesthetic specified.\n\n",
-        "Why this is an error:\n",
-        "- You must explicitly map the icon aesthetic.\n",
-        "- Even if your data has an 'icon' column, you must map it with aes(icon = icon).\n\n",
-        "Fix:\n",
-        "- Add aes(icon = <column_name>) to your geom_pop() call.\n\n",
-        "Examples:\n",
-        "  # Map to a column:\n",
-        "  geom_pop(aes(icon = icon, group = sex))\n\n",
-        "  # Map to a different column:\n",
-        "  geom_pop(aes(icon = icon_type, group = sex))\n\n",
-        "Common mistake:\n",
-        "  geom_pop(data = df, aes(group = sex))  # Missing icon mapping\n"
-      ),
-      call. = FALSE
-    )
-  }
-  
-  # Verify the mapped column exists
-  icon_var <- tryCatch(
-    rlang::as_name(combined_mapping[["icon"]]), 
-    error = function(e) NULL
-  )
-  
-  if (!is.null(icon_var) && !icon_var %in% names(data)) {
-    stop(
-      paste0(
-        "[geom_pop] Icon column not found in data.\n\n",
-        "Why this is an error:\n",
-        "- You mapped aes(icon = ", icon_var, "), but this column doesn't exist in your data.\n\n",
-        "Fix:\n",
-        "- Check your column name: names(data)\n",
-        "- Use the correct column name in aes(icon = ...)\n",
-        "- Or add the column to your data before calling geom_pop()\n"
-      ),
-      call. = FALSE
-    )
-  }
-  
-  if ("image" %in% names(mapping_list)) {
-    stop("Please do not specify the 'image' aesthetic directly. Use 'icon' instead.")
-  }
-  
-  
-  # -------------------------------------------------
-  # MODE DETECTION (keep process_data users working; support raw users too)
-  # -------------------------------------------------
   processed_mode <- "type" %in% names(data)
   
   if (!processed_mode) {
+    # Raw data mode - need grouping variable
+    validate_raw_data_grouping(data, mapping_list, inherited_mapping_list)
     
-    # FIXED: Check COMBINED mapping (inherited + layer)
+    # Get grouping variable
     .get_mapped_var <- function(aes_name) {
       if (aes_name %in% names(combined_mapping)) {
         tryCatch(rlang::as_name(combined_mapping[[aes_name]]), error = function(e) NULL)
@@ -641,137 +221,73 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       }
     }
     
+    `%||%` <- function(x, y) if (is.null(x) || !nzchar(as.character(x))) y else x
+    
     group_var_m <- .get_mapped_var("group")
-    col_var_m   <- .get_mapped_var("colour")
+    col_var_m <- .get_mapped_var("colour")
     if (is.null(col_var_m)) col_var_m <- .get_mapped_var("color")
     
     src_var <- group_var_m %||% col_var_m
     
-    if (is.null(src_var)) {
-      stop(
-        paste0(
-          "[geom_pop] Raw data detected.\n\n",
-          "Why this is an error:\n",
-          "- Your data was not created with `process_data()`.\n",
-          "- `geom_pop()` needs a grouping variable to build the circle layout.\n\n",
-          "Fix:\n",
-          "- Map `aes(group = <variable>)` (recommended), OR\n",
-          "- Map `aes(color = <variable>)`.\n\n",
-          "Example:\n",
-          "  ggplot() +\n",
-          "    geom_pop(\n",
-          "      data = df,\n",
-          "      aes(icon = icon, group = sex),\n",
-          "      size = 4\n",
-          "    )\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
-    if (!src_var %in% names(data)) {
-      stop(
-        paste0(
-          "[geom_pop] Raw data detected, but mapped grouping variable '", src_var,
-          "' was not found in `data`.\n",
-          "Fix: ensure the column exists or update your aes().\n"
-        ),
-        call. = FALSE
-      )
-    }
-    
+    # Assign type from grouping variable
     data$type <- as.character(data[[src_var]])
   }
   
+  # ==============================================================================
+  # WARNINGS: Soft checks
+  # ==============================================================================
   
-  # -------------------------------------------------
-  # HARD STOP: reserved column names in data
-  # -------------------------------------------------
-  reserved_cols <- c("x1", "y1", "pos", "image", "coord_size", "icon_size", "icon_stroke_width")
-  user_cols <- names(data)
-  conflicts <- intersect(reserved_cols, user_cols)
-  
-  if (length(conflicts) > 0) {
-    stop(
-      paste0(
-        "[geom_pop] Reserved column name(s) detected in data.\n\n",
-        "Why this is an error:\n",
-        "- Your data contains column(s): ", paste(conflicts, collapse = ", "), "\n",
-        "- These are internal column names used by geom_pop() for positioning and rendering.\n",
-        "- Using these names will cause coordinate calculation failures or visual errors.\n\n",
-        "Reserved column names:\n",
-        "- x1, y1        (icon coordinates)\n",
-        "- pos           (icon position index)\n",
-        "- image         (PNG file path)\n",
-        "- coord_size    (coordinate lookup key)\n",
-        "- icon_size     (internal size calculation)\n",
-        "- icon_stroke_width (internal stroke calculation)\n\n",
-        "Fix:\n",
-        "- Rename the conflicting column(s) in your data:\n",
-        if (length(conflicts) == 1) {
-          paste0("  data <- data %>% rename(", conflicts[1], "_orig = ", conflicts[1], ")\n")
-        } else {
-          paste0("  data <- data %>% rename(\n",
-                 paste0("    ", conflicts, "_orig = ", conflicts, collapse = ",\n"),
-                 "\n  )\n")
-        },
-        "\n",
-        "Example:\n",
-        "  # Before:\n",
-        "  df <- data.frame(sex = c('M', 'F'), pos = c(1, 2))  # 'pos' conflicts\n\n",
-        "  # After:\n",
-        "  df <- df %>% rename(position = pos)  # Renamed\n",
-        "  ggplot() + geom_pop(data = df, aes(icon = icon, group = sex))\n"
-      ),
-      call. = FALSE
-    )
-  }
-  
-  validate_geom_pop_inputs(data, mapping_list, icon, size, dpi, inherited_data)
-  
-  warn_geom_pop_inputs(
-    data,
-    mapping_list,
-    inherited_mapping_list,
-    icon          = icon,
-    missing_size  = .missing_size,
-    size          = size,
-    legend_icons  = legend_icons,
-    dpi           = dpi,
-    arrange       = arrange
+  warn_all_geom_pop(
+    combined_mapping = combined_mapping,
+    missing_size = .missing_size,
+    size = size,
+    data = data,
+    facet_explicit = .facet_explicit,
+    facet_col = facet_col,
+    dots = dots 
   )
   
-  if (!"icon" %in% names(mapping_list)) mapping_list[["icon"]] <- as.name("icon")
+  # ==============================================================================
+  # SIZE HANDLING
+  # ==============================================================================
   
-  # size  (icon_size to avoid collision with coord size)
+  # Handle size aesthetic vs parameter
   if ("size" %in% names(combined_mapping)) {
     size_var <- if ("size" %in% names(mapping_list)) {
       rlang::as_name(mapping_list[["size"]])
     } else {
       rlang::as_name(inherited_mapping_list[["size"]])
     }
-    if (!size_var %in% names(data)) stop(paste0("Variable '", size_var, "' used for size not found in the dataset."))
-    data$icon_size <- data[[size_var]] * 0.0075
+    
+    if (!size_var %in% names(data)) {
+      cli::cli_abort(
+        "Variable {.field {size_var}} used for size not found in the dataset."
+      )
+    }
+    
+    data$icon_size <- data[[size_var]] * 0.03
     mapping_list[["size"]] <- NULL
   } else {
-    data$icon_size <- size * 0.0075
+    data$icon_size <- size * 0.03
   }
   
-  # If user didn't pass facet=, but data has multiple `group`s, treat as faceting by `group`
+  # ==============================================================================
+  # FACETING FINALIZATION
+  # ==============================================================================
+  
+  # Auto-detect multi-group data as faceted
   if (!has_facet && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1) {
     has_facet <- TRUE
     facet_col <- "group"
   }
   
-  # -------------------------------------------------
+  # ==============================================================================
+  # DATA ARRANGEMENT & POSITIONING
+  # ==============================================================================
+  
   # Randomize order when arrange = FALSE (seedable)
-  # -------------------------------------------------
   if (!isTRUE(arrange)) {
-    
     if (!is.null(seed)) {
-      if (!is.numeric(seed) || length(seed) != 1 || is.na(seed)) {
-        stop("[geom_pop] `seed` must be a single numeric value.", call. = FALSE)
-      }
       set.seed(seed)
     }
     
@@ -785,6 +301,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     }
   }
   
+  # Assign position numbers
   if (!has_facet) {
     data <- data %>%
       dplyr::mutate(pos = as.numeric(dplyr::row_number()))
@@ -795,38 +312,15 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       dplyr::ungroup()
   }
   
-  # ---- ENFORCE MAX ICONS ----
-  MAX_ICONS <- 1000L
+  # ==============================================================================
+  # VALIDATION: Maximum icons check
+  # ==============================================================================
   
-  if (!has_facet) {
-    n_icons <- dplyr::n_distinct(data$pos)
-    if (n_icons > MAX_ICONS) {
-      stop(
-        sprintf(
-          "[geom_pop] Too many icons requested (%d). Max is %d.\n  Fix: reduce `sample_size` in `process_data(..., sample_size = %d)`.",
-          n_icons, MAX_ICONS, MAX_ICONS
-        ),
-        call. = FALSE
-      )
-    }
-  } else {
-    per_group <- data %>%
-      dplyr::group_by(.data[[facet_col]]) %>%
-      dplyr::summarise(n_icons = dplyr::n_distinct(pos), .groups = "drop")
-    
-    too_big <- per_group %>% dplyr::filter(n_icons > MAX_ICONS)
-    
-    if (nrow(too_big) > 0) {
-      bad <- paste0(too_big[[facet_col]], " (", too_big$n_icons, ")", collapse = ", ")
-      stop(
-        sprintf(
-          "[geom_pop] Too many icons in facet group(s). Max is %d per group.\n  Offenders: %s\n  Fix: reduce `sample_size` per group in `process_data(..., high_group_var = ..., sample_size = %d)`.",
-          MAX_ICONS, bad, MAX_ICONS
-        ),
-        call. = FALSE
-      )
-    }
-  }
+  validate_max_icons(data, has_facet, facet_col, max_icons = 1000L)
+  
+  # ==============================================================================
+  # COORDINATE SYSTEM: Fetch and merge
+  # ==============================================================================
   
   sample_size <- length(unique(data$pos))
   
@@ -840,8 +334,11 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   has_np <- all(c("n", "prop") %in% names(data))
   
+  # ==============================================================================
+  # ARRANGEMENT LOGIC (if arrange = TRUE)
+  # ==============================================================================
+  
   if (!is.null(data) && arrange && !has_facet) {
-    
     if (has_np) df_order <- data %>% dplyr::select(n, prop)
     
     data <- data %>%
@@ -864,7 +361,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     df_merged <- dplyr::left_join(df_coordinates_filtered, data, by = "pos")
     
   } else if (!is.null(data) && arrange && has_facet) {
-    
     if (has_np) df_order <- data %>% dplyr::select(n, prop)
     
     data <- data %>%
@@ -902,7 +398,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     )
     
   } else if (!is.null(data) && !arrange && has_facet) {
-    
     data <- data %>%
       dplyr::group_by(.data[[facet_col]]) %>%
       dplyr::mutate(pos = dplyr::row_number()) %>%
@@ -931,83 +426,31 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     )
   }
   
-  # Final data
+  # ==============================================================================
+  # FINAL DATA PREPARATION
+  # ==============================================================================
+  
   df_final <- df_merged %>% dplyr::filter(!is.na(.data$type))
   
+  # Validate coordinates exist
   if (!"x1" %in% names(df_final) || !"y1" %in% names(df_final)) {
-    stop("x1 or y1 columns are missing after merging. Check that pos matches between data and df_coordinates_final.")
-  }
-  
-  # -------------------------------------------------
-  # HARD STOP: missing / empty icons are not allowed
-  # -------------------------------------------------
-  if ("icon" %in% names(df_final)) {
-    bad_icon <- is.na(df_final$icon) | !nzchar(as.character(df_final$icon))
-    if (any(bad_icon)) {
-      n_bad <- sum(bad_icon)
-      stop(
-        paste0(
-          "[geom_pop] Invalid icon values detected.\n\n",
-          "Found ", n_bad, " row(s) with missing or empty `icon` values.\n\n",
-          "Fix:\n",
-          "- Ensure `icon` is non-missing for all rows.\n"
-        ),
-        call. = FALSE
+    cli::cli_abort(
+      c(
+        "x1 or y1 columns are missing after merging.",
+        "i" = "Check that pos matches between data and df_coordinates_final."
       )
-    }
-  }
-  
-  # -------------------------------------------------
-  # HARD STOP: alpha must be in aes(), not as parameter
-  # -------------------------------------------------
-  if ("alpha" %in% names(list(...))) {
-    stop(
-      paste0(
-        "[geom_pop] `alpha` cannot be used as a parameter.\n\n",
-        "Why this is an error:\n",
-        "- `alpha` must be mapped inside aes() to work correctly with icon coloring.\n",
-        "- Parameter-based alpha creates conflicts between PNG transparency and rendering.\n\n",
-        "Fix:\n",
-        "- For fixed transparency, add an alpha column:\n",
-        "  data$alpha_val <- 0.5\n",
-        "  geom_pop(aes(icon = icon, group = sex, color = sex, alpha = alpha_val))\n\n",
-        "- For variable transparency:\n",
-        "  geom_pop(aes(icon = icon, group = sex, color = sex, alpha = confidence))\n\n",
-        "- If you want get rid of alpha legend entries, use `guides(alpha = `none`)`.\n"
-      ),
-      call. = FALSE
     )
   }
   
+  # ==============================================================================
+  # ICON RENDERING: Generate PNG paths with caching
+  # ==============================================================================
   
-  # -------------------------------------------------
-  # HARD STOP: fill aesthetic is not supported
-  # -------------------------------------------------
-  if ("fill" %in% names(combined_mapping)) {
-    stop(
-      paste0(
-        "[geom_pop] `fill` aesthetic is not supported.\n\n",
-        "Why this is an error:\n",
-        "- To keep the API simple, only `color` or `colour` are supported for icon coloring.\n",
-        "- FontAwesome icons are colored via the `fill` parameter internally, but we map\n",
-        "  the `color` aesthetic to it.\n\n",
-        "Fix:\n",
-        "- Use `aes(color = <variable>)` or `aes(colour = <variable>)` instead.\n\n",
-        "Example:\n",
-        "  geom_pop(aes(icon = icon, group = sex, color = sex))  # Correct\n",
-        "  geom_pop(aes(icon = icon, group = sex, fill = sex))   # Not allowed\n"
-      ),
-      call. = FALSE
-    )
-  }
-  
-  # -------------------------------------------------
   # Capture parameters in local scope BEFORE rowwise
-  # -------------------------------------------------
-  local_stroke_width <- stroke_width  # DEFINE HERE, BEFORE df_final pipe
+  local_stroke_width <- stroke_width
   local_dpi <- dpi
   
-  # ---- build per-row PNG path with color + alpha + stroke support ----
+  # Build per-row PNG path with color + alpha + stroke support
   df_final <- df_final %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
@@ -1016,7 +459,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         if (is.na(this_icon) || !nzchar(this_icon)) {
           NA_character_
         } else {
-          
           # Get color from aes mapping
           this_color <- if ("colour" %in% names(.)) {
             as.character(.data$colour)
@@ -1046,9 +488,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
           # Apply alpha to color for fill
           rgb_vals <- grDevices::col2rgb(this_color) / 255
           rgba_color <- grDevices::rgb(
-            rgb_vals[1], 
-            rgb_vals[2], 
-            rgb_vals[3], 
+            rgb_vals[1],
+            rgb_vals[2],
+            rgb_vals[3],
             alpha = this_alpha
           )
           
@@ -1058,7 +500,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
           # Build cache key with color, alpha, stroke, AND DPI
           color_hex <- gsub("#", "", this_color)
           alpha_str <- sprintf("%.2f", this_alpha)
-          dpi_str <- sprintf("%.0f", local_dpi)  
+          dpi_str <- sprintf("%.0f", local_dpi)
           
           cache_parts <- c(
             this_icon,
@@ -1067,31 +509,31 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
             paste0("d", dpi_str)
           )
           
-          # Add stroke to cache key if provided (use LOCAL variable)
+          # Add stroke to cache key if provided
           if (!is.null(local_stroke_width) && local_stroke_width > 0) {
             stroke_color_for_cache <- color_hex  # Same as fill color
             cache_parts <- c(
-              cache_parts, 
+              cache_parts,
               paste0("sw", local_stroke_width),
               paste0("sc", stroke_color_for_cache)
             )
           }
           
           png_path <- file.path(
-            cache_dir, 
+            cache_dir,
             paste0(paste(cache_parts, collapse = "_"), ".png")
           )
           
-          # Generate PNG if not cached (use LOCAL variables)
+          # Generate PNG if not cached
           if (!file.exists(png_path)) {
             if (!is.null(local_stroke_width) && local_stroke_width > 0) {
-              # With stroke - SAME COLOR AS FILL
+              # With stroke - same color as fill
               fontawesome::fa_png(
                 this_icon,
                 file = png_path,
                 height = local_dpi,
                 fill = rgba_color,
-                stroke = rgba_color,  # Same color as fill
+                stroke = rgba_color,
                 stroke_width = local_stroke_width
               )
             } else {
@@ -1111,9 +553,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ) %>%
     dplyr::ungroup()
   
-  # -------------------------------------------------
-  # LEGEND (FIXED): map icons by the ACTUAL legend variable
-  # -------------------------------------------------
+  # ==============================================================================
+  # LEGEND SETUP: Map icons by legend variable
+  # ==============================================================================
+  
   .get_mapped_var2 <- function(aes_name) {
     if (aes_name %in% names(mapping_list)) {
       tryCatch(rlang::as_name(mapping_list[[aes_name]]), error = function(e) NULL)
@@ -1126,6 +569,14 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   if (is.null(legend_var)) legend_var <- .get_mapped_var2("color")
   if (is.null(legend_var)) legend_var <- .get_mapped_var2("group")
   if (is.null(legend_var) || !legend_var %in% names(df_final)) legend_var <- "type"
+  
+  # ==============================================================================
+  # WARNING: Multiple icons per legend group
+  # FIX: In df_final, the icon column is ALWAYS named "icon" (standardized)
+  # ==============================================================================
+  
+  warn_multiple_icons_per_group(df_final, legend_var, "icon")
+  
   
   icon_by_legend <- df_final %>%
     dplyr::mutate(
@@ -1144,13 +595,14 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   icon_by_legend <- stats::setNames(icon_by_legend$icon, icon_by_legend$.legend)
   
-  # -------------------------------------------------
-  # LEGEND: Capture stroke_width for key glyph
-  # -------------------------------------------------
-  local_stroke_width_for_legend <- stroke_width  # Capture in outer scope
+  # ==============================================================================
+  # LEGEND KEY GLYPH: Custom icon rendering
+  # ==============================================================================
+  
+  # Capture stroke_width for key glyph
+  local_stroke_width_for_legend <- stroke_width
   
   key_glyph_pop <- function(key_data, params, size) {
-    
     if (!("colour" %in% names(key_data)) && ("color" %in% names(key_data))) {
       key_data$colour <- key_data$color
     }
@@ -1202,6 +654,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     draw_key_pop_image(key_data, params, size, stroke_width = local_stroke_width_for_legend)
   }
   
+  # ==============================================================================
+  # FINAL MAPPING & LAYER CONSTRUCTION
+  # ==============================================================================
+  
   mapping_list[["image"]] <- as.name("image")
   mapping_list[["x"]]     <- as.name("x1")
   mapping_list[["y"]]     <- as.name("y1")
@@ -1230,14 +686,11 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
   
-  # Tag the layer so your validator can enforce faceting on the FINAL plot
+  # Tag the layer so validator can enforce faceting on the FINAL plot
   layer_out$params$.ggpop_facet <- if (.facet_explicit) facet_col else NULL
   
   structure(
     list(layer = layer_out, facet_col = if (.facet_explicit) facet_col else NULL),
     class = "ggpop_geom_pop"
   )
-  
 }
-
-
