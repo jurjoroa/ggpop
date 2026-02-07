@@ -35,8 +35,6 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # ==============================================================================
   if (!is.null(mapping) && !inherits(mapping, "uneval") &&
       (is.data.frame(mapping) || (is.list(mapping) && !inherits(mapping, "uneval")))) {
-    # User did: geom_icon_point(df, aes(...))
-    # Swap them
     temp <- mapping
     mapping <- data
     data <- temp
@@ -129,26 +127,67 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     ))
   }
   
-  # Add icon to data ONLY if parameter was provided
-  if (has_icon_param && !"icon" %in% names(data)) {
+  # ==============================================================================
+  # FIX: Extract the ACTUAL icon variable name from the mapping
+  # ==============================================================================
+  
+  # Get the icon variable name (e.g., "icon_2", not "icon")
+  icon_var <- if (icon_mapped) {
+    if ("icon" %in% names(mapping_list)) {
+      tryCatch(rlang::as_name(mapping_list[["icon"]]), error = function(e) NULL)
+    } else if ("icon" %in% names(inherited_mapping_list)) {
+      tryCatch(rlang::as_name(inherited_mapping_list[["icon"]]), error = function(e) NULL)
+    } else {
+      NULL
+    }
+  } else {
+    NULL
+  }
+  
+  # Add icon to data ONLY if parameter was provided AND icon not already in data
+  if (has_icon_param && is.null(icon_var)) {
+    # User provided icon = "circle" parameter
     data$icon <- icon
+    icon_var <- "icon"
+  }
+  
+  # Validate that the icon variable exists in data
+  if (!is.null(icon_var) && !icon_var %in% names(data)) {
+    cli::cli_abort(c(
+      "Icon column not found in data.",
+      "x" = "You mapped {.code aes(icon = {icon_var})}, but this column doesn't exist.",
+      " " = "",
+      "i" = "Available columns:",
+      " " = "  {.field {names(data)}}",
+      " " = "",
+      "i" = "Fix:",
+      " " = "  - Check your column name: {.code names(data)}",
+      " " = "  - Use the correct column name in {.code aes(icon = ...)}",
+      " " = "  - Or add the column to your data before calling {.fn geom_icon_point}"
+    ))
   }
   
   # Add icon mapping
   if (!"icon" %in% names(mapping_list)) {
     if ("icon" %in% names(inherited_mapping_list)) {
       mapping_list[["icon"]] <- inherited_mapping_list[["icon"]]
-    } else if (has_icon_param) {
-      mapping_list[["icon"]] <- as.name("icon")
+    } else if (!is.null(icon_var)) {
+      mapping_list[["icon"]] <- as.name(icon_var)
     } else {
       cli::cli_abort("Internal error: No icon mapping available.")
     }
   }
   
-  # Validate icon column has valid values
-  if ("icon" %in% names(data)) {
-    icon_var <- "icon"
+  # Validate icon column has valid values using the ACTUAL variable name
+  if (!is.null(icon_var)) {
     validate_icon_column(data, icon_var)
+  }
+  
+  # ==============================================================================
+  # RENAME icon column to "icon" for consistency in rendering pipeline
+  # ==============================================================================
+  if (!is.null(icon_var) && icon_var != "icon") {
+    data$icon <- data[[icon_var]]
   }
   
   # ==============================================================================
@@ -332,7 +371,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # ==============================================================================
   
   key_glyph_icon_point <- function(key_data, params, size) {
-    if (!("colour" %in% names(key_data)) && ("color" %in% names(key_data))) {
+    if (!("colour" %in% names(key_data)) & ("color" %in% names(key_data))) {
       key_data$colour <- key_data$color
     }
     
