@@ -55,3 +55,33 @@ ggplot_add.ggpop_geom_pop <- function(object, plot, object_name, ...) {
 
   plot
 }
+
+
+#' @export
+ggplot_add.ggpop_icon_point_layer <- function(object, plot, object_name) {
+  plot$layers <- append(plot$layers, list(object))
+  
+  vals <- vapply(plot$layers, function(l) {
+    if (inherits(l, "ggpop_icon_point_layer") &&
+        identical(l$ggpop_layer_type, "icon_point")) {
+      isTRUE(l$ggpop_legend_icons)
+    } else {
+      NA
+    }
+  }, logical(1), USE.NAMES = FALSE)
+  
+  vals <- vals[!is.na(vals)]
+  
+  if (length(vals) > 1 && any(vals) && any(!vals)) {
+    cli::cli_abort(
+      c(
+        "{.fn geom_icon_point}: mixed {.field legend_icons} settings detected.",
+        "x" = "Some {.fn geom_icon_point} layers use {.val TRUE} and others use {.val FALSE}.",
+        "i" = "Use consistent settings across all {.fn geom_icon_point} layers."
+      ),
+      call = NULL
+    )
+  }
+  
+  plot
+}
