@@ -551,29 +551,5 @@ testthat::test_that("Pattern comparison: high dpi (mixed)", {
 })
 
 # ******************************************************************************
-## 03.10 Two geom figures in same plot
-# ******************************************************************************
-
-### 03.10.01 legend_icons mixed settings warning --------------------------------
-
-testthat::test_that("Warning: Mixed legend_icons settings across layers 1st object", {
-  testthat::expect_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
-      geom_icon_point(legend_icons = FALSE) +
-      geom_icon_point(ggplot2::aes(size = point_size), legend_icons = TRUE)
-  )
-})
-
-
-testthat::test_that("Warning: Mixed legend_icons settings across layers 2nd object", {
-  testthat::expect_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
-      geom_icon_point(legend_icons = TRUE) +
-      geom_icon_point(ggplot2::aes(size = point_size), legend_icons = FALSE),
-    regexp = "Mixed legend_icons settings"
-  )
-})
-
-# ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************

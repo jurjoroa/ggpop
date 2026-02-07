@@ -601,6 +601,27 @@ testthat::test_that("Error: invalid legend_icons parameter (NA)", {
   )
 })
 
+
+### 03.07.02 Mixed legend_icons settings across layers --------------------------------
+
+testthat::test_that("Error: Mixed legend_icons settings across layers 1st object", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
+      geom_icon_point(legend_icons = FALSE) +
+      geom_icon_point(ggplot2::aes(size = point_size), legend_icons = TRUE)
+  )
+})
+
+
+testthat::test_that("Error: Mixed legend_icons settings across layers 2nd object", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
+      geom_icon_point(legend_icons = TRUE) +
+      geom_icon_point(ggplot2::aes(size = point_size), legend_icons = FALSE)
+  )
+})
+
+
 # ******************************************************************************
 ## 03.08 Real-world error scenarios --------------------------------------------
 # ******************************************************************************
