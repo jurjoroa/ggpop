@@ -100,7 +100,6 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # ==============================================================================
   warn_size_conflict(combined_mapping, .missing_size, size)
   warn_alpha_conflict(combined_mapping, extra_args)
-  warn_mixed_legend_icons(legend_icons)
   
   # ==============================================================================
   # ICON HANDLING
@@ -455,10 +454,13 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
   
-  # Pass params to layer for key glyph access
   layer_out$geom_params$icon_by_legend <- icon_by_legend
   layer_out$geom_params$plot_obj <- plot_obj
   layer_out$geom_params$dpi <- dpi
+  
+  layer_out$ggpop_layer_type <- "icon_point"
+  layer_out$ggpop_legend_icons <- isTRUE(legend_icons)
+  class(layer_out) <- c("ggpop_icon_point_layer", class(layer_out))
   
   layer_out
 }
