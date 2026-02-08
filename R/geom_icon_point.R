@@ -32,9 +32,31 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
   validate_size(size, missing(size))
   validate_legend_icons(legend_icons)
   
-  build_id <- paste0("ggpop_", as.integer(Sys.time()), "_", paste(sample(c(letters, 0:9), 8, TRUE), collapse = ""))
+  build_id <- paste0("ggpop_", as.integer(Sys.time()), "_", 
+                     paste(sample(c(letters, 0:9), 8, TRUE), collapse = ""))
   
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
+  
+  # CHECK FOR SIZE CONFLICT BEFORE OVERWRITING
+  # We check the layer's mapping_list here (won't catch ggplot-level inheritance)
+  user_mapped_size_in_layer <- "size" %in% names(mapping_list)
+  
+  if (user_mapped_size_in_layer && !missing(size)) {
+    cli::cli_warn(c(
+      "`size` specified both in {.code aes()} and as a parameter.",
+      " " = "",
+      "!" = "What happens:",
+      " " = "  - {.code aes(size = <variable>)} would control icon size per point",
+      " " = "  - But the parameter {.code size = {size}} will OVERRIDE it",
+      " " = "",
+      "i" = "Fix - choose one approach:",
+      " " = "  Option 1: Data-driven sizes (remove size parameter)",
+      " " = "    {.code geom_icon_point(aes(icon = icon, size = point_size))}",
+      " " = "",
+      " " = "  Option 2: Fixed size (remove size from aes)",
+      " " = "    {.code geom_icon_point(aes(icon = icon), size = 2)}"
+    ))
+  }
   
   # Store original color/category for legend lookup
   if ("colour" %in% names(mapping_list)) {
@@ -45,7 +67,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
   
   # These are computed by StatIconPoint
   mapping_list[["image"]] <- rlang::expr(ggplot2::after_stat(image))
-  mapping_list[["size"]]  <- rlang::expr(ggplot2::after_stat(icon_size))
+  mapping_list[["size"]]  <- rlang::expr(ggplot2::after_stat(icon_size))  # This overwrites user's size mapping!
   
   final_mapping <- do.call(ggplot2::aes, mapping_list)
   

@@ -1456,6 +1456,56 @@ warn_mixed_legend_icons <- function(legend_icons) {
   invisible(NULL)
 }
 
+
+# ******************************************************************************
+## 06.08 Size Conflict for geom_icon_point -------------------------------------
+# ******************************************************************************
+
+#' Warn about size specified both in aes() and as parameter for geom_icon_point
+#' 
+#' @param size_mapped Logical - is size mapped in aes()?
+#' @param size_param Size parameter value
+#' @param size_missing Logical - was size parameter missing?
+#' @return Invisible NULL
+#' @keywords internal
+#' @noRd
+warn_size_conflict_icon_point <- function(size_mapped, size_param, size_missing) {
+  
+  # DEBUG
+  message("DEBUG in warn_size_conflict_icon_point:")
+  message("  size_mapped: ", size_mapped, " (class: ", class(size_mapped), ")")
+  message("  size_missing: ", size_missing, " (class: ", class(size_missing), ")")
+  message("  size_param: ", size_param)
+  
+  # Ensure they are logical
+  size_mapped <- isTRUE(size_mapped)
+  size_missing <- isTRUE(size_missing)
+  
+  message("  After isTRUE:")
+  message("  size_mapped: ", size_mapped)
+  message("  size_missing: ", size_missing)
+  
+  # Warn if both mapped AND provided as parameter
+  if (size_mapped && !size_missing) {
+    cli::cli_warn(c(
+      "`size` specified both in {.code aes()} and as a parameter.",
+      " " = "",
+      "!" = "What happens:",
+      " " = "  - {.code aes(size = <variable>)} would control icon size per point",
+      " " = "  - But the parameter {.code size = {size_param}} will OVERRIDE it",
+      " " = "",
+      "i" = "Fix - choose one approach:",
+      " " = "  Option 1: Data-driven sizes (remove size parameter)",
+      " " = "    {.code geom_icon_point(aes(icon = icon, size = point_size))}",
+      " " = "",
+      " " = "  Option 2: Fixed size (remove size from aes)",
+      " " = "    {.code geom_icon_point(aes(icon = icon), size = 2)}"
+    ))
+  }
+  
+  invisible(NULL)
+}
+
 # ******************************************************************************
 # 07 Composite validators ------------------------------------------------------
 # ******************************************************************************

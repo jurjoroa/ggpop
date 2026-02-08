@@ -67,11 +67,8 @@ df_scatter_no_icon <- data.frame(
 
 testthat::test_that("Warning: size in aes() overrides geom param (ggplot pattern)", {
   testthat::expect_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size, color = category)) +
-      geom_icon_point(
-        size = 10,
-        dpi  = 100
-      )
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+      geom_icon_point(ggplot2::aes(size = point_size), dpi = 100)
   )
 })
 
