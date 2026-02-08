@@ -9,6 +9,8 @@ if (getRversion() >= "2.15.1") {
 # This avoids polluting .GlobalEnv and passes R CMD CHECK
 .ggpop_env <- new.env(parent = emptyenv())
 
+.ggpop_env$legend_icon_map <- new.env(parent = emptyenv())  # build_id -> named character vector
+
 .onLoad <- function(libname, pkgname) {
   # Suppress additional dplyr-generated variables
   utils::globalVariables(c(".legend"))
@@ -25,3 +27,6 @@ if (getRversion() >= "2.15.1") {
     rm(list = "legend_settings", envir = .ggpop_env)
   }
 }
+
+
+
