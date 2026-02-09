@@ -5,7 +5,7 @@ StatIconPoint <- ggplot2::ggproto(
   required_aes = c("x", "y"),
   
   compute_panel = function(data, scales,
-                           icon = NULL, size = 1, dpi = 50,
+                           icon = NULL, size_param = 1, dpi = 50,
                            legend_icons = TRUE,
                            build_id = NULL) {
     
@@ -28,13 +28,15 @@ StatIconPoint <- ggplot2::ggproto(
       data$icon <- as.character(icon)
     }
     
-    # ---- size handling ----
-    if ("size" %in% names(data)) {
-      # When size is mapped as an aesthetic, scale it way down
-      data$icon_size <- data$size * 0.002
-    } else {
-      # When size is a parameter, scale it down so size=1 looks normal
-      data$icon_size <- size * 0.03  # Adjust this multiplier to taste
+    # ---- size handling (for inherited data) ----
+    if (!("icon_size" %in% names(data))) {
+      if ("size" %in% names(data)) {
+        # Size was mapped in ggplot() call
+        data$icon_size <- data$size * 0.03
+      } else {
+        # Use parameter
+        data$icon_size <- size_param * 0.03
+      }
     }
     
     # ---- compute image paths (cached) ----
@@ -134,14 +136,6 @@ StatIconPoint <- ggplot2::ggproto(
             ),
             category_to_id = id_map
           )
-          
-          message("\n=== STAT DEBUG ===")
-          message("Categories in order: ", paste(categories_ordered, collapse = ", "))
-          message("Icon map by ID:")
-          print(icon_map$by_id)
-          message("Image map by ID (first 50 chars):")
-          print(sapply(icon_map$images_by_id, function(x) substr(x, 1, 50)))
-          message("==================\n")
           
           assign(as.character(build_id), icon_map, envir = .ggpop_env$legend_icon_map)
         }
