@@ -60,7 +60,7 @@ the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{ann
 
 \item{icon}{Default Font Awesome icon (default: NULL).}
 
-\item{size}{Default icon size (default: 3).}
+\item{size}{Default icon size (default: 1).}
 
 \item{dpi}{Icon resolution (default: 50).}
 
