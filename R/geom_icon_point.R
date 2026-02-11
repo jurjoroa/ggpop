@@ -349,13 +349,11 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
       na.rm      = na.rm,
       by         = "width",
       asp        = 1,
-      key_glyph  = if (legend_icons) key_glyph_icon_point else key_fn,
-      ...
-    ),
-    stat_params  = list(
       dpi        = dpi,
       size_param = size,
-      size_var   = size_var
+      size_var   = size_var,
+      key_glyph  = if (legend_icons) key_glyph_icon_point else key_fn,
+      ...
     )
   )
   
