@@ -404,7 +404,11 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
   
   final_mapping <- do.call(ggplot2::aes, mapping_list)
   
+  # Extract icon_size before removing it from data
   size_internal <- data$icon_size
+  
+  # Remove icon_size from data to prevent it from appearing in legends
+  data$icon_size <- NULL
   
   key_fn <- function(data, params, size = 5) {
     data$size <- 5
