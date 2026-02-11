@@ -179,8 +179,9 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
   }
   
   # ==============================================================================
-  # SIZE HANDLING
+  # SIZE HANDLING - Prepare size variable name for stat
   # ==============================================================================
+  size_var <- NULL
   if ("size" %in% names(combined_mapping)) {
     size_var <- if ("size" %in% names(mapping_list)) {
       rlang::as_name(mapping_list[["size"]])
@@ -192,89 +193,15 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
       cli::cli_abort("Variable {.field {size_var}} used for size not found in the dataset.")
     }
     
-    data$icon_size <- data[[size_var]] * 0.03
+    # Remove size from mapping - it will be computed by StatIconPoint
     mapping_list[["size"]] <- NULL
-  } else {
-    data$icon_size <- size * 0.03
   }
   
   # ==============================================================================
-  # ICON RENDERING: Generate PNG paths with caching
+  # ICON RENDERING: Prepare for StatIconPoint
   # ==============================================================================
-  local_dpi <- dpi
-  
-  data <- data %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(
-      image = {
-        this_icon <- as.character(.data$icon)
-        if (is.na(this_icon) || !nzchar(this_icon)) {
-          NA_character_
-        } else {
-          this_color <- if ("colour" %in% names(.)) {
-            as.character(.data$colour)
-          } else if ("color" %in% names(.)) {
-            as.character(.data$color)
-          } else {
-            "black"
-          }
-          
-          this_alpha <- if ("alpha" %in% names(.)) {
-            as.numeric(.data$alpha)
-          } else {
-            1.0
-          }
-          
-          this_color <- tryCatch({
-            if (is.na(this_color) || !nzchar(this_color)) {
-              "#000000"
-            } else {
-              rgb_vals <- grDevices::col2rgb(this_color) / 255
-              grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
-            }
-          }, error = function(e) "#000000")
-          
-          rgb_vals <- grDevices::col2rgb(this_color) / 255
-          rgba_color <- grDevices::rgb(
-            rgb_vals[1],
-            rgb_vals[2],
-            rgb_vals[3],
-            alpha = this_alpha
-          )
-          
-          cache_dir <- file.path(tempdir(), "ggpop-icons")
-          if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
-          
-          color_hex <- gsub("#", "", this_color)
-          alpha_str <- sprintf("%.2f", this_alpha)
-          dpi_str <- sprintf("%.0f", local_dpi)
-          
-          cache_parts <- c(
-            this_icon,
-            paste0("c", color_hex),
-            paste0("a", alpha_str),
-            paste0("d", dpi_str)
-          )
-          
-          png_path <- file.path(
-            cache_dir,
-            paste0(paste(cache_parts, collapse = "_"), ".png")
-          )
-          
-          if (!file.exists(png_path)) {
-            fontawesome::fa_png(
-              this_icon,
-              file = png_path,
-              height = local_dpi,
-              fill = rgba_color
-            )
-          }
-          
-          png_path
-        }
-      }
-    ) %>%
-    dplyr::ungroup()
+  # The stat will compute icon_size and image paths
+  # We just need to pass parameters
   
   # ==============================================================================
   # LEGEND SETUP
@@ -404,29 +331,32 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
   
   final_mapping <- do.call(ggplot2::aes, mapping_list)
   
-  # Extract icon_size before removing it from data
-  size_internal <- data$icon_size
-  
-  # Remove icon_size from data to prevent it from appearing in legends
-  data$icon_size <- NULL
-  
   key_fn <- function(data, params, size = 5) {
     data$size <- 5
     ggplot2::draw_key_point(data, params, size)
   }
   
-  layer_out <- ggimage::geom_image(
+  # Create layer using our custom Geom and Stat
+  layer_out <- ggplot2::layer(
+    geom         = GeomIconPoint,
     mapping      = final_mapping,
     data         = data,
-    size         = size_internal,
-    stat         = StatIconIdentity,
+    stat         = StatIconPoint,
     position     = position,
-    na.rm        = na.rm,
+    show.legend  = NA,
     inherit.aes  = inherit.aes,
-    by           = "width",
-    asp          = 1,
-    key_glyph    = if (legend_icons) key_glyph_icon_point else key_fn,
-    ...
+    params       = list(
+      na.rm      = na.rm,
+      by         = "width",
+      asp        = 1,
+      key_glyph  = if (legend_icons) key_glyph_icon_point else key_fn,
+      ...
+    ),
+    stat_params  = list(
+      dpi        = dpi,
+      size_param = size,
+      size_var   = size_var
+    )
   )
   
   layer_out$geom_params$icon_by_legend <- icon_by_legend
