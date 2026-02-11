@@ -1,5 +1,9 @@
 #' @importFrom ggplot2 ggproto Stat
 #' @import dplyr
+
+# Scale factor for converting size parameter to icon display size
+ICON_SIZE_SCALE_FACTOR <- 0.03
+
 StatIconPoint <- ggplot2::ggproto(
   "StatIconPoint", ggplot2::Stat,
   
@@ -8,9 +12,9 @@ StatIconPoint <- ggplot2::ggproto(
   compute_panel = function(data, scales, dpi = 50, size_param = 1, size_var = NULL) {
     # Compute icon_size from either mapped variable or parameter
     if (!is.null(size_var) && size_var %in% names(data)) {
-      data$icon_size <- data[[size_var]] * 0.03
+      data$icon_size <- data[[size_var]] * ICON_SIZE_SCALE_FACTOR
     } else {
-      data$icon_size <- size_param * 0.03
+      data$icon_size <- size_param * ICON_SIZE_SCALE_FACTOR
     }
     
     # Generate PNG paths for icons with caching
@@ -49,13 +53,18 @@ StatIconPoint <- ggplot2::ggproto(
               }
             }, error = function(e) "#000000")
             
-            rgb_vals <- grDevices::col2rgb(this_color) / 255
-            rgba_color <- grDevices::rgb(
-              rgb_vals[1],
-              rgb_vals[2],
-              rgb_vals[3],
-              alpha = this_alpha
-            )
+            # Recompute rgb_vals from the validated color
+            rgba_color <- if (this_color == "#000000") {
+              grDevices::rgb(0, 0, 0, alpha = this_alpha)
+            } else {
+              rgb_vals <- grDevices::col2rgb(this_color) / 255
+              grDevices::rgb(
+                rgb_vals[1],
+                rgb_vals[2],
+                rgb_vals[3],
+                alpha = this_alpha
+              )
+            }
             
             color_hex <- gsub("#", "", this_color)
             alpha_str <- sprintf("%.2f", this_alpha)

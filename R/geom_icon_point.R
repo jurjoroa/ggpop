@@ -181,19 +181,22 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
   # ==============================================================================
   # SIZE HANDLING - Prepare size variable name for stat
   # ==============================================================================
-  size_var <- NULL
-  if ("size" %in% names(combined_mapping)) {
-    size_var <- if ("size" %in% names(mapping_list)) {
+  size_var <- if ("size" %in% names(combined_mapping)) {
+    if ("size" %in% names(mapping_list)) {
       rlang::as_name(mapping_list[["size"]])
     } else {
       rlang::as_name(inherited_mapping_list[["size"]])
     }
-    
-    if (!size_var %in% names(data)) {
-      cli::cli_abort("Variable {.field {size_var}} used for size not found in the dataset.")
-    }
-    
-    # Remove size from mapping - it will be computed by StatIconPoint
+  } else {
+    NULL
+  }
+  
+  if (!is.null(size_var) && !size_var %in% names(data)) {
+    cli::cli_abort("Variable {.field {size_var}} used for size not found in the dataset.")
+  }
+  
+  # Remove size from mapping if present - it will be computed by StatIconPoint
+  if (!is.null(size_var)) {
     mapping_list[["size"]] <- NULL
   }
   
