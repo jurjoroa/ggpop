@@ -1,3 +1,60 @@
+#' Custom Key Glyph for Icon Points
+#' @keywords internal
+#' @noRd
+key_glyph_icon_point <- function(key_data, params, size) {
+  if (!("colour" %in% names(key_data)) & ("color" %in% names(key_data))) {
+    key_data$colour <- key_data$color
+  }
+  
+  if (!("alpha" %in% names(key_data))) key_data$alpha <- 1
+  key_data$alpha[is.na(key_data$alpha)] <- 1
+  
+  if (!("colour" %in% names(key_data))) key_data$colour <- "black"
+  key_data$colour[is.na(key_data$colour)] <- "black"
+  
+  lbl <- NA_character_
+  if ("label" %in% names(key_data)) lbl <- as.character(key_data$label[1])
+  if (is.na(lbl) || !nzchar(lbl)) lbl <- NA_character_
+  
+  icon_by_legend <- params$icon_by_legend
+  plot_obj <- params$plot_obj
+  
+  ic <- NA_character_
+  if (!is.na(lbl) && !is.null(icon_by_legend) && lbl %in% names(icon_by_legend)) {
+    ic <- icon_by_legend[[lbl]]
+  }
+  
+  if (is.na(ic) || !nzchar(ic)) {
+    breaks <- if (!is.null(icon_by_legend)) names(icon_by_legend) else character(0)
+    if (!is.null(plot_obj)) {
+      sc <- plot_obj$scales$get_scales("colour")
+      if (is.null(sc)) sc <- plot_obj$scales$get_scales("color")
+      if (!is.null(sc)) {
+        br <- sc$get_breaks()
+        br <- br[!is.na(br)]
+        if (length(br)) breaks <- as.character(br)
+      }
+    }
+    
+    if (length(breaks) > 0 && !is.null(icon_by_legend)) {
+      icon_levels <- unname(icon_by_legend[breaks])
+      
+      idx <- NA_integer_
+      if (".id" %in% names(key_data)) idx <- as.integer(key_data$.id[1])
+      if (is.na(idx) && "group" %in% names(key_data)) idx <- as.integer(key_data$group[1])
+      if (is.na(idx)) idx <- 1L
+      
+      idx <- max(1L, min(length(icon_levels), idx))
+      ic <- as.character(icon_levels[idx])
+    }
+  }
+  
+  if (is.na(ic) || !nzchar(ic)) ic <- "circle"
+  
+  key_data$icon <- ic
+  draw_key_pop_image(key_data, params, size)
+}
+
 #' Key drawing function for population-based image keys
 #'
 #' This function creates a custom key for displaying population-based image icons
@@ -25,7 +82,9 @@
 #'
 #' If `stroke_width` is provided, icons are rendered directly with FontAwesome's stroke
 #' parameter for consistent appearance between plot and legend.
-#' @export
+#' Draw key for icon point
+#' @keywords internal
+#' @noRd
 draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
   
   # ==============================================================================
