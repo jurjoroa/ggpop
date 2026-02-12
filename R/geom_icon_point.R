@@ -1,9 +1,21 @@
 #' Create a scatter plot with Font Awesome icons instead of points
 #'
+#' Works exactly like geom_point(), but renders Font Awesome icons instead of dots.
+#' Pass any data with x and y variables - no special formatting required.
+#'
+#' @section Aesthetics:
+#' geom_icon_point uses standard ggplot2 scatter plot aesthetics:
+#' - **x** - Numeric variable for x-axis
+#' - **y** - Numeric variable for y-axis
+#' - **icon** - Font Awesome icon name (optional, column or mapped)
+#' - **color/colour** - Color grouping
+#' - **alpha** - Transparency
+#' - **size** - Icon size
+#'
 #' @inheritParams ggplot2::layer
 #' @inheritParams ggimage::geom_image
 #' @param icon Default Font Awesome icon (default: NULL).
-#' @param size Default icon size (default: 1).
+#' @param size Default icon size (default: 3).
 #' @param dpi Icon resolution (default: 50).
 #' @param legend_icons Show icons in legend (default: TRUE).
 #'
@@ -11,14 +23,16 @@
 #'
 #' @import dplyr
 #' @export
-geom_icon_point <- function(mapping = NULL, data = NULL,
+geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             position = "identity", na.rm = FALSE,
                             inherit.aes = TRUE, icon = NULL,
                             size = 1, dpi = 50, legend_icons = TRUE, ...) {
   
   extra_args <- list(...)
   
-  # Handle common usage: geom_icon_point(data, aes(...))
+  # ==============================================================================
+  # HANDLE COMMON USAGE: geom_icon_point(data, aes(...))
+  # ==============================================================================
   if (!is.null(mapping) && !inherits(mapping, "uneval") &&
       (is.data.frame(mapping) || (is.list(mapping) && !inherits(mapping, "uneval")))) {
     temp <- mapping
@@ -26,7 +40,14 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
     data <- temp
   }
   
-  # Get plot context
+  # ==============================================================================
+  # SETUP: Extract plot context and mappings
+  # ==============================================================================
+  inherited_data <- tryCatch(
+    ggplot2::ggplot_build(ggplot2::last_plot())$plot$data,
+    error = function(e) NULL
+  )
+  
   plot_obj <- tryCatch(
     ggplot2::ggplot_build(ggplot2::last_plot())$plot,
     error = function(e) NULL
@@ -41,47 +62,75 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
   .missing_size <- missing(size)
   
   if (is.null(data)) {
-    data <- tryCatch(
-      ggplot2::ggplot_build(ggplot2::last_plot())$plot$data,
-      error = function(e) NULL
-    )
+    data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
   
-  # Validation
+  # ==============================================================================
+  # VALIDATION: Data
+  # ==============================================================================
   validate_data_is_dataframe(data)
   validate_data_not_empty(data)
   validate_no_reserved_columns(data)
+  
+  # ==============================================================================
+  # VALIDATION: Parameters
+  # ==============================================================================
   validate_dpi(dpi)
   validate_size(size, .missing_size)
   validate_legend_icons(legend_icons)
   
+  # Validate alpha parameter if provided
   if ("alpha" %in% names(extra_args)) {
     validate_alpha_parameter(extra_args$alpha)
   }
   
-  # Aesthetic mappings
+  # ==============================================================================
+  # AESTHETIC MAPPINGS
+  # ==============================================================================
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   combined_mapping <- c(inherited_mapping_list, mapping_list)
   
+  # ==============================================================================
+  # VALIDATION: Aesthetics
+  # ==============================================================================
   validate_no_image_aesthetic(mapping_list)
+  
+  # ==============================================================================
+  # WARNINGS: Conflicts
+  # ==============================================================================
   warn_size_conflict(combined_mapping, .missing_size, size)
   warn_alpha_conflict(combined_mapping, extra_args)
   
-  # Icon handling
+  # ==============================================================================
+  # ICON HANDLING
+  # ==============================================================================
   icon_mapped <- "icon" %in% names(combined_mapping)
   has_icon_param <- !is.null(icon) && nzchar(as.character(icon))
   
+  # Icon must be EXPLICITLY mapped or provided as parameter
   if (!icon_mapped && !has_icon_param) {
     cli::cli_abort(c(
       "No icon specified.",
       "x" = "You must EXPLICITLY specify an icon",
       " " = "",
-      "i" = "Option 1: Map to a column: {.code aes(icon = icon_column)}",
-      "i" = "Option 2: Provide a parameter: {.code geom_icon_point(icon = 'circle')}"
+      "i" = "Option 1: Map to a column:",
+      " " = "  {.code ggplot(data, aes(x = x, y = y, icon = icon_column)) +}",
+      " " = "  {.code   geom_icon_point()}",
+      " " = "",
+      "i" = "Option 2: Provide a parameter:",
+      " " = "  {.code ggplot(data, aes(x = x, y = y)) +}",
+      " " = "  {.code   geom_icon_point(icon = 'circle')}",
+      " " = "",
+      "!" = "Note: Having an 'icon' column in your data is NOT enough.",
+      " " = "      You must explicitly map it with {.code aes(icon = icon)}."
     ))
   }
   
-  # Get icon variable
+  # ==============================================================================
+  # FIX: Extract the ACTUAL icon variable name from the mapping
+  # ==============================================================================
+  
+  # Get the icon variable name (e.g., "icon_2", not "icon")
   icon_var <- if (icon_mapped) {
     if ("icon" %in% names(mapping_list)) {
       tryCatch(rlang::as_name(mapping_list[["icon"]]), error = function(e) NULL)
@@ -94,32 +143,55 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
     NULL
   }
   
+  # Add icon to data ONLY if parameter was provided AND icon not already in data
   if (has_icon_param && is.null(icon_var)) {
+    # User provided icon = "circle" parameter
     data$icon <- icon
     icon_var <- "icon"
   }
   
+  # Validate that the icon variable exists in data
   if (!is.null(icon_var) && !icon_var %in% names(data)) {
-    cli::cli_abort("Icon column {.field {icon_var}} not found in data.")
+    cli::cli_abort(c(
+      "Icon column not found in data.",
+      "x" = "You mapped {.code aes(icon = {icon_var})}, but this column doesn't exist.",
+      " " = "",
+      "i" = "Available columns:",
+      " " = "  {.field {names(data)}}",
+      " " = "",
+      "i" = "Fix:",
+      " " = "  - Check your column name: {.code names(data)}",
+      " " = "  - Use the correct column name in {.code aes(icon = ...)}",
+      " " = "  - Or add the column to your data before calling {.fn geom_icon_point}"
+    ))
   }
   
+  # Add icon mapping
   if (!"icon" %in% names(mapping_list)) {
     if ("icon" %in% names(inherited_mapping_list)) {
       mapping_list[["icon"]] <- inherited_mapping_list[["icon"]]
     } else if (!is.null(icon_var)) {
       mapping_list[["icon"]] <- as.name(icon_var)
+    } else {
+      cli::cli_abort("Internal error: No icon mapping available.")
     }
   }
   
+  # Validate icon column has valid values using the ACTUAL variable name
   if (!is.null(icon_var)) {
     validate_icon_column(data, icon_var)
   }
   
+  # ==============================================================================
+  # RENAME icon column to "icon" for consistency in rendering pipeline
+  # ==============================================================================
   if (!is.null(icon_var) && icon_var != "icon") {
     data$icon <- data[[icon_var]]
   }
   
-  # Size handling
+  # ==============================================================================
+  # SIZE HANDLING
+  # ==============================================================================
   if ("size" %in% names(combined_mapping)) {
     size_var <- if ("size" %in% names(mapping_list)) {
       rlang::as_name(mapping_list[["size"]])
@@ -128,7 +200,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
     }
     
     if (!size_var %in% names(data)) {
-      cli::cli_abort("Variable {.field {size_var}} not found in data.")
+      cli::cli_abort("Variable {.field {size_var}} used for size not found in the dataset.")
     }
     
     data$icon_size <- data[[size_var]] * 0.03
@@ -137,11 +209,17 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
     data$icon_size <- size * 0.03
   }
   
-  # Generate icon images (CLEANED UP!)
+  # ==============================================================================
+  # ICON RENDERING: Generate PNG paths with caching
+  # ==============================================================================
+  
   data <- add_icon_images(data, dpi)
   
-  # Legend setup
-  .get_mapped_var <- function(aes_name) {
+  # ==============================================================================
+  # LEGEND SETUP: Map icons by legend variable
+  # ==============================================================================
+  
+  .get_mapped_var_combined <- function(aes_name) {
     if (aes_name %in% names(combined_mapping)) {
       tryCatch(rlang::as_name(combined_mapping[[aes_name]]), error = function(e) NULL)
     } else {
@@ -149,44 +227,72 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
     }
   }
   
-  legend_var <- .get_mapped_var("colour")
-  if (is.null(legend_var)) legend_var <- .get_mapped_var("color")
-  if (is.null(legend_var)) legend_var <- .get_mapped_var("group")
+  legend_var <- .get_mapped_var_combined("colour")
+  if (is.null(legend_var)) legend_var <- .get_mapped_var_combined("color")
+  if (is.null(legend_var)) legend_var <- .get_mapped_var_combined("group")
   
+  # Fallback to icon if we have multiple icons
   if (is.null(legend_var) || !legend_var %in% names(data)) {
     if ("icon" %in% names(data) && dplyr::n_distinct(data$icon) > 1) {
       legend_var <- "icon"
+    } else {
+      legend_var <- NULL
     }
   }
   
   icon_by_legend <- if (!is.null(legend_var) && legend_var %in% names(data)) {
     data %>%
-      dplyr::mutate(.legend = as.character(.data[[legend_var]]), icon = as.character(icon)) %>%
-      dplyr::filter(!is.na(.legend), !is.na(icon)) %>%
+      dplyr::mutate(
+        .legend = as.character(.data[[legend_var]]),
+        icon    = as.character(icon)
+      ) %>%
+      dplyr::filter(!is.na(.legend), nzchar(.legend), !is.na(icon), nzchar(icon)) %>%
       dplyr::group_by(.legend) %>%
-      dplyr::summarise(icon = names(sort(table(icon), decreasing = TRUE))[1], .groups = "drop") %>%
-      {stats::setNames(.$icon, .$.legend)}
+      dplyr::summarise(
+        icon = {
+          tab <- sort(table(icon), decreasing = TRUE)
+          names(tab)[1]
+        },
+        .groups = "drop"
+      ) %>%
+      {
+        stats::setNames(.$icon, .$.legend)
+      }
   } else {
+    # Fallback: use first icon from data or parameter
     first_icon <- if ("icon" %in% names(data) && nrow(data) > 0) {
       as.character(data$icon[1])
     } else if (has_icon_param) {
       icon
     } else {
-      "circle"
+      "circle" # Ultimate fallback
     }
     stats::setNames(first_icon, "default")
   }
   
+  # ==============================================================================
+  # WARNING: Multiple icons per legend group
+  # ==============================================================================
+  
+  # Only warn if legend_icons is TRUE and we have a valid legend variable
   if (legend_icons && !is.null(legend_var) && legend_var %in% names(data)) {
-    if (!is.numeric(data[[legend_var]])) {
+    # Check if the legend variable is numeric (continuous scale)
+    is_numeric_scale <- is.numeric(data[[legend_var]])
+    
+    if (!is_numeric_scale) {
+      # Use the existing validator
       warn_multiple_icons_per_group(data, legend_var, "icon")
     }
   }
   
+  # ==============================================================================
+  # FINAL MAPPING & LAYER CONSTRUCTION
+  # ==============================================================================
   
-  # Final mapping
   mapping_list[["image"]] <- as.name("image")
   mapping_list[["icon"]] <- NULL
+  # Keep x and y as they are (from user's aes)
+  
   final_mapping <- do.call(ggplot2::aes, mapping_list)
   
   size_internal <- data$icon_size
@@ -196,12 +302,11 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
     ggplot2::draw_key_point(data, params, size)
   }
   
-  # Create layer - calls external key_glyph_icon_point
   layer_out <- ggimage::geom_image(
     mapping      = final_mapping,
     data         = data,
     size         = size_internal,
-    stat         = StatIconIdentity,
+    stat         = stat,
     position     = position,
     na.rm        = na.rm,
     inherit.aes  = inherit.aes,
@@ -211,7 +316,6 @@ geom_icon_point <- function(mapping = NULL, data = NULL,
     ...
   )
   
-  # Attach params for key glyph
   layer_out$geom_params$icon_by_legend <- icon_by_legend
   layer_out$geom_params$plot_obj <- plot_obj
   layer_out$geom_params$dpi <- dpi
