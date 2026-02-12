@@ -888,7 +888,7 @@ testthat::test_that("Icons: icon names with hyphens", {
 extract_icon_names <- function(png_paths) {
   basenames <- basename(png_paths)
   # Icon name is the first part before "_c" (color marker)
-  icon_names <- sub("_c.*", "", basenames)
+  icon_names <- sub("_.*", "", basenames)
   icon_names
 }
 
