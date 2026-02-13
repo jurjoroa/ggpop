@@ -2,28 +2,35 @@
 #' @keywords internal
 #' @noRd
 key_glyph_icon_point <- function(key_data, params, size) {
+  # Normalize color column
   if (!("colour" %in% names(key_data)) & ("color" %in% names(key_data))) {
     key_data$colour <- key_data$color
   }
   
+  # Set default alpha
   if (!("alpha" %in% names(key_data))) key_data$alpha <- 1
   key_data$alpha[is.na(key_data$alpha)] <- 1
   
+  # Set default color
   if (!("colour" %in% names(key_data))) key_data$colour <- "black"
   key_data$colour[is.na(key_data$colour)] <- "black"
   
+  # Extract label for legend matching
   lbl <- NA_character_
   if ("label" %in% names(key_data)) lbl <- as.character(key_data$label[1])
   if (is.na(lbl) || !nzchar(lbl)) lbl <- NA_character_
   
+  # Get icon mapping and plot object from params
   icon_by_legend <- params$icon_by_legend
   plot_obj <- params$plot_obj
   
+  # Determine which icon to use for this legend key
   ic <- NA_character_
   if (!is.na(lbl) && !is.null(icon_by_legend) && lbl %in% names(icon_by_legend)) {
     ic <- icon_by_legend[[lbl]]
   }
   
+  # Fallback: try to match icon from scale breaks
   if (is.na(ic) || !nzchar(ic)) {
     breaks <- if (!is.null(icon_by_legend)) names(icon_by_legend) else character(0)
     if (!is.null(plot_obj)) {
@@ -49,10 +56,17 @@ key_glyph_icon_point <- function(key_data, params, size) {
     }
   }
   
+  # Final fallback
   if (is.na(ic) || !nzchar(ic)) ic <- "circle"
   
-  key_data$icon <- ic
-  draw_key_pop_image(key_data, params, size)
+  # Add icon to key data
+  key_data$icon <- as.character(ic)[1]  # ← Force to character scalar
+  
+  # Extract stroke_width from params (may be NULL)
+  stroke_width <- params$stroke_width
+  
+  # Call draw_key_pop_image with stroke support
+  draw_key_pop_image(key_data, params, size, stroke_width = stroke_width)
 }
 
 #' Key drawing function for population-based image keys
@@ -82,15 +96,11 @@ key_glyph_icon_point <- function(key_data, params, size) {
 #'
 #' If `stroke_width` is provided, icons are rendered directly with FontAwesome's stroke
 #' parameter for consistent appearance between plot and legend.
-#' Draw key for icon point
 #' @keywords internal
 #' @noRd
 draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
   
-  # ==============================================================================
-  # SETUP: Cache directory and defaults
-  # ==============================================================================
-  
+  # Cache directory for legend icons
   cache_dir <- file.path(tempdir(), "ggpop-legend-icons")
   if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
   
@@ -99,20 +109,12 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
     data$colour <- data$color
   }
   
-  # ==============================================================================
-  # CONFIGURATION
-  # ==============================================================================
-  
+  # Configuration
   png_px <- 480L
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
-  
-  # Maximum fill percentage of legend box (prevents touching edges)
   max_fill <- 0.90  # Use 90% of available space
   
-  # ==============================================================================
-  # ICON RENDERING: Create grobs for each icon
-  # ==============================================================================
-  
+  # Create grobs for each icon
   grobs <- lapply(seq_along(data$colour), function(i) {
     
     # Extract icon name
@@ -127,10 +129,7 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
     this_alpha <- data$alpha[i]
     if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- 1
     
-    # ==========================================================================
-    # PATH 1: With stroke (render with FontAwesome directly)
-    # ==========================================================================
-    
+    # Render with stroke (uses FontAwesome directly)
     if (use_stroke) {
       # Convert color to hex
       this_col_hex <- tryCatch({
@@ -173,10 +172,7 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
       img <- magick::image_read(png_path)
       ras <- as.raster(img)
       
-      # ==========================================================================
-      # PATH 2: Without stroke (use magick for colorization)
-      # ==========================================================================
-      
+      # Render without stroke (uses magick for colorization)
     } else {
       png_path <- file.path(
         cache_dir, 
@@ -194,39 +190,25 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
       ras <- as.raster(img)
     }
     
-    # ==========================================================================
-    # SMART SIZE CALCULATION: Fill legend box based on icon's aspect ratio
-    # ==========================================================================
-    
+    # Smart size calculation based on aspect ratio
     img_info <- magick::image_info(img)
     aspect_ratio <- img_info$width / img_info$height
     
-    # Strategy: Fill the constraining dimension to max_fill, 
-    # then scale the other dimension proportionally
-    
     if (aspect_ratio > 1) {
-      # Icon is WIDER than tall (landscape orientation)
-      # → Fill width to max_fill, calculate height proportionally
+      # Wide icon: fill width, scale height
       icon_width  <- grid::unit(max_fill, "npc")
       icon_height <- grid::unit(max_fill / aspect_ratio, "npc")
-      
     } else if (aspect_ratio < 1) {
-      # Icon is TALLER than wide (portrait orientation)
-      # → Fill height to max_fill, calculate width proportionally
+      # Tall icon: fill height, scale width
       icon_height <- grid::unit(max_fill, "npc")
       icon_width  <- grid::unit(max_fill * aspect_ratio, "npc")
-      
     } else {
-      # Icon is SQUARE (aspect_ratio == 1)
-      # → Fill both dimensions equally
+      # Square icon
       icon_width  <- grid::unit(max_fill, "npc")
       icon_height <- grid::unit(max_fill, "npc")
     }
     
-    # ==========================================================================
-    # CREATE GROB
-    # ==========================================================================
-    
+    # Create raster grob
     grid::rasterGrob(
       x = 0.5, y = 0.5,
       image = ras,
@@ -236,10 +218,7 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
     )
   })
   
-  # ==============================================================================
-  # FINALIZE: Create gTree with unique name
-  # ==============================================================================
-  
+  # Finalize gTree
   class(grobs) <- "gList"
   
   nm_parts <- c(

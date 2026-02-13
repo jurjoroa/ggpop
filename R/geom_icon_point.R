@@ -45,7 +45,9 @@
 geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             position = "identity", na.rm = FALSE,
                             inherit.aes = TRUE, icon = NULL,
-                            size = 1, dpi = 50, legend_icons = TRUE, ...) {
+                            size = 1, dpi = 50, legend_icons = TRUE, 
+                            stroke_width = NULL,
+                            ...) {
   
   # Capture any additional arguments passed via ... (e.g., custom parameters)
   extra_args <- list(...)
@@ -105,7 +107,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   mapping_list <- size_result$mapping_list
   
   # Generate icon images
-  data <- add_icon_images(data, dpi)
+  data <- add_icon_images(data, dpi, stroke_width)
   
   # Legend setup
   legend_var <- detect_legend_variable(combined_mapping, data)
@@ -142,6 +144,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   ggpop_layer$geom_params$icon_by_legend <- icon_by_legend
   ggpop_layer$geom_params$plot_obj <- plot_obj
   ggpop_layer$geom_params$dpi <- dpi
+  ggpop_layer$geom_params$stroke_width <- stroke_width  
   
   ggpop_layer$ggpop_layer_type <- "icon_point"
   ggpop_layer$ggpop_legend_icons <- isTRUE(legend_icons)

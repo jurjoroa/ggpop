@@ -45,9 +45,10 @@ create_rgba_color <- function(hex_color, alpha) {
 }
 
 #' Generate cache path for icon PNG
+#' @param stroke_width Numeric. Stroke width in pixels. If NULL or 0, no stroke.
 #' @keywords internal
 #' @noRd
-generate_icon_cache_path <- function(icon, color, alpha, dpi) {
+generate_icon_cache_path <- function(icon, color, alpha, dpi, stroke_width = NULL) {
   cache_dir <- file.path(tempdir(), "ggpop-icons")
   if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
   
@@ -55,13 +56,31 @@ generate_icon_cache_path <- function(icon, color, alpha, dpi) {
   alpha_str <- sprintf("%.2f", alpha)
   dpi_str <- sprintf("%.0f", dpi)
   
-  file.path(cache_dir, paste0(icon, "_", color_hex, "_", alpha_str, "_", dpi_str, ".png"))
+  # Build cache key parts
+  cache_parts <- c(
+    icon,
+    paste0("c", color_hex),
+    paste0("a", alpha_str),
+    paste0("d", dpi_str)
+  )
+  
+  # Add stroke to cache key if provided
+  if (!is.null(stroke_width) && stroke_width > 0) {
+    cache_parts <- c(
+      cache_parts,
+      paste0("sw", sprintf("%.0f", stroke_width)),
+      paste0("sc", color_hex)  # Stroke color same as fill
+    )
+  }
+  
+  file.path(cache_dir, paste0(paste(cache_parts, collapse = "_"), ".png"))
 }
 
 #' Generate and cache icon PNG
+#' @param stroke_width Numeric. Stroke width in pixels. If NULL or 0, no stroke.
 #' @keywords internal
 #' @noRd
-generate_icon_png <- function(icon, color, alpha, dpi) {
+generate_icon_png <- function(icon, color, alpha, dpi, stroke_width = NULL) {
   if (is.na(icon) || !nzchar(icon)) {
     return(NA_character_)
   }
@@ -72,21 +91,40 @@ generate_icon_png <- function(icon, color, alpha, dpi) {
   # Create RGBA color
   rgba_color <- create_rgba_color(hex_color, alpha)
   
-  # Get cache path
-  png_path <- generate_icon_cache_path(icon, hex_color, alpha, dpi)
+  # Get cache path (includes stroke in cache key)
+  png_path <- generate_icon_cache_path(icon, hex_color, alpha, dpi, stroke_width)
   
   # Generate PNG if not cached
   if (!file.exists(png_path)) {
-    fontawesome::fa_png(icon, file = png_path, height = dpi, fill = rgba_color)
+    if (!is.null(stroke_width) && stroke_width > 0) {
+      # With stroke (stroke color same as fill)
+      fontawesome::fa_png(
+        icon,
+        file = png_path,
+        height = dpi,
+        fill = rgba_color,
+        stroke = rgba_color,
+        stroke_width = stroke_width
+      )
+    } else {
+      # No stroke (solid fill only)
+      fontawesome::fa_png(
+        icon,
+        file = png_path,
+        height = dpi,
+        fill = rgba_color
+      )
+    }
   }
   
   png_path
 }
 
 #' Add image paths to data for icon rendering
+#' @param stroke_width Numeric. Stroke width in pixels. If NULL or 0, no stroke.
 #' @keywords internal
 #' @noRd
-add_icon_images <- function(data, dpi) {
+add_icon_images <- function(data, dpi, stroke_width = NULL) {
   data %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
@@ -94,7 +132,7 @@ add_icon_images <- function(data, dpi) {
         this_icon <- as.character(.data$icon)
         this_color <- get_row_color(.)
         this_alpha <- get_row_alpha(.)
-        generate_icon_png(this_icon, this_color, this_alpha, dpi)
+        generate_icon_png(this_icon, this_color, this_alpha, dpi, stroke_width)
       }
     ) %>%
     dplyr::ungroup()
