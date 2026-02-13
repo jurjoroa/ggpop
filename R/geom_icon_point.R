@@ -47,26 +47,34 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             inherit.aes = TRUE, icon = NULL,
                             size = 1, dpi = 50, legend_icons = TRUE, ...) {
   
+  # Capture any additional arguments passed via ... (e.g., custom parameters)
   extra_args <- list(...)
   
-  # Handle argument swapping
+  # The handle_argument_swap() function checks if 'mapping' is actually a data.frame
+  # and 'data' is actually an aesthetic mapping, then swaps them
   swapped <- handle_argument_swap(mapping, data)
   mapping <- swapped$mapping
   data <- swapped$data
   
-  # Extract plot context
+  # Attempts to get the current ggplot object being built to access:
   context <- extract_plot_context()
   plot_obj <- context$plot_obj
   inherited_mapping_list <- context$inherited_mappings
   
+  # Check if size was explicitly provided by the user
   .missing_size <- missing(size)
   
+  # If data is still NULL, try to get it from the last plot's layer data
+  # This allows: ggplot(df, aes(...)) + geom_icon_point()
+  # where data is inherited from ggplot() call
   if (is.null(data)) {
     data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
   
-  # Aesthetic mappings
+  # Convert current layer's mapping to a list
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
+  
+  # Combine inherited mappings from ggplot() with layer-specific mappings
   combined_mapping <- c(inherited_mapping_list, mapping_list)
   
   # All validation
@@ -76,7 +84,8 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   warn_size_conflict(combined_mapping, .missing_size, size)
   warn_alpha_conflict(combined_mapping, extra_args)
   
-  # Icon handling
+  # Determines where the icon comes from and validates it from 
+  # 1. Mapped in layer, Inherited from plot or from parameter
   icon_info <- resolve_icon_variable(mapping_list, inherited_mapping_list, 
                                      combined_mapping, icon, data)
   icon_var <- icon_info$icon_var
