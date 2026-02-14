@@ -72,9 +72,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      stroke_width = NULL,
                      ...) {
   
-  # ---------------------------------------------------------------------------
-  # 01 Setup: plot context + inherited mappings
-  # ---------------------------------------------------------------------------
+  # 01 Setup: plot context + inherited mappings ----
+  
   context <- extract_plot_context()
   plot_obj <- context$plot_obj
   inherited_mapping_list <- context$inherited_mappings
@@ -85,17 +84,15 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
   
-  # ---------------------------------------------------------------------------
-  # 02 Validation: layer + data
-  # ---------------------------------------------------------------------------
+  # 02 Validation: layer + data ----
+  
   validate_single_geom_pop(plot_obj)
   validate_data_is_dataframe(data)
   validate_data_not_empty(data)
   validate_no_reserved_columns(data)
   
-  # ---------------------------------------------------------------------------
-  # 03 Validation: parameters
-  # ---------------------------------------------------------------------------
+  # 03 Validation: parameters ----
+  
   dots <- list(...)
   
   if ("alpha" %in% names(dots)) {
@@ -113,9 +110,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     dots = dots
   )
   
-  # ---------------------------------------------------------------------------
-  # 04 Faceting: infer + validate
-  # ---------------------------------------------------------------------------
+  # 04 Faceting: infer + validate ----
+  
   facet_expr <- rlang::enexpr(facet)
   facet_info <- resolve_facet_info(plot_obj, facet_expr)
   has_facet <- facet_info$has_facet
@@ -126,9 +122,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   validate_facet_column(data, facet_col)
   validate_facet_consistency(facet_col, inferred_plot_facet, .facet_explicit)
   
-  # ---------------------------------------------------------------------------
-  # 05 Validation: aesthetics (shared with geom_icon_point)
-  # ---------------------------------------------------------------------------
+  # 05 Validation: aesthetics (shared with geom_icon_point) ----
+  
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   combined_mapping <- c(inherited_mapping_list, mapping_list)
   
@@ -145,9 +140,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   mapping_list <- add_icon_to_mapping(mapping_list, inherited_mapping_list, icon_var)
   data <- normalize_icon_column(data, icon_var)
   
-  # ---------------------------------------------------------------------------
-  # 06 Data preparation: detect mode + assign type
-  # ---------------------------------------------------------------------------
+  # 06 Data preparation: detect mode + assign type ----
+  
   processed_mode <- "type" %in% names(data)
   
   if (!processed_mode) {
@@ -160,9 +154,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
         NULL
       }
     }
-    
-    `%||%` <- function(x, y) if (is.null(x) || !nzchar(as.character(x))) y else x
-    
+
     group_var_m <- .get_mapped_var("group")
     col_var_m <- .get_mapped_var("colour")
     if (is.null(col_var_m)) col_var_m <- .get_mapped_var("color")
@@ -172,9 +164,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data$type <- as.character(data[[src_var]])
   }
   
-  # ---------------------------------------------------------------------------
-  # 07 Warnings (shared)
-  # ---------------------------------------------------------------------------
+  # 07 Warnings (shared) ----
+  
   warn_all_geom_pop(
     combined_mapping = combined_mapping,
     missing_size = .missing_size,
@@ -185,44 +176,38 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     dots = dots 
   )
   
-  # ---------------------------------------------------------------------------
-  # 08 Size handling
-  # ---------------------------------------------------------------------------
+  # 08 Size handling ----
+  
   size_result <- handle_size_aesthetic_pop(
     data, combined_mapping, mapping_list, inherited_mapping_list, size
   )
   data <- size_result$data
   mapping_list <- size_result$mapping_list
   
-  # ---------------------------------------------------------------------------
-  # 09 Faceting finalization
-  # ---------------------------------------------------------------------------
+  # 09 Faceting finalization ----
+  
   if (!has_facet && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1) {
     has_facet <- TRUE
     facet_col <- "group"
   }
   
-  # ---------------------------------------------------------------------------
-  # 10 Data arrangement + positioning
-  # ---------------------------------------------------------------------------
+  # 10 Data arrangement + positioning ----
+  
   data <- maybe_shuffle_pop_data(data, has_facet, facet_col, arrange, seed)
   data <- assign_pop_positions(data, has_facet, facet_col)
   
-  # ---------------------------------------------------------------------------
-  # 11 Validation: max icons
-  # ---------------------------------------------------------------------------
+  # 11 Validation: max icons ----
+  
   validate_max_icons(data, has_facet, facet_col, max_icons = 1000L)
   
-  # ---------------------------------------------------------------------------
-  # 12 Coordinate system: fetch + merge (modular)
-  # ---------------------------------------------------------------------------
+  # 12 Coordinate system: fetch + merge (modular) ----
+  
   coord_result <- merge_pop_coordinates(data, has_facet, facet_col, arrange)
   data <- coord_result$data
   df_merged <- coord_result$df_merged
   
-  # ---------------------------------------------------------------------------
-  # 13 Final data preparation
-  # ---------------------------------------------------------------------------
+  # 13 Final data preparation ----
+  
   df_final <- df_merged %>% dplyr::filter(!is.na(.data$type))
   
   if (!"x1" %in% names(df_final) || !"y1" %in% names(df_final)) {
@@ -234,27 +219,23 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     )
   }
   
-  # ---------------------------------------------------------------------------
-  # 14 Icon rendering: PNG generation + caching (shared)
-  # ---------------------------------------------------------------------------
+  # 14 Icon rendering: PNG generation + caching (shared) ----
+  
   df_final <- add_icon_images(df_final, dpi, stroke_width)
   
-  # ---------------------------------------------------------------------------
-  # 15 Legend setup (shared)
-  # ---------------------------------------------------------------------------
+  # 15 Legend setup (shared) ----
+  
   legend_var <- detect_legend_variable(combined_mapping, df_final)
   icon_by_legend <- create_icon_by_legend(df_final, legend_var, icon, has_icon_param)
   
   warn_multiple_icons_per_group(df_final, legend_var, "icon")
   
-  # ---------------------------------------------------------------------------
-  # 16 Legend key glyph: custom icon rendering
-  # ---------------------------------------------------------------------------
+  # 16 Legend key glyph: custom icon rendering ----
+  
   key_glyph_pop <- make_pop_key_glyph(icon_by_legend, plot_obj, stroke_width)
   
-  # ---------------------------------------------------------------------------
-  # 17 Final mapping + layer construction
-  # ---------------------------------------------------------------------------
+  # 17 Final mapping + layer construction ----
+  
   mapping_list[["image"]] <- as.name("image")
   mapping_list[["x"]]     <- as.name("x1")
   mapping_list[["y"]]     <- as.name("y1")
@@ -283,9 +264,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
   
-  # ---------------------------------------------------------------------------
-  # 18 Return layer + facet metadata
-  # ---------------------------------------------------------------------------
+  # 18 Return layer + facet metadata ----
+  
   layer_out$params$.ggpop_facet <- if (.facet_explicit) facet_col else NULL
   
   structure(

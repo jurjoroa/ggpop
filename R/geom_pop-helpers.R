@@ -346,3 +346,8 @@ resolve_facet_info <- function(plot_obj, facet_expr) {
     inferred_plot_facet = infer_facet_var(plot_obj)
   )
 }
+
+#' Null-or-empty coalesce
+#' @keywords internal
+#' @noRd
+`%||%` <- function(x, y) if (is.null(x) || !nzchar(as.character(x))) y else x
