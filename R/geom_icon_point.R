@@ -49,84 +49,85 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             stroke_width = NULL,
                             ...) {
   
-  # Capture any additional arguments passed via ... (e.g., custom parameters)
+  # 01 Capture extra args + handle swapped inputs ----
+  
   extra_args <- list(...)
   
-  # The handle_argument_swap() function checks if 'mapping' is actually a data.frame
-  # and 'data' is actually an aesthetic mapping, then swaps them
   swapped <- handle_argument_swap(mapping, data)
   mapping <- swapped$mapping
   data <- swapped$data
   
-  # Attempts to get the current ggplot object being built to access:
+  # 02 Extract plot context + inherited mappings ----
+  
   context <- extract_plot_context()
   plot_obj <- context$plot_obj
   inherited_mapping_list <- context$inherited_mappings
   
-  # Check if size was explicitly provided by the user
+  # 03 Track user-provided size + inherit data if missing ----
+  
   .missing_size <- missing(size)
   
-  # If data is still NULL, try to get it from the last plot's layer data
-  # This allows: ggplot(df, aes(...)) + geom_icon_point()
-  # where data is inherited from ggplot() call
   if (is.null(data)) {
     data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
   
-  # Convert current layer's mapping to a list
-  mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
+  # 04 Prepare mappings + validate inputs ----
   
-  # Combine inherited mappings from ggplot() with layer-specific mappings
+  mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   combined_mapping <- c(inherited_mapping_list, mapping_list)
   
-  # All validation
   validate_geom_icon_point(data, dpi, size, .missing_size, legend_icons, extra_args, mapping_list,
                            stroke_width)
   
-  # Warnings
+
+  # 05 Warnings for potential conflicts ----
+
   warn_size_conflict(combined_mapping, .missing_size, size)
   warn_alpha_conflict(combined_mapping, extra_args)
   
-  # Determines where the icon comes from and validates it from 
-  # 1. Mapped in layer, Inherited from plot or from parameter
+  # 06 Resolve icon source + normalize icon column ----
+
   icon_info <- resolve_icon_variable(mapping_list, inherited_mapping_list, 
                                      combined_mapping, icon, data)
   icon_var <- icon_info$icon_var
   data <- icon_info$data
   has_icon_param <- icon_info$has_icon_param
   
-  # Add icon to mapping
   mapping_list <- add_icon_to_mapping(mapping_list, inherited_mapping_list, icon_var)
-  
-  # Normalize icon column
   data <- normalize_icon_column(data, icon_var)
   
-  # Size handling
+
+  # 07 Handle size aesthetics  ----
+
   size_result <- handle_size_aesthetic(data, combined_mapping, mapping_list, 
                                        inherited_mapping_list, size)
   data <- size_result$data
   mapping_list <- size_result$mapping_list
   
-  # Generate icon images
+
+  # 08 Generate icon images  ----
+
   data <- add_icon_images(data, dpi, stroke_width)
   
-  # Legend setup
+
+  # 09 Legend setup + warnings ----
+
   legend_var <- detect_legend_variable(combined_mapping, data)
   icon_by_legend <- create_icon_by_legend(data, legend_var, icon, has_icon_param)
   
-  # Warning for multiple icons
   if (legend_icons && !is.null(legend_var) && legend_var %in% names(data)) {
     if (!is.numeric(data[[legend_var]])) {
       warn_multiple_icons_per_group(data, legend_var, "icon")
     }
   }
   
-  # Final mapping
+
+  # 10 Final mapping + layer creation  ----
+
   mapping_list[["image"]] <- as.name("image")
   mapping_list[["icon"]] <- NULL
   final_mapping <- do.call(ggplot2::aes, mapping_list)
   
-  # Create layer
   ggpop_layer <- ggimage::geom_image(
     mapping      = final_mapping,
     data         = data,
@@ -141,7 +142,9 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
   
-  # Attach metadata
+
+  # 11 Attach metadata + return layer  ----
+
   ggpop_layer$geom_params$icon_by_legend <- icon_by_legend
   ggpop_layer$geom_params$plot_obj <- plot_obj
   ggpop_layer$geom_params$dpi <- dpi
