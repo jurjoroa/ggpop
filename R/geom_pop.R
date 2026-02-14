@@ -1,36 +1,63 @@
 #' Create a circular representative population chart
 #'
-#' Draws a circular representative population chart based on the proportion of the groups,
-#' where each point (person) represents a determined number of individuals.
-#' Every person is represented by an image with a given icon.
+#' Draws a circular representative population chart based on group proportions,
+#' where each point (person) represents a fixed number of individuals.
+#' Each person is rendered as a Font Awesome icon.
 #'
 #' @section Aesthetics:
-#' geom_pop employs the following aesthetics:
-#' - **sample_size** - The number of individuals to be represented in the chart.
-#' - **alpha** - The transparency of the points.
-#' - **color** - The color of the points.
-#' - **size** - The size of the points.
+#' geom_pop understands the following aesthetics:
+#' \itemize{
+#'   \item \strong{icon}: Font Awesome icon name (mapped column)
+#'   \item \strong{group}: grouping variable for raw data mode
+#'   \item \strong{color/colour}: icon color
+#'   \item \strong{alpha}: transparency (must be mapped)
+#'   \item \strong{size}: icon size (mapped or fixed)
+#' }
 #'
 #' @inheritParams ggplot2::layer
 #' @inheritParams ggimage::geom_image
 #' @inheritParams fontawesome::fa
-#' @param size The size of the points.
-#' @param icon The icon to be used in the chart.
-#' @param dpi Height (in **pixels**) of the PNG icon when rendered with `fontawesome::fa_png()`.
-#'        Higher values produce sharper icons. Defaults to 50. This affects **image dpi**, not icon size in the plot.
-#' @param group_var The variable used to group individuals.
-#' @param sample_size The total number of individuals (points) to be drawn.
-#' @param arrange Logical; if TRUE, the output data is arranged by group.
-#' @param seed Optional numeric seed used only when `arrange = FALSE` (randomized layouts).
+#' @param size Icon size. If mapped in \code{aes(size = ...)} the parameter is ignored.
+#' @param icon Default icon to use when no icon column is mapped.
+#' @param dpi Height (in \strong{pixels}) of the rendered PNG when using
+#'   \code{fontawesome::fa_png()}. Higher values produce sharper icons.
+#' @param group_var (Deprecated) Use \code{aes(group = ...)} instead.
+#' @param sample_size The total number of individuals (points) to draw.
+#' @param arrange Logical; if TRUE, output data is arranged by group.
+#' @param seed Optional numeric seed used only when \code{arrange = FALSE}.
 #' @param sum_var Optional variable to sum over instead of counting.
-#' @param facet Optional facetting variable. NOTE: final plot must be faceted; enforce with
-#'        `validate_geom_pop_faceting(p)` after building the ggplot object.
-#' @param legend_icons Logical; if TRUE, the legend will display the selected icons by the user.
-#' @param stroke_width Numeric. Width of the black outline/border around icons in pixels.
+#' @param facet Optional faceting variable. If provided, final plot must be faceted
+#'   with ggplot2 (use \code{validate_geom_pop_faceting(p)}).
+#' @param legend_icons Logical; if TRUE, legend displays the selected icons.
+#' @param stroke_width Numeric. Width of the icon outline in pixels (single value).
 #'
-#' @return A ggplot layer with a circular representative population chart.
+#' @return A ggplot layer that renders a circular population chart with icons.
+#'
+#' @seealso
+#'   \code{\link{geom_icon_point}}, \code{\link{process_data}},
+#'   \code{\link[ggimage]{geom_image}}
+#'
+#' @examples
+#' \dontrun{
+#' library(ggplot2)
+#'
+#' df <- data.frame(
+#'   sex  = rep(c("F", "M"), each = 10),
+#'   icon = rep(c("female", "male"), each = 10)
+#' )
+#'
+#' ggplot() +
+#'   geom_pop(
+#'     data = df,
+#'     aes(icon = icon, group = sex, color = sex),
+#'     size = 3,
+#'     dpi = 80
+#'   )
+#' }
 #'
 #' @import dplyr
+#' @importFrom ggplot2 aes ggplot_build last_plot draw_key_point
+#' @importFrom rlang enexpr is_missing is_null is_symbol is_string as_name get_expr
 #' @export
 geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      position = "identity", na.rm = FALSE, show.legend = NA,
