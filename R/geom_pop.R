@@ -89,59 +89,14 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # ---------------------------------------------------------------------------
   # 04 Faceting: infer + validate
   # ---------------------------------------------------------------------------
-  infer_facet_var <- function(plot_obj) {
-    if (is.null(plot_obj) || is.null(plot_obj$facet)) return(NULL)
-    
-    f <- plot_obj$facet
-    
-    if (!is.null(f$params$facets) && length(f$params$facets) == 1) {
-      q <- f$params$facets[[1]]
-      nm <- tryCatch(rlang::as_name(rlang::get_expr(q)), error = function(e) NULL)
-      if (!is.null(nm) && nzchar(nm)) return(nm)
-    }
-    
-    pick_one <- function(x) {
-      if (is.null(x) || length(x) != 1) return(NULL)
-      tryCatch(rlang::as_name(rlang::get_expr(x[[1]])), error = function(e) NULL)
-    }
-    
-    r <- pick_one(f$params$rows)
-    c <- pick_one(f$params$cols)
-    
-    if (!is.null(r) && is.null(c)) return(r)
-    if (is.null(r) && !is.null(c)) return(c)
-    
-    NULL
-  }
-  
   facet_expr <- rlang::enexpr(facet)
-  
-  if (rlang::is_missing(facet_expr) || rlang::is_null(facet_expr)) {
-    inferred <- infer_facet_var(plot_obj)
-    if (!is.null(inferred)) {
-      has_facet <- TRUE
-      facet_col <- inferred
-    } else {
-      has_facet <- FALSE
-      facet_col <- NULL
-    }
-  } else {
-    has_facet <- TRUE
-    if (rlang::is_symbol(facet_expr)) {
-      facet_col <- rlang::as_name(facet_expr)
-    } else if (rlang::is_string(facet_expr)) {
-      facet_col <- facet_expr
-    } else {
-      cli::cli_abort(
-        "`facet` must be a column name (facet = variable) or a string (facet = \"variable\")."
-      )
-    }
-  }
-  
-  .facet_explicit <- !(rlang::is_missing(facet_expr) || rlang::is_null(facet_expr))
+  facet_info <- resolve_facet_info(plot_obj, facet_expr)
+  has_facet <- facet_info$has_facet
+  facet_col <- facet_info$facet_col
+  .facet_explicit <- facet_info$facet_explicit
+  inferred_plot_facet <- facet_info$inferred_plot_facet
   
   validate_facet_column(data, facet_col)
-  inferred_plot_facet <- infer_facet_var(plot_obj)
   validate_facet_consistency(facet_col, inferred_plot_facet, .facet_explicit)
   
   # ---------------------------------------------------------------------------
@@ -151,9 +106,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   combined_mapping <- c(inherited_mapping_list, mapping_list)
   
   validate_no_fill_aesthetic(combined_mapping)
-  
   validate_no_image_aesthetic(mapping_list)
-  
   validate_stroke_width_not_aesthetic(combined_mapping)
   
   icon_info <- resolve_icon_variable(mapping_list, inherited_mapping_list,
@@ -195,7 +148,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # ---------------------------------------------------------------------------
   # 07 Warnings (shared)
   # ---------------------------------------------------------------------------
-  
   warn_all_geom_pop(
     combined_mapping = combined_mapping,
     missing_size = .missing_size,
@@ -209,24 +161,11 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # ---------------------------------------------------------------------------
   # 08 Size handling
   # ---------------------------------------------------------------------------
-  if ("size" %in% names(combined_mapping)) {
-    size_var <- if ("size" %in% names(mapping_list)) {
-      rlang::as_name(mapping_list[["size"]])
-    } else {
-      rlang::as_name(inherited_mapping_list[["size"]])
-    }
-    
-    if (!size_var %in% names(data)) {
-      cli::cli_abort(
-        "Variable {.field {size_var}} used for size not found in the dataset."
-      )
-    }
-    
-    data$icon_size <- data[[size_var]] * 0.03
-    mapping_list[["size"]] <- NULL
-  } else {
-    data$icon_size <- size * 0.03
-  }
+  size_result <- handle_size_aesthetic_pop(
+    data, combined_mapping, mapping_list, inherited_mapping_list, size
+  )
+  data <- size_result$data
+  mapping_list <- size_result$mapping_list
   
   # ---------------------------------------------------------------------------
   # 09 Faceting finalization
@@ -239,30 +178,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   # ---------------------------------------------------------------------------
   # 10 Data arrangement + positioning
   # ---------------------------------------------------------------------------
-  if (!isTRUE(arrange)) {
-    if (!is.null(seed)) {
-      set.seed(seed)
-    }
-    
-    if (!has_facet) {
-      data <- data[sample.int(nrow(data)), , drop = FALSE]
-    } else {
-      data <- data %>%
-        dplyr::group_by(.data[[facet_col]]) %>%
-        dplyr::slice_sample(prop = 1) %>%
-        dplyr::ungroup()
-    }
-  }
-  
-  if (!has_facet) {
-    data <- data %>%
-      dplyr::mutate(pos = as.numeric(dplyr::row_number()))
-  } else {
-    data <- data %>%
-      dplyr::group_by(.data[[facet_col]]) %>%
-      dplyr::mutate(pos = as.numeric(dplyr::row_number())) %>%
-      dplyr::ungroup()
-  }
+  data <- maybe_shuffle_pop_data(data, has_facet, facet_col, arrange, seed)
+  data <- assign_pop_positions(data, has_facet, facet_col)
   
   # ---------------------------------------------------------------------------
   # 11 Validation: max icons
@@ -270,113 +187,14 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   validate_max_icons(data, has_facet, facet_col, max_icons = 1000L)
   
   # ---------------------------------------------------------------------------
-  # 12 Coordinate system: fetch + merge
+  # 12 Coordinate system: fetch + merge (modular)
   # ---------------------------------------------------------------------------
-  sample_size <- length(unique(data$pos))
-  
-  df_coordinates_final <- fetch_df_coordinates()
-  df_coordinates_filtered <- df_coordinates_final %>%
-    dplyr::filter(size == sample_size) %>%
-    dplyr::rename(coord_size = size)
-  df_coordinates_filtered$coord_size <- as.character(df_coordinates_filtered$coord_size)
-  
-  df_merged <- dplyr::left_join(df_coordinates_filtered, data, by = "pos")
-  
-  has_np <- all(c("n", "prop") %in% names(data))
+  coord_result <- merge_pop_coordinates(data, has_facet, facet_col, arrange)
+  data <- coord_result$data
+  df_merged <- coord_result$df_merged
   
   # ---------------------------------------------------------------------------
-  # 13 Arrangement logic (if arrange = TRUE)
-  # ---------------------------------------------------------------------------
-  if (!is.null(data) && arrange && !has_facet) {
-    if (has_np) df_order <- data %>% dplyr::select(n, prop)
-    
-    data <- data %>%
-      dplyr::mutate(original_order = dplyr::row_number()) %>%
-      dplyr::arrange(type, original_order) %>%
-      dplyr::mutate(pos = dplyr::row_number()) %>%
-      dplyr::select(-original_order) %>%
-      dplyr::select(-dplyr::any_of(c("n", "prop")))
-    
-    if (has_np) data <- dplyr::bind_cols(data, df_order)
-    
-    sample_size <- length(unique(data$pos))
-    
-    df_coordinates_final <- fetch_df_coordinates()
-    df_coordinates_filtered <- df_coordinates_final %>%
-      dplyr::filter(size == sample_size) %>%
-      dplyr::rename(coord_size = size)
-    df_coordinates_filtered$coord_size <- as.character(df_coordinates_filtered$coord_size)
-    
-    df_merged <- dplyr::left_join(df_coordinates_filtered, data, by = "pos")
-    
-  } else if (!is.null(data) && arrange && has_facet) {
-    if (has_np) df_order <- data %>% dplyr::select(n, prop)
-    
-    data <- data %>%
-      dplyr::group_by(.data[[facet_col]]) %>%
-      dplyr::mutate(original_order = dplyr::row_number()) %>%
-      dplyr::ungroup() %>%
-      dplyr::arrange(type, original_order, .data[[facet_col]]) %>%
-      dplyr::group_by(.data[[facet_col]]) %>%
-      dplyr::mutate(pos = dplyr::row_number()) %>%
-      dplyr::ungroup() %>%
-      dplyr::select(-dplyr::any_of(c("n", "prop")))
-    
-    if (has_np) data <- dplyr::bind_cols(data, df_order)
-    
-    sample_size <- data %>%
-      dplyr::group_by(.data[[facet_col]]) %>%
-      dplyr::summarise(sample_size = dplyr::n_distinct(pos), .groups = "drop")
-    
-    df_coordinates_final <- fetch_df_coordinates()
-    df_coordinates_filtered <- df_coordinates_final %>%
-      dplyr::rowwise() %>%
-      dplyr::filter(size %in% sample_size$sample_size) %>%
-      dplyr::ungroup()
-    
-    data <- data %>%
-      dplyr::left_join(sample_size %>% dplyr::rename(coord_size = sample_size), by = facet_col)
-    
-    data$coord_size <- as.character(data$coord_size)
-    df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
-    
-    df_merged <- dplyr::left_join(
-      df_coordinates_filtered,
-      data,
-      by = c("pos" = "pos", "size" = "coord_size")
-    )
-    
-  } else if (!is.null(data) && !arrange && has_facet) {
-    data <- data %>%
-      dplyr::group_by(.data[[facet_col]]) %>%
-      dplyr::mutate(pos = dplyr::row_number()) %>%
-      dplyr::ungroup()
-    
-    sample_size <- data %>%
-      dplyr::group_by(.data[[facet_col]]) %>%
-      dplyr::summarise(sample_size = dplyr::n_distinct(pos), .groups = "drop")
-    
-    df_coordinates_final <- fetch_df_coordinates()
-    df_coordinates_filtered <- df_coordinates_final %>%
-      dplyr::rowwise() %>%
-      dplyr::filter(size %in% sample_size$sample_size) %>%
-      dplyr::ungroup()
-    
-    data <- data %>%
-      dplyr::left_join(sample_size %>% dplyr::rename(coord_size = sample_size), by = facet_col)
-    
-    data$coord_size <- as.character(data$coord_size)
-    df_coordinates_filtered$size <- as.character(df_coordinates_filtered$size)
-    
-    df_merged <- dplyr::left_join(
-      df_coordinates_filtered,
-      data,
-      by = c("pos" = "pos", "size" = "coord_size")
-    )
-  }
-  
-  # ---------------------------------------------------------------------------
-  # 14 Final data preparation
+  # 13 Final data preparation
   # ---------------------------------------------------------------------------
   df_final <- df_merged %>% dplyr::filter(!is.na(.data$type))
   
@@ -390,12 +208,12 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   }
   
   # ---------------------------------------------------------------------------
-  # 15 Icon rendering: PNG generation + caching (shared)
+  # 14 Icon rendering: PNG generation + caching (shared)
   # ---------------------------------------------------------------------------
   df_final <- add_icon_images(df_final, dpi, stroke_width)
   
   # ---------------------------------------------------------------------------
-  # 16 Legend setup (shared)
+  # 15 Legend setup (shared)
   # ---------------------------------------------------------------------------
   legend_var <- detect_legend_variable(combined_mapping, df_final)
   icon_by_legend <- create_icon_by_legend(df_final, legend_var, icon, has_icon_param)
@@ -403,63 +221,12 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   warn_multiple_icons_per_group(df_final, legend_var, "icon")
   
   # ---------------------------------------------------------------------------
-  # 17 Legend key glyph: custom icon rendering
+  # 16 Legend key glyph: custom icon rendering
   # ---------------------------------------------------------------------------
-  local_stroke_width_for_legend <- stroke_width
-  
-  key_glyph_pop <- function(key_data, params, size) {
-    if (!("colour" %in% names(key_data)) && ("color" %in% names(key_data))) {
-      key_data$colour <- key_data$color
-    }
-    
-    if (!("alpha" %in% names(key_data))) key_data$alpha <- 1
-    key_data$alpha[is.na(key_data$alpha)] <- 1
-    
-    if (!("colour" %in% names(key_data))) key_data$colour <- "black"
-    key_data$colour[is.na(key_data$colour)] <- "black"
-    
-    lbl <- NA_character_
-    if ("label" %in% names(key_data)) lbl <- as.character(key_data$label[1])
-    if (is.na(lbl) || !nzchar(lbl)) lbl <- NA_character_
-    
-    ic <- NA_character_
-    if (!is.na(lbl) && lbl %in% names(icon_by_legend)) {
-      ic <- icon_by_legend[[lbl]]
-    }
-    
-    if (is.na(ic) || !nzchar(ic)) {
-      breaks <- names(icon_by_legend)
-      
-      if (!is.null(plot_obj)) {
-        sc <- plot_obj$scales$get_scales("colour")
-        if (is.null(sc)) sc <- plot_obj$scales$get_scales("color")
-        if (!is.null(sc)) {
-          br <- sc$get_breaks()
-          br <- br[!is.na(br)]
-          if (length(br)) breaks <- as.character(br)
-        }
-      }
-      
-      icon_levels <- unname(icon_by_legend[breaks])
-      
-      idx <- NA_integer_
-      if (".id" %in% names(key_data)) idx <- as.integer(key_data$.id[1])
-      if (is.na(idx) && "group" %in% names(key_data)) idx <- as.integer(key_data$group[1])
-      if (is.na(idx)) idx <- 1L
-      
-      idx <- max(1L, min(length(icon_levels), idx))
-      ic <- as.character(icon_levels[idx])
-    }
-    
-    if (is.na(ic) || !nzchar(ic)) ic <- "user"
-    
-    key_data$icon <- ic
-    
-    draw_key_pop_image(key_data, params, size, stroke_width = local_stroke_width_for_legend)
-  }
+  key_glyph_pop <- make_pop_key_glyph(icon_by_legend, plot_obj, stroke_width)
   
   # ---------------------------------------------------------------------------
-  # 18 Final mapping + layer construction
+  # 17 Final mapping + layer construction
   # ---------------------------------------------------------------------------
   mapping_list[["image"]] <- as.name("image")
   mapping_list[["x"]]     <- as.name("x1")
@@ -490,7 +257,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   )
   
   # ---------------------------------------------------------------------------
-  # 19 Return layer + facet metadata
+  # 18 Return layer + facet metadata
   # ---------------------------------------------------------------------------
   layer_out$params$.ggpop_facet <- if (.facet_explicit) facet_col else NULL
   
