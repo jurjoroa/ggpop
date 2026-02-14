@@ -40,11 +40,14 @@ NULL
 #' 
 #' @param stroke_width Numeric stroke width value or NULL
 #' @param arg_name Name of the argument for error messages
+#' @param size Icon size (optional, for relative warnings)
 #' @return Invisible stroke_width if valid
 #' @keywords internal
 #' @noRd
-validate_stroke_width <- function(stroke_width, arg_name = "stroke_width") {
-  if (is.null(stroke_width)) return(invisible(NULL))
+validate_stroke_width <- function(stroke_width, arg_name = "stroke_width", size = NULL) {
+  if (missing(stroke_width) || is.null(stroke_width)) {
+    return(invisible(NULL))
+  }
   
   # Type check
   if (!is.numeric(stroke_width) || length(stroke_width) != 1) {
@@ -57,24 +60,54 @@ validate_stroke_width <- function(stroke_width, arg_name = "stroke_width") {
       " " = "  {.code {arg_name} = 2}      # Thin outline",
       " " = "  {.code {arg_name} = 5}      # Thick outline",
       " " = "  {.code {arg_name} = NULL}   # No outline (default)"
-    ))
+    ),
+    call = NULL)
   }
   
-  # Value checks (NA, Inf, negative)
-  if (is.na(stroke_width) || !is.finite(stroke_width) || stroke_width < 0) {
+  # Value checks: NA
+  if (is.na(stroke_width)) {
     cli::cli_abort(c(
       "Invalid `{arg_name}` value.",
-      "x" = "Must be a non-negative finite number.",
+      "x" = "Cannot be {.val NA}.",
+      " " = "",
+      "i" = "Fix:",
+      " " = "  {.code {arg_name} = 2}     # Valid stroke",
+      " " = "  {.code {arg_name} = 0}     # No stroke",
+      " " = "  {.code {arg_name} = NULL}  # No stroke (default)"
+    ),
+    call = NULL)
+  }
+  
+  # Value checks: Inf
+  if (!is.finite(stroke_width)) {
+    cli::cli_abort(c(
+      "Invalid `{arg_name}` value.",
+      "x" = "Cannot be {.val Inf} or {.val -Inf}.",
       "i" = "You provided: {.val {stroke_width}}",
       " " = "",
       "i" = "Fix:",
-      " " = "  {.code {arg_name} = 2}  # Valid",
-      " " = "  {.code {arg_name} = 0}  # No stroke"
-    ))
+      " " = "  {.code {arg_name} = 2}  # Use finite value"
+    ),
+    call = NULL)
   }
   
-  # Soft warning for extreme values
-  if (stroke_width > 20) {
+  # Value checks: Negative (HARD STOP)
+  if (stroke_width < 0) {
+    cli::cli_abort(c(
+      "Invalid `{arg_name}` value.",
+      "x" = "Cannot be negative.",
+      "i" = "You provided: {.val {stroke_width}}",
+      " " = "",
+      "i" = "Fix:",
+      " " = "  {.code {arg_name} = 0}     # No stroke",
+      " " = "  {.code {arg_name} = 2}     # Visible stroke",
+      " " = "  {.code {arg_name} = NULL}  # No stroke (default)"
+    ),
+    call = NULL)
+  }
+  
+  # Soft warning for extreme values (absolute)
+  if (stroke_width > 30) {
     cli::cli_warn(c(
       "Very large `{arg_name}` value.",
       "!" = "{.val {stroke_width}} is unusually large.",
@@ -87,9 +120,47 @@ validate_stroke_width <- function(stroke_width, arg_name = "stroke_width") {
     ))
   }
   
+  # Relative warnings (if size is provided)
+  if (!is.null(size) && is.numeric(size) && length(size) == 1 && !is.na(size) && size > 0) {
+    
+    # Warn if stroke is too thin relative to size
+    if (stroke_width > 0 && stroke_width < 1 && size < 2) {
+      cli::cli_warn(c(
+        "Stroke may be too thin to see clearly.",
+        "!" = "You set {.code {arg_name} = {stroke_width}} with {.code size = {size}}.",
+        " " = "",
+        "i" = "The stroke may be barely visible at this scale.",
+        " " = "",
+        "i" = "Recommended fixes:",
+        " " = "  - Increase stroke: {.code {arg_name} = 2}",
+        " " = "  - Increase size: {.code size = 3}",
+        " " = "  - Or both for better visibility"
+      ))
+    }
+    
+    # Warn if stroke overwhelms the icon
+    if (stroke_width > (size * 5)) {
+      cli::cli_warn(c(
+        "Stroke may overwhelm the icon fill.",
+        "!" = "You set {.code {arg_name} = {stroke_width}} with {.code size = {size}}.",
+        " " = "",
+        "i" = "The stroke is very thick relative to the icon size.",
+        "i" = "The fill area may be barely visible.",
+        " " = "",
+        "i" = "Recommended fixes:",
+        " " = "  - Reduce stroke: {.code {arg_name} = {max(1, round(size * 2))}}",
+        " " = "  - Increase size: {.code size = {max(1, round(stroke_width / 3))}}",
+        " " = "",
+        "i" = "Typical ratios:",
+        " " = "  - Subtle outline: stroke = size * 0.5 to size * 1",
+        " " = "  - Medium outline: stroke = size * 1 to size * 2",
+        " " = "  - Bold outline: stroke = size * 2 to size * 3"
+      ))
+    }
+  }
+  
   invisible(stroke_width)
 }
-
 # ******************************************************************************
 ## 01.02 DPI -------------------------------------------------------------------
 # ******************************************************************************

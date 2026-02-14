@@ -1,5 +1,3 @@
-# R/geom-icon-point-helpers.R
-
 #' Handle geom_icon_point(data, aes(...)) pattern
 #' @keywords internal
 #' @noRd
@@ -30,18 +28,21 @@ extract_plot_context <- function() {
   list(plot_obj = plot_obj, inherited_mappings = inherited_mapping_list)
 }
 
-#' Validate all parameters and data
+#' Run all parameter validations for geom_icon_point
 #' @keywords internal
 #' @noRd
-validate_geom_icon_point <- function(data, dpi, size, .missing_size, legend_icons, extra_args, mapping_list) {
+validate_geom_icon_point <- function(data, dpi, size, missing_size, legend_icons, 
+                                     extra_args, mapping_list, stroke_width = NULL) {
+  
   validate_data_is_dataframe(data)
   validate_data_not_empty(data)
   validate_no_reserved_columns(data)
   validate_dpi(dpi)
-  validate_size(size, .missing_size)
+  validate_size(size, missing_size)
+  validate_stroke_width(stroke_width)
   validate_legend_icons(legend_icons)
   validate_no_image_aesthetic(mapping_list)
-  
+  # Note: stroke_width validation happens AFTER size calculation
   if ("alpha" %in% names(extra_args)) {
     validate_alpha_parameter(extra_args$alpha)
   }

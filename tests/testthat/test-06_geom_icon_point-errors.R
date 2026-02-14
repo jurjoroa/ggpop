@@ -113,7 +113,7 @@ testthat::test_that("Error: icon not specified (no aes, no column, no parameter)
 testthat::test_that("Error: invalid icon values (NA)", {
   df_bad_icon <- df_scatter
   df_bad_icon$icon[2] <- NA
-
+  
   testthat::expect_error(
     ggplot2::ggplot(df_bad_icon, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point()
@@ -123,7 +123,7 @@ testthat::test_that("Error: invalid icon values (NA)", {
 testthat::test_that("Error: icon with whitespace only", {
   df_whitespace <- df_scatter
   df_whitespace$icon[2] <- "   "
-
+  
   testthat::expect_error(
     ggplot2::ggplot(df_whitespace, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point()
@@ -133,7 +133,7 @@ testthat::test_that("Error: icon with whitespace only", {
 testthat::test_that("Error: icon with empty string", {
   df_empty <- df_scatter
   df_empty$icon[3] <- ""
-
+  
   testthat::expect_error(
     ggplot2::ggplot(df_empty, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point()
@@ -214,8 +214,51 @@ testthat::test_that("Error: size is vector", {
   )
 })
 
+### 03.01.05 stroke_width inputs ----------------------------------------------
 
-### 03.01.05 alpha inputs -------------------------------------------------------
+testthat::test_that("Error: stroke_width is NA", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = NA)
+  )
+})
+
+testthat::test_that("Error: stroke_width is Inf", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = Inf)
+  )
+})
+
+testthat::test_that("Error: stroke_width is -Inf", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = -Inf)
+  )
+})
+
+testthat::test_that("Error: stroke_width is negative", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = -1)
+  )
+})
+
+testthat::test_that("Error: stroke_width is non-numeric", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = "thick")
+  )
+})
+
+testthat::test_that("Error: stroke_width is vector", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = c(1, 2))
+  )
+})
+
+### 03.01.06 alpha inputs -------------------------------------------------------
 
 testthat::test_that("Error: alpha = -0.1 throws error (ggplot pattern)", {
   testthat::expect_error(
@@ -296,7 +339,7 @@ testthat::test_that("Error: alpha = -Inf throws error", {
 })
 
 
-### 03.01.06 data inputs -------------------------------------------------------
+### 03.01.07 data inputs -------------------------------------------------------
 
 testthat::test_that("Error: data is not a data frame", {
   testthat::expect_error(
@@ -320,7 +363,7 @@ testthat::test_that("Error: data is NULL with no inherited data", {
 
 testthat::test_that("Error: data is a list (not data frame)", {
   bad_data <- list(x = 1:5, y = 1:5, icon = "circle")
-
+  
   testthat::expect_error(
     ggplot2::ggplot() +
       geom_icon_point(
@@ -333,7 +376,7 @@ testthat::test_that("Error: data is a list (not data frame)", {
 testthat::test_that("Error: data is a matrix", {
   mat <- matrix(1:10, ncol = 2)
   colnames(mat) <- c("x", "y")
-
+  
   testthat::expect_error(
     ggplot2::ggplot() +
       geom_icon_point(
@@ -345,7 +388,7 @@ testthat::test_that("Error: data is a matrix", {
 
 testthat::test_that("Error: data is a vector", {
   vec <- c(1, 2, 3, 4, 5)
-
+  
   testthat::expect_error(
     ggplot2::ggplot() +
       geom_icon_point(
@@ -404,7 +447,7 @@ testthat::test_that("Error: y variable not in data", {
 testthat::test_that("Integration: unknown icon name fails (build/render)", {
   df_unknown <- df_scatter
   df_unknown$icon <- "this_icon_does_not_exist_fontawesome"
-
+  
   testthat::expect_error(
     ggplot2::ggplot(df_unknown, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
       geom_icon_point(legend_icons = TRUE)
@@ -420,7 +463,7 @@ testthat::test_that("Error: empty data frame", {
     icon = character(0),
     stringsAsFactors = FALSE
   )
-
+  
   # Empty data might not error immediately but should fail at build
   testthat::expect_error(
     ggplot2::ggplot(df_empty, ggplot2::aes(x = x, y = y, icon = icon)) +
@@ -437,7 +480,7 @@ testthat::test_that("Error: data is an environment", {
   env$x <- 1:5
   env$y <- 1:5
   env$icon <- "circle"
-
+  
   testthat::expect_error(
     ggplot2::ggplot() +
       geom_icon_point(
@@ -467,7 +510,7 @@ testthat::test_that("Error: data is a named list (looks like data frame but isn'
     y = c(2, 4, 3, 5, 6),
     icon = c("circle", "star", "circle", "star", "heart")
   )
-
+  
   testthat::expect_error(
     ggplot2::ggplot() +
       geom_icon_point(
@@ -481,7 +524,7 @@ testthat::test_that("Error: data is a named list (looks like data frame but isn'
 
 testthat::test_that("Error: data is an array", {
   arr <- array(1:15, dim = c(5, 3))
-
+  
   testthat::expect_error(
     ggplot2::ggplot() +
       geom_icon_point(
@@ -498,7 +541,7 @@ testthat::test_that("Error: data is a nested list structure", {
     group1 = list(x = 1, y = 2, icon = "circle"),
     group2 = list(x = 3, y = 4, icon = "star")
   )
-
+  
   testthat::expect_error(
     ggplot2::ggplot() +
       geom_icon_point(
@@ -641,7 +684,7 @@ testthat::test_that("Error: typo in icon column name", {
 testthat::test_that("Error: wrong case in column name", {
   df_case <- df_scatter
   names(df_case)[3] <- "ICON" # All caps
-
+  
   testthat::expect_error(
     ggplot2::ggplot(df_case, ggplot2::aes(x = x, y = y, icon = icon)) + # lowercase
       geom_icon_point()
@@ -653,7 +696,7 @@ testthat::test_that("Error: wrong case in column name", {
 testthat::test_that("Error: partially NA icon column", {
   df_partial_na <- df_scatter
   df_partial_na$icon[c(2, 4)] <- NA
-
+  
   testthat::expect_error(
     ggplot2::ggplot(df_partial_na, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point()
@@ -664,7 +707,7 @@ testthat::test_that("Error: mixed valid and empty icons", {
   df_mixed <- df_scatter
   df_mixed$icon[2] <- ""
   df_mixed$icon[4] <- "   "
-
+  
   testthat::expect_error(
     ggplot2::ggplot(df_mixed, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point()
