@@ -45,13 +45,8 @@ NULL
 #' @keywords internal
 #' @noRd
 validate_stroke_width <- function(stroke_width, arg_name = "stroke_width", size = NULL) {
-  if (missing(stroke_width)) {
-    cli::cli_abort(c(
-      "Missing `{arg_name}` parameter.",
-      "x" = "You must provide a numeric value.",
-      "i" = "Example: {.code {arg_name} = 2}"
-    ),
-    call = NULL)
+  if (missing(stroke_width) || is.null(stroke_width)) {
+    return(invisible(NULL))
   }
   
   # Type check
