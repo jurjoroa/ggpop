@@ -132,6 +132,17 @@ testthat::test_that("Alpha: alpha mapped to variable", {
   )
 })
 
+
+### 03.03 stroke parameter ---------------------------------------------------
+
+testthat::test_that("Stroke: valid stroke width", {
+  testthat::expect_no_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
+      geom_icon_point(size = 4, stroke_width = 0.5)
+  )
+})
+
+
 # ******************************************************************************
 # 04 Size variations -----------------------------------------------------------
 # ******************************************************************************
@@ -888,7 +899,7 @@ testthat::test_that("Icons: icon names with hyphens", {
 extract_icon_names <- function(png_paths) {
   basenames <- basename(png_paths)
   # Icon name is the first part before "_c" (color marker)
-  icon_names <- sub("_c.*", "", basenames)
+  icon_names <- sub("_.*", "", basenames)
   icon_names
 }
 
@@ -1176,6 +1187,237 @@ testthat::test_that("Edge: multiple points at same coordinates", {
       geom_icon_point()
   )
 })
+
+
+
+
+### 17.03 other geoms --------------------------------------------------
+
+testthat::test_that("geom_icon_point works with multiple ggplot2 layers", {
+  
+  df <- data.frame(
+    x = 1:10,
+    y = rnorm(10),
+    category = rep(c("A", "B"), each = 5),
+    icon = rep(c("star", "heart"), each = 5)
+  )
+  
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_smooth(method = "lm", se = FALSE, color = "gray50") +  # Layer 1: Trend line
+    ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +           # Layer 2: Reference line
+    geom_icon_point(ggplot2::aes(icon = icon, color = category), size=5, dpi=100) +       # Layer 3: Icon points
+    ggplot2::geom_text(ggplot2::aes(label = category), nudge_y = 0.3) +  # Layer 4: Labels
+    ggplot2::theme_minimal()                                              # Layer 5: Theme
+  
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_length(p$layers, 4)  # smooth, hline, icon_point, text
+  testthat::expect_s3_class(p$layers[[3]], "ggpop_icon_point_layer")
+})
+
+### 17.04 ggrepel for non-overlapping labels --------------------
+
+testthat::test_that("works with ggrepel layers", {
+  testthat::skip_if_not_installed("ggrepel")
+  
+  df <- data.frame(
+    x = rnorm(15),
+    y = rnorm(15),
+    label = paste0("Point", 1:15),
+    icon = sample(c("circle", "square", "heart"), 15, replace = TRUE),
+    size_val = runif(15, 0.5, 2)
+  )
+  
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_density_2d(color = "lightgray") +                      # Layer 1: Density contours
+    geom_icon_point(ggplot2::aes(icon = icon, size = size_val, color = icon)) +        # Layer 2: Icon points
+    ggrepel::geom_text_repel(ggplot2::aes(label = label),                # Layer 3: Non-overlapping labels
+                             max.overlaps = 20) +
+    ggplot2::geom_vline(xintercept = 0, alpha = 0.3) +                   # Layer 4: Vertical reference
+    ggplot2::geom_hline(yintercept = 0, alpha = 0.3)                     # Layer 5: Horizontal reference
+  
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_length(p$layers, 5)
+})
+
+### 17.05 ggforce for circles and hulls ------------------------------
+
+testthat::test_that("works with ggforce layers", {
+  testthat::skip_if_not_installed("ggforce")
+  
+  df <- data.frame(
+    x = c(1, 2, 3, 4, 5, 1.5, 2.5, 3.5, 4.5),
+    y = c(2, 3, 2, 4, 3, 1, 2, 3, 2),
+    group = c(rep("A", 5), rep("B", 4)),
+    icon = c(rep("star", 5), rep("heart", 4))
+  )
+  
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y, color = group)) +
+    ggforce::geom_mark_hull(ggplot2::aes(fill = group),                 # Layer 1: Convex hull
+                            alpha = 0.1, expand = 0.05) +
+    ggforce::geom_circle(ggplot2::aes(x0 = x, y0 = y, r = 0.2),        # Layer 2: Circles around points
+                         alpha = 0.2) +
+    geom_icon_point(ggplot2::aes(icon = icon), size = 2) +              # Layer 3: Icon points
+    ggplot2::geom_path(alpha = 0.5) +                                    # Layer 4: Connect points
+    ggplot2::coord_equal()                                               # Layer 5: Equal scales
+  
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_true(length(p$layers) >= 4)
+})
+
+### 17.05 gghighlight for animated plots ------------------------------
+
+
+testthat::test_that("works with gghighlight", {
+  testthat::skip_if_not_installed("gghighlight")
+  
+  df <- data.frame(
+    x = 1:20,
+    y = cumsum(rnorm(20)),
+    category = rep(c("A", "B", "C", "D"), each = 5),
+    icon = rep(c("arrow-up", "arrow-down", "circle", "square"), each = 5)
+  )
+  
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y, color = category)) +
+    ggplot2::geom_line(linewidth = 1) +                                  # Layer 1: Lines
+    geom_icon_point(ggplot2::aes(icon = icon), size = 1.5) +            # Layer 2: Icon points
+    gghighlight::gghighlight(use_direct_label = FALSE) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 0.5, ymax = y + 0.5), # Layer 4: Ribbon
+                         alpha = 0.2) +
+    ggplot2::theme_minimal()                                             # Layer 5: Theme
+  
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_true(length(p$layers) >= 3)
+})
+
+### 17.06 patchwork for circles and hulls ------------------------------
+
+testthat::test_that("works in patchwork compositions", {
+  testthat::skip_if_not_installed("patchwork")
+  
+  df <- data.frame(
+    x = rnorm(25),
+    y = rnorm(25),
+    category = sample(c("A", "B", "C"), 25, replace = TRUE)
+  )
+  
+  df$icon <- ifelse(df$category == "A", "star",
+                    ifelse(df$category == "B", "heart", "circle"))
+  
+  # Plot 1: Scatter with icons
+  p1 <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y, color = category)) +
+    geom_icon_point(ggplot2::aes(icon = icon)) +
+    ggplot2::ggtitle("Icon Scatter")
+  
+  # Plot 2: Boxplot
+  p2 <- ggplot2::ggplot(df, ggplot2::aes(x = category, y = y, fill = category)) +
+    ggplot2::geom_boxplot() +
+    ggplot2::ggtitle("Boxplot by Category")
+  
+  # Plot 3: Density with icons
+  p3 <- ggplot2::ggplot(df, ggplot2::aes(x = x)) +
+    ggplot2::geom_density(fill = "lightblue", alpha = 0.5) +
+    ggplot2::ggtitle("Density")
+  
+  # Plot 4: Bar chart with icon annotations
+  df_summary <- dplyr::count(df, category, icon)
+  p4 <- ggplot2::ggplot(df_summary, ggplot2::aes(x = category, y = n, 
+                                                 fill = category)) +
+    ggplot2::geom_col() +
+    ggplot2::ggtitle("Counts")
+  
+  # Combine with patchwork
+  combined <- patchwork::wrap_plots(p1, p2, p3, p4, ncol = 2)
+  
+  testthat::expect_s3_class(combined, "patchwork")
+  testthat::expect_s3_class(p1$layers[[1]], "ggpop_icon_point_layer")
+})
+
+### 17.07 multiple annotation layers -------------------------------------------
+
+testthat::test_that("works with complex annotations", {
+  
+  df <- data.frame(
+    x = 1:8,
+    y = c(3, 5, 4, 7, 6, 8, 7, 9),
+    label = letters[1:8],
+    icon = rep(c("star", "circle"), each = 4)
+  )
+  
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_area(fill = "lightgray", alpha = 0.3) + # Layer 1: Area
+    ggplot2::geom_line(color = "blue", linewidth = 1) +   # Layer 2: Line
+    geom_icon_point(ggplot2::aes(icon = icon, color = icon), size = 2) + # Layer 3: Icons
+    ggplot2::annotate("rect", xmin = 2, xmax = 4, ymin = 3, ymax = 8,  # Layer 4: Rectangle
+                      alpha = 0.1, fill = "red") +
+    ggplot2::annotate("text", x = 3, y = 9, label = "Peak",            # Layer 5: Annotation
+                      size = 5, fontface = "bold")
+  
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_length(p$layers, 5)
+  testthat::expect_s3_class(p$layers[[3]], "ggpop_icon_point_layer")
+})
+
+### 17.08 facets and multiple geoms --------------------------------------------
+
+testthat::test_that("works with facets and multiple layers", {
+  
+  df <- data.frame(
+    x = rep(1:10, 3),
+    y = c(cumsum(rnorm(10)), cumsum(rnorm(10)), cumsum(rnorm(10))),
+    panel = rep(c("Panel A", "Panel B", "Panel C"), each = 10),
+    icon = rep(c("arrow-up", "arrow-down", "circle"), each = 10),
+    highlight = rep(c(TRUE, FALSE), length.out = 30)
+  )
+  
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 1, ymax = y + 1),# Layer 1: Ribbon
+                         fill = "lightblue", alpha = 0.3) +
+    ggplot2::geom_line(color = "darkblue") +                     # Layer 2: Line
+    geom_icon_point(ggplot2::aes(icon = icon,                   # Layer 3: Icons
+                                 
+                                 color = icon),
+                    size = 1.5,
+                    alpha = .8) +
+    ggplot2::geom_hline(yintercept = 0, linetype = "dashed") + # Layer 4: Reference
+    ggplot2::facet_wrap(~panel) +                              # Layer 5: Facets
+    ggplot2::theme_bw()
+  
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_length(p$layers, 4)
+  testthat::expect_equal(length(p$facet$params$facets), 1)
+})
+
+### 17.09 stress test ------------------------------------------------------------
+testthat::test_that("handles many layers gracefully", {
+  
+  df <- data.frame(
+    x = 1:50,
+    y = cumsum(rnorm(50)),
+    category = sample(c("A", "B", "C"), 50, replace = TRUE)
+  )
+  
+  df$icon <- ifelse(df$category == "A", "star",
+                    ifelse(df$category == "B", "heart", "circle"))
+  
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 2, ymax = y + 2),     # Layer 1
+                         fill = "gray90") +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 1, ymax = y + 1),     # Layer 2
+                         fill = "gray70") +
+    ggplot2::geom_line(color = "black", linewidth = 0.5) +              # Layer 3
+    ggplot2::geom_smooth(method = "loess", se = FALSE,                  # Layer 4
+                         color = "red", linetype = "dashed") +
+    geom_icon_point(ggplot2::aes(icon = icon, color = category),       # Layer 5
+                    size = 1.2) +
+    ggplot2::geom_hline(yintercept = mean(df$y), color = "blue") +     # Layer 6
+    ggplot2::geom_vline(xintercept = 25, color = "green", alpha = 0.5) + # Layer 7
+    ggplot2::theme_minimal() +
+    ggplot2::labs(title = "Multi-layer plot with icons")
+  
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_true(length(p$layers) >= 7)
+})
+
 
 # ******************************************************************************
 # END --------------------------------------------------------------------------

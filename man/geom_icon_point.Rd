@@ -7,7 +7,6 @@
 geom_icon_point(
   mapping = NULL,
   data = NULL,
-  stat = "identity",
   position = "identity",
   na.rm = FALSE,
   inherit.aes = TRUE,
@@ -39,19 +38,6 @@ the plot data. The return value must be a \code{data.frame}, and
 will be used as the layer data. A \code{function} can be created
 from a \code{formula} (e.g. \code{~ head(.x, 10)}).}
 
-\item{stat}{The statistical transformation to use on the data for this layer.
-When using a \verb{geom_*()} function to construct a layer, the \code{stat}
-argument can be used to override the default coupling between geoms and
-stats. The \code{stat} argument accepts the following:
-\itemize{
-\item A \code{Stat} ggproto subclass, for example \code{StatCount}.
-\item A string naming the stat. To give the stat as a string, strip the
-function name of the \code{stat_} prefix. For example, to use \code{stat_count()},
-give the stat as \code{"count"}.
-\item For more information and other ways to specify the stat, see the
-\link[ggplot2:layer_stats]{layer stat} documentation.
-}}
-
 \item{position}{A position adjustment to use on the data for this layer. This
 can be used in various ways, including to prevent overplotting and
 improving the display. The \code{position} argument accepts the following:
@@ -74,7 +60,7 @@ the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{ann
 
 \item{icon}{Default Font Awesome icon (default: NULL).}
 
-\item{size}{Default icon size (default: 3).}
+\item{size}{Default icon size (default: 1).}
 
 \item{dpi}{Icon resolution (default: 50).}
 
