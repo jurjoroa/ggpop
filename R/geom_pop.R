@@ -45,25 +45,12 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      stroke_width = NULL,
                      ...) {
   
-  # ==============================================================================
-  # SETUP: Extract plot context and mappings
-  # ==============================================================================
-  
-  inherited_data <- tryCatch(
-    ggplot2::ggplot_build(ggplot2::last_plot())$plot$data,
-    error = function(e) NULL
-  )
-  
-  plot_obj <- tryCatch(
-    ggplot2::ggplot_build(ggplot2::last_plot())$plot, 
-    error = function(e) NULL
-  )
-  
-  inherited_mapping_list <- if (!is.null(plot_obj$mapping)) {
-    as.list(plot_obj$mapping)
-  } else {
-    list()
-  }
+  # ---------------------------------------------------------------------------
+  # 01 Setup: plot context + inherited mappings
+  # ---------------------------------------------------------------------------
+  context <- extract_plot_context()
+  plot_obj <- context$plot_obj
+  inherited_mapping_list <- context$inherited_mappings
   
   .missing_size <- missing(size)
   
@@ -71,29 +58,19 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data <- ggplot2::ggplot_build(ggplot2::last_plot())$plot$data
   }
   
-  # ==============================================================================
-  # VALIDATION: Layer & Data
-  # ==============================================================================
-  
-  # Only one geom_pop per plot
+  # ---------------------------------------------------------------------------
+  # 02 Validation: layer + data
+  # ---------------------------------------------------------------------------
   validate_single_geom_pop(plot_obj)
-  
-  # Data must be a data frame
   validate_data_is_dataframe(data)
-  
-  # NEW: Data must not be empty
   validate_data_not_empty(data)
-  
-  # No reserved column names
   validate_no_reserved_columns(data)
   
-  # ==============================================================================
-  # VALIDATION: Parameters
-  # ==============================================================================
-  
+  # ---------------------------------------------------------------------------
+  # 03 Validation: parameters
+  # ---------------------------------------------------------------------------
   dots <- list(...)
   
-  # NEW: Validate alpha parameter if provided
   if ("alpha" %in% names(dots)) {
     validate_alpha_parameter(dots$alpha)
   }
@@ -109,11 +86,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     dots = dots
   )
   
-  # ==============================================================================
-  # FACETING: Infer and validate
-  # ==============================================================================
-  
-  # Helper: infer facet from facet_wrap/facet_grid
+  # ---------------------------------------------------------------------------
+  # 04 Faceting: infer + validate
+  # ---------------------------------------------------------------------------
   infer_facet_var <- function(plot_obj) {
     if (is.null(plot_obj) || is.null(plot_obj$facet)) return(NULL)
     
@@ -165,54 +140,39 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   .facet_explicit <- !(rlang::is_missing(facet_expr) || rlang::is_null(facet_expr))
   
-  # Validate facet column exists
   validate_facet_column(data, facet_col)
-  
-  # Validate facet consistency with plot
   inferred_plot_facet <- infer_facet_var(plot_obj)
   validate_facet_consistency(facet_col, inferred_plot_facet, .facet_explicit)
   
-  # ==============================================================================
-  # VALIDATION: Aesthetic Mappings
-  # ==============================================================================
-  
+  # ---------------------------------------------------------------------------
+  # 05 Validation: aesthetics (shared with geom_icon_point)
+  # ---------------------------------------------------------------------------
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
   combined_mapping <- c(inherited_mapping_list, mapping_list)
   
-  # NEW: Validate no image aesthetic
+  validate_no_fill_aesthetic(combined_mapping)
+  
   validate_no_image_aesthetic(mapping_list)
   
-  # Validate icon aesthetic and get icon variable name
-  icon_var <- validate_all_aesthetics(mapping_list, inherited_mapping_list, data)
+  validate_stroke_width_not_aesthetic(combined_mapping)
   
-  # Validate icon column has valid values
-  validate_icon_column(data, icon_var)
+  icon_info <- resolve_icon_variable(mapping_list, inherited_mapping_list,
+                                     combined_mapping, icon, data)
+  icon_var <- icon_info$icon_var
+  data <- icon_info$data
+  has_icon_param <- icon_info$has_icon_param
   
-  # ==============================================================================
-  # FIX: RENAME icon column to "icon" for consistency in rendering pipeline
-  # This ensures that aes(icon = icon_2) or aes(icon = my_icons) works correctly
-  # ==============================================================================
+  mapping_list <- add_icon_to_mapping(mapping_list, inherited_mapping_list, icon_var)
+  data <- normalize_icon_column(data, icon_var)
   
-  if (!is.null(icon_var) && icon_var != "icon") {
-    data$icon <- data[[icon_var]]
-  }
-  
-  # Now ensure the mapping uses "icon" as the aesthetic name
-  if (!"icon" %in% names(mapping_list)) {
-    mapping_list[["icon"]] <- as.name("icon")
-  }
-  
-  # ==============================================================================
-  # DATA PREPARATION: Mode detection and type assignment
-  # ==============================================================================
-  
+  # ---------------------------------------------------------------------------
+  # 06 Data preparation: detect mode + assign type
+  # ---------------------------------------------------------------------------
   processed_mode <- "type" %in% names(data)
   
   if (!processed_mode) {
-    # Raw data mode - need grouping variable
     validate_raw_data_grouping(data, mapping_list, inherited_mapping_list)
     
-    # Get grouping variable
     .get_mapped_var <- function(aes_name) {
       if (aes_name %in% names(combined_mapping)) {
         tryCatch(rlang::as_name(combined_mapping[[aes_name]]), error = function(e) NULL)
@@ -229,13 +189,12 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     src_var <- group_var_m %||% col_var_m
     
-    # Assign type from grouping variable
     data$type <- as.character(data[[src_var]])
   }
   
-  # ==============================================================================
-  # WARNINGS: Soft checks
-  # ==============================================================================
+  # ---------------------------------------------------------------------------
+  # 07 Warnings (shared)
+  # ---------------------------------------------------------------------------
   
   warn_all_geom_pop(
     combined_mapping = combined_mapping,
@@ -247,11 +206,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     dots = dots 
   )
   
-  # ==============================================================================
-  # SIZE HANDLING
-  # ==============================================================================
-  
-  # Handle size aesthetic vs parameter
+  # ---------------------------------------------------------------------------
+  # 08 Size handling
+  # ---------------------------------------------------------------------------
   if ("size" %in% names(combined_mapping)) {
     size_var <- if ("size" %in% names(mapping_list)) {
       rlang::as_name(mapping_list[["size"]])
@@ -271,21 +228,17 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data$icon_size <- size * 0.03
   }
   
-  # ==============================================================================
-  # FACETING FINALIZATION
-  # ==============================================================================
-  
-  # Auto-detect multi-group data as faceted
+  # ---------------------------------------------------------------------------
+  # 09 Faceting finalization
+  # ---------------------------------------------------------------------------
   if (!has_facet && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1) {
     has_facet <- TRUE
     facet_col <- "group"
   }
   
-  # ==============================================================================
-  # DATA ARRANGEMENT & POSITIONING
-  # ==============================================================================
-  
-  # Randomize order when arrange = FALSE (seedable)
+  # ---------------------------------------------------------------------------
+  # 10 Data arrangement + positioning
+  # ---------------------------------------------------------------------------
   if (!isTRUE(arrange)) {
     if (!is.null(seed)) {
       set.seed(seed)
@@ -301,7 +254,6 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     }
   }
   
-  # Assign position numbers
   if (!has_facet) {
     data <- data %>%
       dplyr::mutate(pos = as.numeric(dplyr::row_number()))
@@ -312,16 +264,14 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       dplyr::ungroup()
   }
   
-  # ==============================================================================
-  # VALIDATION: Maximum icons check
-  # ==============================================================================
-  
+  # ---------------------------------------------------------------------------
+  # 11 Validation: max icons
+  # ---------------------------------------------------------------------------
   validate_max_icons(data, has_facet, facet_col, max_icons = 1000L)
   
-  # ==============================================================================
-  # COORDINATE SYSTEM: Fetch and merge
-  # ==============================================================================
-  
+  # ---------------------------------------------------------------------------
+  # 12 Coordinate system: fetch + merge
+  # ---------------------------------------------------------------------------
   sample_size <- length(unique(data$pos))
   
   df_coordinates_final <- fetch_df_coordinates()
@@ -334,10 +284,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   
   has_np <- all(c("n", "prop") %in% names(data))
   
-  # ==============================================================================
-  # ARRANGEMENT LOGIC (if arrange = TRUE)
-  # ==============================================================================
-  
+  # ---------------------------------------------------------------------------
+  # 13 Arrangement logic (if arrange = TRUE)
+  # ---------------------------------------------------------------------------
   if (!is.null(data) && arrange && !has_facet) {
     if (has_np) df_order <- data %>% dplyr::select(n, prop)
     
@@ -426,13 +375,11 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     )
   }
   
-  # ==============================================================================
-  # FINAL DATA PREPARATION
-  # ==============================================================================
-  
+  # ---------------------------------------------------------------------------
+  # 14 Final data preparation
+  # ---------------------------------------------------------------------------
   df_final <- df_merged %>% dplyr::filter(!is.na(.data$type))
   
-  # Validate coordinates exist
   if (!"x1" %in% names(df_final) || !"y1" %in% names(df_final)) {
     cli::cli_abort(
       c(
@@ -442,164 +389,22 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     )
   }
   
-  # ==============================================================================
-  # ICON RENDERING: Generate PNG paths with caching
-  # ==============================================================================
+  # ---------------------------------------------------------------------------
+  # 15 Icon rendering: PNG generation + caching (shared)
+  # ---------------------------------------------------------------------------
+  df_final <- add_icon_images(df_final, dpi, stroke_width)
   
-  # Capture parameters in local scope BEFORE rowwise
-  local_stroke_width <- stroke_width
-  local_dpi <- dpi
-  
-  # Build per-row PNG path with color + alpha + stroke support
-  df_final <- df_final %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(
-      image = {
-        this_icon <- as.character(.data$icon)
-        if (is.na(this_icon) || !nzchar(this_icon)) {
-          NA_character_
-        } else {
-          # Get color from aes mapping
-          this_color <- if ("colour" %in% names(.)) {
-            as.character(.data$colour)
-          } else if ("color" %in% names(.)) {
-            as.character(.data$color)
-          } else {
-            "black"
-          }
-          
-          # Get alpha from aes mapping
-          this_alpha <- if ("alpha" %in% names(.)) {
-            as.numeric(.data$alpha)
-          } else {
-            1.0
-          }
-          
-          # Convert color to hex
-          this_color <- tryCatch({
-            if (is.na(this_color) || !nzchar(this_color)) {
-              "#000000"
-            } else {
-              rgb_vals <- grDevices::col2rgb(this_color) / 255
-              grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
-            }
-          }, error = function(e) "#000000")
-          
-          # Apply alpha to color for fill
-          rgb_vals <- grDevices::col2rgb(this_color) / 255
-          rgba_color <- grDevices::rgb(
-            rgb_vals[1],
-            rgb_vals[2],
-            rgb_vals[3],
-            alpha = this_alpha
-          )
-          
-          cache_dir <- file.path(tempdir(), "ggpop-icons")
-          if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
-          
-          # Build cache key with color, alpha, stroke, AND DPI
-          color_hex <- gsub("#", "", this_color)
-          alpha_str <- sprintf("%.2f", this_alpha)
-          dpi_str <- sprintf("%.0f", local_dpi)
-          
-          cache_parts <- c(
-            this_icon,
-            paste0("c", color_hex),
-            paste0("a", alpha_str),
-            paste0("d", dpi_str)
-          )
-          
-          # Add stroke to cache key if provided
-          if (!is.null(local_stroke_width) && local_stroke_width > 0) {
-            stroke_color_for_cache <- color_hex  # Same as fill color
-            cache_parts <- c(
-              cache_parts,
-              paste0("sw", local_stroke_width),
-              paste0("sc", stroke_color_for_cache)
-            )
-          }
-          
-          png_path <- file.path(
-            cache_dir,
-            paste0(paste(cache_parts, collapse = "_"), ".png")
-          )
-          
-          # Generate PNG if not cached
-          if (!file.exists(png_path)) {
-            if (!is.null(local_stroke_width) && local_stroke_width > 0) {
-              # With stroke - same color as fill
-              fontawesome::fa_png(
-                this_icon,
-                file = png_path,
-                height = local_dpi,
-                fill = rgba_color,
-                stroke = rgba_color,
-                stroke_width = local_stroke_width
-              )
-            } else {
-              # No stroke (solid fill only)
-              fontawesome::fa_png(
-                this_icon,
-                file = png_path,
-                height = local_dpi,
-                fill = rgba_color
-              )
-            }
-          }
-          
-          png_path
-        }
-      }
-    ) %>%
-    dplyr::ungroup()
-  
-  # ==============================================================================
-  # LEGEND SETUP: Map icons by legend variable
-  # ==============================================================================
-  
-  .get_mapped_var2 <- function(aes_name) {
-    if (aes_name %in% names(mapping_list)) {
-      tryCatch(rlang::as_name(mapping_list[[aes_name]]), error = function(e) NULL)
-    } else {
-      NULL
-    }
-  }
-  
-  legend_var <- .get_mapped_var2("colour")
-  if (is.null(legend_var)) legend_var <- .get_mapped_var2("color")
-  if (is.null(legend_var)) legend_var <- .get_mapped_var2("group")
-  if (is.null(legend_var) || !legend_var %in% names(df_final)) legend_var <- "type"
-  
-  # ==============================================================================
-  # WARNING: Multiple icons per legend group
-  # FIX: In df_final, the icon column is ALWAYS named "icon" (standardized)
-  # ==============================================================================
+  # ---------------------------------------------------------------------------
+  # 16 Legend setup (shared)
+  # ---------------------------------------------------------------------------
+  legend_var <- detect_legend_variable(combined_mapping, df_final)
+  icon_by_legend <- create_icon_by_legend(df_final, legend_var, icon, has_icon_param)
   
   warn_multiple_icons_per_group(df_final, legend_var, "icon")
   
-  
-  icon_by_legend <- df_final %>%
-    dplyr::mutate(
-      .legend = as.character(.data[[legend_var]]),
-      icon    = as.character(icon)
-    ) %>%
-    dplyr::filter(!is.na(.legend), nzchar(.legend), !is.na(icon), nzchar(icon)) %>%
-    dplyr::group_by(.legend) %>%
-    dplyr::summarise(
-      icon = {
-        tab <- sort(table(icon), decreasing = TRUE)
-        names(tab)[1]
-      },
-      .groups = "drop"
-    )
-  
-  icon_by_legend <- stats::setNames(icon_by_legend$icon, icon_by_legend$.legend)
-  
-  # ==============================================================================
-  # LEGEND KEY GLYPH: Custom icon rendering
-  # ==============================================================================
-  
-  # Capture stroke_width for key glyph
+  # ---------------------------------------------------------------------------
+  # 17 Legend key glyph: custom icon rendering
+  # ---------------------------------------------------------------------------
   local_stroke_width_for_legend <- stroke_width
   
   key_glyph_pop <- function(key_data, params, size) {
@@ -650,14 +455,12 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     
     key_data$icon <- ic
     
-    # Pass stroke_width to legend renderer
     draw_key_pop_image(key_data, params, size, stroke_width = local_stroke_width_for_legend)
   }
   
-  # ==============================================================================
-  # FINAL MAPPING & LAYER CONSTRUCTION
-  # ==============================================================================
-  
+  # ---------------------------------------------------------------------------
+  # 18 Final mapping + layer construction
+  # ---------------------------------------------------------------------------
   mapping_list[["image"]] <- as.name("image")
   mapping_list[["x"]]     <- as.name("x1")
   mapping_list[["y"]]     <- as.name("y1")
@@ -686,7 +489,9 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     ...
   )
   
-  # Tag the layer so validator can enforce faceting on the FINAL plot
+  # ---------------------------------------------------------------------------
+  # 19 Return layer + facet metadata
+  # ---------------------------------------------------------------------------
   layer_out$params$.ggpop_facet <- if (.facet_explicit) facet_col else NULL
   
   structure(

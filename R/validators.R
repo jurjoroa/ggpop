@@ -809,7 +809,8 @@ validate_no_fill_aesthetic <- function(combined_mapping) {
       " " = "  {.code geom_pop(aes(icon = icon, group = sex, color = sex))}  # Correct",
       " " = "  {.code geom_pop(aes(icon = icon, group = sex, colour = sex))} # Also correct",
       " " = "  {.code geom_pop(aes(icon = icon, group = sex, fill = sex))}   # Not allowed"
-    ))
+    ), 
+    call = NULL)
   }
   
   invisible(NULL)
