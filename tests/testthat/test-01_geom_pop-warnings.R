@@ -292,13 +292,13 @@ testthat::test_that("Warning: multiple icons per color group", {
 ## 03.07 stroke_width warnings -------------------------------------------------
 # ******************************************************************************
 
-testthat::test_that("Warning: stroke_width > 20", {
+testthat::test_that("Warning: stroke_width > 30", {
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_pop(
         data = df_raw,
         ggplot2::aes(icon = icon, group = sex),
-        stroke_width = 21
+        stroke_width = 31
       )
   )
 })
