@@ -80,7 +80,8 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   combined_mapping <- c(inherited_mapping_list, mapping_list)
   
   # All validation
-  validate_geom_icon_point(data, dpi, size, .missing_size, legend_icons, extra_args, mapping_list)
+  validate_geom_icon_point(data, dpi, size, .missing_size, legend_icons, extra_args, mapping_list,
+                           stroke_width)
   
   # Warnings
   warn_size_conflict(combined_mapping, .missing_size, size)
