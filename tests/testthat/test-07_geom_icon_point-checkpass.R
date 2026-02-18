@@ -22,6 +22,16 @@ testthat::skip_if_not_installed("fontawesome")
 ## 01.01 Test dataframes -------------------------------------------------------
 # ******************************************************************************
 
+# ******************************************************************************
+# Test fixtures -------------------------------------------------------------
+# ******************************************************************************
+
+df_pop <- data.frame(
+  sex = rep(c("M", "F"), each = 20),
+  icon = rep(c("male", "female"), each = 20),
+  stringsAsFactors = FALSE
+)
+
 df_scatter <- data.frame(
   x = c(1, 2, 3, 4, 5),
   y = c(2, 4, 3, 5, 6),
@@ -239,6 +249,22 @@ testthat::test_that("Size: size and color both mapped", {
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size, color = category)) +
       geom_icon_point()
   )
+})
+
+testthat::test_that("Size: handles NA in size aesthetic", {
+  df_na_size <- df_scatter
+  df_na_size$size_var <- c(1, 2, NA, 3, 4, 1, 2, 3, 4, 5)
+  
+  testthat::expect_warning({
+    tmp <- tempfile(fileext = ".png")
+    png(tmp)
+    print(
+      ggplot2::ggplot(df_na_size, ggplot2::aes(x = x, y = y, icon = icon, size = size_var)) +
+        geom_icon_point()
+    )
+    dev.off()
+    unlink(tmp)
+  })
 })
 
 # ******************************************************************************
