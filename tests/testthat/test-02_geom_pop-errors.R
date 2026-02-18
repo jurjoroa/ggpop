@@ -533,6 +533,30 @@ testthat::test_that("Error: data contains reserved column names", {
 })
 
 
+testthat::test_that("geom_pop detects all reserved column names", {
+  reserved_names <- c(
+    "x1", "y1", "pos", "image",
+    "coord_size", "icon_size", "icon_stroke_width"
+  )
+  
+  for (col_name in reserved_names) {
+    df_reserved <- df_pop
+    df_reserved[[col_name]] <- 1:nrow(df_reserved)
+    
+    testthat::expect_error(
+      {
+        p <- ggplot2::ggplot() +
+          geom_pop(
+            data = df_reserved,
+            ggplot2::aes(icon = icon, group = sex)
+          )
+        ggplot2::ggplotGrob(p)
+      },
+      regexp = "Reserved column name\\(s\\) detected in data"
+    )
+  }
+})
+
 # ******************************************************************************
 # 4 Legend icons: mismatch triggers expected error ----------------------------
 # ******************************************************************************
