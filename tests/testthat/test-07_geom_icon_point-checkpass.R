@@ -97,6 +97,15 @@ testthat::test_that("Basic: different icons per row", {
 })
 
 testthat::test_that("Basic: multiple geom_icon_point layers work together", {
+  
+  df_scatter <- data.frame(
+    x = 1:10,
+    y = 1:10,
+    icon = rep(c("circle", "star"), 5),
+    category = rep(c("A", "B"), 5),
+    stringsAsFactors = FALSE
+  )
+  
   df1 <- df_scatter[1:5, ]
   df2 <- df_scatter[6:10, ]
   
@@ -252,6 +261,15 @@ testthat::test_that("Size: size and color both mapped", {
 })
 
 testthat::test_that("Size: handles NA in size aesthetic", {
+  
+  df_scatter <- data.frame(
+    x = 1:10,
+    y = 1:10,
+    icon = rep(c("circle", "star"), 5),
+    category = rep(c("A", "B"), 5),
+    stringsAsFactors = FALSE
+  )
+  
   df_na_size <- df_scatter
   df_na_size$size_var <- c(1, 2, NA, 3, 4, 1, 2, 3, 4, 5)
   

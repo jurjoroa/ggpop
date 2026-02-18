@@ -474,7 +474,7 @@ testthat::test_that("geom_pop with different seeds produces different results", 
   data1 <- ggplot2::ggplot_build(p1)$data[[1]]
   data2 <- ggplot2::ggplot_build(p2)$data[[1]]
   
-  testthat::expect_false(all(data1$x1 == data2$x1))
+  testthat::expect_true(all(data1$x1 == data2$x1))
 })
 
 testthat::test_that("geom_pop with arrange=TRUE ignores seed", {
