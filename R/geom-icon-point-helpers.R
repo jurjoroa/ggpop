@@ -215,10 +215,10 @@ create_icon_by_legend <- function(data, legend_var, icon, has_icon_param) {
         stats::setNames(.$icon, .$.legend)
       }
   } else {
-    first_icon <- if ("icon" %in% names(data) && nrow(data) > 0) {
-      as.character(data$icon[1])
-    } else if (has_icon_param) {
+    first_icon <- if (has_icon_param) {
       icon
+    } else if ("icon" %in% names(data) && nrow(data) > 0) {
+      as.character(data$icon[1])
     } else {
       "circle"
     }
