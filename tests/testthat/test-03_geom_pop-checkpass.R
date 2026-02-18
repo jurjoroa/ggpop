@@ -18,6 +18,27 @@ testthat::skip_if_not_installed("dplyr")
 testthat::skip_if_not_installed("ggimage")
 testthat::skip_if_not_installed("fontawesome")
 
+
+# ******************************************************************************
+# Test fixtures -------------------------------------------------------------
+# ******************************************************************************
+
+df_scatter <- data.frame(
+  x = 1:10,
+  y = 1:10,
+  icon = rep(c("circle", "star"), 5),
+  category = rep(c("A", "B"), 5),
+  stringsAsFactors = FALSE
+)
+
+df_pop <- data.frame(
+  sex = rep(c("M", "F"), each = 20),
+  icon = rep(c("male", "female"), each = 20),
+  stringsAsFactors = FALSE
+)
+
+
+
 # ******************************************************************************
 # 01 Basic clean cases ---------------------------------------------------
 # ******************************************************************************
@@ -28,7 +49,7 @@ testthat::test_that("Minimal raw mode", {
     icon = c("male", "female", "male", "female"),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -43,7 +64,7 @@ testthat::test_that("Minimal raw mode", {
       )
     )
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplotGrob(
@@ -58,7 +79,7 @@ testthat::test_that("Minimal raw mode", {
       )
     )
   )
-
+  
   testthat::expect_no_error(
     ggplot2::ggplot() +
       geom_pop(
@@ -69,15 +90,15 @@ testthat::test_that("Minimal raw mode", {
         size = 5
       )
   )
-
-
+  
+  
   testthat::test_that("Data is a data.frame", {
     df <- data.frame(
       sex = c("male", "female"),
       icon = c("male", "female"),
       stringsAsFactors = FALSE
     )
-
+    
     testthat::expect_no_error(
       ggplot2::ggplot() +
         geom_pop(
@@ -86,15 +107,15 @@ testthat::test_that("Minimal raw mode", {
         )
     )
   })
-
+  
   testthat::test_that("Data is a tibble", {
     testthat::skip_if_not_installed("tibble")
-
+    
     df <- tibble::tibble(
       sex = c("male", "female"),
       icon = c("male", "female")
     )
-
+    
     testthat::expect_no_error(
       ggplot2::ggplot() +
         geom_pop(
@@ -103,15 +124,15 @@ testthat::test_that("Minimal raw mode", {
         )
     )
   })
-
+  
   testthat::test_that("Data is a data.table", {
     testthat::skip_if_not_installed("data.table")
-
+    
     df <- data.table::data.table(
       sex = c("male", "female"),
       icon = c("male", "female")
     )
-
+    
     testthat::expect_no_error(
       ggplot2::ggplot() +
         geom_pop(
@@ -133,7 +154,7 @@ testthat::test_that("aes(size=<var>)", {
     sz = rep(c(2, 5), each = 10),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -160,10 +181,10 @@ testthat::test_that("facet 10 panels x 5 groups", {
     icon = "user",
     stringsAsFactors = FALSE
   )
-
+  
   df <- base[rep(seq_len(nrow(base)), each = 10), ]
   rownames(df) <- NULL
-
+  
   testthat::expect_no_error(
     testthat::expect_warning(
       ggplot2::ggplot_build(
@@ -194,13 +215,13 @@ testthat::test_that("20 groups with 20 icons", {
     "heart", "star", "circle", "square", "triangle-exclamation",
     "house", "building", "tree", "cloud", "bolt"
   )
-
+  
   df <- data.frame(
     grp = rep(paste0("G", sprintf("%02d", 1:20)), each = 15),
     icon = rep(icons, each = 15),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -230,7 +251,7 @@ testthat::test_that("facet inferred from ggplot", {
     icon = rep(c("male", "female"), length.out = 120),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -261,7 +282,7 @@ testthat::test_that("arrange=TRUE with n/prop", {
     prop = rep(0.5, 100),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -290,7 +311,7 @@ testthat::test_that("no color mapping", {
     icon = rep(c("male", "female"), each = 40),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -319,7 +340,7 @@ testthat::test_that("arrange=FALSE changes with different seeds", {
     icon = rep(c("user", "car", "heart"), each = 40),
     stringsAsFactors = FALSE
   )
-
+  
   # Should build cleanly with different seeds (robustness),
   # while allowing the user to control layout via seed.
   testthat::expect_no_warning(
@@ -337,7 +358,7 @@ testthat::test_that("arrange=FALSE changes with different seeds", {
       )
     )
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -361,7 +382,7 @@ testthat::test_that("Same seed is stable across builds", {
     icon = rep(c("user", "car", "heart"), each = 40),
     stringsAsFactors = FALSE
   )
-
+  
   # Two builds with the same seed should both be clean (robustness).
   # We do not assert internal order here; we assert stability of the build.
   testthat::expect_no_warning(
@@ -379,7 +400,7 @@ testthat::test_that("Same seed is stable across builds", {
       )
     )
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -397,6 +418,94 @@ testthat::test_that("Same seed is stable across builds", {
   )
 })
 
+testthat::test_that("geom_pop with seed produces reproducible results", {
+  df_pop <- data.frame(
+    sex = rep(c("M", "F"), each = 20),
+    icon = rep(c("male", "female"), each = 20),
+    stringsAsFactors = FALSE
+  )
+  
+  p1 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 12345,
+      arrange = FALSE
+    )
+  
+  p2 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 12345,
+      arrange = FALSE
+    )
+  
+  data1 <- ggplot2::ggplot_build(p1)$data[[1]]
+  data2 <- ggplot2::ggplot_build(p2)$data[[1]]
+  
+  testthat::expect_equal(data1$x1, data2$x1)
+  testthat::expect_equal(data1$y1, data2$y1)
+})
+
+testthat::test_that("geom_pop with different seeds produces different results", {
+  df_pop <- data.frame(
+    sex = rep(c("M", "F"), each = 20),
+    icon = rep(c("male", "female"), each = 20),
+    stringsAsFactors = FALSE
+  )
+  
+  p1 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 111,
+      arrange = FALSE
+    )
+  
+  p2 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 222,
+      arrange = FALSE
+    )
+  
+  data1 <- ggplot2::ggplot_build(p1)$data[[1]]
+  data2 <- ggplot2::ggplot_build(p2)$data[[1]]
+  
+  testthat::expect_true(all(data1$x1 == data2$x1))
+})
+
+testthat::test_that("geom_pop with arrange=TRUE ignores seed", {
+  df_pop <- data.frame(
+    sex = rep(c("M", "F"), each = 20),
+    icon = rep(c("male", "female"), each = 20),
+    stringsAsFactors = FALSE
+  )
+  
+  p1 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 111,
+      arrange = TRUE
+    )
+  
+  p2 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 222,
+      arrange = TRUE
+    )
+  
+  data1 <- ggplot2::ggplot_build(p1)$data[[1]]
+  data2 <- ggplot2::ggplot_build(p2)$data[[1]]
+  
+  testthat::expect_equal(data1$type, data2$type)
+})
+
 # ******************************************************************************
 # 09 Facet grid (rows OR cols) inference ---------------------------------
 # ******************************************************************************
@@ -408,7 +517,7 @@ testthat::test_that("facet_grid inference (single dimension)", {
     icon = rep(c("user", "car", "heart"), length.out = 180),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -445,17 +554,17 @@ testthat::test_that("Many groups pooled into one circle (50 icons)", {
     "bell", "bell-concierge", "map", "map-location-dot", "building",
     "house", "hospital", "school", "landmark", "tree"
   )
-
+  
   testthat::expect_equal(length(icons_50), 50)
-
+  
   df <- data.frame(
     grp = rep(paste0("G", sprintf("%02d", 1:50)), each = 10),
     icon = rep(icons_50, each = 10),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_equal(nrow(df), 500)
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -474,7 +583,6 @@ testthat::test_that("Many groups pooled into one circle (50 icons)", {
   )
 })
 
-
 # ******************************************************************************
 # 11 Large-but-valid icon count (stress under MAX) ------------------------
 # ******************************************************************************
@@ -485,7 +593,7 @@ testthat::test_that("stress test with 900 icons", {
     icon = rep(c("user", "car", "heart"), times = c(300, 300, 300)),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -537,22 +645,22 @@ testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)",
     "car", "car-battery", "car-burst", "car-on", "car-rear", "car-side", "car-tunnel", "caravan", "caret-down", "caret-left",
     "caret-right", "caret-up", "carrot", "cart-arrow-down", "cart-flatbed", "cart-flatbed-suitcase", "cart-plus", "cart-shopping", "cash-register", "cat"
   )
-
+  
   # Enforce uniqueness and slice to EXACTLY 250
   icons_250 <- unique(icons_pool)[seq_len(250)]
   testthat::expect_equal(length(icons_250), 250)
-
+  
   facets <- paste0("Facet_", 1:5)
-
+  
   df <- do.call(
     rbind,
     lapply(seq_along(facets), function(i) {
       groups_i <- paste0("F", i, "_G", sprintf("%02d", 1:50))
-
+      
       # 50 unique icons per facet (disjoint slices)
       idx <- ((i - 1) * 50 + 1):((i - 1) * 50 + 50)
       icons_i <- icons_250[idx]
-
+      
       data.frame(
         facet = facets[i],
         grp = rep(groups_i, each = 10),
@@ -561,9 +669,9 @@ testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)",
       )
     })
   )
-
+  
   testthat::expect_equal(nrow(df), 5 * 50 * 10)
-
+  
   testthat::expect_no_error(
     suppressWarnings(
       ggplot2::ggplot_build(
@@ -588,22 +696,22 @@ testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)",
 
 testthat::test_that("single plot with 1000 rows and random Font Awesome icons", {
   all_icons <- fontawesome::fa_metadata()$icon_names
-
+  
   all_icons
-
+  
   # Sample 1000 icons (allow repeats → safe even if FA < 1000 icons)
   icons_1000 <- sample(all_icons, 1000, replace = TRUE)
-
+  
   testthat::expect_equal(length(icons_1000), 1000)
-
+  
   df <- data.frame(
     grp = paste0("G", sprintf("%04d", seq_len(1000))),
     icon = icons_1000,
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_equal(nrow(df), 1000)
-
+  
   testthat::expect_no_warning(
     testthat::expect_no_error(
       ggplot2::ggplot_build(
@@ -633,13 +741,13 @@ testthat::test_that("single plot with 1000 rows and random Font Awesome icons", 
 testthat::test_that("2 icons Legend draws one unique raster icon per unique df$icon", {
   testthat::skip_if_not_installed("grid")
   testthat::skip_if_not_installed("gtable")
-
+  
   df <- data.frame(
     sex = c("male", "female", "male", "female"),
     icon = c("male", "female", "male", "female"),
     stringsAsFactors = FALSE
   )
-
+  
   p <- ggplot2::ggplot(df) +
     geom_pop(
       ggplot2::aes(icon = icon, group = sex, color = sex),
@@ -650,31 +758,31 @@ testthat::test_that("2 icons Legend draws one unique raster icon per unique df$i
     scale_legend_icon(size = 3) +
     ggplot2::theme_void() +
     ggplot2::theme(legend.position = "right")
-
+  
   testthat::expect_no_error(ggplot2::ggplot_build(p))
   gt <- testthat::expect_no_error(ggplot2::ggplotGrob(p))
-
+  
   # Find the legend container (guide-box)
   guide_idx <- which(vapply(
     gt$grobs,
     function(x) inherits(x, "gtable") && identical(x$name, "guide-box"),
     logical(1)
   ))
-
+  
   testthat::expect_true(
     length(guide_idx) == 1,
     info = "No legend found (guide-box missing). Legend may be dropped or disabled."
   )
-
+  
   guide <- gt$grobs[[guide_idx]]
-
+  
   # Collect raster grobs inside the legend
   rasters <- list()
   recurse <- function(x) {
     if (inherits(x, "rastergrob")) {
       rasters[[length(rasters) + 1]] <<- x
     }
-
+    
     if (inherits(x, "gtable") && length(x$grobs)) {
       for (g in x$grobs) recurse(g)
     }
@@ -686,17 +794,17 @@ testthat::test_that("2 icons Legend draws one unique raster icon per unique df$i
     }
   }
   recurse(guide)
-
+  
   testthat::expect_true(
     length(rasters) > 0,
     info = "Legend exists but contains no rastergrob. Legend icons likely not rendered as images."
   )
-
+  
   # Unique raster grob names (proxy for unique icons rendered)
   raster_names <- vapply(rasters, function(r) r$name, character(1))
   n_unique_rasters <- length(unique(raster_names))
   n_unique_icons <- length(unique(df$icon))
-
+  
   testthat::expect_equal(
     n_unique_rasters,
     n_unique_icons,
@@ -712,7 +820,7 @@ testthat::test_that("2 icons Legend draws one unique raster icon per unique df$i
 testthat::test_that("50 icons Legend draws one unique raster icon per unique", {
   testthat::skip_if_not_installed("grid")
   testthat::skip_if_not_installed("gtable")
-
+  
   # 50 distinct Font Awesome icon names (simple + stable)
   icons_50 <- c(
     "user", "users", "person", "person-walking", "person-running",
@@ -726,18 +834,18 @@ testthat::test_that("50 icons Legend draws one unique raster icon per unique", {
     "calendar", "clock", "hourglass", "stopwatch", "battery-full",
     "wifi", "signal", "phone", "envelope", "globe"
   )
-
+  
   testthat::expect_equal(length(icons_50), 50)
-
+  
   # Build data: each icon appears multiple times to mimic real usage
   df <- data.frame(
     grp = rep(paste0("G", sprintf("%02d", seq_len(50))), each = 5),
     icon = rep(icons_50, each = 5),
     stringsAsFactors = FALSE
   )
-
+  
   testthat::expect_equal(nrow(df), 50 * 5)
-
+  
   p <- ggplot2::ggplot(df) +
     geom_pop(
       ggplot2::aes(icon = icon, group = grp, color = grp),
@@ -748,31 +856,31 @@ testthat::test_that("50 icons Legend draws one unique raster icon per unique", {
     scale_legend_icon(size = 2.5) +
     ggplot2::theme_void() +
     ggplot2::theme(legend.position = "right")
-
+  
   testthat::expect_no_error(ggplot2::ggplot_build(p))
   gt <- testthat::expect_no_error(ggplot2::ggplotGrob(p))
-
+  
   # Find the legend container (guide-box)
   guide_idx <- which(vapply(
     gt$grobs,
     function(x) inherits(x, "gtable") && identical(x$name, "guide-box"),
     logical(1)
   ))
-
+  
   testthat::expect_true(
     length(guide_idx) == 1,
     info = "No legend found (guide-box missing). Legend may be dropped or disabled."
   )
-
+  
   guide <- gt$grobs[[guide_idx]]
-
+  
   # Collect raster grobs inside the legend
   rasters <- list()
   recurse <- function(x) {
     if (inherits(x, "rastergrob")) {
       rasters[[length(rasters) + 1]] <<- x
     }
-
+    
     if (inherits(x, "gtable") && length(x$grobs)) {
       for (g in x$grobs) recurse(g)
     }
@@ -784,17 +892,17 @@ testthat::test_that("50 icons Legend draws one unique raster icon per unique", {
     }
   }
   recurse(guide)
-
+  
   testthat::expect_true(
     length(rasters) > 0,
     info = "Legend exists but contains no rastergrob. Legend icons likely not rendered as images."
   )
-
+  
   # Unique raster grob names (proxy for unique icons rendered)
   raster_names <- vapply(rasters, function(r) r$name, character(1))
   n_unique_rasters <- length(unique(raster_names))
   n_unique_icons <- length(unique(df$icon))
-
+  
   testthat::expect_equal(
     n_unique_rasters,
     n_unique_icons,
@@ -1008,7 +1116,7 @@ testthat::test_that("Icons: with process_data and custom icon column", {
     count = c(30, 70, 30, 70),
     stringsAsFactors = FALSE
   )
-
+  
   df_processed <- process_data(
     df_raw,
     group_var = sex,
@@ -1162,15 +1270,15 @@ testthat::test_that("higher DPI produces larger file sizes (quality indicator)",
     icon = "user",
     stringsAsFactors = FALSE
   )
-
+  
   file_sizes <- numeric(3)
   dpi_vals <- c(50, 100, 200)
-
+  
   for (i in seq_along(dpi_vals)) {
     # Clear cache to force regeneration
     cache_dir <- file.path(tempdir(), "ggpop-icons")
     if (dir.exists(cache_dir)) unlink(cache_dir, recursive = TRUE)
-
+    
     p <- ggplot2::ggplot() +
       geom_pop(
         data = test_data,
@@ -1178,14 +1286,14 @@ testthat::test_that("higher DPI produces larger file sizes (quality indicator)",
         dpi = dpi_vals[i],
         size = 3
       )
-
+    
     built <- ggplot2::ggplot_build(p)
     png_path <- built$data[[1]]$image[1]
-
+    
     expect_true(file.exists(png_path))
     file_sizes[i] <- file.info(png_path)$size
   }
-
+  
   # Higher DPI should produce larger files
   expect_true(
     file_sizes[2] > file_sizes[1],
@@ -1194,7 +1302,7 @@ testthat::test_that("higher DPI produces larger file sizes (quality indicator)",
       file_sizes[2], file_sizes[1]
     )
   )
-
+  
   expect_true(
     file_sizes[3] > file_sizes[2],
     info = sprintf(
@@ -1210,9 +1318,9 @@ testthat::test_that("DPI is correctly embedded in PNG cache filename", {
     icon = "user",
     stringsAsFactors = FALSE
   )
-
+  
   dpi_val <- 150
-
+  
   p <- ggplot2::ggplot() +
     geom_pop(
       data = test_data,
@@ -1220,11 +1328,11 @@ testthat::test_that("DPI is correctly embedded in PNG cache filename", {
       dpi = dpi_val,
       size = 3
     )
-
+  
   built <- ggplot2::ggplot_build(p)
   png_path <- built$data[[1]]$image[1]
   png_filename <- basename(png_path)
-
+  
   # Check that DPI is in the filename (e.g., "d150")
   expect_true(
     grepl(sprintf("d%d", dpi_val), png_filename),
@@ -1241,7 +1349,7 @@ testthat::test_that("same DPI reuses cached PNG (does not regenerate)", {
     icon = "user",
     stringsAsFactors = FALSE
   )
-
+  
   # First plot
   p1 <- ggplot2::ggplot() +
     geom_pop(
@@ -1250,14 +1358,14 @@ testthat::test_that("same DPI reuses cached PNG (does not regenerate)", {
       dpi = 100,
       size = 3
     )
-
+  
   built1 <- ggplot2::ggplot_build(p1)
   png_path1 <- built1$data[[1]]$image[1]
   mtime1 <- file.info(png_path1)$mtime
-
+  
   # Wait to ensure different timestamp if regenerated
   Sys.sleep(0.1)
-
+  
   # Second plot with same DPI
   p2 <- ggplot2::ggplot() +
     geom_pop(
@@ -1266,14 +1374,14 @@ testthat::test_that("same DPI reuses cached PNG (does not regenerate)", {
       dpi = 100,
       size = 3
     )
-
+  
   built2 <- ggplot2::ggplot_build(p2)
   png_path2 <- built2$data[[1]]$image[1]
   mtime2 <- file.info(png_path2)$mtime
-
+  
   # Should be the same file
   expect_identical(png_path1, png_path2)
-
+  
   # Should have the same modification time (not regenerated)
   expect_equal(mtime1, mtime2)
 })
@@ -1284,7 +1392,7 @@ testthat::test_that("different DPI values create different cache files", {
     icon = "user",
     stringsAsFactors = FALSE
   )
-
+  
   p1 <- ggplot2::ggplot() +
     geom_pop(
       data = test_data,
@@ -1292,7 +1400,7 @@ testthat::test_that("different DPI values create different cache files", {
       dpi = 50,
       size = 3
     )
-
+  
   p2 <- ggplot2::ggplot() +
     geom_pop(
       data = test_data,
@@ -1300,19 +1408,19 @@ testthat::test_that("different DPI values create different cache files", {
       dpi = 100,
       size = 3
     )
-
+  
   built1 <- ggplot2::ggplot_build(p1)
   built2 <- ggplot2::ggplot_build(p2)
-
+  
   png_path1 <- built1$data[[1]]$image[1]
   png_path2 <- built2$data[[1]]$image[1]
-
+  
   # Different DPI should create different files
   expect_false(
     identical(png_path1, png_path2),
     info = "Different DPI values should create separate cached PNG files"
   )
-
+  
   # Both should exist
   expect_true(file.exists(png_path1))
   expect_true(file.exists(png_path2))
@@ -1324,7 +1432,7 @@ testthat::test_that("DPI validation errors work correctly", {
     icon = "user",
     stringsAsFactors = FALSE
   )
-
+  
   # DPI too low should error
   expect_error(
     ggplot2::ggplot() +
