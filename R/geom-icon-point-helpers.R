@@ -72,7 +72,8 @@ resolve_icon_variable <- function(mapping_list, inherited_mapping_list, combined
       " " = "",
       "!" = "Note: Having an 'icon' column in your data is NOT enough.",
       " " = "      You must explicitly map it with {.code aes(icon = icon)}."
-    ))
+    ),
+    call = NULL)
   }
   
   icon_var <- if (icon_mapped) {
@@ -104,7 +105,8 @@ resolve_icon_variable <- function(mapping_list, inherited_mapping_list, combined
       " " = "  - Check your column name: {.code names(data)}",
       " " = "  - Use the correct column name in {.code aes(icon = ...)}",
       " " = "  - Or add the column to your data before calling {.fn geom_icon_point}"
-    ))
+    ),
+    call = NULL)
   }
   
   list(icon_var = icon_var, data = data, has_icon_param = has_icon_param)
@@ -120,7 +122,7 @@ add_icon_to_mapping <- function(mapping_list, inherited_mapping_list, icon_var) 
     } else if (!is.null(icon_var)) {
       mapping_list[["icon"]] <- as.name(icon_var)
     } else {
-      cli::cli_abort("Internal error: No icon mapping available.")
+      cli::cli_abort("Internal error: No icon mapping available.", call = NULL)
     }
   }
   mapping_list
@@ -153,7 +155,7 @@ handle_size_aesthetic <- function(data, combined_mapping, mapping_list, inherite
     }
     
     if (!size_var %in% names(data)) {
-      cli::cli_abort("Variable {.field {size_var}} used for size not found in the dataset.")
+      cli::cli_abort("Variable {.field {size_var}} used for size not found in the dataset.", call = NULL)
     }
     
     data$icon_size <- data[[size_var]] * 0.03
