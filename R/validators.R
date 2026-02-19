@@ -117,7 +117,8 @@ validate_stroke_width <- function(stroke_width, arg_name = "stroke_width", size 
       " " = "  Subtle outline: 1-2",
       " " = "  Medium outline: 3-5",
       " " = "  Bold outline: 6-10"
-    ))
+    ),
+    call = NULL)
   }
   
   # Relative warnings (if size is provided)
@@ -135,7 +136,8 @@ validate_stroke_width <- function(stroke_width, arg_name = "stroke_width", size 
         " " = "  - Increase stroke: {.code {arg_name} = 2}",
         " " = "  - Increase size: {.code size = 3}",
         " " = "  - Or both for better visibility"
-      ))
+      ),
+      call = NULL)
     }
     
     # Warn if stroke overwhelms the icon
@@ -155,7 +157,8 @@ validate_stroke_width <- function(stroke_width, arg_name = "stroke_width", size 
         " " = "  - Subtle outline: stroke = size * 0.5 to size * 1",
         " " = "  - Medium outline: stroke = size * 1 to size * 2",
         " " = "  - Bold outline: stroke = size * 2 to size * 3"
-      ))
+      ),
+      call = NULL)
     }
   }
   
@@ -185,7 +188,8 @@ validate_dpi <- function(dpi, arg_name = "dpi") {
       " " = "  {.code {arg_name} = 50}   # Default (good quality)",
       " " = "  {.code {arg_name} = 100}  # High quality",
       " " = "  {.code {arg_name} = 200}  # Very sharp icons"
-    ))
+    ),
+    call = NULL)
   }
   
   # Hard stop for too low dpi (blurry icons)
@@ -199,7 +203,8 @@ validate_dpi <- function(dpi, arg_name = "dpi") {
       " " = "  Recommended: 50-200 for crisp icons",
       " " = "",
       "!" = "If you want smaller icons, change {.field size}, not {.field dpi}."
-    ))
+    ),
+    call = NULL)
   }
   
   # Soft warning: Borderline low DPI (30-50)
@@ -215,7 +220,8 @@ validate_dpi <- function(dpi, arg_name = "dpi") {
       " " = "  High quality: 100-200",
       " " = "",
       "!" = "If you want smaller icons, use {.field size}, not {.field dpi}."
-    ))
+    ),
+    call = NULL)
   }
   
   # Soft warning for very high dpi (performance)
@@ -225,7 +231,8 @@ validate_dpi <- function(dpi, arg_name = "dpi") {
       "!" = "{.val {dpi}} may slow down rendering.",
       "i" = "Typical range: 50-200",
       "i" = "Higher values don't significantly improve visual quality."
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(dpi)
@@ -259,7 +266,8 @@ validate_size <- function(size, missing_size = FALSE, arg_name = "size") {
       " " = "  {.code {arg_name} = 3}           # Default",
       " " = "  {.code {arg_name} = 5}           # Larger icons",
       " " = "  {.code aes(size = var)}  # Map to variable (inside aes)"
-    ))
+    ),
+    call = NULL)
   }
   
   # Value checks
@@ -271,7 +279,8 @@ validate_size <- function(size, missing_size = FALSE, arg_name = "size") {
       "i" = "Fix:",
       " " = "  {.code {arg_name} = 3}  # Use numeric value",
       " " = "  Or omit to use default ({.code {arg_name} = 3})"
-    ))
+    ),
+    call = NULL)
   }
   
   if (!is.finite(size)) {
@@ -282,7 +291,8 @@ validate_size <- function(size, missing_size = FALSE, arg_name = "size") {
       " " = "",
       "i" = "Fix:",
       " " = "  {.code {arg_name} = 3}  # Use finite value"
-    ))
+    ),
+    call = NULL)
   }
   
   if (size <= 0) {
@@ -294,7 +304,8 @@ validate_size <- function(size, missing_size = FALSE, arg_name = "size") {
       "i" = "Fix:",
       " " = "  {.code {arg_name} = 3}  # Positive number",
       " " = "  Typical range: 1 to 10"
-    ))
+    ),
+    call = NULL)
   }
   
   # Soft warnings for extreme values
@@ -308,7 +319,8 @@ validate_size <- function(size, missing_size = FALSE, arg_name = "size") {
       " " = "  Small icons: 1-2",
       " " = "  Medium icons: 3-5 (default: 3)",
       " " = "  Large icons: 6-10"
-    ))
+    ),
+    call = NULL)
   }
   
   if (size < 0.5) {
@@ -320,7 +332,8 @@ validate_size <- function(size, missing_size = FALSE, arg_name = "size") {
       "i" = "Recommended:",
       " " = "  Use {.field size >= 1} for visible icons",
       " " = "  Default is 3"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(size)
@@ -348,7 +361,8 @@ validate_arrange <- function(arrange, arg_name = "arrange") {
       "i" = "Fix:",
       " " = "  {.code {arg_name} = TRUE}   # Sort icons by group",
       " " = "  {.code {arg_name} = FALSE}  # Randomized layout (default)"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(arrange)
@@ -386,7 +400,8 @@ validate_legend_icons <- function(legend_icons, arg_name = "legend_icons") {
       " " = "  {.code legend_icons = 1}               # Numeric not allowed",
       " " = "  {.code legend_icons = c(TRUE, FALSE)}  # Must be single value",
       " " = "  {.code legend_icons = NA}              # NA not allowed"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(legend_icons)
@@ -416,7 +431,8 @@ validate_seed <- function(seed, arg_name = "seed") {
       "i" = "Fix:",
       " " = "  {.code {arg_name} = 123}   # Reproducible randomization",
       " " = "  {.code {arg_name} = NULL}  # Different each time (default)"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(seed)
@@ -489,7 +505,8 @@ validate_data_is_dataframe <- function(data) {
       "i" = "Examples:",
       " " = "  {.code df <- data.frame(sex = c('M', 'F'), icon = c('male', 'female'))}",
       " " = "  {.code geom_pop(data = df, aes(icon = icon, group = sex))}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(data)
@@ -550,7 +567,8 @@ validate_no_reserved_columns <- function(data) {
       " " = "  {.code # After:}",
       " " = "  {.code df <- df %>% rename(position = pos)}",
       " " = "  {.code geom_pop(data = df, aes(icon = icon, group = sex))}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(data)
@@ -582,7 +600,8 @@ validate_icon_column <- function(data, icon_var) {
       " " = "  - Check your column name: {.code names(data)}",
       " " = "  - Use the correct column name in {.code aes(icon = ...)}",
       " " = "  - Or add the column to your data before calling {.fn geom_pop}"
-    ))
+    ),
+    call = NULL)
   }
   
   # Check for missing/empty icon values
@@ -609,7 +628,8 @@ validate_icon_column <- function(data, icon_var) {
       " " = "",
       "i" = "Valid icon examples:",
       " " = "  'person', 'user', 'male', 'female', 'child', 'baby'"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(data)
@@ -639,7 +659,8 @@ validate_data_not_empty <- function(data) {
       "i" = "Example:",
       " " = "  {.code df <- data.frame(x = 1:10, y = 1:10, icon = 'circle')}",
       " " = "  {.code geom_icon_point(data = df, aes(x = x, y = y))}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(data)
@@ -695,7 +716,8 @@ validate_icon_aesthetic <- function(mapping_list, inherited_mapping_list, data) 
       " " = "",
       "x" = "Common mistake:",
       " " = "  {.code geom_pop(data = df, aes(group = sex))}  # Missing icon mapping"
-    ))
+    ),
+    call = NULL)
   }
   
   # Extract and validate icon variable
@@ -716,7 +738,8 @@ validate_icon_aesthetic <- function(mapping_list, inherited_mapping_list, data) 
       " " = "  - Check your column name: {.code names(data)}",
       " " = "  - Use the correct column name in {.code aes(icon = ...)}",
       " " = "  - Or add the column to your data before calling {.fn geom_pop}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(icon_var)
@@ -741,7 +764,8 @@ validate_no_image_aesthetic <- function(mapping_list) {
       " " = "",
       "i" = "Fix:",
       " " = "  Use {.code aes(icon = ...)} instead of {.code aes(image = ...)}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -776,7 +800,8 @@ validate_alpha_not_parameter <- function(dots) {
       " " = "",
       "i" = "To hide alpha legend entries:",
       " " = "  {.code + guides(alpha = 'none')}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -859,7 +884,8 @@ validate_stroke_width_not_aesthetic <- function(combined_mapping) {
       "!" = "Note:",
       " " = "  Variable stroke widths per row are not yet supported.",
       " " = "  All icons in one {.fn geom_pop} layer must have the same stroke_width."
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -922,7 +948,8 @@ validate_raw_data_grouping <- function(data, mapping_list, inherited_mapping_lis
       " " = "  {.code     aes(icon = icon, group = sex),}",
       " " = "  {.code     size = 4}",
       " " = "  {.code   )}"
-    ))
+    ),
+    call = NULL)
   }
   
   # Validate the mapped variable exists in data
@@ -937,7 +964,8 @@ validate_raw_data_grouping <- function(data, mapping_list, inherited_mapping_lis
       "i" = "Fix:",
       " " = "  - Check the column name exists in your data",
       " " = "  - Update your {.code aes()} to use the correct column name"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(src_var)
@@ -970,7 +998,8 @@ validate_facet_column <- function(data, facet_col) {
       " " = "  - Check your column name: {.code names(data)}",
       " " = "  - Use the correct column in {.code facet = ...}",
       " " = "  - Or remove the {.code facet} parameter if not needed"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(facet_col)
@@ -1004,7 +1033,8 @@ validate_facet_consistency <- function(facet_col, inferred_plot_facet, facet_exp
       " " = "",
       "i" = "Or update geom_pop:",
       " " = "  {.code geom_pop(..., facet = {inferred_plot_facet})}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -1035,7 +1065,8 @@ validate_max_icons <- function(data, has_facet, facet_col, max_icons = 1000L) {
         " " = "",
         "i" = "Fix - reduce {.code sample_size} in {.fn process_data}:",
         " " = "  {.code process_data(..., sample_size = {max_icons})}"
-      ))
+      ),
+      call = NULL)
     }
   } else {
     # Multiple groups - check per group
@@ -1054,7 +1085,8 @@ validate_max_icons <- function(data, has_facet, facet_col, max_icons = 1000L) {
         " " = "",
         "i" = "Fix - reduce {.code sample_size} per group:",
         " " = "  {.code process_data(..., high_group_var = ..., sample_size = {max_icons})}"
-      ))
+      ),
+      call = NULL)
     }
   }
   
@@ -1110,7 +1142,8 @@ validate_single_geom_pop <- function(plot_obj) {
       " " = "",
       "i" = "Option 3: Use faceting if appropriate:",
       " " = "  {.code ggplot() + geom_pop(data = df_all, aes(...)) + facet_wrap(~ group)}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -1145,7 +1178,8 @@ warn_size_conflict <- function(combined_mapping, missing_size, size) {
       "i" = "Tip:",
       " " = "  - Use ONLY {.code aes(size = <variable>)} for data-driven sizes, OR",
       " " = "  - Remove {.field size} from {.code aes()} and set fixed size via {.code geom_pop(size = ...)}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -1207,7 +1241,8 @@ warn_xy_aesthetics_ignored <- function(combined_mapping) {
       "!" = "Note:",
       " " = "  Icon positions are determined by the circular packing algorithm,",
       " " = "  not by x/y aesthetics."
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -1285,7 +1320,8 @@ warn_faceting_caution <- function(data, facet_explicit, facet_col) {
     " " = "",
     "i" = "If you want one pooled circle:",
     " " = "  - Re-run {.fn process_data} without {.code high_group_var}"
-  ))
+  ),
+  call = NULL)
   
   invisible(NULL)
 }
@@ -1361,7 +1397,8 @@ warn_multiple_icons_per_group <- function(data, legend_var, icon_var) {
       " " = "",
       " " = "  Option 3: Set legend_icons = FALSE to use point markers",
       " " = "    {.code geom_pop(..., legend_icons = FALSE)}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -1398,7 +1435,8 @@ validate_alpha_parameter <- function(alpha_val) {
       " " = "",
       " " = "  {.code # Correct:}",
       " " = "  {.code geom_icon_point(aes(alpha = point_size), color = 'blue')}"
-    ))
+    ),
+    call = NULL)
   }
   
   # Validate it's a single numeric value in valid range
@@ -1426,7 +1464,8 @@ validate_alpha_parameter <- function(alpha_val) {
       " " = "  {.code alpha = 0.5}   # Semi-transparent",
       " " = "  {.code alpha = 1.0}   # Fully opaque (default)",
       " " = "  {.code alpha = 0.3}   # More transparent"
-    ))
+    ),
+    call = NULL)
   }
   
   # Soft warning: alpha too low
@@ -1440,7 +1479,8 @@ validate_alpha_parameter <- function(alpha_val) {
       " " = "  Use alpha >= 0.1 for visible icons",
       " " = "  Default is 1.0 (fully opaque)",
       " " = "  Typical range: 0.3-1.0"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(alpha_val)
@@ -1470,7 +1510,8 @@ warn_alpha_conflict <- function(combined_mapping, extra_args) {
       "i" = "Tip:",
       " " = "  - Use ONLY {.code aes(alpha = <variable>)} for data-driven transparency, OR",
       " " = "  - Remove {.field alpha} from {.code aes()} and set fixed alpha via parameter"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -1514,7 +1555,8 @@ warn_mixed_legend_icons <- function(legend_icons) {
       "i" = "Recommendation:",
       " " = "  Use consistent settings across all {.fn geom_icon_point} layers",
       " " = "  Either all TRUE, or all FALSE (not mixed)"
-    ))
+    ),
+    call = NULL)
     
     .ggpop_env$has_warned_mixed_legend <- TRUE
   }
@@ -1572,7 +1614,8 @@ warn_size_conflict_icon_point <- function(size_mapped, size_param, size_missing)
       " " = "",
       " " = "  Option 2: Fixed size (remove size from aes)",
       " " = "    {.code geom_icon_point(aes(icon = icon), size = 2)}"
-    ))
+    ),
+    call = NULL)
   }
   
   invisible(NULL)
@@ -1685,4 +1728,4 @@ warn_all_geom_pop <- function(combined_mapping, missing_size, size,
 
 # ******************************************************************************
 # End of file ------------------------------------------------------------------
-# ******************************************************************************
+# ****************************************************************************** 
