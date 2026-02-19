@@ -44,7 +44,8 @@ resolve_facet_info <- function(plot_obj, facet) {
       facet_col <- facet_expr
     } else {
       cli::cli_abort(
-        "`facet` must be a column name (facet = variable) or a string (facet = \"variable\")."
+        "`facet` must be a column name (facet = variable) or a string (facet = \"variable\").",
+        call = NULL
       )
     }
   }
@@ -70,7 +71,8 @@ handle_size_aesthetic_pop <- function(data, combined_mapping, mapping_list, inhe
     
     if (!size_var %in% names(data)) {
       cli::cli_abort(
-        "Variable {.field {size_var}} used for size not found in the dataset."
+        "Variable {.field {size_var}} used for size not found in the dataset.",
+        call = NULL
       )
     }
     
@@ -334,7 +336,8 @@ resolve_facet_info <- function(plot_obj, facet_expr) {
       facet_col <- facet_expr
     } else {
       cli::cli_abort(
-        "`facet` must be a column name (facet = variable) or a string (facet = \"variable\")."
+        "`facet` must be a column name (facet = variable) or a string (facet = \"variable\").",
+        call = NULL
       )
     }
   }
