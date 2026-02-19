@@ -8,6 +8,7 @@
 #' @param mapping_list Mapping list for the current layer.
 #' @param inherited_mapping_list Mapping list inherited from the plot.
 #' @param size Fixed size parameter from `geom_pop()`.
+#' @param size_scale Numeric multiplier applied to icon sizes.
 #'
 #' @return A list with:
 #' \itemize{
@@ -16,7 +17,12 @@
 #' }
 #' @keywords internal
 #' @noRd
-handle_size_aesthetic_pop <- function(data, combined_mapping, mapping_list, inherited_mapping_list, size) {
+handle_size_aesthetic_pop <- function(data,
+                                      combined_mapping,
+                                      mapping_list,
+                                      inherited_mapping_list,
+                                      size,
+                                      size_scale = 0.03) {
   if ("size" %in% names(combined_mapping)) {
     size_var <- if ("size" %in% names(mapping_list)) {
       rlang::as_name(mapping_list[["size"]])
@@ -31,10 +37,10 @@ handle_size_aesthetic_pop <- function(data, combined_mapping, mapping_list, inhe
       )
     }
     
-    data$icon_size <- data[[size_var]] * 0.03
+    data$icon_size <- data[[size_var]] * size_scale
     mapping_list[["size"]] <- NULL
   } else {
-    data$icon_size <- size * 0.03
+    data$icon_size <- size * size_scale
   }
   
   list(data = data, mapping_list = mapping_list)
@@ -107,11 +113,13 @@ assign_pop_positions <- function(data, has_facet, facet_col) {
 #' @param icon_by_legend Named character vector mapping legend labels to icons.
 #' @param plot_obj ggplot object (used to resolve scale breaks).
 #' @param stroke_width Numeric; outline width in pixels.
+#' @param fallback_icon Icon name to use when no legend icon is resolved.
 #'
 #' @return A function suitable for ggplot2's \code{key_glyph} argument.
 #' @keywords internal
 #' @noRd
-make_pop_key_glyph <- function(icon_by_legend, plot_obj, stroke_width) {
+make_pop_key_glyph <- function(icon_by_legend, plot_obj, stroke_width,
+                               fallback_icon = "user") {
   local_stroke_width_for_legend <- stroke_width
   
   function(key_data, params, size) {
@@ -158,7 +166,7 @@ make_pop_key_glyph <- function(icon_by_legend, plot_obj, stroke_width) {
       ic <- as.character(icon_levels[idx])
     }
     
-    if (is.na(ic) || !nzchar(ic)) ic <- "user"
+    if (is.na(ic) || !nzchar(ic)) ic <- fallback_icon
     
     key_data$icon <- ic
     
