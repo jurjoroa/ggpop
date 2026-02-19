@@ -1,4 +1,33 @@
 #' Custom Key Glyph for Icon Points
+#'
+#' Builds a legend key grob for icon-based points by resolving the correct icon
+#' for each legend entry and delegating rendering to `draw_key_pop_image()`.
+#'
+#' Resolution order is configurable via `legend_resolution_order`:
+#'   1) `"label"`         exact match on `key_data$label`
+#'   2) `"scale_breaks"`  match against ggplot2 scale breaks (colour/color)
+#'   3) `"index"`         select by position using `legend_index_fields`
+#'   4) `"fallback"`      use `legend_fallback_icon`
+#'
+#' @param key_data Legend key data provided by ggplot2 (must include colour/color;
+#'   may include label, .id, group, alpha).
+#' @param params   List passed from the geom/guide (expects `icon_by_legend`,
+#'   `plot_obj`, and optional `stroke_width`).
+#' @param size     Size passed by ggplot2 for key rendering.
+#' @param legend_fallback_icon Character. Icon used if no match is found
+#'   (default: `"circle"`).
+#' @param legend_default_colour Character. Fallback colour when none provided
+#'   in key data (default: `"black"`).
+#' @param legend_default_alpha Numeric. Fallback alpha when missing/NA
+#'   (default: `1`).
+#' @param legend_resolution_order Character vector defining match order.
+#'   Defaults to `c("label", "scale_breaks", "index", "fallback")`.
+#' @param legend_index_fields Character vector of key-data fields used to
+#'   select icon position when using `"index"` mode (default: `c(".id", "group")`).
+#' @param legend_scale_aesthetics Character vector of scale aesthetics to search
+#'   for breaks (default: `c("colour", "color")`).
+#'
+#' @return A grob produced by `draw_key_pop_image()`.
 #' @keywords internal
 #' @noRd
 key_glyph_icon_point <- function(

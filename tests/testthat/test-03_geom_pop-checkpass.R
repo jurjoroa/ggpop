@@ -699,7 +699,7 @@ testthat::test_that("single plot with 1000 rows and random Font Awesome icons", 
   
   all_icons
   
-  # Sample 1000 icons (allow repeats → safe even if FA < 1000 icons)
+  # Sample 1000 icons (allow repeats - safe even if FA < 1000 icons)
   icons_1000 <- sample(all_icons, 1000, replace = TRUE)
   
   testthat::expect_equal(length(icons_1000), 1000)
