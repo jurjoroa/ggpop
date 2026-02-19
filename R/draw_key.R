@@ -1,107 +1,146 @@
 #' Custom Key Glyph for Icon Points
 #' @keywords internal
 #' @noRd
-key_glyph_icon_point <- function(key_data, params, size) {
+key_glyph_icon_point <- function(
+    key_data,
+    params,
+    size,
+    legend_fallback_icon = "circle",
+    legend_default_colour = "black",
+    legend_default_alpha = 1,
+    legend_resolution_order = c("label", "scale_breaks", "index", "fallback"),
+    legend_index_fields = c(".id", "group"),
+    legend_scale_aesthetics = c("colour", "color")
+) {
   # Normalize color column
   if (!("colour" %in% names(key_data)) & ("color" %in% names(key_data))) {
     key_data$colour <- key_data$color
   }
   
-  # Set default alpha
-  if (!("alpha" %in% names(key_data))) key_data$alpha <- 1
-  key_data$alpha[is.na(key_data$alpha)] <- 1
+  # Default alpha
+  if (!("alpha" %in% names(key_data))) key_data$alpha <- legend_default_alpha
+  key_data$alpha[is.na(key_data$alpha)] <- legend_default_alpha
   
-  # Set default color
-  if (!("colour" %in% names(key_data))) key_data$colour <- "black"
-  key_data$colour[is.na(key_data$colour)] <- "black"
+  # Default colour
+  if (!("colour" %in% names(key_data))) key_data$colour <- legend_default_colour
+  key_data$colour[is.na(key_data$colour)] <- legend_default_colour
   
-  # Extract label for legend matching
+  # Extract label
   lbl <- NA_character_
   if ("label" %in% names(key_data)) lbl <- as.character(key_data$label[1])
   if (is.na(lbl) || !nzchar(lbl)) lbl <- NA_character_
   
-  # Get icon mapping and plot object from params
   icon_by_legend <- params$icon_by_legend
   plot_obj <- params$plot_obj
   
-  # Determine which icon to use for this legend key
   ic <- NA_character_
-  if (!is.na(lbl) && !is.null(icon_by_legend) && lbl %in% names(icon_by_legend)) {
-    ic <- icon_by_legend[[lbl]]
-  }
   
-  # Fallback: try to match icon from scale breaks
-  if (is.na(ic) || !nzchar(ic)) {
-    breaks <- if (!is.null(icon_by_legend)) names(icon_by_legend) else character(0)
-    if (!is.null(plot_obj)) {
-      sc <- plot_obj$scales$get_scales("colour")
-      if (is.null(sc)) sc <- plot_obj$scales$get_scales("color")
-      if (!is.null(sc)) {
-        br <- sc$get_breaks()
-        br <- br[!is.na(br)]
-        if (length(br)) breaks <- as.character(br)
+  for (mode in legend_resolution_order) {
+    if (mode == "label" && !is.na(lbl) && !is.null(icon_by_legend) && lbl %in% names(icon_by_legend)) {
+      ic <- icon_by_legend[[lbl]]
+      break
+    }
+    
+    if (mode == "scale_breaks" && !is.null(plot_obj) && !is.null(icon_by_legend)) {
+      breaks <- names(icon_by_legend)
+      for (aes_name in legend_scale_aesthetics) {
+        sc <- plot_obj$scales$get_scales(aes_name)
+        if (!is.null(sc)) {
+          br <- sc$get_breaks()
+          br <- br[!is.na(br)]
+          if (length(br)) {
+            breaks <- as.character(br)
+            break
+          }
+        }
+      }
+      
+      if (length(breaks)) {
+        icon_levels <- unname(icon_by_legend[breaks])
+        ic <- icon_levels[1]
+        if (!is.na(ic) && nzchar(ic)) break
       }
     }
     
-    if (length(breaks) > 0 && !is.null(icon_by_legend)) {
-      icon_levels <- unname(icon_by_legend[breaks])
-      
+    if (mode == "index" && !is.null(icon_by_legend)) {
+      icon_levels <- unname(icon_by_legend)
       idx <- NA_integer_
-      if (".id" %in% names(key_data)) idx <- as.integer(key_data$.id[1])
-      if (is.na(idx) && "group" %in% names(key_data)) idx <- as.integer(key_data$group[1])
+      for (field in legend_index_fields) {
+        if (field %in% names(key_data)) {
+          idx <- as.integer(key_data[[field]][1])
+          if (!is.na(idx)) break
+        }
+      }
       if (is.na(idx)) idx <- 1L
-      
       idx <- max(1L, min(length(icon_levels), idx))
       ic <- as.character(icon_levels[idx])
+      if (!is.na(ic) && nzchar(ic)) break
+    }
+    
+    if (mode == "fallback") {
+      ic <- legend_fallback_icon
+      break
     }
   }
   
-  # Final fallback
-  if (is.na(ic) || !nzchar(ic)) ic <- "circle"
+  if (is.na(ic) || !nzchar(ic)) ic <- legend_fallback_icon
   
-  # Add icon to key data
-  key_data$icon <- as.character(ic)[1]  # ← Force to character scalar
-  
-  # Extract stroke_width from params (may be NULL)
+  key_data$icon <- as.character(ic)[1]
   stroke_width <- params$stroke_width
   
-  # Call draw_key_pop_image with stroke support
   draw_key_pop_image(key_data, params, size, stroke_width = stroke_width)
 }
 
 #' Key drawing function for population-based image keys
 #'
-#' This function creates a custom key for displaying population-based image icons
-#' in the legend of a ggplot2 plot. Each group can be assigned a different icon
-#' based on the information in the `data$icon` column, and the icons can be colorized
-#' according to the specified `colour` and `alpha` aesthetics. Optionally supports
-#' black outlines via the `stroke_width` parameter.
+#' Creates a legend key grob for population-based icon rendering. Each key entry
+#' uses the icon in `data$icon`, colored by `data$colour` (or `data$color`) and
+#' alpha in `data$alpha`. Icons are rendered as FontAwesome PNGs and cached to
+#' avoid repeated rendering across draws.
+#'
+#' Resolution/fallback behavior:
+#' - Missing icon -> `fallback_icon`
+#' - Missing colour -> `fallback_colour`
+#' - Missing alpha -> `fallback_alpha`
+#'
+#' Rendering behavior:
+#' - If `stroke_width` is provided (> 0), icons are rendered directly via
+#'   `fontawesome::fa_png()` with stroke support.
+#' - Otherwise icons are rendered and colorized via `magick` for speed.
 #'
 #' @name draw_key_pop_image
 #' @title Key drawing function for population-based image keys
-#' @param data A data frame containing the scaled aesthetics for the key.
-#'             It must include a `colour` column for color, an `alpha` column for transparency,
-#'             and an `icon` column with the names of the icon files (without extension) to be used.
+#' @param data A data frame containing scaled aesthetics for the key.
+#'   Must include: `icon` and either `colour` or `color`.
+#'   Optional: `alpha`.
 #' @param params A list of additional parameters supplied to the geom.
-#' @param size The width and height of the key in mm. This value is not used directly in this function.
-#' @param stroke_width Numeric. Width of the black outline/border around icons in pixels.
-#'                     If NULL or 0, no outline is drawn. Default is NULL.
+#' @param size The width and height of the key in mm (unused, retained for ggplot2 signature).
+#' @param stroke_width Numeric. Width of icon outline in pixels. If NULL or 0, no outline is drawn.
+#' @param cache_dir Directory to cache rendered icons (default: tempdir()/ggpop-legend-icons).
+#' @param png_px Integer. PNG size in pixels used for icon rendering.
+#' @param max_fill Numeric in (0, 1]. Fraction of legend cell occupied by the icon.
+#' @param fallback_icon Character. Default icon if missing/invalid (default: "user").
+#' @param fallback_colour Character. Default colour if missing (default: "black").
+#' @param fallback_alpha Numeric. Default alpha if missing (default: 1).
 #' @return A grid grob containing the image icons with the specified colors and transparency.
 #' @importFrom magick image_read image_quantize image_colorize image_info
 #' @importFrom grid rasterGrob gTree unit
 #' @importFrom grDevices as.raster
-#' @details
-#' Icons are automatically scaled to fill the available legend box space while preserving
-#' their aspect ratio. Wide icons fill horizontally, tall icons fill vertically.
-#'
-#' If `stroke_width` is provided, icons are rendered directly with FontAwesome's stroke
-#' parameter for consistent appearance between plot and legend.
 #' @keywords internal
 #' @noRd
-draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
-  
+draw_key_pop_image <- function(
+    data,
+    params,
+    size,
+    stroke_width = NULL,
+    cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
+    png_px = 480L,
+    max_fill = 0.90,
+    fallback_icon = "user",
+    fallback_colour = "black",
+    fallback_alpha = 1
+) {
   # Cache directory for legend icons
-  cache_dir <- file.path(tempdir(), "ggpop-legend-icons")
   if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
   
   # Normalize color column name
@@ -110,24 +149,22 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
   }
   
   # Configuration
-  png_px <- 480L
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
-  max_fill <- 0.90  # Use 90% of available space
   
   # Create grobs for each icon
   grobs <- lapply(seq_along(data$colour), function(i) {
     
     # Extract icon name
     this_icon <- as.character(data$icon[i])
-    if (is.na(this_icon) || !nzchar(this_icon)) this_icon <- "user"
+    if (is.na(this_icon) || !nzchar(this_icon)) this_icon <- fallback_icon
     
     # Extract color
     this_col <- data$colour[i]
-    if (is.na(this_col) || !nzchar(as.character(this_col))) this_col <- "black"
+    if (is.na(this_col) || !nzchar(as.character(this_col))) this_col <- fallback_colour
     
     # Extract alpha
     this_alpha <- data$alpha[i]
-    if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- 1
+    if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- fallback_alpha
     
     # Render with stroke (uses FontAwesome directly)
     if (use_stroke) {
@@ -195,20 +232,16 @@ draw_key_pop_image <- function(data, params, size, stroke_width = NULL) {
     aspect_ratio <- img_info$width / img_info$height
     
     if (aspect_ratio > 1) {
-      # Wide icon: fill width, scale height
       icon_width  <- grid::unit(max_fill, "npc")
       icon_height <- grid::unit(max_fill / aspect_ratio, "npc")
     } else if (aspect_ratio < 1) {
-      # Tall icon: fill height, scale width
       icon_height <- grid::unit(max_fill, "npc")
       icon_width  <- grid::unit(max_fill * aspect_ratio, "npc")
     } else {
-      # Square icon
       icon_width  <- grid::unit(max_fill, "npc")
       icon_height <- grid::unit(max_fill, "npc")
     }
     
-    # Create raster grob
     grid::rasterGrob(
       x = 0.5, y = 0.5,
       image = ras,
