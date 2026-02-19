@@ -1,4 +1,18 @@
 #' Resolve faceting info for geom_pop
+#'
+#' Determines whether faceting is active and which column is used for faceting.
+#' If `facet` is missing, attempts to infer the facet column from the plot object.
+#'
+#' @param plot_obj ggplot object (typically from the calling context).
+#' @param facet A quosure or symbol provided to `geom_pop()`; may be missing or NULL.
+#'
+#' @return A list with:
+#' \itemize{
+#'   \item \code{has_facet}: logical indicating whether faceting is used
+#'   \item \code{facet_col}: facet column name (character) or NULL
+#'   \item \code{facet_explicit}: logical indicating whether facet was explicitly provided
+#'   \item \code{inferred_plot_facet}: facet column inferred from plot (character or NULL)
+#' }
 #' @keywords internal
 #' @noRd
 resolve_facet_info <- function(plot_obj, facet) {
@@ -59,6 +73,21 @@ resolve_facet_info <- function(plot_obj, facet) {
 }
 
 #' Handle size aesthetic vs parameter for geom_pop
+#'
+#' Chooses whether to use the mapped size aesthetic or the fixed `size` parameter,
+#' and computes the internal `icon_size` used for plotting.
+#'
+#' @param data Data frame of plotting data.
+#' @param combined_mapping Combined mapping list (inherited + user mapping).
+#' @param mapping_list Mapping list for the current layer.
+#' @param inherited_mapping_list Mapping list inherited from the plot.
+#' @param size Fixed size parameter from `geom_pop()`.
+#'
+#' @return A list with:
+#' \itemize{
+#'   \item \code{data}: data frame with `icon_size` column added
+#'   \item \code{mapping_list}: updated mapping list (with `size` removed if mapped)
+#' }
 #' @keywords internal
 #' @noRd
 handle_size_aesthetic_pop <- function(data, combined_mapping, mapping_list, inherited_mapping_list, size) {
@@ -86,6 +115,17 @@ handle_size_aesthetic_pop <- function(data, combined_mapping, mapping_list, inhe
 }
 
 #' Shuffle data (if arrange = FALSE), respecting facets
+#'
+#' Randomizes row order when `arrange = FALSE`. When faceted, shuffles
+#' within each facet group to keep group integrity.
+#'
+#' @param data Data frame of plotting data.
+#' @param has_facet Logical; whether faceting is active.
+#' @param facet_col Character; facet column name.
+#' @param arrange Logical; if FALSE, shuffle data.
+#' @param seed Optional numeric seed for reproducible shuffling.
+#'
+#' @return Data frame with rows potentially shuffled.
 #' @keywords internal
 #' @noRd
 maybe_shuffle_pop_data <- function(data, has_facet, facet_col, arrange, seed) {
@@ -108,6 +148,15 @@ maybe_shuffle_pop_data <- function(data, has_facet, facet_col, arrange, seed) {
 }
 
 #' Assign position indices
+#'
+#' Adds a sequential `pos` column used for icon placement, either globally
+#' or within each facet.
+#'
+#' @param data Data frame of plotting data.
+#' @param has_facet Logical; whether faceting is active.
+#' @param facet_col Character; facet column name.
+#'
+#' @return Data frame with `pos` column added.
 #' @keywords internal
 #' @noRd
 assign_pop_positions <- function(data, has_facet, facet_col) {
@@ -125,6 +174,15 @@ assign_pop_positions <- function(data, has_facet, facet_col) {
 }
 
 #' Create pop key glyph function
+#'
+#' Builds a custom legend key function that chooses an icon based on the
+#' legend label and renders it with the pop key drawing routine.
+#'
+#' @param icon_by_legend Named character vector mapping legend labels to icons.
+#' @param plot_obj ggplot object (used to resolve scale breaks).
+#' @param stroke_width Numeric; outline width in pixels.
+#'
+#' @return A function suitable for ggplot2's `key_glyph` argument.
 #' @keywords internal
 #' @noRd
 make_pop_key_glyph <- function(icon_by_legend, plot_obj, stroke_width) {
@@ -183,6 +241,20 @@ make_pop_key_glyph <- function(icon_by_legend, plot_obj, stroke_width) {
 }
 
 #' Merge population data with circle coordinates
+#'
+#' Joins the population data to precomputed circular coordinates,
+#' handling arrangements and faceting.
+#'
+#' @param data Data frame of plotting data.
+#' @param has_facet Logical; whether faceting is active.
+#' @param facet_col Character; facet column name.
+#' @param arrange Logical; whether to arrange by group.
+#'
+#' @return A list with:
+#' \itemize{
+#'   \item \code{data}: possibly reordered input data
+#'   \item \code{df_merged}: merged coordinates + data
+#' }
 #' @keywords internal
 #' @noRd
 merge_pop_coordinates <- function(data, has_facet, facet_col, arrange) {
@@ -290,67 +362,14 @@ merge_pop_coordinates <- function(data, has_facet, facet_col, arrange) {
   list(data = data, df_merged = df_merged)
 }
 
-
-#' Resolve faceting info for geom_pop
-#' @keywords internal
-#' @noRd
-resolve_facet_info <- function(plot_obj, facet_expr) {
-  infer_facet_var <- function(plot_obj) {
-    if (is.null(plot_obj) || is.null(plot_obj$facet)) return(NULL)
-    f <- plot_obj$facet
-    
-    if (!is.null(f$params$facets) && length(f$params$facets) == 1) {
-      q <- f$params$facets[[1]]
-      nm <- tryCatch(rlang::as_name(rlang::get_expr(q)), error = function(e) NULL)
-      if (!is.null(nm) && nzchar(nm)) return(nm)
-    }
-    
-    pick_one <- function(x) {
-      if (is.null(x) || length(x) != 1) return(NULL)
-      tryCatch(rlang::as_name(rlang::get_expr(x[[1]])), error = function(e) NULL)
-    }
-    
-    r <- pick_one(f$params$rows)
-    c <- pick_one(f$params$cols)
-    
-    if (!is.null(r) && is.null(c)) return(r)
-    if (is.null(r) && !is.null(c)) return(c)
-    
-    NULL
-  }
-  
-  if (rlang::is_missing(facet_expr) || rlang::is_null(facet_expr)) {
-    inferred <- infer_facet_var(plot_obj)
-    if (!is.null(inferred)) {
-      has_facet <- TRUE
-      facet_col <- inferred
-    } else {
-      has_facet <- FALSE
-      facet_col <- NULL
-    }
-  } else {
-    has_facet <- TRUE
-    if (rlang::is_symbol(facet_expr)) {
-      facet_col <- rlang::as_name(facet_expr)
-    } else if (rlang::is_string(facet_expr)) {
-      facet_col <- facet_expr
-    } else {
-      cli::cli_abort(
-        "`facet` must be a column name (facet = variable) or a string (facet = \"variable\").",
-        call = NULL
-      )
-    }
-  }
-  
-  list(
-    has_facet = has_facet,
-    facet_col = facet_col,
-    facet_explicit = !(rlang::is_missing(facet_expr) || rlang::is_null(facet_expr)),
-    inferred_plot_facet = infer_facet_var(plot_obj)
-  )
-}
-
 #' Null-or-empty coalesce
+#'
+#' Returns `y` if `x` is NULL or empty; otherwise returns `x`.
+#'
+#' @param x Primary value.
+#' @param y Fallback value.
+#'
+#' @return `x` if non-empty, otherwise `y`.
 #' @keywords internal
 #' @noRd
 `%||%` <- function(x, y) if (is.null(x) || !nzchar(as.character(x))) y else x
