@@ -4,12 +4,25 @@
 \alias{scale_legend_icon}
 \title{Legend helper for geom_pop icon legends}
 \usage{
-scale_legend_icon(size = 10, margin = NULL, ...)
+scale_legend_icon(
+  size = 10,
+  margin = NULL,
+  size_default = 10,
+  margin_default = ggplot2::margin(0, 0, 0, 0),
+  unit = "mm",
+  ...
+)
 }
 \arguments{
-\item{size}{Numeric. Legend key size in mm (this controls icon size).}
+\item{size}{Numeric. Legend key size (default 10).}
 
-\item{margin}{ggplot2::margin() for plot margin (defaults to bottom padding).}
+\item{margin}{ggplot2::margin() for plot margin (default margin_default).}
+
+\item{size_default}{Numeric. Fallback size used when size is invalid (default 10).}
+
+\item{margin_default}{ggplot2::margin() used when margin is NULL.}
+
+\item{unit}{Character. Unit for legend key sizing (default "mm").}
 
 \item{...}{Additional arguments forwarded to ggplot2::guide_legend()}
 }
