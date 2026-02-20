@@ -476,6 +476,236 @@ validate_seed <- function(seed, arg_name = "seed") {
   invisible(seed)
 }
 
+
+# ******************************************************************************
+## 01.07 Scale Legend Icon -----------------------------------------------------
+# ******************************************************************************
+
+#' Validate scale_legend_icon parameters
+#'
+#' @param size Numeric. Legend key size value
+#' @param unit Character. Unit for legend key sizing
+#' @param spacing Numeric. Spacing between legend items as fraction of size
+#' @param arg_size Name of size argument for error messages (default "size")
+#' @param arg_unit Name of unit argument for error messages (default "unit")
+#' @param arg_spacing Name of spacing argument for error messages (default "spacing")
+#' @return Invisible list with validated parameters
+#' @keywords internal
+#' @noRd
+validate_scale_legend_icon <- function(size, unit, spacing,
+                                       arg_size = "size",
+                                       arg_unit = "unit",
+                                       arg_spacing = "spacing") {
+  
+  # Validate size - Type check
+  if (!is.numeric(size)) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_size}` parameter.",
+        "x" = "Must be numeric.",
+        "i" = "You provided: {.cls {class(size)[1]}}",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10)}"
+      ),
+      call = NULL
+    )
+  }
+  
+  # Validate size - Length check
+  if (length(size) != 1) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_size}` parameter.",
+        "x" = "Must be a single numeric value.",
+        "i" = "You provided a vector of length {length(size)}.",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10)}  # Single value"
+      ),
+      call = NULL
+    )
+  }
+  
+  # Validate size - Positive check
+  if (size <= 0) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_size}` value.",
+        "x" = "Must be greater than 0.",
+        "i" = "You provided: {.val {size}}",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10)}  # Positive value"
+      ),
+      call = NULL
+    )
+  }
+  
+  # Validate size - Finite check
+  if (!is.finite(size)) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_size}` value.",
+        "x" = "Must be a finite number.",
+        "i" = "You provided: {.val {size}}",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10)}  # Finite value"
+      ),
+      call = NULL
+    )
+  }
+  
+  # Validate unit - Type and length check
+  if (!is.character(unit) || length(unit) != 1) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_unit}` parameter.",
+        "x" = "Must be a single character string.",
+        "i" = "You provided: {.cls {class(unit)[1]}} of length {length(unit)}",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10, unit = 'mm')}"
+      ),
+      call = NULL
+    )
+  }
+  
+  # Validate unit - Valid grid units (warning only)
+  valid_units <- c("npc", "cm", "inches", "mm", "points", "picas", 
+                   "bigpts", "dida", "cicero", "scaledpts", "lines", 
+                   "char", "native", "snpc", "strwidth", "strheight", 
+                   "grobwidth", "grobheight")
+  
+  if (!unit %in% valid_units) {
+    cli::cli_warn(
+      c(
+        "Potentially invalid `{arg_unit}` value.",
+        "!" = "You provided: {.val {unit}}",
+        " " = "",
+        "i" = "Common units:",
+        " " = "  {.val mm}, {.val cm}, {.val inches}, {.val points}",
+        " " = "",
+        "i" = "Proceeding anyway, but check your output."
+      ),
+      call = NULL
+    )
+  }
+  
+  # Validate spacing - Type and length check
+  if (!is.numeric(spacing) || length(spacing) != 1) {
+    cli::cli_warn(
+      c(
+        "Invalid `{arg_spacing}` parameter.",
+        "!" = "Must be a single numeric value.",
+        "i" = "You provided: {.cls {class(spacing)[1]}} of length {length(spacing)}",
+        " " = "",
+        "i" = "Using default: {.code spacing = 0.2}"
+      ),
+      call = NULL
+    )
+    spacing <- 0.2
+  }
+  
+  # Validate spacing - Non-negative check
+  if (spacing < 0) {
+    cli::cli_warn(
+      c(
+        "Invalid `{arg_spacing}` value.",
+        "!" = "Should be non-negative.",
+        "i" = "You provided: {.val {spacing}}",
+        " " = "",
+        "i" = "Using: {.code spacing = 0} instead."
+      ),
+      call = NULL
+    )
+    spacing <- 0
+  }
+  
+  # SIZE WARNING: Convert to mm and warn if > 50mm ---------------------------
+  # Only check for absolute units (not relative like npc, lines, etc.)
+  
+  absolute_units <- c("mm", "cm", "inches", "points", "picas", "bigpts")
+  
+  if (unit %in% absolute_units) {
+    # Convert to mm
+    size_mm <- switch(unit,
+                      "mm" = size,
+                      "cm" = size * 10,
+                      "inches" = size * 25.4,
+                      "points" = size * 0.3528,  # 1 point = 1/72 inch
+                      "picas" = size * 4.2333,   # 1 pica = 12 points
+                      "bigpts" = size * 0.3528,  # Same as points
+                      size)
+    
+    if (size_mm > 50) {
+      # Build conversion info based on unit
+      conversion_info <- switch(unit,
+                                "mm" = c(
+                                  " " = "  = {round(size / 10, 1)} cm",
+                                  " " = "  = {round(size / 25.4, 2)} inches"
+                                ),
+                                "cm" = c(
+                                  " " = "  = {round(size * 10, 1)} mm",
+                                  " " = "  = {round(size / 2.54, 2)} inches"
+                                ),
+                                "inches" = c(
+                                  " " = "  = {round(size * 2.54, 1)} cm",
+                                  " " = "  = {round(size * 25.4, 1)} mm"
+                                ),
+                                "points" = c(
+                                  " " = "  = {round(size / 72, 2)} inches",
+                                  " " = "  = {round(size * 0.3528, 1)} mm"
+                                ),
+                                "picas" = c(
+                                  " " = "  = {round(size / 6, 2)} inches",
+                                  " " = "  = {round(size * 4.2333, 1)} mm"
+                                ),
+                                c(" " = "")
+      )
+      
+      cli::cli_warn(
+        c(
+          "Very large `{arg_size}` value.",
+          "!" = "{.val {size}} {unit} is unusually large for legend icons.",
+          "i" = "This is approximately {round(size_mm, 1)} mm:",
+          conversion_info,
+          " " = "",
+          "i" = "Typical values:",
+          " " = "  Small icons: 5-10 mm (0.5-1 cm)",
+          " " = "  Medium icons: 10-20 mm (1-2 cm)",
+          " " = "  Large icons: 20-30 mm (2-3 cm)",
+          " " = "  Maximum recommended: 50 mm (5 cm)",
+          " " = "",
+          "!" = "Your legend icons may be very large and overlap with plot content."
+        ),
+        call = NULL
+      )
+    }
+    
+    # Also warn if too small (< 3mm)
+    if (size_mm < 3) {
+      cli::cli_warn(
+        c(
+          "Very small `{arg_size}` value.",
+          "!" = "{.val {size}} {unit} is very small.",
+          "i" = "This is approximately {round(size_mm, 2)} mm.",
+          " " = "",
+          "i" = "Icons may be difficult to see in the legend.",
+          " " = "",
+          "i" = "Recommended minimum:",
+          " " = "  At least 5 mm (0.5 cm / 0.2 inches) for visibility"
+        ),
+        call = NULL
+      )
+    }
+  }
+  
+  invisible(list(size = size, unit = unit, spacing = spacing))
+}
+
+
 # ******************************************************************************
 # 02 Data Validators -----------------------------------------------------------
 # ******************************************************************************

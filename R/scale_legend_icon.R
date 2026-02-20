@@ -25,19 +25,18 @@
 #' 
 #' @export
 scale_legend_icon <- function(size = 10, unit = "mm", spacing = 0.2, ...) {
-  # Validate size
-  if (!is.numeric(size) || length(size) != 1 || size <= 0) {
-    warning("Invalid size provided to scale_legend_icon(). Using default size = 10.")
-    size <- 10
-  }
   
+  # Validate all parameters
+  validated <- validate_scale_legend_icon(size, unit, spacing)
+  
+  # Return theme with validated parameters
   ggplot2::theme(
-    legend.key.size = grid::unit(size, unit),
-    legend.key.height = grid::unit(size, unit),
-    legend.key.width = grid::unit(size, unit),
+    legend.key.size = grid::unit(validated$size, validated$unit),
+    legend.key.height = grid::unit(validated$size, validated$unit),
+    legend.key.width = grid::unit(validated$size, validated$unit),
     legend.key = ggplot2::element_rect(fill = NA, colour = NA),
-    legend.spacing.x = grid::unit(size * spacing, unit),
-    legend.spacing.y = grid::unit(size * spacing, unit),
+    legend.spacing.x = grid::unit(validated$size * validated$spacing, validated$unit),
+    legend.spacing.y = grid::unit(validated$size * validated$spacing, validated$unit),
     ...
   )
 }
