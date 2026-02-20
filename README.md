@@ -349,8 +349,14 @@ ggplot() +
 #### Geofacet
 
 ``` r
-# ---- Load hexgrid (for reference only) ----
-my_sf <- read_sf("us_states_hexgrid.geojson") %>%
+
+library(sf)
+library(dplyr)
+library(geofacet)
+
+url <- "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/7a5e5e1b1009312506ebd873d7858fa424c14b68/DATA/us_states_hexgrid.geojson.json"
+
+my_sf <- read_sf(url) %>%
   mutate(
     google_name = gsub(" \\(United States\\)", "", google_name)
   )
@@ -527,14 +533,15 @@ df_hex_prop <- df_hex_prop %>%
       TRUE ~ "person"
     )
   ) %>%
-  rename(code = group)
+  rename(code = group) %>% 
+  select(-pos)
 
 # ---- Plot using facet_geo ----
 # ---- Plot using facet_geo with black background and enhanced design ----
 # ---- Plot using facet_geo with black background and enhanced design ----
 ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
   geom_pop(size = 4, arrange = TRUE, facet = "code") +  # Increased size since fewer icons
-  facet_geo(~ code, grid = "us_state_grid3", label = "name") +
+  geofacet::facet_geo(~ code, grid = "us_state_grid3", label = "name") +
   scale_color_manual(
     values = c("gun death" = "#FF1744", "no gun death" = "#42A5F5"),
     labels = c("Gun death (each skull = 2,000 people)", "No gun death")
@@ -595,8 +602,9 @@ ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
     plot.margin = margin(t = 40, r = 40, b = 40, l = 40)
     
     # Overall plot margins
-
+    
   )
+
 
 ```
 
