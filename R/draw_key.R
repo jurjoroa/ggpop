@@ -86,7 +86,16 @@ key_glyph_icon_point <- function(
       
       if (length(breaks)) {
         icon_levels <- unname(icon_by_legend[breaks])
-        ic <- icon_levels[1]
+        idx <- NA_integer_
+        for (field in legend_index_fields) {
+          if (field %in% names(key_data)) {
+            idx <- as.integer(key_data[[field]][1])
+            if (!is.na(idx)) break
+          }
+        }
+        if (is.na(idx)) idx <- 1L
+        idx <- max(1L, min(length(icon_levels), idx))
+        ic <- as.character(icon_levels[idx])
         if (!is.na(ic) && nzchar(ic)) break
       }
     }
