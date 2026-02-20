@@ -18,6 +18,11 @@ testthat::skip_if_not_installed("dplyr")
 testthat::skip_if_not_installed("ggimage")
 testthat::skip_if_not_installed("fontawesome")
 
+expect_doppelganger <- function(title, fig, path = NULL, ...) {
+  testthat::skip_if_not_installed("vdiffr")
+  vdiffr::expect_doppelganger(title, fig, ...)
+}
+
 # ******************************************************************************
 ## 01.01 Test dataframes -------------------------------------------------------
 # ******************************************************************************
@@ -1536,6 +1541,42 @@ testthat::test_that("handles many layers gracefully", {
   testthat::expect_s3_class(p, "ggplot")
   testthat::expect_true(length(p$layers) >= 7)
 })
+
+# ******************************************************************************
+# 18 Snapshot ------------------------------------------------------------------
+# ******************************************************************************
+
+testthat::test_that("geom_icon_point", {
+  set.seed(1)
+  n <- 5
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    grp = rep(c("A", "B", "C"), length.out = n),
+    icon = rep(c("user", "car", "heart"), length.out = n),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    geom_icon_point(
+      ggplot2::aes(icon = icon, color = grp),
+      size = 0.8,
+      legend_icons = TRUE
+    ) +
+    scale_legend_icon(size = 2.5) +
+    ggplot2::theme_void(base_size = 8) +
+    ggplot2::theme(
+      legend.position = "right",
+      plot.margin = grid::unit(rep(2, 4), "pt")
+    ) +
+    ggplot2::geom_blank()
+  
+  expect_doppelganger(
+    title = "geom_icon_point",
+    fig = p
+  )
+})
+
 
 # ******************************************************************************
 # END --------------------------------------------------------------------------

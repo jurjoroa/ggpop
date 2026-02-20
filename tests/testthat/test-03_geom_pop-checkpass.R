@@ -982,7 +982,7 @@ testthat::test_that("Icons: very custom name 'fontawesome_symbol' works", {
   testthat::expect_false("ggmale" %in% rendered_icons)
 })
 
-testthat::test_that("REGRESSION: 'icon' column does NOT override 'icon_custom' content", {
+testthat::test_that("Regression: 'icon' column does NOT override 'icon_custom' content", {
   # This is the bug we fixed: having a column named 'icon' should not
   # interfere when user maps aes(icon = icon_custom)
   
@@ -1410,5 +1410,33 @@ testthat::test_that("DPI validation errors work correctly", {
       ),
     "dpi.*too low",
     ignore.case = TRUE
+  )
+})
+
+
+
+# ******************************************************************************
+# 14 Snapshot ------------------------------------------------------------------
+# ******************************************************************************
+
+
+testthat::test_that("geom_pop", {
+  
+  df <- data.frame(
+    sex = c("male", "female", "male", "female"),
+    icon = c("male", "female", "male", "female"),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data = df,
+      ggplot2::aes(icon = icon, group = sex, color = sex)
+    ) +
+    ggplot2::theme_void()
+  
+  vdiffr::expect_doppelganger(
+    title = "geom_pop",
+    fig = p
   )
 })
