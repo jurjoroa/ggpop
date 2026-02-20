@@ -81,6 +81,8 @@ the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{ann
 
 \item{legend_icons}{Show icons in legend (default: TRUE).}
 
+\item{stroke_width}{Numeric. Width of the icon outline/stroke.}
+
 \item{...}{additional parameters}
 }
 \value{

@@ -18,6 +18,7 @@
 #' @param size Default icon size (default: 1).
 #' @param dpi Icon resolution (default: 50).
 #' @param legend_icons Show icons in legend (default: TRUE).
+#' @param stroke_width Numeric. Width of the icon outline/stroke.
 #'
 #' @return A ggplot layer.
 #'

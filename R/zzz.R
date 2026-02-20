@@ -2,7 +2,10 @@
 # created by dplyr or internal processing.
 if (getRversion() >= "2.15.1") {
   utils::globalVariables(
-    c("group", "prop", "type", "original_order", "df_coordinates_final")
+    c(
+      "group", "prop", "type", "original_order", "df_coordinates_final",
+      "size", "n_icons", "icons", "msg"
+    )
   )
 }
 
@@ -16,7 +19,7 @@ if (getRversion() >= "2.15.1") {
 .onLoad <- function(libname, pkgname) {
   # Suppress additional dplyr-generated variables used in legends.
   utils::globalVariables(c(".legend"))
-
+  
   # Initialize legend settings registry.
   # Tracks legend_icons settings across multiple geom_icon_point() layers.
   .ggpop_env$legend_settings <- list()

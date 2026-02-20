@@ -41,11 +41,9 @@ Imports:
     rlang,
     tidyr,
     purrr,
-    ggtext,
     fontawesome,
     rsvg,
-    cli,
-    data.table
+    cli
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
 URL: https://jurjoroa.github.io/ggpop/

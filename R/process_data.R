@@ -20,7 +20,7 @@
 #' @importFrom tidyr nest unnest unite
 #' @importFrom purrr map
 #' @importFrom stats setNames
-#' @importFrom rlang enquo quo_is_null as_label syms ensym
+#' @importFrom rlang enquo quo_is_null as_label syms ensym :=
 #'
 #' @export
 
