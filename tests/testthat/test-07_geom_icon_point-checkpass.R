@@ -1320,7 +1320,6 @@ testthat::test_that("Edge: multiple points at same coordinates", {
 ### 17.03 other geoms --------------------------------------------------
 
 testthat::test_that("geom_icon_point works with multiple ggplot2 layers", {
-  
   df <- data.frame(
     x = 1:10,
     y = rnorm(10),
@@ -1329,7 +1328,12 @@ testthat::test_that("geom_icon_point works with multiple ggplot2 layers", {
   )
   
   p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
-    ggplot2::geom_smooth(method = "lm", se = FALSE, color = "gray50") +  # Layer 1: Trend line
+    ggplot2::geom_smooth(
+      method = "lm",
+      se = FALSE,
+      color = "gray50",
+      formula = y ~ x
+    ) +  # Layer 1: Trend line
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +           # Layer 2: Reference line
     geom_icon_point(ggplot2::aes(icon = icon, color = category), size = 5, dpi = 100) +       # Layer 3: Icon points
     ggplot2::geom_text(ggplot2::aes(label = category), nudge_y = 0.3) +  # Layer 4: Labels
@@ -1339,7 +1343,6 @@ testthat::test_that("geom_icon_point works with multiple ggplot2 layers", {
   testthat::expect_length(p$layers, 4)  # smooth, hline, icon_point, text
   testthat::expect_s3_class(p$layers[[3]], "ggpop_icon_point_layer")
 })
-
 ### 17.04 ggrepel for non-overlapping labels --------------------
 
 testthat::test_that("works with ggrepel layers", {
@@ -1512,8 +1515,7 @@ testthat::test_that("works with facets and multiple layers", {
 })
 
 ### 17.09 stress test ------------------------------------------------------------
-testthat::test_that("handles many layers gracefully", {
-  
+testthat::test_that("handles many layers", {
   df <- data.frame(
     x = 1:50,
     y = cumsum(rnorm(50)),
@@ -1524,24 +1526,25 @@ testthat::test_that("handles many layers gracefully", {
                     ifelse(df$category == "B", "heart", "circle"))
   
   p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 2, ymax = y + 2),     # Layer 1
-                         fill = "gray90") +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 1, ymax = y + 1),     # Layer 2
-                         fill = "gray70") +
-    ggplot2::geom_line(color = "black", linewidth = 0.5) +              # Layer 3
-    ggplot2::geom_smooth(method = "loess", se = FALSE,                  # Layer 4
-                         color = "red", linetype = "dashed") +
-    geom_icon_point(ggplot2::aes(icon = icon, color = category),       # Layer 5
-                    size = 1.2) +
-    ggplot2::geom_hline(yintercept = mean(df$y), color = "blue") +     # Layer 6
-    ggplot2::geom_vline(xintercept = 25, color = "green", alpha = 0.5) + # Layer 7
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 2, ymax = y + 2), fill = "gray90") +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 1, ymax = y + 1), fill = "gray70") +
+    ggplot2::geom_line(color = "black", linewidth = 0.5) +
+    ggplot2::geom_smooth(
+      method = "loess",
+      se = FALSE,
+      color = "red",
+      linetype = "dashed",
+      formula = y ~ x
+    ) +
+    geom_icon_point(ggplot2::aes(icon = icon, color = category), size = 1.2) +
+    ggplot2::geom_hline(yintercept = mean(df$y), color = "blue") +
+    ggplot2::geom_vline(xintercept = 25, color = "green", alpha = 0.5) +
     ggplot2::theme_minimal() +
     ggplot2::labs(title = "Multi-layer plot with icons")
   
   testthat::expect_s3_class(p, "ggplot")
   testthat::expect_true(length(p$layers) >= 7)
 })
-
 # ******************************************************************************
 # 18 Snapshot ------------------------------------------------------------------
 # ******************************************************************************
