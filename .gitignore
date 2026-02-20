@@ -2,10 +2,10 @@
 .Rhistory
 .RData
 .Ruserdata
+.DS_Store
 .github/pull_request_template.md
 
 # Allow inst/figures on Dev (this is SOURCE, not build output)
 # Ignore ALL docs on main (CRAN clean)
 docs
-
 
