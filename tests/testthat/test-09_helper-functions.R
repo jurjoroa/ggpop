@@ -46,7 +46,7 @@ testthat::test_that("uses parameter when no size in mapping", {
   combined_mapping <- list()
   mapping_list <- list()
   inherited_mapping_list <- list()
-  
+
   result <- ggpop:::handle_size_aesthetic(
     data = df_test,
     combined_mapping = combined_mapping,
@@ -54,7 +54,7 @@ testthat::test_that("uses parameter when no size in mapping", {
     inherited_mapping_list = inherited_mapping_list,
     size = 5
   )
-  
+
   testthat::expect_true("icon_size" %in% names(result$data))
   testthat::expect_equal(result$data$icon_size[1], 5 * 0.03)
   testthat::expect_equal(length(result$mapping_list), 0)
@@ -64,7 +64,7 @@ testthat::test_that("uses mapped size column", {
   combined_mapping <- list(size = rlang::sym("size_col"))
   mapping_list <- list(size = rlang::sym("size_col"))
   inherited_mapping_list <- list()
-  
+
   result <- ggpop:::handle_size_aesthetic(
     data = df_test,
     combined_mapping = combined_mapping,
@@ -72,7 +72,7 @@ testthat::test_that("uses mapped size column", {
     inherited_mapping_list = inherited_mapping_list,
     size = 5
   )
-  
+
   testthat::expect_true("icon_size" %in% names(result$data))
   testthat::expect_equal(result$data$icon_size[1], df_test$size_col[1] * 0.03)
   testthat::expect_null(result$mapping_list$size)
@@ -82,7 +82,7 @@ testthat::test_that("inherits size from ggplot", {
   combined_mapping <- list(size = rlang::sym("size_col"))
   mapping_list <- list()
   inherited_mapping_list <- list(size = rlang::sym("size_col"))
-  
+
   result <- ggpop:::handle_size_aesthetic(
     data = df_test,
     combined_mapping = combined_mapping,
@@ -90,7 +90,7 @@ testthat::test_that("inherits size from ggplot", {
     inherited_mapping_list = inherited_mapping_list,
     size = 5
   )
-  
+
   testthat::expect_true("icon_size" %in% names(result$data))
   testthat::expect_equal(result$data$icon_size[2], df_test$size_col[2] * 0.03)
 })
@@ -101,33 +101,33 @@ testthat::test_that("inherits size from ggplot", {
 
 testthat::test_that("detects colour aesthetic", {
   combined_mapping <- list(colour = rlang::sym("category"))
-  
+
   legend_var <- ggpop:::detect_legend_variable(combined_mapping, df_test)
-  
+
   testthat::expect_equal(legend_var, "category")
 })
 
 testthat::test_that("detects color aesthetic (US spelling)", {
   combined_mapping <- list(color = rlang::sym("category"))
-  
+
   legend_var <- ggpop:::detect_legend_variable(combined_mapping, df_test)
-  
+
   testthat::expect_equal(legend_var, "category")
 })
 
 testthat::test_that("detects group aesthetic", {
   combined_mapping <- list(group = rlang::sym("category"))
-  
+
   legend_var <- ggpop:::detect_legend_variable(combined_mapping, df_test)
-  
+
   testthat::expect_equal(legend_var, "category")
 })
 
 testthat::test_that("falls back to icon if multiple icons", {
   combined_mapping <- list()
-  
+
   legend_var <- ggpop:::detect_legend_variable(combined_mapping, df_test)
-  
+
   testthat::expect_equal(legend_var, "icon")
 })
 
@@ -139,9 +139,9 @@ testthat::test_that("returns NULL when no legend needed", {
     stringsAsFactors = FALSE
   )
   combined_mapping <- list()
-  
+
   legend_var <- ggpop:::detect_legend_variable(combined_mapping, df_single_icon)
-  
+
   testthat::expect_null(legend_var)
 })
 
@@ -151,14 +151,14 @@ testthat::test_that("returns NULL when no legend needed", {
 
 testthat::test_that("creates mapping for legend variable", {
   legend_var <- "category"
-  
+
   icon_by_legend <- ggpop:::create_icon_by_legend(
     data = df_test,
     legend_var = legend_var,
     icon = NULL,
     has_icon_param = FALSE
   )
-  
+
   testthat::expect_type(icon_by_legend, "character")
   testthat::expect_true(all(names(icon_by_legend) %in% c("A", "B", "C")))
   testthat::expect_true(all(icon_by_legend %in% df_test$icon))
@@ -170,14 +170,14 @@ testthat::test_that("picks most common icon per group", {
     icon = c("circle", "circle", "star", "heart", "heart"),
     stringsAsFactors = FALSE
   )
-  
+
   icon_by_legend <- ggpop:::create_icon_by_legend(
     data = df_multi,
     legend_var = "category",
     icon = NULL,
     has_icon_param = FALSE
   )
-  
+
   testthat::expect_equal(icon_by_legend["A"], c(A = "circle"))
   testthat::expect_equal(icon_by_legend["B"], c(B = "heart"))
 })
@@ -189,7 +189,7 @@ testthat::test_that("uses first icon when no legend_var", {
     icon = NULL,
     has_icon_param = FALSE
   )
-  
+
   testthat::expect_equal(icon_by_legend, c(default = "circle"))
 })
 
@@ -200,7 +200,7 @@ testthat::test_that("uses icon parameter when provided", {
     icon = "star",
     has_icon_param = TRUE
   )
-  
+
   testthat::expect_equal(icon_by_legend, c(default = "star"))
 })
 
@@ -215,23 +215,23 @@ testthat::test_that("renames icon column", {
     my_icon = c("circle", "star", "heart"),
     stringsAsFactors = FALSE
   )
-  
+
   result <- ggpop:::normalize_icon_column(df_renamed, "my_icon")
-  
+
   testthat::expect_true("icon" %in% names(result))
   testthat::expect_equal(result$icon, df_renamed$my_icon)
 })
 
 testthat::test_that("keeps icon column if already named icon", {
   result <- ggpop:::normalize_icon_column(df_test, "icon")
-  
+
   testthat::expect_true("icon" %in% names(result))
   testthat::expect_equal(result$icon, df_test$icon)
 })
 
 testthat::test_that("handles NULL icon_var", {
   result <- ggpop:::normalize_icon_column(df_test, NULL)
-  
+
   testthat::expect_equal(result, df_test)
 })
 
@@ -242,26 +242,26 @@ testthat::test_that("handles NULL icon_var", {
 testthat::test_that("adds icon if not present", {
   mapping_list <- list()
   inherited_mapping_list <- list(icon = rlang::sym("icon"))
-  
+
   result <- ggpop:::add_icon_to_mapping(
     mapping_list = mapping_list,
     inherited_mapping_list = inherited_mapping_list,
     icon_var = "icon"
   )
-  
+
   testthat::expect_true("icon" %in% names(result))
 })
 
 testthat::test_that("preserves existing icon mapping", {
   mapping_list <- list(icon = rlang::sym("my_icon"))
   inherited_mapping_list <- list()
-  
+
   result <- ggpop:::add_icon_to_mapping(
     mapping_list = mapping_list,
     inherited_mapping_list = inherited_mapping_list,
     icon_var = "my_icon"
   )
-  
+
   testthat::expect_equal(result$icon, rlang::sym("my_icon"))
 })
 
@@ -272,22 +272,22 @@ testthat::test_that("preserves existing icon mapping", {
 testthat::test_that("swaps data and mapping when reversed", {
   # User passes data first, mapping second (incorrect order)
   result <- ggpop:::handle_argument_swap(
-    mapping = df_test,  # Actually data
-    data = ggplot2::aes(x = x, y = y)  # Actually mapping
+    mapping = df_test, # Actually data
+    data = ggplot2::aes(x = x, y = y) # Actually mapping
   )
-  
+
   testthat::expect_true(is.data.frame(result$data))
   testthat::expect_true(inherits(result$mapping, "uneval"))
 })
 
 testthat::test_that("keeps correct order unchanged", {
   mapping <- ggplot2::aes(x = x, y = y)
-  
+
   result <- ggpop:::handle_argument_swap(
     mapping = mapping,
     data = df_test
   )
-  
+
   testthat::expect_equal(result$mapping, mapping)
   testthat::expect_equal(result$data, df_test)
 })
@@ -297,7 +297,7 @@ testthat::test_that("handles NULL mapping", {
     mapping = NULL,
     data = df_test
   )
-  
+
   testthat::expect_null(result$mapping)
   testthat::expect_equal(result$data, df_test)
 })
@@ -312,7 +312,7 @@ testthat::test_that("assigns sequential positions without facet", {
     has_facet = FALSE,
     facet_col = NULL
   )
-  
+
   testthat::expect_true("pos" %in% names(result))
   testthat::expect_equal(result$pos, 1:5)
 })
@@ -323,13 +323,13 @@ testthat::test_that("assigns positions per facet group", {
     facet_var = c("A", "A", "B", "B"),
     stringsAsFactors = FALSE
   )
-  
+
   result <- ggpop:::assign_pop_positions(
     data = df_faceted,
     has_facet = TRUE,
     facet_col = "facet_var"
   )
-  
+
   testthat::expect_true("pos" %in% names(result))
   testthat::expect_equal(result$pos[result$facet_var == "A"], c(1, 2))
   testthat::expect_equal(result$pos[result$facet_var == "B"], c(1, 2))
@@ -347,7 +347,7 @@ testthat::test_that("preserves order when arrange=TRUE", {
     arrange = TRUE,
     seed = NULL
   )
-  
+
   testthat::expect_equal(result, df_test)
 })
 
@@ -360,7 +360,7 @@ testthat::test_that("shuffles when arrange=FALSE", {
     arrange = FALSE,
     seed = 123
   )
-  
+
   set.seed(123)
   result2 <- ggpop:::maybe_shuffle_pop_data(
     data = df_test,
@@ -369,10 +369,10 @@ testthat::test_that("shuffles when arrange=FALSE", {
     arrange = FALSE,
     seed = 123
   )
-  
+
   # Same seed should produce same shuffle
   testthat::expect_equal(result1, result2)
-  
+
   # Should be shuffled (very unlikely to be in original order)
   testthat::expect_false(all(result1$x == df_test$x))
 })
@@ -384,7 +384,7 @@ testthat::test_that("shuffles within facet groups", {
     facet_var = rep(c("A", "B"), each = 3),
     stringsAsFactors = FALSE
   )
-  
+
   result <- ggpop:::maybe_shuffle_pop_data(
     data = df_faceted,
     has_facet = TRUE,
@@ -392,7 +392,7 @@ testthat::test_that("shuffles within facet groups", {
     arrange = FALSE,
     seed = 456
   )
-  
+
   # Should maintain facet groups
   testthat::expect_equal(
     table(result$facet_var),

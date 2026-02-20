@@ -296,7 +296,8 @@ process_data <- function(data,
     join_by <- c("type" = group_var_name, stats::setNames(high_group_var, high_group_var))
 
     data <- left_join(df_sample, df_proportion, by = join_by) %>%
-      tidyr::unite("group", all_of(high_group_var), sep = "_", remove = TRUE) %>% select(-pos)
+      tidyr::unite("group", all_of(high_group_var), sep = "_", remove = TRUE) %>%
+      select(-pos)
   } else {
     # Handle case without high_group_var
     join_by <- c("type" = group_var_name)

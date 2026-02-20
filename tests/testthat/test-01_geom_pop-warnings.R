@@ -64,7 +64,7 @@ df_processed <- data.frame(
 testthat::test_that("Warning: size inside aes() overrides geom_pop(size = ...)", {
   df_sz <- df_raw
   df_sz$size <- c(5, 2, 5, 2)
-  
+
   testthat::expect_warning(
     ggplot2::ggplot() +
       geom_pop(

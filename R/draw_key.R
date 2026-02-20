@@ -31,45 +31,45 @@
 #' @keywords internal
 #' @noRd
 key_glyph_icon_point <- function(
-    key_data,
-    params,
-    size,
-    legend_fallback_icon = "circle",
-    legend_default_colour = "black",
-    legend_default_alpha = 1,
-    legend_resolution_order = c("label", "scale_breaks", "index", "fallback"),
-    legend_index_fields = c(".id", "group"),
-    legend_scale_aesthetics = c("colour", "color")
+  key_data,
+  params,
+  size,
+  legend_fallback_icon = "circle",
+  legend_default_colour = "black",
+  legend_default_alpha = 1,
+  legend_resolution_order = c("label", "scale_breaks", "index", "fallback"),
+  legend_index_fields = c(".id", "group"),
+  legend_scale_aesthetics = c("colour", "color")
 ) {
   # Normalize color column
   if (!("colour" %in% names(key_data)) & ("color" %in% names(key_data))) {
     key_data$colour <- key_data$color
   }
-  
+
   # Default alpha
   if (!("alpha" %in% names(key_data))) key_data$alpha <- legend_default_alpha
   key_data$alpha[is.na(key_data$alpha)] <- legend_default_alpha
-  
+
   # Default colour
   if (!("colour" %in% names(key_data))) key_data$colour <- legend_default_colour
   key_data$colour[is.na(key_data$colour)] <- legend_default_colour
-  
+
   # Extract label
   lbl <- NA_character_
   if ("label" %in% names(key_data)) lbl <- as.character(key_data$label[1])
   if (is.na(lbl) || !nzchar(lbl)) lbl <- NA_character_
-  
+
   icon_by_legend <- params$icon_by_legend
   plot_obj <- params$plot_obj
-  
+
   ic <- NA_character_
-  
+
   for (mode in legend_resolution_order) {
     if (mode == "label" && !is.na(lbl) && !is.null(icon_by_legend) && lbl %in% names(icon_by_legend)) {
       ic <- icon_by_legend[[lbl]]
       break
     }
-    
+
     if (mode == "scale_breaks" && !is.null(plot_obj) && !is.null(icon_by_legend)) {
       breaks <- names(icon_by_legend)
       for (aes_name in legend_scale_aesthetics) {
@@ -83,7 +83,7 @@ key_glyph_icon_point <- function(
           }
         }
       }
-      
+
       if (length(breaks)) {
         icon_levels <- unname(icon_by_legend[breaks])
         idx <- NA_integer_
@@ -99,7 +99,7 @@ key_glyph_icon_point <- function(
         if (!is.na(ic) && nzchar(ic)) break
       }
     }
-    
+
     if (mode == "index" && !is.null(icon_by_legend)) {
       icon_levels <- unname(icon_by_legend)
       idx <- NA_integer_
@@ -114,18 +114,18 @@ key_glyph_icon_point <- function(
       ic <- as.character(icon_levels[idx])
       if (!is.na(ic) && nzchar(ic)) break
     }
-    
+
     if (mode == "fallback") {
       ic <- legend_fallback_icon
       break
     }
   }
-  
+
   if (is.na(ic) || !nzchar(ic)) ic <- legend_fallback_icon
-  
+
   key_data$icon <- as.character(ic)[1]
   stroke_width <- params$stroke_width
-  
+
   draw_key_pop_image(key_data, params, size, stroke_width = stroke_width)
 }
 
@@ -167,51 +167,53 @@ key_glyph_icon_point <- function(
 #' @keywords internal
 #' @noRd
 draw_key_pop_image <- function(
-    data,
-    params,
-    size,
-    stroke_width = NULL,
-    cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
-    png_px = 480L,
-    max_fill = 0.90,
-    fallback_icon = "user",
-    fallback_colour = "black",
-    fallback_alpha = 1
+  data,
+  params,
+  size,
+  stroke_width = NULL,
+  cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
+  png_px = 480L,
+  max_fill = 0.90,
+  fallback_icon = "user",
+  fallback_colour = "black",
+  fallback_alpha = 1
 ) {
   # Cache directory for legend icons
   if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
-  
+
   # Normalize color column name
   if (!("colour" %in% names(data)) && ("color" %in% names(data))) {
     data$colour <- data$color
   }
-  
+
   # Configuration
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
-  
+
   # Create grobs for each icon
   grobs <- lapply(seq_along(data$colour), function(i) {
-    
     # Extract icon name
     this_icon <- as.character(data$icon[i])
     if (is.na(this_icon) || !nzchar(this_icon)) this_icon <- fallback_icon
-    
+
     # Extract color
     this_col <- data$colour[i]
     if (is.na(this_col) || !nzchar(as.character(this_col))) this_col <- fallback_colour
-    
+
     # Extract alpha
     this_alpha <- data$alpha[i]
     if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- fallback_alpha
-    
+
     # Render with stroke (uses FontAwesome directly)
     if (use_stroke) {
       # Convert color to hex
-      this_col_hex <- tryCatch({
-        rgb_vals <- grDevices::col2rgb(this_col) / 255
-        grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
-      }, error = function(e) "#000000")
-      
+      this_col_hex <- tryCatch(
+        {
+          rgb_vals <- grDevices::col2rgb(this_col) / 255
+          grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
+        },
+        error = function(e) "#000000"
+      )
+
       # Apply alpha to color
       rgb_vals <- grDevices::col2rgb(this_col_hex) / 255
       rgba_color <- grDevices::rgb(
@@ -220,18 +222,20 @@ draw_key_pop_image <- function(
         rgb_vals[3],
         alpha = this_alpha
       )
-      
+
       # Build cache key
       color_hex <- gsub("#", "", this_col_hex)
       alpha_str <- sprintf("%.2f", this_alpha)
       stroke_str <- sprintf("%.0f", stroke_width)
-      
+
       png_path <- file.path(
         cache_dir,
-        paste0(this_icon, "_c", color_hex, "_a", alpha_str, 
-               "_sw", stroke_str, "_", png_px, "px.png")
+        paste0(
+          this_icon, "_c", color_hex, "_a", alpha_str,
+          "_sw", stroke_str, "_", png_px, "px.png"
+        )
       )
-      
+
       # Generate PNG if not cached
       if (!file.exists(png_path)) {
         fontawesome::fa_png(
@@ -243,43 +247,43 @@ draw_key_pop_image <- function(
           stroke_width = stroke_width
         )
       }
-      
+
       img <- magick::image_read(png_path)
       ras <- as.raster(img)
-      
+
       # Render without stroke (uses magick for colorization)
     } else {
       png_path <- file.path(
-        cache_dir, 
+        cache_dir,
         paste0(this_icon, "__legend__", png_px, "px.png")
       )
-      
+
       if (!file.exists(png_path)) {
         fontawesome::fa_png(this_icon, file = png_path, height = png_px)
       }
-      
+
       img <- magick::image_read(png_path)
       img <- magick::image_quantize(img, colorspace = "gray")
       img <- magick::image_colorize(img, opacity = this_alpha * 100, color = this_col)
-      
+
       ras <- as.raster(img)
     }
-    
+
     # Smart size calculation based on aspect ratio
     img_info <- magick::image_info(img)
     aspect_ratio <- img_info$width / img_info$height
-    
+
     if (aspect_ratio > 1) {
-      icon_width  <- grid::unit(max_fill, "npc")
+      icon_width <- grid::unit(max_fill, "npc")
       icon_height <- grid::unit(max_fill / aspect_ratio, "npc")
     } else if (aspect_ratio < 1) {
       icon_height <- grid::unit(max_fill, "npc")
-      icon_width  <- grid::unit(max_fill * aspect_ratio, "npc")
+      icon_width <- grid::unit(max_fill * aspect_ratio, "npc")
     } else {
-      icon_width  <- grid::unit(max_fill, "npc")
+      icon_width <- grid::unit(max_fill, "npc")
       icon_height <- grid::unit(max_fill, "npc")
     }
-    
+
     grid::rasterGrob(
       x = 0.5, y = 0.5,
       image = ras,
@@ -288,23 +292,23 @@ draw_key_pop_image <- function(
       interpolate = TRUE
     )
   })
-  
+
   # Finalize gTree
   class(grobs) <- "gList"
-  
+
   nm_parts <- c(
     "image_key",
     paste0(as.character(data$icon), collapse = "_"),
     paste0(as.character(data$colour), collapse = "_"),
     paste0(as.character(data$alpha), collapse = "_")
   )
-  
+
   if (use_stroke) {
     nm_parts <- c(nm_parts, paste0("sw", stroke_width))
   }
-  
+
   nm <- paste(nm_parts, collapse = "__")
   nm <- gsub("[^A-Za-z0-9_]", "_", nm)
-  
+
   grid::gTree(children = grobs, name = nm)
 }

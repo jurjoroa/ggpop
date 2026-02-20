@@ -96,7 +96,7 @@ testthat::test_that("returns tibble/data.frame", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_true(is.data.frame(result))
 })
 
@@ -107,7 +107,7 @@ testthat::test_that("contains expected columns", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_true(all(c("type", "n", "prop") %in% names(result)))
 })
 
@@ -118,7 +118,7 @@ testthat::test_that("sample size matches request", {
     sum_var = n,
     sample_size = 75
   )
-  
+
   testthat::expect_equal(nrow(result), 75)
 })
 
@@ -142,10 +142,10 @@ testthat::test_that("proportions sum to 1 (no high_group_var)", {
     sum_var = n,
     sample_size = 100
   )
-  
+
   unique_props <- unique(result[, c("type", "prop")])
   total_prop <- sum(unique_props$prop)
-  
+
   testthat::expect_equal(total_prop, 1, tolerance = 1e-6)
 })
 
@@ -168,9 +168,9 @@ testthat::test_that("count mode counts rows correctly", {
     group_var = category,
     sample_size = 100
   )
-  
+
   unique_counts <- unique(result[, c("type", "n")])
-  
+
   testthat::expect_equal(unique_counts$n[unique_counts$type == "A"], 2)
   testthat::expect_equal(unique_counts$n[unique_counts$type == "B"], 2)
   testthat::expect_equal(unique_counts$n[unique_counts$type == "C"], 1)
@@ -202,7 +202,7 @@ testthat::test_that("creates group column", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_true("group" %in% names(result))
 })
 
@@ -214,7 +214,7 @@ testthat::test_that("correct number of samples per high group", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   group_counts <- table(result$group)
   testthat::expect_true(all(group_counts == 50))
 })
@@ -227,13 +227,13 @@ testthat::test_that("proportions sum to 1 within each high group", {
     sum_var = n,
     sample_size = 100
   )
-  
+
   unique_props <- result %>%
     dplyr::select(group, type, prop) %>%
     dplyr::distinct() %>%
     dplyr::group_by(group) %>%
     dplyr::summarise(total_prop = sum(prop), .groups = "drop")
-  
+
   testthat::expect_true(all(abs(unique_props$total_prop - 1) < 1e-6))
 })
 
@@ -259,7 +259,7 @@ testthat::test_that("group column concatenates correctly", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_true(any(grepl("_", result$group)))
 })
 
@@ -271,7 +271,7 @@ testthat::test_that("correct number of hierarchical groups with 2 levels", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_equal(length(unique(result$group)), 4)
 })
 
@@ -286,7 +286,7 @@ testthat::test_that("multiple high_group_var with 3 levels", {
       40, 41, 29, 30, 50, 52, 35, 36
     )
   )
-  
+
   testthat::expect_no_error({
     result <- process_data(
       data = df_three_level,
@@ -306,7 +306,7 @@ testthat::test_that("correct groups with 3 levels", {
     sex = rep(c("male", "female"), 4),
     n = c(165, 170, 18, 19, 23, 24, 32, 34)
   )
-  
+
   result <- process_data(
     data = df_three_level,
     high_group_var = c("continent", "region", "country"),
@@ -314,7 +314,7 @@ testthat::test_that("correct groups with 3 levels", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_equal(length(unique(result$group)), 4)
   testthat::expect_true(all(stringr::str_count(unique(result$group), "_") == 2))
 })
@@ -328,7 +328,7 @@ testthat::test_that("multiple high_group_var with 4 levels", {
     sex = rep(c("male", "female"), 16),
     n = rep(c(80, 85, 90, 95), each = 2, times = 4)
   )
-  
+
   testthat::expect_no_error({
     result <- process_data(
       data = df_four_level,
@@ -349,7 +349,7 @@ testthat::test_that("correct groups with 4 levels", {
     sex = rep(c("male", "female"), 16),
     n = rep(c(80, 85, 90, 95), each = 2, times = 4)
   )
-  
+
   result <- process_data(
     data = df_four_level,
     high_group_var = c("continent", "region", "country", "city"),
@@ -357,7 +357,7 @@ testthat::test_that("correct groups with 4 levels", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_equal(length(unique(result$group)), 16)
   testthat::expect_true(all(stringr::str_count(unique(result$group), "_") == 3))
 })
@@ -372,7 +372,7 @@ testthat::test_that("multiple high_group_var with 5 levels", {
     sex = rep(c("male", "female"), 32),
     n = rep(c(40, 45, 50, 55), each = 2, times = 8)
   )
-  
+
   testthat::expect_no_error({
     result <- process_data(
       data = df_five_level,
@@ -394,7 +394,7 @@ testthat::test_that("correct groups with 5 levels", {
     sex = rep(c("male", "female"), 32),
     n = rep(c(40, 45, 50, 55), each = 2, times = 8)
   )
-  
+
   result <- process_data(
     data = df_five_level,
     high_group_var = c("continent", "region", "country", "city", "district"),
@@ -402,7 +402,7 @@ testthat::test_that("correct groups with 5 levels", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_equal(length(unique(result$group)), 32)
   testthat::expect_true(all(stringr::str_count(unique(result$group), "_") == 4))
 })
@@ -417,7 +417,7 @@ testthat::test_that("sample_size consistent across all levels", {
     sex = rep(c("male", "female"), 32),
     n = rep(c(40, 45, 50, 55), each = 2, times = 8)
   )
-  
+
   result <- process_data(
     data = df_five_level,
     high_group_var = c("continent", "region", "country", "city", "district"),
@@ -425,7 +425,7 @@ testthat::test_that("sample_size consistent across all levels", {
     sum_var = n,
     sample_size = 75
   )
-  
+
   group_counts <- table(result$group)
   testthat::expect_true(all(group_counts == 75))
 })
@@ -452,7 +452,7 @@ testthat::test_that("small (10)", {
     sum_var = n,
     sample_size = 10
   )
-  
+
   testthat::expect_equal(nrow(result), 10)
 })
 
@@ -463,7 +463,7 @@ testthat::test_that("medium (100)", {
     sum_var = n,
     sample_size = 100
   )
-  
+
   testthat::expect_equal(nrow(result), 100)
 })
 
@@ -474,7 +474,7 @@ testthat::test_that("large (500)", {
     sum_var = n,
     sample_size = 500
   )
-  
+
   testthat::expect_equal(nrow(result), 500)
 })
 
@@ -487,7 +487,7 @@ testthat::test_that("maximum valid (1000)", {
       sample_size = 1000
     )
   })
-  
+
   testthat::expect_equal(nrow(result), 1000)
 })
 
@@ -513,7 +513,7 @@ testthat::test_that("single group has proportion 1", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_equal(unique(result$prop), 1)
 })
 
@@ -524,7 +524,7 @@ testthat::test_that("single group all same type", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_equal(length(unique(result$type)), 1)
   testthat::expect_true(all(result$type == "female"))
 })
@@ -547,10 +547,10 @@ testthat::test_that("many groups proportions sum to 1", {
     sum_var = n,
     sample_size = 100
   )
-  
+
   unique_props <- unique(result[, c("type", "prop")])
   total_prop <- sum(unique_props$prop)
-  
+
   testthat::expect_equal(total_prop, 1, tolerance = 1e-6)
 })
 
@@ -560,7 +560,7 @@ testthat::test_that("highly unbalanced groups", {
     n = c(1, 999),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error({
     result <- process_data(
       data = df_unbalanced,
@@ -578,9 +578,9 @@ testthat::test_that("sampling reflects proportions approximately", {
     sum_var = n,
     sample_size = 1000
   )
-  
+
   observed_props <- table(result$type) / 1000
-  
+
   testthat::expect_equal(
     as.numeric(observed_props["female"]),
     2 / 3,
@@ -596,14 +596,14 @@ testthat::test_that("sampling reflects proportions approximately", {
 testthat::test_that("factor group_var converted to character", {
   df_factor <- df_simple
   df_factor$sex <- factor(df_factor$sex)
-  
+
   result <- process_data(
     data = df_factor,
     group_var = sex,
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_true(is.character(result$type))
 })
 
@@ -776,7 +776,7 @@ testthat::test_that("sum_var is character column", {
     value = c("100", "200"),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_error(
     process_data(
       data = df_bad_sum,
@@ -888,7 +888,7 @@ testthat::test_that("simcrc example", {
     sex = c("female"),
     value = c(100000)
   )
-  
+
   testthat::expect_no_error({
     df_pop_simcrc_1_prop <- process_data(
       data = df_pop_simcrc_1,
@@ -906,7 +906,7 @@ testthat::test_that("Mexico example", {
     country = "Mexico",
     continent = "America"
   )
-  
+
   testthat::expect_no_error({
     df_pop_mx_prop <- process_data(
       data = df_pop_mx,
@@ -935,7 +935,7 @@ testthat::test_that("multi-country multi-continent", {
     ),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error({
     result <- process_data(
       data = df_world,
@@ -952,7 +952,7 @@ testthat::test_that("survey responses (count mode)", {
     response = sample(c("Agree", "Neutral", "Disagree"), 500, replace = TRUE),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_no_error({
     result <- process_data(
       data = df_survey,
@@ -971,7 +971,7 @@ testthat::test_that("maximum sample size", {
       sample_size = 1000
     )
   })
-  
+
   testthat::expect_equal(nrow(result), 1000)
 })
 
@@ -986,7 +986,7 @@ testthat::test_that("has correct column types", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_type(result$type, "character")
   testthat::expect_type(result$n, "double")
   testthat::expect_type(result$prop, "double")
@@ -999,9 +999,9 @@ testthat::test_that("proportions are valid probabilities", {
     sum_var = n,
     sample_size = 100
   )
-  
+
   unique_props <- unique(result$prop)
-  
+
   testthat::expect_true(all(unique_props >= 0))
   testthat::expect_true(all(unique_props <= 1))
 })
@@ -1013,7 +1013,7 @@ testthat::test_that("n values are non-negative", {
     sum_var = n,
     sample_size = 100
   )
-  
+
   testthat::expect_true(all(result$n >= 0))
 })
 
@@ -1024,7 +1024,7 @@ testthat::test_that("type values match input groups", {
     sum_var = n,
     sample_size = 100
   )
-  
+
   testthat::expect_true(all(result$type %in% df_simple$sex))
 })
 
@@ -1036,7 +1036,7 @@ testthat::test_that("hierarchical sampling preserves group sizes", {
     sum_var = n,
     sample_size = 100
   )
-  
+
   group_sizes <- table(result$group)
   testthat::expect_true(all(group_sizes == 100))
 })
@@ -1052,14 +1052,14 @@ testthat::test_that("different results on repeated calls", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   result2 <- process_data(
     data = df_simple,
     group_var = sex,
     sum_var = n,
     sample_size = 50
   )
-  
+
   testthat::expect_false(identical(result1$type, result2$type))
 })
 
@@ -1070,20 +1070,20 @@ testthat::test_that("deterministic proportions", {
     sum_var = n,
     sample_size = 50
   )
-  
+
   result2 <- process_data(
     data = df_simple,
     group_var = sex,
     sum_var = n,
     sample_size = 50
   )
-  
+
   props1 <- unique(result1[, c("type", "prop")])
   props2 <- unique(result2[, c("type", "prop")])
-  
+
   props1 <- props1[order(props1$type), ]
   props2 <- props2[order(props2$type), ]
-  
+
   testthat::expect_equal(props1$prop, props2$prop)
 })
 
@@ -1099,14 +1099,14 @@ testthat::test_that("handles hierarchical grouping with high_group_var", {
     state = c(rep(c("CA", "NY"), each = 5), rep(c("ON", "BC"), each = 5)),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_hier,
     group_var = state,
     high_group_var = "country",
     sample_size = 20
   )
-  
+
   testthat::expect_s3_class(result, "data.frame")
   testthat::expect_true("type" %in% names(result))
   testthat::expect_equal(nrow(result), 40)
@@ -1118,14 +1118,14 @@ testthat::test_that("hierarchical with different sample sizes", {
     city = c(rep(c("A", "B"), each = 25), rep(c("C", "D"), each = 25)),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_hier,
     group_var = city,
     high_group_var = "region",
     sample_size = 100
   )
-  
+
   testthat::expect_equal(nrow(result), 200)
   testthat::expect_true(all(result$type %in% c("A", "B", "C", "D")))
 })
@@ -1140,14 +1140,14 @@ testthat::test_that("hierarchical with unequal group sizes", {
     ),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_unequal,
     group_var = team,
     high_group_var = "dept",
     sample_size = 50
   )
-  
+
   testthat::expect_equal(nrow(result), 150)
   type_counts <- table(result$type)
   testthat::expect_true(all(names(type_counts) %in% c("S1", "S2", "I1", "I2", "H1")))
@@ -1160,7 +1160,7 @@ testthat::test_that("handles groups with zero counts gracefully", {
     category = character(0),
     stringsAsFactors = FALSE
   )
-  
+
   testthat::expect_error(
     process_data(
       data = df_with_zero,
@@ -1176,13 +1176,13 @@ testthat::test_that("handles ties in proportions", {
     group = rep(c("A", "B", "C", "D"), each = 25),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_ties,
     group_var = group,
     sample_size = 100
   )
-  
+
   type_counts <- table(result$type)
   testthat::expect_equal(sum(type_counts), 100)
   testthat::expect_true(all(names(type_counts) %in% c("A", "B", "C", "D")))
@@ -1194,13 +1194,13 @@ testthat::test_that("handles rounding with small sample_size", {
     group = c(rep("A", 67), rep("B", 33)),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_small,
     group_var = group,
     sample_size = 10
   )
-  
+
   testthat::expect_equal(nrow(result), 10)
   type_counts <- table(result$type)
   testthat::expect_equal(sum(type_counts), 10)
@@ -1215,14 +1215,14 @@ testthat::test_that("uses sum_var instead of count", {
     value = c(100, 200, 50, 50, 100),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_sum,
     group_var = category,
     sum_var = value,
     sample_size = 100
   )
-  
+
   testthat::expect_equal(nrow(result), 100)
   type_counts <- table(result$type)
   testthat::expect_true(type_counts["A"] > type_counts["B"])
@@ -1235,14 +1235,14 @@ testthat::test_that("sum_var with zeros", {
     value = c(100, 0, 50),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_zero_sum,
     group_var = category,
     sum_var = value,
     sample_size = 30
   )
-  
+
   testthat::expect_equal(nrow(result), 30)
   type_counts <- table(result$type)
   testthat::expect_true(!"B" %in% names(type_counts) || type_counts["B"] == 0)
@@ -1254,9 +1254,9 @@ testthat::test_that("sum_var with negative values warns", {
     value = c(100, -50),
     stringsAsFactors = FALSE
   )
-  
+
   result <- NULL
-  
+
   testthat::expect_warning(
     {
       result <- withCallingHandlers(
@@ -1275,7 +1275,7 @@ testthat::test_that("sum_var with negative values warns", {
     },
     regexp = "negative values"
   )
-  
+
   testthat::expect_equal(nrow(result), 30)
 })
 
@@ -1286,13 +1286,13 @@ testthat::test_that("handles large datasets efficiently", {
     group = sample(LETTERS[1:10], 10000, replace = TRUE),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_large,
     group_var = group,
     sample_size = 1000
   )
-  
+
   testthat::expect_equal(nrow(result), 1000)
   testthat::expect_s3_class(result, "data.frame")
 })
@@ -1302,13 +1302,13 @@ testthat::test_that("maintains proportions in large dataset", {
     group = c(rep("A", 7000), rep("B", 3000)),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_large,
     group_var = group,
     sample_size = 1000
   )
-  
+
   type_counts <- table(result$type)
   testthat::expect_true(type_counts["A"] >= 650)
   testthat::expect_true(type_counts["A"] <= 750)
@@ -1324,13 +1324,13 @@ testthat::test_that("handles special characters in group names", {
     stringsAsFactors = FALSE
   )
   df_special <- df_special[rep(1:4, each = 25), , drop = FALSE]
-  
+
   result <- process_data(
     data = df_special,
     group_var = group,
     sample_size = 100
   )
-  
+
   testthat::expect_equal(nrow(result), 100)
   testthat::expect_true(all(result$type %in% df_special$group))
 })
@@ -1341,13 +1341,13 @@ testthat::test_that("handles factor grouping variables", {
     stringsAsFactors = TRUE
   )
   df_factor <- df_factor[rep(1:6, each = 10), , drop = FALSE]
-  
+
   result <- process_data(
     data = df_factor,
     group_var = group,
     sample_size = 60
   )
-  
+
   testthat::expect_equal(nrow(result), 60)
   testthat::expect_true(all(result$type %in% as.character(df_factor$group)))
 })
@@ -1358,13 +1358,13 @@ testthat::test_that("handles ordered factors", {
     stringsAsFactors = TRUE
   )
   df_ordered <- df_ordered[rep(1:3, times = c(10, 20, 30)), , drop = FALSE]
-  
+
   result <- process_data(
     data = df_ordered,
     group_var = priority,
     sample_size = 60
   )
-  
+
   testthat::expect_equal(nrow(result), 60)
   type_counts <- table(result$type)
   testthat::expect_true(type_counts["High"] > type_counts["Medium"])
@@ -1379,13 +1379,13 @@ testthat::test_that("respects faceting in output", {
     group = rep(c("A", "B"), times = 50),
     stringsAsFactors = FALSE
   )
-  
+
   result <- process_data(
     data = df_faceted,
     group_var = group,
     sample_size = 100
   )
-  
+
   testthat::expect_equal(nrow(result), 100)
   testthat::expect_true("type" %in% names(result))
 })
@@ -1396,13 +1396,13 @@ testthat::test_that("returns required columns", {
     stringsAsFactors = FALSE
   )
   df_simple_extra <- df_simple_extra[rep(1:2, each = 50), , drop = FALSE]
-  
+
   result <- process_data(
     data = df_simple_extra,
     group_var = group,
     sample_size = 100
   )
-  
+
   required_cols <- c("type", "n", "prop")
   testthat::expect_true(all(required_cols %in% names(result)))
 })
@@ -1413,17 +1413,17 @@ testthat::test_that("prop column sums to 1", {
     stringsAsFactors = FALSE
   )
   df_simple_extra <- df_simple_extra[rep(1:3, times = c(30, 40, 30)), , drop = FALSE]
-  
+
   result <- process_data(
     data = df_simple_extra,
     group_var = group,
     sample_size = 100
   )
-  
+
   prop_by_type <- result %>%
     dplyr::group_by(type) %>%
     dplyr::summarise(prop = dplyr::first(prop), .groups = "drop")
-  
+
   testthat::expect_equal(sum(prop_by_type$prop), 1, tolerance = 0.01)
 })
 
@@ -1433,17 +1433,17 @@ testthat::test_that("n column reflects sample counts", {
     stringsAsFactors = FALSE
   )
   df_simple_extra <- df_simple_extra[rep(1:2, each = 50), , drop = FALSE]
-  
+
   result <- process_data(
     data = df_simple_extra,
     group_var = group,
     sample_size = 100
   )
-  
+
   n_by_type <- result %>%
     dplyr::group_by(type) %>%
     dplyr::summarise(n = dplyr::first(n), .groups = "drop")
-  
+
   testthat::expect_equal(sum(n_by_type$n), 100)
 })
 
@@ -1453,13 +1453,13 @@ testthat::test_that("handles numeric grouping variables", {
     stringsAsFactors = FALSE
   )
   df_numeric <- df_numeric[rep(1:6, each = 10), , drop = FALSE]
-  
+
   result <- process_data(
     data = df_numeric,
     group_var = age_group,
     sample_size = 60
   )
-  
+
   testthat::expect_equal(nrow(result), 60)
   testthat::expect_true(all(result$type %in% c("1", "2", "3")))
 })
