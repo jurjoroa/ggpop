@@ -136,6 +136,9 @@ key_glyph_icon_point <- function(
 #' alpha in `data$alpha`. Icons are rendered as FontAwesome PNGs and cached to
 #' avoid repeated rendering across draws.
 #'
+#' This function automatically adapts to the legend.key.size setting in your theme,
+#' but can be overridden by scale_legend_icon(size = X).
+#'
 #' Resolution/fallback behavior:
 #' - Missing icon -> `fallback_icon`
 #' - Missing colour -> `fallback_colour`
@@ -152,57 +155,83 @@ key_glyph_icon_point <- function(
 #'   Must include: `icon` and either `colour` or `color`.
 #'   Optional: `alpha`.
 #' @param params A list of additional parameters supplied to the geom.
-#' @param size The width and height of the key in mm (unused, retained for ggplot2 signature).
+#' @param size A unit object specifying the width and height of the key box (from theme).
 #' @param stroke_width Numeric. Width of icon outline in pixels. If NULL or 0, no outline is drawn.
 #' @param cache_dir Directory to cache rendered icons (default: tempdir()/ggpop-legend-icons).
 #' @param png_px Integer. PNG size in pixels used for icon rendering.
 #' @param max_fill Numeric in (0, 1]. Fraction of legend cell occupied by the icon.
+#' @param min_size_mm Minimum icon size in mm when theme legend.key.size is very small (default: 5).
 #' @param fallback_icon Character. Default icon if missing/invalid (default: "user").
 #' @param fallback_colour Character. Default colour if missing (default: "black").
 #' @param fallback_alpha Numeric. Default alpha if missing (default: 1).
 #' @return A grid grob containing the image icons with the specified colors and transparency.
 #' @importFrom magick image_read image_quantize image_colorize image_info
-#' @importFrom grid rasterGrob gTree unit
+#' @importFrom grid rasterGrob gTree unit convertUnit
 #' @importFrom grDevices as.raster
 #' @keywords internal
 #' @noRd
 draw_key_pop_image <- function(
-  data,
-  params,
-  size,
-  stroke_width = NULL,
-  cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
-  png_px = 480L,
-  max_fill = 0.90,
-  fallback_icon = "user",
-  fallback_colour = "black",
-  fallback_alpha = 1
+    data,
+    params,
+    size,
+    stroke_width = NULL,
+    cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
+    png_px = 480L,
+    max_fill = 0.9,
+    min_size_mm = 5,
+    fallback_icon = "user",
+    fallback_colour = "black",
+    fallback_alpha = 1
 ) {
   # Cache directory for legend icons
   if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
-
+  
   # Normalize color column name
   if (!("colour" %in% names(data)) && ("color" %in% names(data))) {
     data$colour <- data$color
   }
-
+  
   # Configuration
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
-
+  
+  # Get the legend key size from the theme
+  # The 'size' parameter is a unit object from theme(legend.key.size = ...)
+  key_size_mm <- tryCatch(
+    {
+      # Try to convert width (size is typically a unit object with width/height)
+      if (inherits(size, "unit")) {
+        as.numeric(grid::convertUnit(size, "mm"))
+      } else if (is.numeric(size)) {
+        size  # Already in mm
+      } else {
+        min_size_mm  # Fallback
+      }
+    },
+    error = function(e) {
+      min_size_mm  # Fallback if conversion fails
+    }
+  )
+  
+  # Ensure minimum size for visibility
+  key_size_mm <- max(key_size_mm, min_size_mm)
+  
+  # Calculate target icon size in mm (apply max_fill to the key size)
+  target_size_mm <- key_size_mm * max_fill
+  
   # Create grobs for each icon
   grobs <- lapply(seq_along(data$colour), function(i) {
     # Extract icon name
     this_icon <- as.character(data$icon[i])
     if (is.na(this_icon) || !nzchar(this_icon)) this_icon <- fallback_icon
-
+    
     # Extract color
     this_col <- data$colour[i]
     if (is.na(this_col) || !nzchar(as.character(this_col))) this_col <- fallback_colour
-
+    
     # Extract alpha
     this_alpha <- data$alpha[i]
     if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- fallback_alpha
-
+    
     # Render with stroke (uses FontAwesome directly)
     if (use_stroke) {
       # Convert color to hex
@@ -213,7 +242,7 @@ draw_key_pop_image <- function(
         },
         error = function(e) "#000000"
       )
-
+      
       # Apply alpha to color
       rgb_vals <- grDevices::col2rgb(this_col_hex) / 255
       rgba_color <- grDevices::rgb(
@@ -222,12 +251,12 @@ draw_key_pop_image <- function(
         rgb_vals[3],
         alpha = this_alpha
       )
-
+      
       # Build cache key
       color_hex <- gsub("#", "", this_col_hex)
       alpha_str <- sprintf("%.2f", this_alpha)
       stroke_str <- sprintf("%.0f", stroke_width)
-
+      
       png_path <- file.path(
         cache_dir,
         paste0(
@@ -235,7 +264,7 @@ draw_key_pop_image <- function(
           "_sw", stroke_str, "_", png_px, "px.png"
         )
       )
-
+      
       # Generate PNG if not cached
       if (!file.exists(png_path)) {
         fontawesome::fa_png(
@@ -247,43 +276,47 @@ draw_key_pop_image <- function(
           stroke_width = stroke_width
         )
       }
-
+      
       img <- magick::image_read(png_path)
       ras <- as.raster(img)
-
+      
       # Render without stroke (uses magick for colorization)
     } else {
       png_path <- file.path(
         cache_dir,
         paste0(this_icon, "__legend__", png_px, "px.png")
       )
-
+      
       if (!file.exists(png_path)) {
         fontawesome::fa_png(this_icon, file = png_path, height = png_px)
       }
-
+      
       img <- magick::image_read(png_path)
       img <- magick::image_quantize(img, colorspace = "gray")
       img <- magick::image_colorize(img, opacity = this_alpha * 100, color = this_col)
-
+      
       ras <- as.raster(img)
     }
-
+    
     # Smart size calculation based on aspect ratio
+    # Use absolute mm units based on the theme's legend.key.size
     img_info <- magick::image_info(img)
     aspect_ratio <- img_info$width / img_info$height
-
+    
     if (aspect_ratio > 1) {
-      icon_width <- grid::unit(max_fill, "npc")
-      icon_height <- grid::unit(max_fill / aspect_ratio, "npc")
+      # Wide icon: constrain width, scale height
+      icon_width <- grid::unit(target_size_mm, "mm")
+      icon_height <- grid::unit(target_size_mm / aspect_ratio, "mm")
     } else if (aspect_ratio < 1) {
-      icon_height <- grid::unit(max_fill, "npc")
-      icon_width <- grid::unit(max_fill * aspect_ratio, "npc")
+      # Tall icon: constrain height, scale width
+      icon_height <- grid::unit(target_size_mm, "mm")
+      icon_width <- grid::unit(target_size_mm * aspect_ratio, "mm")
     } else {
-      icon_width <- grid::unit(max_fill, "npc")
-      icon_height <- grid::unit(max_fill, "npc")
+      # Square icon
+      icon_width <- grid::unit(target_size_mm, "mm")
+      icon_height <- grid::unit(target_size_mm, "mm")
     }
-
+    
     grid::rasterGrob(
       x = 0.5, y = 0.5,
       image = ras,
@@ -292,23 +325,23 @@ draw_key_pop_image <- function(
       interpolate = TRUE
     )
   })
-
+  
   # Finalize gTree
   class(grobs) <- "gList"
-
+  
   nm_parts <- c(
     "image_key",
     paste0(as.character(data$icon), collapse = "_"),
     paste0(as.character(data$colour), collapse = "_"),
     paste0(as.character(data$alpha), collapse = "_")
   )
-
+  
   if (use_stroke) {
     nm_parts <- c(nm_parts, paste0("sw", stroke_width))
   }
-
+  
   nm <- paste(nm_parts, collapse = "__")
   nm <- gsub("[^A-Za-z0-9_]", "_", nm)
-
+  
   grid::gTree(children = grobs, name = nm)
 }
