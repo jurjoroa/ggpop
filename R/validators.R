@@ -483,6 +483,10 @@ validate_seed <- function(seed, arg_name = "seed") {
 
 #' Validate scale_legend_icon parameters
 #'
+#' Validates size, unit, and spacing parameters for scale_legend_icon().
+#' Note: Size thresholds account for the 2x multiplier applied internally,
+#' so warnings trigger at half the actual mm values.
+#'
 #' @param size Numeric. Legend key size value
 #' @param unit Character. Unit for legend key sizing
 #' @param spacing Numeric. Spacing between legend items as fraction of size
@@ -623,13 +627,13 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     spacing <- 0
   }
   
-  # SIZE WARNING: Convert to mm and warn if > 50mm ---------------------------
+  # SIZE WARNING: Convert to mm and warn if > 25mm
   # Only check for absolute units (not relative like npc, lines, etc.)
   
   absolute_units <- c("mm", "cm", "inches", "points", "picas", "bigpts")
   
   if (unit %in% absolute_units) {
-    # Convert to mm
+    # Convert to mm (user input value)
     size_mm <- switch(unit,
                       "mm" = size,
                       "cm" = size * 10,
@@ -639,28 +643,37 @@ validate_scale_legend_icon <- function(size, unit, spacing,
                       "bigpts" = size * 0.3528,  # Same as points
                       size)
     
-    if (size_mm > 50) {
+    # Actual size after 2x multiplier
+    actual_size_mm <- size_mm * 2
+    
+    # Warn if actual size > 50mm (so warn when user input > 25mm)
+    if (size_mm > 25) {
       # Build conversion info based on unit
       conversion_info <- switch(unit,
                                 "mm" = c(
-                                  " " = "  = {round(size / 10, 1)} cm",
-                                  " " = "  = {round(size / 25.4, 2)} inches"
+                                  " " = "  Input: {size} mm → Actual: {round(actual_size_mm, 1)} mm",
+                                  " " = "  = {round(actual_size_mm / 10, 1)} cm",
+                                  " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
                                 ),
                                 "cm" = c(
-                                  " " = "  = {round(size * 10, 1)} mm",
-                                  " " = "  = {round(size / 2.54, 2)} inches"
+                                  " " = "  Input: {size} cm → Actual: {round(actual_size_mm / 10, 1)} cm",
+                                  " " = "  = {round(actual_size_mm, 1)} mm",
+                                  " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
                                 ),
                                 "inches" = c(
-                                  " " = "  = {round(size * 2.54, 1)} cm",
-                                  " " = "  = {round(size * 25.4, 1)} mm"
+                                  " " = "  Input: {size} inches → Actual: {round(actual_size_mm / 25.4, 2)} inches",
+                                  " " = "  = {round(actual_size_mm / 10, 1)} cm",
+                                  " " = "  = {round(actual_size_mm, 1)} mm"
                                 ),
                                 "points" = c(
-                                  " " = "  = {round(size / 72, 2)} inches",
-                                  " " = "  = {round(size * 0.3528, 1)} mm"
+                                  " " = "  Input: {size} points → Actual: {round(size * 2, 1)} points",
+                                  " " = "  = {round(actual_size_mm / 72, 2)} inches",
+                                  " " = "  = {round(actual_size_mm, 1)} mm"
                                 ),
                                 "picas" = c(
-                                  " " = "  = {round(size / 6, 2)} inches",
-                                  " " = "  = {round(size * 4.2333, 1)} mm"
+                                  " " = "  Input: {size} picas → Actual: {round(size * 2, 1)} picas",
+                                  " " = "  = {round(actual_size_mm / 6, 2)} inches",
+                                  " " = "  = {round(actual_size_mm, 1)} mm"
                                 ),
                                 c(" " = "")
       )
@@ -668,15 +681,15 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       cli::cli_warn(
         c(
           "Very large `{arg_size}` value.",
-          "!" = "{.val {size}} {unit} is unusually large for legend icons.",
-          "i" = "This is approximately {round(size_mm, 1)} mm:",
+          "!" = "{.val {size}} {unit}",
+          "i" = "Actual legend icon size:",
           conversion_info,
           " " = "",
-          "i" = "Typical values:",
-          " " = "  Small icons: 5-10 mm (0.5-1 cm)",
-          " " = "  Medium icons: 10-20 mm (1-2 cm)",
-          " " = "  Large icons: 20-30 mm (2-3 cm)",
-          " " = "  Maximum recommended: 50 mm (5 cm)",
+          "i" = "Recommended input values:",
+          " " = "  Small icons: 2.5-5 mm → 5-10 mm actual",
+          " " = "  Medium icons: 5-10 mm → 10-20 mm actual",
+          " " = "  Large icons: 10-15 mm → 20-30 mm actual",
+          " " = "  Maximum: 25 mm → 50 mm actual",
           " " = "",
           "!" = "Your legend icons may be very large and overlap with plot content."
         ),
@@ -684,18 +697,18 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       )
     }
     
-    # Also warn if too small (< 3mm)
-    if (size_mm < 3) {
+    # Warn if too small: < 1.5mm input
+    if (size_mm < 1.5) {
       cli::cli_warn(
         c(
           "Very small `{arg_size}` value.",
-          "!" = "{.val {size}} {unit} is very small.",
-          "i" = "This is approximately {round(size_mm, 2)} mm.",
+          "!" = "{.val {size}} {unit}",
+          "i" = "Actual legend icon size: approximately {round(actual_size_mm, 2)} mm.",
           " " = "",
           "i" = "Icons may be difficult to see in the legend.",
           " " = "",
           "i" = "Recommended minimum:",
-          " " = "  At least 5 mm (0.5 cm / 0.2 inches) for visibility"
+          " " = "  At least 2.5 mm input → 5 mm actual for visibility"
         ),
         call = NULL
       )
