@@ -1,30 +1,47 @@
 #' Legend helper for geom_pop icon legends
 #'
-#' @param size Numeric. Legend key size (default 10).
-#' @param margin ggplot2::margin() for plot margin (default margin_default).
-#' @param size_default Numeric. Fallback size used when size is invalid (default 10).
-#' @param margin_default ggplot2::margin() used when margin is NULL.
+#' A convenience function to set appropriate legend key sizes for icon-based legends.
+#' This is equivalent to using theme(legend.key.size = ...) but provides sensible
+#' defaults for population icon plots.
+#'
+#' @param size Numeric. Legend key size in specified units (default 10).
 #' @param unit Character. Unit for legend key sizing (default "mm").
-#' @param ... Additional arguments forwarded to ggplot2::guide_legend()
+#' @param spacing Numeric. Spacing between legend items as fraction of size (default 0.2).
+#' @param ... Additional theme arguments.
+#' 
+#' @return A ggplot2 theme object that can be added to a plot.
+#' 
+#' @examples
+#' \dontrun{
+#' ggplot(df, aes(icon = icon, color = type)) +
+#'   geom_pop() +
+#'   scale_legend_icon(size = 20)
+#'   
+#' # Equivalent to:
+#' ggplot(df, aes(icon = icon, color = type)) +
+#'   geom_pop() +
+#'   theme(legend.key.size = unit(20, "mm"))
+#' }
+#' 
 #' @export
-scale_legend_icon <- function(
-    size = 10,
-    margin = NULL,
-    size_default = 10,
-    margin_default = ggplot2::margin(0, 0, 0, 0),
-    unit = "mm",
+scale_legend_icon <- function(size = 10, unit = "mm", spacing = 0.2, 
+                              size_multiplier = 2, ...) {
+  
+  # Validate all parameters
+  validated <- validate_scale_legend_icon(size, unit, spacing)
+  
+  # Apply multiplier to the validated size
+  actual_size <- validated$size * size_multiplier
+  
+  # Return theme with multiplied size
+  ggplot2::theme(
+    legend.key.size = grid::unit(actual_size, validated$unit),
+    legend.key.height = grid::unit(actual_size, validated$unit),
+    legend.key.width = grid::unit(actual_size, validated$unit),
+    legend.key = ggplot2::element_rect(fill = NA, colour = NA),
+    legend.spacing.x = grid::unit(actual_size * validated$spacing, validated$unit),
+    legend.spacing.y = grid::unit(actual_size * validated$spacing, validated$unit),
     ...
-) {
-  structure(
-    list(
-      size = size,
-      margin = margin,
-      size_default = size_default,
-      margin_default = margin_default,
-      unit = unit,
-      guide_args = list(...)
-    ),
-    class = "ggpop_legend_icon"
   )
 }
 
