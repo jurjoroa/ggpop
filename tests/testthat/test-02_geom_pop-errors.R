@@ -534,15 +534,22 @@ testthat::test_that("Error: data contains reserved column names", {
 
 
 testthat::test_that("geom_pop detects all reserved column names", {
+  df_pop <- data.frame(
+    sex = rep(c("M", "F"), each = 20),
+    icon = rep(c("male", "female"), each = 20),
+    stringsAsFactors = FALSE
+  )
+
+
   reserved_names <- c(
     "x1", "y1", "pos", "image",
     "coord_size", "icon_size", "icon_stroke_width"
   )
-  
+
   for (col_name in reserved_names) {
     df_reserved <- df_pop
     df_reserved[[col_name]] <- 1:nrow(df_reserved)
-    
+
     testthat::expect_error(
       {
         p <- ggplot2::ggplot() +
