@@ -136,9 +136,6 @@ key_glyph_icon_point <- function(
 #' alpha in `data$alpha`. Icons are rendered as FontAwesome PNGs and cached to
 #' avoid repeated rendering across draws.
 #'
-#' This function automatically adapts to the legend.key.size setting in your theme,
-#' but can be overridden by scale_legend_icon(size = X).
-#'
 #' Resolution/fallback behavior:
 #' - Missing icon -> `fallback_icon`
 #' - Missing colour -> `fallback_colour`
@@ -155,12 +152,11 @@ key_glyph_icon_point <- function(
 #'   Must include: `icon` and either `colour` or `color`.
 #'   Optional: `alpha`.
 #' @param params A list of additional parameters supplied to the geom.
-#' @param size A unit object specifying the width and height of the key box (from theme).
+#' @param size The width and height of the key in mm (from theme legend.key.size).
 #' @param stroke_width Numeric. Width of icon outline in pixels. If NULL or 0, no outline is drawn.
 #' @param cache_dir Directory to cache rendered icons (default: tempdir()/ggpop-legend-icons).
 #' @param png_px Integer. PNG size in pixels used for icon rendering.
 #' @param max_fill Numeric in (0, 1]. Fraction of legend cell occupied by the icon.
-#' @param min_size_mm Minimum icon size in mm when theme legend.key.size is very small (default: 5).
 #' @param fallback_icon Character. Default icon if missing/invalid (default: "user").
 #' @param fallback_colour Character. Default colour if missing (default: "black").
 #' @param fallback_alpha Numeric. Default alpha if missing (default: 1).
@@ -178,7 +174,6 @@ draw_key_pop_image <- function(
     cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
     png_px = 480L,
     max_fill = 0.9,
-    min_size_mm = 5,
     fallback_icon = "user",
     fallback_colour = "black",
     fallback_alpha = 1
@@ -196,26 +191,24 @@ draw_key_pop_image <- function(
   
   # Get the legend key size from the theme
   # The 'size' parameter is a unit object from theme(legend.key.size = ...)
+  # Convert to mm for consistent sizing
   key_size_mm <- tryCatch(
     {
-      # Try to convert width (size is typically a unit object with width/height)
       if (inherits(size, "unit")) {
         as.numeric(grid::convertUnit(size, "mm"))
       } else if (is.numeric(size)) {
         size  # Already in mm
       } else {
-        min_size_mm  # Fallback
+        10  # Fallback default
       }
     },
     error = function(e) {
-      min_size_mm  # Fallback if conversion fails
+      10  # Fallback if conversion fails
     }
   )
   
-  # Ensure minimum size for visibility
-  key_size_mm <- max(key_size_mm, min_size_mm)
-  
   # Calculate target icon size in mm (apply max_fill to the key size)
+  # User has full control - no minimum constraint
   target_size_mm <- key_size_mm * max_fill
   
   # Create grobs for each icon
