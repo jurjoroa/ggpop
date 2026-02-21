@@ -7,6 +7,7 @@
 #' @param size Numeric. Legend key size in specified units (default 10).
 #' @param unit Character. Unit for legend key sizing (default "mm").
 #' @param spacing Numeric. Spacing between legend items as fraction of size (default 0.2).
+#' @param size_multiplier Numeric. Multiplier to apply to the size for spacing calculations (default 2).
 #' @param ... Additional theme arguments.
 #'
 #' @return A ggplot2 theme object that can be added to a plot.
