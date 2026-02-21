@@ -2,6 +2,7 @@ Type: Package
 Package: ggpop
 Title: Visualizing Population Data (ggpop)
 Version: 1.7.0
+Date: 2024-01-01
 Authors@R: c(
     person(given = "Jorge A.",
              family = "Roa-Contreras",
