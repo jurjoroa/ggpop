@@ -671,27 +671,27 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       # Build conversion info based on unit
       conversion_info <- switch(unit,
         "mm" = c(
-          " " = "  Input: {size} mm → Actual: {round(actual_size_mm, 1)} mm",
+          " " = "  Input: {size} mm -> Actual: {round(actual_size_mm, 1)} mm",
           " " = "  = {round(actual_size_mm / 10, 1)} cm",
           " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
         ),
         "cm" = c(
-          " " = "  Input: {size} cm → Actual: {round(actual_size_mm / 10, 1)} cm",
+          " " = "  Input: {size} cm -> Actual: {round(actual_size_mm / 10, 1)} cm",
           " " = "  = {round(actual_size_mm, 1)} mm",
           " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
         ),
         "inches" = c(
-          " " = "  Input: {size} inches → Actual: {round(actual_size_mm / 25.4, 2)} inches",
+          " " = "  Input: {size} inches -> Actual: {round(actual_size_mm / 25.4, 2)} inches",
           " " = "  = {round(actual_size_mm / 10, 1)} cm",
           " " = "  = {round(actual_size_mm, 1)} mm"
         ),
         "points" = c(
-          " " = "  Input: {size} points → Actual: {round(size * 2, 1)} points",
+          " " = "  Input: {size} points -> Actual: {round(size * 2, 1)} points",
           " " = "  = {round(actual_size_mm / 72, 2)} inches",
           " " = "  = {round(actual_size_mm, 1)} mm"
         ),
         "picas" = c(
-          " " = "  Input: {size} picas → Actual: {round(size * 2, 1)} picas",
+          " " = "  Input: {size} picas -> Actual: {round(size * 2, 1)} picas",
           " " = "  = {round(actual_size_mm / 6, 2)} inches",
           " " = "  = {round(actual_size_mm, 1)} mm"
         ),
@@ -706,10 +706,10 @@ validate_scale_legend_icon <- function(size, unit, spacing,
           conversion_info,
           " " = "",
           "i" = "Recommended input values:",
-          " " = "  Small icons: 2.5-5 mm → 5-10 mm actual",
-          " " = "  Medium icons: 5-10 mm → 10-20 mm actual",
-          " " = "  Large icons: 10-15 mm → 20-30 mm actual",
-          " " = "  Maximum: 25 mm → 50 mm actual",
+          " " = "  Small icons: 2.5-5 mm -> 5-10 mm actual",
+          " " = "  Medium icons: 5-10 mm -> 10-20 mm actual",
+          " " = "  Large icons: 10-15 mm -> 20-30 mm actual",
+          " " = "  Maximum: 25 mm -> 50 mm actual",
           " " = "",
           "!" = "Your legend icons may be very large and overlap with plot content."
         ),
@@ -728,7 +728,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
           "i" = "Icons may be difficult to see in the legend.",
           " " = "",
           "i" = "Recommended minimum:",
-          " " = "  At least 2.5 mm input → 5 mm actual for visibility"
+          " " = "  At least 2.5 mm input -> 5 mm actual for visibility"
         ),
         call = NULL
       )
