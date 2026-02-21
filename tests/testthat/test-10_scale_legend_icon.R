@@ -40,8 +40,7 @@ df_scatter <- data.frame(
   category = sample(c("A", "B", "C"), 100, replace = TRUE),
   stringsAsFactors = FALSE
 )
-df_scatter$icon <- c("A" = "circle", "B" = "square", "C" = "star")[df_scatter$category]
-
+df_scatter$$icon <- c("A" = "circle", "B" = "square", "C" = "star")[df_scatter$$category]
 
 .build_plot <- function(p) ggplot2::ggplot_build(p)
 
@@ -50,14 +49,12 @@ df_scatter$icon <- c("A" = "circle", "B" = "square", "C" = "star")[df_scatter$ca
 # ******************************************************************************
 
 # ******************************************************************************
-# 03 scale_legend_icon ---------------------------------------------------------
+# 03 Errors: size parameter (hard stops) ---------------------------------------
 # ******************************************************************************
 
-# ******************************************************************************
-## 03.01 Errors: size parameter (hard stops) -----------------------------------
-# ******************************************************************************
+## 03.01 geom_pop --------------------------------------------------------------
 
-### 03.01.01 Non-numeric size - geom_pop ---------------------------------------
+### 03.01.01 Non-numeric size --------------------------------------------------
 
 testthat::test_that("Error: non-numeric size - geom_pop", {
   testthat::expect_error(
@@ -86,25 +83,7 @@ testthat::test_that("Error: logical size - geom_pop", {
   )
 })
 
-### 03.01.02 Non-numeric size - geom_icon_point --------------------------------
-
-testthat::test_that("Error: non-numeric size - geom_icon_point", {
-  testthat::expect_error(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-      geom_icon_point() +
-      scale_legend_icon(size = "large")
-  )
-})
-
-testthat::test_that("Error: list size - geom_icon_point", {
-  testthat::expect_error(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-      geom_icon_point() +
-      scale_legend_icon(size = list(10))
-  )
-})
-
-### 03.01.03 Vector size - geom_pop --------------------------------------------
+### 03.01.02 Vector size -------------------------------------------------------
 
 testthat::test_that("Error: vector size - geom_pop", {
   testthat::expect_error(
@@ -124,8 +103,7 @@ testthat::test_that("Error: multiple values size - geom_pop", {
   )
 })
 
-
-### 03.01.04 Non-positive size - geom_pop --------------------------------------
+### 03.01.03 Non-positive size -------------------------------------------------
 
 testthat::test_that("Error: negative size - geom_pop", {
   testthat::expect_error(
@@ -154,25 +132,7 @@ testthat::test_that("Error: negative decimal size - geom_pop", {
   )
 })
 
-### 03.01.05 Non-positive size - geom_icon_point -------------------------------
-
-testthat::test_that("Error: negative size - geom_icon_point", {
-  testthat::expect_error(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-      geom_icon_point() +
-      scale_legend_icon(size = -5)
-  )
-})
-
-testthat::test_that("Error: zero size - geom_icon_point", {
-  testthat::expect_error(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
-      geom_icon_point() +
-      scale_legend_icon(size = 0)
-  )
-})
-
-### 03.01.06 Non-finite size - geom_pop ----------------------------------------
+### 03.01.04 Non-finite size ---------------------------------------------------
 
 testthat::test_that("Error: Inf size - geom_pop", {
   testthat::expect_error(
@@ -192,7 +152,45 @@ testthat::test_that("Error: NA size - geom_pop", {
   )
 })
 
-### 03.01.07 Non-finite size - geom_icon_point ---------------------------------
+## 03.02 geom_icon_point -------------------------------------------------------
+
+### 03.02.01 Non-numeric size --------------------------------------------------
+
+testthat::test_that("Error: non-numeric size - geom_icon_point", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point() +
+      scale_legend_icon(size = "large")
+  )
+})
+
+testthat::test_that("Error: list size - geom_icon_point", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point() +
+      scale_legend_icon(size = list(10))
+  )
+})
+
+### 03.02.02 Non-positive size -------------------------------------------------
+
+testthat::test_that("Error: negative size - geom_icon_point", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point() +
+      scale_legend_icon(size = -5)
+  )
+})
+
+testthat::test_that("Error: zero size - geom_icon_point", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point() +
+      scale_legend_icon(size = 0)
+  )
+})
+
+### 03.02.03 Non-finite size ---------------------------------------------------
 
 testthat::test_that("Error: Inf size - geom_icon_point", {
   testthat::expect_error(
@@ -211,10 +209,12 @@ testthat::test_that("Error: NA_real size - geom_icon_point", {
 })
 
 # ******************************************************************************
-## 03.02 Errors: unit parameter (hard stops) -----------------------------------
+# 04 Errors: unit parameter (hard stops) ---------------------------------------
 # ******************************************************************************
 
-### 03.02.01 Non-character unit - geom_pop -------------------------------------
+## 04.01 geom_pop --------------------------------------------------------------
+
+### 04.01.01 Non-character unit ------------------------------------------------
 
 testthat::test_that("Error: numeric unit - geom_pop", {
   testthat::expect_error(
@@ -222,15 +222,6 @@ testthat::test_that("Error: numeric unit - geom_pop", {
       geom_pop(size = 1) +
       ggplot2::theme_void() +
       scale_legend_icon(size = 10, unit = 123)
-  )
-})
-
-testthat::test_that("Error: numeric unit - geom_pop", {
-  testthat::expect_error(
-    ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
-      geom_pop(size = 1) +
-      ggplot2::theme_void() +
-      scale_legend_icon(size = 10, unit = "npc")
   )
 })
 
@@ -252,7 +243,31 @@ testthat::test_that("Error: list unit - geom_pop", {
   )
 })
 
-### 03.02.02 Non-character unit - geom_icon_point ------------------------------
+### 04.01.02 Banned npc unit ---------------------------------------------------
+
+testthat::test_that("Error: npc unit banned - geom_pop", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
+      geom_pop(size = 1) +
+      ggplot2::theme_void() +
+      scale_legend_icon(size = 10, unit = "npc")
+  )
+})
+
+### 04.01.03 Vector unit -------------------------------------------------------
+
+testthat::test_that("Error: vector unit - geom_pop", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
+      geom_pop(size = 1) +
+      ggplot2::theme_void() +
+      scale_legend_icon(size = 10, unit = c("mm", "cm"))
+  )
+})
+
+## 04.02 geom_icon_point -------------------------------------------------------
+
+### 04.02.01 Non-character unit ------------------------------------------------
 
 testthat::test_that("Error: numeric unit - geom_icon_point", {
   testthat::expect_error(
@@ -270,18 +285,17 @@ testthat::test_that("Error: logical unit - geom_icon_point", {
   )
 })
 
-### 03.02.03 Vector unit - geom_pop --------------------------------------------
+### 04.02.02 Banned npc unit ---------------------------------------------------
 
-testthat::test_that("Error: vector unit - geom_pop", {
+testthat::test_that("Error: npc unit banned - geom_icon_point", {
   testthat::expect_error(
-    ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
-      geom_pop(size = 1) +
-      ggplot2::theme_void() +
-      scale_legend_icon(size = 10, unit = c("mm", "cm"))
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point() +
+      scale_legend_icon(size = 10, unit = "npc")
   )
 })
 
-### 03.02.04 Vector unit - geom_icon_point -------------------------------------
+### 04.02.03 Vector unit -------------------------------------------------------
 
 testthat::test_that("Error: vector unit - geom_icon_point", {
   testthat::expect_error(
@@ -292,10 +306,12 @@ testthat::test_that("Error: vector unit - geom_icon_point", {
 })
 
 # ******************************************************************************
-## 03.03 Warnings: size too large (> 25mm → 50mm actual) -----------------------
+# 05 Warnings: size too large (> 25mm → 50mm actual) ---------------------------
 # ******************************************************************************
 
-### 03.03.01 Large mm - geom_pop -----------------------------------------------
+## 05.01 geom_pop --------------------------------------------------------------
+
+### 05.01.01 Large mm ----------------------------------------------------------
 
 testthat::test_that("Warning: size > 25mm - geom_pop", {
   testthat::expect_warning(
@@ -327,7 +343,7 @@ testthat::test_that("Warning: size 50mm shows actual size - geom_pop", {
   )
 })
 
-### 03.03.02 Large cm - geom_pop -----------------------------------------------
+### 05.01.02 Large cm ----------------------------------------------------------
 
 testthat::test_that("Warning: size > 2.5cm - geom_pop", {
   testthat::expect_warning(
@@ -349,7 +365,7 @@ testthat::test_that("Warning: size 4cm shows multiplier - geom_pop", {
   )
 })
 
-### 03.03.03 Large inches - geom_pop -------------------------------------------
+### 05.01.03 Large inches ------------------------------------------------------
 
 testthat::test_that("Warning: size > 1 inch - geom_pop", {
   testthat::expect_warning(
@@ -361,7 +377,9 @@ testthat::test_that("Warning: size > 1 inch - geom_pop", {
   )
 })
 
-### 03.03.04 Large mm - geom_icon_point ----------------------------------------
+## 05.02 geom_icon_point -------------------------------------------------------
+
+### 05.02.01 Large mm ----------------------------------------------------------
 
 testthat::test_that("Warning: size > 25mm - geom_icon_point", {
   testthat::expect_warning(
@@ -371,12 +389,13 @@ testthat::test_that("Warning: size > 25mm - geom_icon_point", {
   )
 })
 
-
 # ******************************************************************************
-## 03.04 Warnings: size too small (< 1.5mm → 3mm actual) -----------------------
+# 06 Warnings: size too small (< 1.5mm → 3mm actual) ---------------------------
 # ******************************************************************************
 
-### 03.04.01 Small mm - geom_pop -----------------------------------------------
+## 06.01 geom_pop --------------------------------------------------------------
+
+### 06.01.01 Small mm ----------------------------------------------------------
 
 testthat::test_that("Warning: size < 1.5mm - geom_pop", {
   testthat::expect_warning(
@@ -408,7 +427,7 @@ testthat::test_that("Warning: size 1mm shows actual size - geom_pop", {
   )
 })
 
-### 03.04.02 Small cm - geom_pop -----------------------------------------------
+### 06.01.02 Small cm ----------------------------------------------------------
 
 testthat::test_that("Warning: size < 0.15cm - geom_pop", {
   testthat::expect_warning(
@@ -420,7 +439,9 @@ testthat::test_that("Warning: size < 0.15cm - geom_pop", {
   )
 })
 
-### 03.04.03 Small mm - geom_icon_point ----------------------------------------
+## 06.02 geom_icon_point -------------------------------------------------------
+
+### 06.02.01 Small mm ----------------------------------------------------------
 
 testthat::test_that("Warning: size < 1.5mm - geom_icon_point", {
   testthat::expect_warning(
@@ -438,7 +459,7 @@ testthat::test_that("Warning: size 0.8mm shows actual - geom_icon_point", {
   )
 })
 
-### 03.04.04 Small inches - geom_icon_point ------------------------------------
+### 06.02.02 Small inches ------------------------------------------------------
 
 testthat::test_that("Warning: size < 0.06 inches - geom_icon_point", {
   testthat::expect_warning(
@@ -448,12 +469,13 @@ testthat::test_that("Warning: size < 0.06 inches - geom_icon_point", {
   )
 })
 
-
 # ******************************************************************************
-## 03.06 Warnings: invalid spacing (soft) --------------------------------------
+# 07 Warnings: invalid spacing (soft) ------------------------------------------
 # ******************************************************************************
 
-### 03.06.01 Negative spacing - geom_pop ---------------------------------------
+## 07.01 geom_pop --------------------------------------------------------------
+
+### 07.01.01 Negative spacing --------------------------------------------------
 
 testthat::test_that("Warning: negative spacing - geom_pop", {
   testthat::expect_warning(
@@ -465,6 +487,8 @@ testthat::test_that("Warning: negative spacing - geom_pop", {
   )
 })
 
+### 07.01.02 Non-numeric spacing -----------------------------------------------
+
 testthat::test_that("Warning: non-numeric spacing - geom_pop", {
   testthat::expect_warning(
     ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
@@ -474,6 +498,8 @@ testthat::test_that("Warning: non-numeric spacing - geom_pop", {
       ggplot2::theme(legend.position = "right")
   )
 })
+
+### 07.01.03 Vector spacing ----------------------------------------------------
 
 testthat::test_that("Warning: vector spacing - geom_pop", {
   testthat::expect_warning(
@@ -485,7 +511,9 @@ testthat::test_that("Warning: vector spacing - geom_pop", {
   )
 })
 
-### 03.06.02 Negative spacing - geom_icon_point --------------------------------
+## 07.02 geom_icon_point -------------------------------------------------------
+
+### 07.02.01 Negative spacing --------------------------------------------------
 
 testthat::test_that("Warning: negative spacing - geom_icon_point", {
   testthat::expect_warning(
@@ -494,6 +522,8 @@ testthat::test_that("Warning: negative spacing - geom_icon_point", {
       scale_legend_icon(size = 10, spacing = -1)
   )
 })
+
+### 07.02.02 Logical spacing ---------------------------------------------------
 
 testthat::test_that("Warning: logical spacing - geom_icon_point", {
   testthat::expect_warning(
@@ -504,10 +534,12 @@ testthat::test_that("Warning: logical spacing - geom_icon_point", {
 })
 
 # ******************************************************************************
-## 03.07 Pass checks: valid sizes (no warnings) --------------------------------
+# 08 Pass checks: valid sizes (no warnings) ------------------------------------
 # ******************************************************************************
 
-### 03.07.01 Valid sizes - geom_pop --------------------------------------------
+## 08.01 geom_pop --------------------------------------------------------------
+
+### 08.01.01 Valid mm sizes ----------------------------------------------------
 
 testthat::test_that("Pass: size 5mm - geom_pop", {
   testthat::expect_no_error(
@@ -549,7 +581,9 @@ testthat::test_that("Pass: size at threshold 25mm - geom_pop", {
   )
 })
 
-### 03.07.02 Valid sizes - geom_icon_point -------------------------------------
+## 08.02 geom_icon_point -------------------------------------------------------
+
+### 08.02.01 Valid mm sizes ----------------------------------------------------
 
 testthat::test_that("Pass: size 3mm - geom_icon_point", {
   testthat::expect_no_error(
@@ -576,10 +610,12 @@ testthat::test_that("Pass: size 15mm - geom_icon_point", {
 })
 
 # ******************************************************************************
-## 03.08 Pass checks: different units ------------------------------------------
+# 09 Pass checks: different units ----------------------------------------------
 # ******************************************************************************
 
-### 03.08.01 Different units - geom_pop ----------------------------------------
+## 09.01 geom_pop --------------------------------------------------------------
+
+### 09.01.01 Unit variations ---------------------------------------------------
 
 testthat::test_that("Pass: cm unit - geom_pop", {
   testthat::expect_no_error(
@@ -611,8 +647,9 @@ testthat::test_that("Pass: points unit - geom_pop", {
   )
 })
 
+## 09.02 geom_icon_point -------------------------------------------------------
 
-### 03.08.02 Different units - geom_icon_point ---------------------------------
+### 09.02.01 Unit variations ---------------------------------------------------
 
 testthat::test_that("Pass: cm unit - geom_icon_point", {
   testthat::expect_no_error(
@@ -639,10 +676,12 @@ testthat::test_that("Pass: points unit - geom_icon_point", {
 })
 
 # ******************************************************************************
-## 03.09 Pass checks: spacing values -------------------------------------------
+# 10 Pass checks: spacing values -----------------------------------------------
 # ******************************************************************************
 
-### 03.09.01 Spacing values - geom_pop -----------------------------------------
+## 10.01 geom_pop --------------------------------------------------------------
+
+### 10.01.01 Spacing variations ------------------------------------------------
 
 testthat::test_that("Pass: default spacing - geom_pop", {
   testthat::expect_no_error(
@@ -684,7 +723,9 @@ testthat::test_that("Pass: zero spacing - geom_pop", {
   )
 })
 
-### 03.09.02 Spacing values - geom_icon_point ----------------------------------
+## 10.02 geom_icon_point -------------------------------------------------------
+
+### 10.02.01 Spacing variations ------------------------------------------------
 
 testthat::test_that("Pass: custom spacing - geom_icon_point", {
   testthat::expect_no_error(
@@ -703,10 +744,12 @@ testthat::test_that("Pass: zero spacing - geom_icon_point", {
 })
 
 # ******************************************************************************
-## 03.11 Pass checks: theme compatibility --------------------------------------
+# 11 Pass checks: theme compatibility ------------------------------------------
 # ******************************************************************************
 
-### 03.11.01 Theme compatibility - geom_pop ------------------------------------
+## 11.01 geom_pop --------------------------------------------------------------
+
+### 11.01.01 Theme variations --------------------------------------------------
 
 testthat::test_that("Pass: theme_void compatibility - geom_pop", {
   testthat::expect_no_error(
@@ -738,7 +781,9 @@ testthat::test_that("Pass: theme_bw compatibility - geom_pop", {
   )
 })
 
-### 03.11.02 Theme compatibility - geom_icon_point -----------------------------
+## 11.02 geom_icon_point -------------------------------------------------------
+
+### 11.02.01 Theme variations --------------------------------------------------
 
 testthat::test_that("Pass: theme_minimal compatibility - geom_icon_point", {
   testthat::expect_no_error(
@@ -759,46 +804,52 @@ testthat::test_that("Pass: theme_classic compatibility - geom_icon_point", {
 })
 
 # ******************************************************************************
-## 03.12 Pass checks: default values -------------------------------------------
+# 12 Pass checks: default values -----------------------------------------------
 # ******************************************************************************
 
-### 03.12.01 Default values - geom_pop -----------------------------------------
+## 12.01 geom_pop --------------------------------------------------------------
+
+### 12.01.01 Default parameters ------------------------------------------------
 
 testthat::test_that("Pass: all defaults - geom_pop", {
   testthat::expect_no_error(
-  ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
-    geom_pop(size = 1) +
-    ggplot2::theme_void() +
-    scale_legend_icon() +
-    ggplot2::theme(legend.position = "right")
+    ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
+      geom_pop(size = 1) +
+      ggplot2::theme_void() +
+      scale_legend_icon() +
+      ggplot2::theme(legend.position = "right")
   )
 })
 
 testthat::test_that("Pass: only size specified - geom_pop", {
   testthat::expect_no_error(
-  ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
-    geom_pop(size = 1) +
-    ggplot2::theme_void() +
-    scale_legend_icon(size = 15) +
-    ggplot2::theme(legend.position = "right")
+    ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
+      geom_pop(size = 1) +
+      ggplot2::theme_void() +
+      scale_legend_icon(size = 15) +
+      ggplot2::theme(legend.position = "right")
   )
 })
 
-### 03.12.02 Default values - geom_icon_point ----------------------------------
+## 12.02 geom_icon_point -------------------------------------------------------
+
+### 12.02.01 Default parameters ------------------------------------------------
 
 testthat::test_that("Pass: all defaults - geom_icon_point", {
   testthat::expect_no_error(
-  ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
-    geom_icon_point() +
-    scale_legend_icon()
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+      geom_icon_point() +
+      scale_legend_icon()
   )
 })
 
 # ******************************************************************************
-## 03.13 Pass checks: boundary values ------------------------------------------
+# 13 Pass checks: boundary values ----------------------------------------------
 # ******************************************************************************
 
-### 03.13.01 Boundary values - geom_pop ----------------------------------------
+## 13.01 geom_pop --------------------------------------------------------------
+
+### 13.01.01 Threshold boundaries ----------------------------------------------
 
 testthat::test_that("Pass: at 25mm threshold no warning - geom_pop", {
   testthat::expect_no_warning(
@@ -830,7 +881,9 @@ testthat::test_that("Pass: very small but valid size - geom_pop", {
   )
 })
 
-### 03.13.02 Boundary values - geom_icon_point ---------------------------------
+## 13.02 geom_icon_point -------------------------------------------------------
+
+### 13.02.01 Threshold boundaries ----------------------------------------------
 
 testthat::test_that("Pass: at 25mm threshold no warning - geom_icon_point", {
   testthat::expect_no_warning(
@@ -849,61 +902,65 @@ testthat::test_that("Pass: at 1.5mm threshold no warning - geom_icon_point", {
   )
 })
 
-
-
 # ******************************************************************************
-## 03.15 Pass checks: build success --------------------------------------------
+# 14 Pass checks: build success ------------------------------------------------
 # ******************************************************************************
 
-### 03.15.01 Build success - geom_pop ------------------------------------------
+## 14.01 geom_pop --------------------------------------------------------------
+
+### 14.01.01 Plot builds -------------------------------------------------------
 
 testthat::test_that("Pass: basic plot builds successfully - geom_pop", {
   testthat::expect_no_error(
-  ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
-    geom_pop(size = 1) +
-    ggplot2::theme_void() +
-    scale_legend_icon(size = 10) +
-    ggplot2::theme(legend.position = "right")
+    ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
+      geom_pop(size = 1) +
+      ggplot2::theme_void() +
+      scale_legend_icon(size = 10) +
+      ggplot2::theme(legend.position = "right")
   )
 })
 
 testthat::test_that("Pass: complex plot builds successfully - geom_pop", {
   testthat::expect_no_error(
-  ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
-    geom_pop(size = 1) +
-    ggplot2::theme_minimal(base_size = 14) +
-    scale_legend_icon(size = 15, spacing = 0.3) +
-    ggplot2::labs(title = "Test Plot") +
-    ggplot2::theme(legend.position = "bottom")
+    ggplot2::ggplot(df_pop, ggplot2::aes(icon = icon, color = type)) +
+      geom_pop(size = 1) +
+      ggplot2::theme_minimal(base_size = 14) +
+      scale_legend_icon(size = 15, spacing = 0.3) +
+      ggplot2::labs(title = "Test Plot") +
+      ggplot2::theme(legend.position = "bottom")
   )
 })
 
-### 03.15.02 Build success - geom_icon_point -----------------------------------
+## 14.02 geom_icon_point -------------------------------------------------------
+
+### 14.02.01 Plot builds -------------------------------------------------------
 
 testthat::test_that("Pass: basic plot builds successfully - geom_icon_point", {
   testthat::expect_no_error(
-  ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
-    geom_icon_point() +
-    scale_legend_icon(size = 10)
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+      geom_icon_point() +
+      scale_legend_icon(size = 10)
   )
 })
 
 testthat::test_that("Pass: complex plot builds successfully - geom_icon_point", {
   testthat::expect_no_error(
-  ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
-    geom_icon_point(size = 2) +
-    ggplot2::theme_minimal(base_size = 14) +
-    scale_legend_icon(size = 12, unit = "mm", spacing = 0.2) +
-    ggplot2::labs(title = "Scatter Plot with Icons") +
-    ggplot2::theme(legend.position = "right")
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+      geom_icon_point(size = 2) +
+      ggplot2::theme_minimal(base_size = 14) +
+      scale_legend_icon(size = 12, unit = "mm", spacing = 0.2) +
+      ggplot2::labs(title = "Scatter Plot with Icons") +
+      ggplot2::theme(legend.position = "right")
   )
 })
 
 # ******************************************************************************
-## 03.16 Pass checks: relative units (no size warnings) ------------------------
+# 15 Pass checks: relative units (no size warnings) ----------------------------
 # ******************************************************************************
 
-### 03.16.01 Relative units - geom_pop -----------------------------------------
+## 15.01 geom_pop --------------------------------------------------------------
+
+### 15.01.01 Relative unit types -----------------------------------------------
 
 testthat::test_that("Pass: cm unit no size warning - geom_pop", {
   testthat::expect_no_warning(
@@ -925,7 +982,9 @@ testthat::test_that("Pass: lines unit no size warning - geom_pop", {
   )
 })
 
-### 03.16.02 Relative units - geom_icon_point ----------------------------------
+## 15.02 geom_icon_point -------------------------------------------------------
+
+### 15.02.01 Relative unit types -----------------------------------------------
 
 testthat::test_that("Pass: cm unit no size warning - geom_icon_point", {
   testthat::expect_no_warning(
@@ -944,12 +1003,5 @@ testthat::test_that("Pass: char unit no size warning - geom_icon_point", {
 })
 
 # ******************************************************************************
-## 03.17 Pass checks: legend key styling ---------------------------------------
-# ******************************************************************************
-
-### 03.17.01 Legend key styling - geom_pop -------------------------------------
-
-
-# ******************************************************************************
-# 04 End of tests --------------------------------------------------------------
+# 16 End of tests --------------------------------------------------------------
 # ******************************************************************************
