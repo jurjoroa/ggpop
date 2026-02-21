@@ -1,4 +1,4 @@
-#' Legend helper for geom_pop icon legends
+#' Legend helper for geom_pop/geom_icon_point legends
 #'
 #' A convenience function to set appropriate legend key sizes for icon-based legends.
 #' This is equivalent to using theme(legend.key.size = ...) but provides sensible

@@ -2,7 +2,7 @@
 % Please edit documentation in R/scale_legend_icon.R
 \name{scale_legend_icon}
 \alias{scale_legend_icon}
-\title{Legend helper for geom_pop icon legends}
+\title{Legend helper for geom_pop/geom_icon_point legends}
 \usage{
 scale_legend_icon(
   size = 10,
