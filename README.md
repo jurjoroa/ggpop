@@ -142,7 +142,7 @@ For example, this is just a few sample of more than 2,000 free icons available i
 
 | List of Font Awesome icons                                                                                                                     | Preview                                                                                                       |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
-| **Sample icons:** <br>- home <br>- user <br>- envelope <br>- bell <br>- camera <br>- cog <br>- heart <br>- calendar <br>- cart-plus <br>- check <br>- cloud <br>- comment <br>- comments <br>- download <br>- edit <br>- file <br>- filter <br>- flag <br>- folder <br>- phone | <img src="inst/figures/fontawesome_table.jpg" width="900px" alt="fontawesome table preview" /> |
+| **Sample icons:** <br>- home <br>- user <br>- envelope <br>- bell <br>- camera <br>- cog <br>- heart <br>- calendar <br>- cart-plus <br>- check <br>- cloud <br>- comment <br>- comments <br>- download <br>- edit <br>- file <br>- filter <br>- flag <br>- folder <br>- phone | <img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png" width="900px" alt="fontawesome table preview" /> |
 
 You can check the full list of icons in the [Font Awesome website](https://fontawesome.com/icons?d=gallery&p=2&m=free).
 
@@ -173,23 +173,22 @@ Like a ggplot object, we can improve it to have a more presentable plot. We can 
 
 ``` r
 
-ggplot() +
-    geom_pop(data = df_pop_mx_prop, aes(icon = icon, group=type, color=type),
-    size = 1, arrange=T) +
-    scale_legend_icon() + #add icon to the legend
-    theme_void(base_size = 40) +
-    theme(legend.position = "bottom") + 
-labs(title = "Population in Mexico by Sex",
-     subtitle = "2024",
-     caption = "Source: demogmx") +
+ggplot(data = df_pop_mx_prop, aes(icon = icon, group=type, color=type)) +
+  geom_pop(size = 1, arrange=T) +
+  theme_void(base_size = 40) +
+  theme(legend.position = "bottom") + 
+  labs(title = "Population in Mexico by Sex",
+       subtitle = "2024",
+       caption = "Source: demogmx") +
   theme(legend.title = element_blank(),
-        plot.background = element_rect(fill = "black"),
-        panel.background = element_rect(fill = "black"),
-        legend.background = element_rect(fill = "black"),
-        legend.text = element_text(color = "white"),
-        plot.title = element_text(color = "white"),
-        plot.subtitle = element_text(color = "white"),
-        plot.caption = element_text(color = "white")) +
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        legend.background = element_blank(),
+        legend.text = element_text(color = "#D4AF37"),
+        plot.title = element_text(color = "#D4AF37"),
+        plot.subtitle = element_text(color = "#D4AF37"),
+        plot.caption = element_text(color = "#D4AF37")) +
+  scale_legend_icon(size = 10) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60"),
                      labels = c("female" = "Females: 51%", "male" = "Males: 49%"))
 
@@ -203,15 +202,16 @@ We can also include more than two icons in the same plot. In this example, we wi
 
 ``` r
 
+
 #1.- We load or create the data
 df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled males", "disabled females"),
-                        value = c(53726732, 54978806, 9731396, 11106712),
-                        country = "Mexico",
-                        continent = "America")
+                            value = c(53726732, 54978806, 9731396, 11106712),
+                            country = "Mexico",
+                            continent = "America")
 
 #2.- We process the data
 df_pop_dis_mx_prop <- process_data(data = df_pop_dis_mx, group_var = sex, 
-                               sum_var = value, sample_size = 500)
+                                   sum_var = value, sample_size = 500)
 
 #3.- Assign icons to groups
 df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>% 
@@ -223,15 +223,28 @@ df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>%
 
 #4.- Plot 
 
-ggplot() +
-  geom_pop(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type),
-           size = 1.3, arrange = T) +
-  scale_legend_icon(size = 10) +
-  theme_void(base_size = 36) +
+library(showtext)
+font_add_google("Quicksand", "quicksand")
+showtext_auto()
+
+ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type)) +
+  geom_pop(size = 1.1, arrange = F) +
+  theme_pop(base_size = 100, base_family = "quicksand") +
+  scale_legend_icon(size = 10,
+                    legend.text = element_text(color = "#D4AF37", family = "quicksand"),
+                    plot.title = element_text(color = "#D4AF37", family = "quicksand", 
+                                              face = "bold", size = 90, hjust = 0.5),  # CENTER
+                    plot.subtitle = element_text(color = "#D4AF37", family = "quicksand", 
+                                                 size = 70, hjust = 0.5),  # CENTER
+                    plot.caption = element_text(color = "#D4AF37", family = "quicksand", 
+                                                size = 70, hjust = 0)) +
   labs(title = "Population in Mexico by Sex and disability status",
-       subtitle = "2022",
+       subtitle = "2023",
        caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
-  theme(legend.position = "bottom",legend.title = element_blank()) +
+  theme(legend.position = "bottom", legend.title = element_blank(),
+        legend.box.spacing = unit(-.4, "cm"),
+        legend.margin = margin(t = 0, b = 0),
+        legend.box.margin = margin(t = 0, b = 0)) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60",
                                 "disabled males" = "#90CAF9", 
                                 "disabled females" = "#F48FB1"),
@@ -533,14 +546,12 @@ df_hex_prop <- df_hex_prop %>%
       TRUE ~ "person"
     )
   ) %>%
-  rename(code = group) %>% 
-  select(-pos)
-
+  rename(code = group)
 # ---- Plot using facet_geo ----
 # ---- Plot using facet_geo with black background and enhanced design ----
 # ---- Plot using facet_geo with black background and enhanced design ----
 ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
-  geom_pop(size = 4, arrange = TRUE, facet = "code") +  # Increased size since fewer icons
+  geom_pop(size = 3.5, arrange = TRUE, facet = "code") +  # Increased size since fewer icons
   geofacet::facet_geo(~ code, grid = "us_state_grid3", label = "name") +
   scale_color_manual(
     values = c("gun death" = "#FF1744", "no gun death" = "#42A5F5"),
@@ -552,23 +563,24 @@ ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
     subtitle = "Each icon represents 2,000 people • Skulls show gun deaths per 100,000 population\nMississippi has nearly 8× the gun death rate of Massachusetts",
     caption = "Data: CDC/Violence Policy Center, 2023 (age-adjusted rates: homicide, suicide, accidents)\nHighest: Mississippi (29.4 per 100k = ~15 skulls) • Lowest: Massachusetts (3.7 per 100k = ~2 skulls) • National Average: 13.7 per 100k"
   ) +
+  scale_legend_icon(size = 6) +
   theme(
     # Black background
-    plot.background = element_rect(fill = "#000000", color = NA),
-    panel.background = element_rect(fill = "#000000", color = NA),
+    plot.background = element_blank(),
+    panel.background = element_blank(),
     
     # Legend styling
     legend.position = "bottom",
     legend.title = element_blank(),
-    legend.text = element_text(color = "#FFFFFF", size = 16, face = "bold"),
-    legend.background = element_rect(fill = "#000000", color = NA),
-    legend.key = element_rect(fill = "#000000", color = NA),
+    legend.text = element_text(color = "#D4AF37", size = 16, face = "bold"),
+    legend.background =  element_blank(),
+    legend.key = element_blank(),
     legend.margin = margin(t = 15, b = 5),
     
     # State labels
     strip.text = element_text(
       size = 12, 
-      color = "#FFFFFF",
+      color = "#D4AF37",
       margin = margin(b = 4)
     ),
     
@@ -587,7 +599,7 @@ ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
       hjust = 0.5, 
       size = 13, 
       lineheight = 1.3,
-      color = "#E0E0E0",
+      color = "#D4AF37",
       margin = margin(b = 15)
     ),
     
@@ -595,7 +607,7 @@ ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
     plot.caption = element_text(
       hjust = 0.5, 
       size = 9.5, 
-      color = "#9E9E9E", 
+      color = "#D4AF37", 
       lineheight = 1.4,
       margin = margin(t = 15)
     ),
