@@ -40,7 +40,7 @@ df_scatter <- data.frame(
   category = sample(c("A", "B", "C"), 100, replace = TRUE),
   stringsAsFactors = FALSE
 )
-df_scatter$$icon <- c("A" = "circle", "B" = "square", "C" = "star")[df_scatter$$category]
+df_scatter$icon <- c("A" = "circle", "B" = "square", "C" = "star")[df_scatter$category]
 
 .build_plot <- function(p) ggplot2::ggplot_build(p)
 
