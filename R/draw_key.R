@@ -167,28 +167,28 @@ key_glyph_icon_point <- function(
 #' @keywords internal
 #' @noRd
 draw_key_pop_image <- function(
-    data,
-    params,
-    size,
-    stroke_width = NULL,
-    cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
-    png_px = 480L,
-    max_fill = 0.9,
-    fallback_icon = "user",
-    fallback_colour = "black",
-    fallback_alpha = 1
+  data,
+  params,
+  size,
+  stroke_width = NULL,
+  cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
+  png_px = 480L,
+  max_fill = 0.9,
+  fallback_icon = "user",
+  fallback_colour = "black",
+  fallback_alpha = 1
 ) {
   # Cache directory for legend icons
   if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
-  
+
   # Normalize color column name
   if (!("colour" %in% names(data)) && ("color" %in% names(data))) {
     data$colour <- data$color
   }
-  
+
   # Configuration
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
-  
+
   # Get the legend key size from the theme
   # The 'size' parameter is a unit object from theme(legend.key.size = ...)
   # Convert to mm for consistent sizing
@@ -197,34 +197,34 @@ draw_key_pop_image <- function(
       if (inherits(size, "unit")) {
         as.numeric(grid::convertUnit(size, "mm"))
       } else if (is.numeric(size)) {
-        size  # Already in mm
+        size # Already in mm
       } else {
-        10  # Fallback default
+        10 # Fallback default
       }
     },
     error = function(e) {
-      10  # Fallback if conversion fails
+      10 # Fallback if conversion fails
     }
   )
-  
+
   # Calculate target icon size in mm (apply max_fill to the key size)
   # User has full control - no minimum constraint
   target_size_mm <- key_size_mm * max_fill
-  
+
   # Create grobs for each icon
   grobs <- lapply(seq_along(data$colour), function(i) {
     # Extract icon name
     this_icon <- as.character(data$icon[i])
     if (is.na(this_icon) || !nzchar(this_icon)) this_icon <- fallback_icon
-    
+
     # Extract color
     this_col <- data$colour[i]
     if (is.na(this_col) || !nzchar(as.character(this_col))) this_col <- fallback_colour
-    
+
     # Extract alpha
     this_alpha <- data$alpha[i]
     if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- fallback_alpha
-    
+
     # Render with stroke (uses FontAwesome directly)
     if (use_stroke) {
       # Convert color to hex
@@ -235,7 +235,7 @@ draw_key_pop_image <- function(
         },
         error = function(e) "#000000"
       )
-      
+
       # Apply alpha to color
       rgb_vals <- grDevices::col2rgb(this_col_hex) / 255
       rgba_color <- grDevices::rgb(
@@ -244,12 +244,12 @@ draw_key_pop_image <- function(
         rgb_vals[3],
         alpha = this_alpha
       )
-      
+
       # Build cache key
       color_hex <- gsub("#", "", this_col_hex)
       alpha_str <- sprintf("%.2f", this_alpha)
       stroke_str <- sprintf("%.0f", stroke_width)
-      
+
       png_path <- file.path(
         cache_dir,
         paste0(
@@ -257,7 +257,7 @@ draw_key_pop_image <- function(
           "_sw", stroke_str, "_", png_px, "px.png"
         )
       )
-      
+
       # Generate PNG if not cached
       if (!file.exists(png_path)) {
         fontawesome::fa_png(
@@ -269,33 +269,33 @@ draw_key_pop_image <- function(
           stroke_width = stroke_width
         )
       }
-      
+
       img <- magick::image_read(png_path)
       ras <- as.raster(img)
-      
+
       # Render without stroke (uses magick for colorization)
     } else {
       png_path <- file.path(
         cache_dir,
         paste0(this_icon, "__legend__", png_px, "px.png")
       )
-      
+
       if (!file.exists(png_path)) {
         fontawesome::fa_png(this_icon, file = png_path, height = png_px)
       }
-      
+
       img <- magick::image_read(png_path)
       img <- magick::image_quantize(img, colorspace = "gray")
       img <- magick::image_colorize(img, opacity = this_alpha * 100, color = this_col)
-      
+
       ras <- as.raster(img)
     }
-    
+
     # Smart size calculation based on aspect ratio
     # Use absolute mm units based on the theme's legend.key.size
     img_info <- magick::image_info(img)
     aspect_ratio <- img_info$width / img_info$height
-    
+
     if (aspect_ratio > 1) {
       # Wide icon: constrain width, scale height
       icon_width <- grid::unit(target_size_mm, "mm")
@@ -309,7 +309,7 @@ draw_key_pop_image <- function(
       icon_width <- grid::unit(target_size_mm, "mm")
       icon_height <- grid::unit(target_size_mm, "mm")
     }
-    
+
     grid::rasterGrob(
       x = 0.5, y = 0.5,
       image = ras,
@@ -318,23 +318,23 @@ draw_key_pop_image <- function(
       interpolate = TRUE
     )
   })
-  
+
   # Finalize gTree
   class(grobs) <- "gList"
-  
+
   nm_parts <- c(
     "image_key",
     paste0(as.character(data$icon), collapse = "_"),
     paste0(as.character(data$colour), collapse = "_"),
     paste0(as.character(data$alpha), collapse = "_")
   )
-  
+
   if (use_stroke) {
     nm_parts <- c(nm_parts, paste0("sw", stroke_width))
   }
-  
+
   nm <- paste(nm_parts, collapse = "__")
   nm <- gsub("[^A-Za-z0-9_]", "_", nm)
-  
+
   grid::gTree(children = grobs, name = nm)
 }

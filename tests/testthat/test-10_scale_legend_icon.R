@@ -2,7 +2,7 @@
 #
 # Script: test-10_scale_legend_icon.R
 #
-# Purpose: Integration tests for scale_legend_icon() with geom_pop() and 
+# Purpose: Integration tests for scale_legend_icon() with geom_pop() and
 #          geom_icon_point() - organized by errors, warnings, and pass checks
 #
 # Author: Jorge Roa
@@ -895,8 +895,10 @@ testthat::test_that("Pass: at 25mm threshold no warning - geom_icon_point", {
 
 testthat::test_that("Pass: at 1.5mm threshold no warning - geom_icon_point", {
   testthat::expect_no_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, 
-                                             color = category)) +
+    ggplot2::ggplot(df_scatter, ggplot2::aes(
+      x = x, y = y, icon = icon,
+      color = category
+    )) +
       geom_icon_point() +
       scale_legend_icon(size = 1.5, unit = "mm")
   )

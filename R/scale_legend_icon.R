@@ -8,31 +8,30 @@
 #' @param unit Character. Unit for legend key sizing (default "mm").
 #' @param spacing Numeric. Spacing between legend items as fraction of size (default 0.2).
 #' @param ... Additional theme arguments.
-#' 
+#'
 #' @return A ggplot2 theme object that can be added to a plot.
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' ggplot(df, aes(icon = icon, color = type)) +
 #'   geom_pop() +
 #'   scale_legend_icon(size = 20)
-#'   
+#'
 #' # Equivalent to:
 #' ggplot(df, aes(icon = icon, color = type)) +
 #'   geom_pop() +
 #'   theme(legend.key.size = unit(20, "mm"))
 #' }
-#' 
+#'
 #' @export
-scale_legend_icon <- function(size = 10, unit = "mm", spacing = 0.2, 
+scale_legend_icon <- function(size = 10, unit = "mm", spacing = 0.2,
                               size_multiplier = 2, ...) {
-  
   # Validate all parameters
   validated <- validate_scale_legend_icon(size, unit, spacing)
-  
+
   # Apply multiplier to the validated size
   actual_size <- validated$size * size_multiplier
-  
+
   # Return theme with multiplied size
   ggplot2::theme(
     legend.key.size = grid::unit(actual_size, validated$unit),
@@ -49,13 +48,13 @@ scale_legend_icon <- function(size = 10, unit = "mm", spacing = 0.2,
 #' @importFrom ggplot2 ggplot_add
 ggplot_add.ggpop_legend_icon <- function(object, plot, ...) {
   if (is.null(object$margin)) object$margin <- object$margin_default
-  
+
   key_value <- object$size
-  
+
   if (!is.numeric(key_value) || length(key_value) != 1 || is.na(key_value) || key_value <= 0) {
     key_value <- object$size_default
   }
-  
+
   # Apply the theme changes now
   plot <- plot +
     ggplot2::theme(
@@ -64,7 +63,7 @@ ggplot_add.ggpop_legend_icon <- function(object, plot, ...) {
       legend.key.width = grid::unit(key_value, object$unit),
       legend.key.height = grid::unit(key_value, object$unit)
     )
-  
+
   plot
 }
 
@@ -73,18 +72,18 @@ ggplot_add.ggpop_legend_icon <- function(object, plot, ...) {
 ggplot_add.ggpop_geom_pop <- function(object, plot, object_name, ...) {
   # add the layer
   plot <- plot + object$layer
-  
+
   # If geom_pop had an explicit facet=, automatically add facet_wrap(~facet_col)
   if (!is.null(object$facet_col) && nzchar(object$facet_col)) {
     # If plot already has a facet, do not override it
     if (!inherits(plot$facet, "FacetNull")) {
       return(plot)
     }
-    
+
     fml <- stats::as.formula(paste0("~", object$facet_col))
     plot <- plot + ggplot2::facet_wrap(fml)
   }
-  
+
   plot
 }
 
@@ -93,18 +92,18 @@ ggplot_add.ggpop_geom_pop <- function(object, plot, object_name, ...) {
 #' @importFrom ggplot2 ggplot_add
 ggplot_add.ggpop_icon_point_layer <- function(object, plot, object_name, ...) {
   plot$layers <- append(plot$layers, list(object))
-  
+
   vals <- vapply(plot$layers, function(l) {
     if (inherits(l, "ggpop_icon_point_layer") &&
-        identical(l$ggpop_layer_type, "icon_point")) {
+      identical(l$ggpop_layer_type, "icon_point")) {
       isTRUE(l$ggpop_legend_icons)
     } else {
       NA
     }
   }, logical(1), USE.NAMES = FALSE)
-  
+
   vals <- vals[!is.na(vals)]
-  
+
   if (length(vals) > 1 && any(vals) && any(!vals)) {
     cli::cli_abort(
       c(
@@ -115,6 +114,6 @@ ggplot_add.ggpop_icon_point_layer <- function(object, plot, object_name, ...) {
       call = NULL
     )
   }
-  
+
   plot
 }

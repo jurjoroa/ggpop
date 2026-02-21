@@ -1445,7 +1445,7 @@ testthat::test_that("geom_pop scale_legend_icon()", {
     icon = c("male", "female", "male", "female"),
     stringsAsFactors = FALSE
   )
-  
+
   p <- ggplot2::ggplot() +
     geom_pop(
       data = df,
@@ -1453,7 +1453,7 @@ testthat::test_that("geom_pop scale_legend_icon()", {
     ) +
     ggplot2::theme_void() +
     scale_legend_icon(size = 10)
-  
+
   vdiffr::expect_doppelganger(
     title = "geom_pop scale_legend_icon()",
     fig = p

@@ -500,7 +500,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
                                        arg_size = "size",
                                        arg_unit = "unit",
                                        arg_spacing = "spacing") {
-  
   # Validate size - Type check
   if (!is.numeric(size)) {
     cli::cli_abort(
@@ -515,7 +514,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       call = NULL
     )
   }
-  
+
   # Validate size - Length check
   if (length(size) != 1) {
     cli::cli_abort(
@@ -530,7 +529,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       call = NULL
     )
   }
-  
+
   # Validate size - Positive check
   if (size <= 0) {
     cli::cli_abort(
@@ -545,7 +544,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       call = NULL
     )
   }
-  
+
   # Validate size - Finite check
   if (!is.finite(size)) {
     cli::cli_abort(
@@ -560,7 +559,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       call = NULL
     )
   }
-  
+
   # Validate unit - Type and length check
   if (!is.character(unit) || length(unit) != 1) {
     cli::cli_abort(
@@ -575,7 +574,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       call = NULL
     )
   }
-  
+
   # BAN npc unit - Abort if npc is used
   if (unit == "npc") {
     cli::cli_abort(
@@ -593,13 +592,15 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       call = NULL
     )
   }
-  
+
   # Validate unit - Valid grid units (warning only)
-  valid_units <- c("cm", "inches", "mm", "points", "picas", 
-                   "bigpts", "dida", "cicero", "scaledpts", "lines", 
-                   "char", "native", "snpc", "strwidth", "strheight", 
-                   "grobwidth", "grobheight")
-  
+  valid_units <- c(
+    "cm", "inches", "mm", "points", "picas",
+    "bigpts", "dida", "cicero", "scaledpts", "lines",
+    "char", "native", "snpc", "strwidth", "strheight",
+    "grobwidth", "grobheight"
+  )
+
   if (!unit %in% valid_units) {
     cli::cli_warn(
       c(
@@ -614,7 +615,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       call = NULL
     )
   }
-  
+
   # Validate spacing - Type and length check
   if (!is.numeric(spacing) || length(spacing) != 1) {
     cli::cli_warn(
@@ -629,7 +630,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
     spacing <- 0.2
   }
-  
+
   # Validate spacing - Non-negative check
   if (spacing < 0) {
     cli::cli_warn(
@@ -644,58 +645,59 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
     spacing <- 0
   }
-  
+
   # SIZE WARNING: Convert to mm and warn if > 25mm
   # Only check for absolute units (not relative like lines, etc.)
-  
+
   absolute_units <- c("mm", "cm", "inches", "points", "picas", "bigpts")
-  
+
   if (unit %in% absolute_units) {
     # Convert to mm (user input value)
     size_mm <- switch(unit,
-                      "mm" = size,
-                      "cm" = size * 10,
-                      "inches" = size * 25.4,
-                      "points" = size * 0.3528,
-                      "picas" = size * 4.2333,
-                      "bigpts" = size * 0.3528,
-                      size)
-    
+      "mm" = size,
+      "cm" = size * 10,
+      "inches" = size * 25.4,
+      "points" = size * 0.3528,
+      "picas" = size * 4.2333,
+      "bigpts" = size * 0.3528,
+      size
+    )
+
     # Actual size after 2x multiplier
     actual_size_mm <- size_mm * 2
-    
+
     # Warn if actual size > 50mm (so warn when user input > 25mm)
     if (size_mm > 25) {
       # Build conversion info based on unit
       conversion_info <- switch(unit,
-                                "mm" = c(
-                                  " " = "  Input: {size} mm → Actual: {round(actual_size_mm, 1)} mm",
-                                  " " = "  = {round(actual_size_mm / 10, 1)} cm",
-                                  " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
-                                ),
-                                "cm" = c(
-                                  " " = "  Input: {size} cm → Actual: {round(actual_size_mm / 10, 1)} cm",
-                                  " " = "  = {round(actual_size_mm, 1)} mm",
-                                  " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
-                                ),
-                                "inches" = c(
-                                  " " = "  Input: {size} inches → Actual: {round(actual_size_mm / 25.4, 2)} inches",
-                                  " " = "  = {round(actual_size_mm / 10, 1)} cm",
-                                  " " = "  = {round(actual_size_mm, 1)} mm"
-                                ),
-                                "points" = c(
-                                  " " = "  Input: {size} points → Actual: {round(size * 2, 1)} points",
-                                  " " = "  = {round(actual_size_mm / 72, 2)} inches",
-                                  " " = "  = {round(actual_size_mm, 1)} mm"
-                                ),
-                                "picas" = c(
-                                  " " = "  Input: {size} picas → Actual: {round(size * 2, 1)} picas",
-                                  " " = "  = {round(actual_size_mm / 6, 2)} inches",
-                                  " " = "  = {round(actual_size_mm, 1)} mm"
-                                ),
-                                c(" " = "")
+        "mm" = c(
+          " " = "  Input: {size} mm → Actual: {round(actual_size_mm, 1)} mm",
+          " " = "  = {round(actual_size_mm / 10, 1)} cm",
+          " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
+        ),
+        "cm" = c(
+          " " = "  Input: {size} cm → Actual: {round(actual_size_mm / 10, 1)} cm",
+          " " = "  = {round(actual_size_mm, 1)} mm",
+          " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
+        ),
+        "inches" = c(
+          " " = "  Input: {size} inches → Actual: {round(actual_size_mm / 25.4, 2)} inches",
+          " " = "  = {round(actual_size_mm / 10, 1)} cm",
+          " " = "  = {round(actual_size_mm, 1)} mm"
+        ),
+        "points" = c(
+          " " = "  Input: {size} points → Actual: {round(size * 2, 1)} points",
+          " " = "  = {round(actual_size_mm / 72, 2)} inches",
+          " " = "  = {round(actual_size_mm, 1)} mm"
+        ),
+        "picas" = c(
+          " " = "  Input: {size} picas → Actual: {round(size * 2, 1)} picas",
+          " " = "  = {round(actual_size_mm / 6, 2)} inches",
+          " " = "  = {round(actual_size_mm, 1)} mm"
+        ),
+        c(" " = "")
       )
-      
+
       cli::cli_warn(
         c(
           "Very large `{arg_size}` value.",
@@ -714,7 +716,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
         call = NULL
       )
     }
-    
+
     # Warn if too small: < 1.5mm input
     if (size_mm < 1.5) {
       cli::cli_warn(
@@ -732,7 +734,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
       )
     }
   }
-  
+
   invisible(list(size = size, unit = unit, spacing = spacing))
 }
 

@@ -1602,7 +1602,7 @@ testthat::test_that("geom_icon_point scale_legend_icon()", {
     icon = rep(c("user", "car", "heart"), length.out = n),
     stringsAsFactors = FALSE
   )
-  
+
   p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
     geom_icon_point(
       ggplot2::aes(icon = icon, color = grp),
@@ -1616,7 +1616,7 @@ testthat::test_that("geom_icon_point scale_legend_icon()", {
     ) +
     ggplot2::geom_blank() +
     scale_legend_icon(size = 10)
-  
+
   expect_doppelganger(
     title = "geom_icon_point scale_legend_icon()",
     fig = p
