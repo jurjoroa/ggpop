@@ -19,6 +19,8 @@ scale_legend_icon(
 
 \item{spacing}{Numeric. Spacing between legend items as fraction of size (default 0.2).}
 
+\item{size_multiplier}{Numeric. Multiplier to apply to the size for spacing calculations (default 2).}
+
 \item{...}{Additional theme arguments.}
 }
 \value{
