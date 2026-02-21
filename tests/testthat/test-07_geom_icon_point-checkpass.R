@@ -1592,6 +1592,36 @@ testthat::test_that("geom_icon_point", {
   )
 })
 
+testthat::test_that("geom_icon_point scale_legend_icon()", {
+  set.seed(1)
+  n <- 5
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    grp = rep(c("A", "B", "C"), length.out = n),
+    icon = rep(c("user", "car", "heart"), length.out = n),
+    stringsAsFactors = FALSE
+  )
+  
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    geom_icon_point(
+      ggplot2::aes(icon = icon, color = grp),
+      size = 0.8,
+      legend_icons = TRUE
+    ) +
+    ggplot2::theme_void(base_size = 8) +
+    ggplot2::theme(
+      legend.position = "right",
+      plot.margin = grid::unit(rep(2, 4), "pt")
+    ) +
+    ggplot2::geom_blank() +
+    scale_legend_icon(size = 10)
+  
+  expect_doppelganger(
+    title = "geom_icon_point scale_legend_icon()",
+    fig = p
+  )
+})
 
 # ******************************************************************************
 # END --------------------------------------------------------------------------

@@ -576,8 +576,26 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
   }
   
+  # BAN npc unit - Abort if npc is used
+  if (unit == "npc") {
+    cli::cli_abort(
+      c(
+        "Banned unit: `{arg_unit} = 'npc'`",
+        "x" = "The 'npc' unit is not allowed for legend icons.",
+        "i" = "Reason: 'npc' (normalized parent coordinates) is relative and causes unpredictable sizing.",
+        " " = "",
+        "i" = "Use absolute units instead:",
+        " " = "  {.code scale_legend_icon(size = 10, unit = 'mm')}",
+        " " = "  {.code scale_legend_icon(size = 1, unit = 'cm')}",
+        " " = "  {.code scale_legend_icon(size = 0.2, unit = 'inches')}",
+        " " = "  {.code scale_legend_icon(size = 14, unit = 'points')}"
+      ),
+      call = NULL
+    )
+  }
+  
   # Validate unit - Valid grid units (warning only)
-  valid_units <- c("npc", "cm", "inches", "mm", "points", "picas", 
+  valid_units <- c("cm", "inches", "mm", "points", "picas", 
                    "bigpts", "dida", "cicero", "scaledpts", "lines", 
                    "char", "native", "snpc", "strwidth", "strheight", 
                    "grobwidth", "grobheight")
@@ -628,7 +646,7 @@ validate_scale_legend_icon <- function(size, unit, spacing,
   }
   
   # SIZE WARNING: Convert to mm and warn if > 25mm
-  # Only check for absolute units (not relative like npc, lines, etc.)
+  # Only check for absolute units (not relative like lines, etc.)
   
   absolute_units <- c("mm", "cm", "inches", "points", "picas", "bigpts")
   
@@ -638,9 +656,9 @@ validate_scale_legend_icon <- function(size, unit, spacing,
                       "mm" = size,
                       "cm" = size * 10,
                       "inches" = size * 25.4,
-                      "points" = size * 0.3528,  # 1 point = 1/72 inch
-                      "picas" = size * 4.2333,   # 1 pica = 12 points
-                      "bigpts" = size * 0.3528,  # Same as points
+                      "points" = size * 0.3528,
+                      "picas" = size * 4.2333,
+                      "bigpts" = size * 0.3528,
                       size)
     
     # Actual size after 2x multiplier
