@@ -137,11 +137,11 @@ This package supports **Font Awesome icons**.
 
 - The icons are stored in the `fontawesome` package. The only thing you need to specify is the icon's name.
 
-For example, this is just a few sample of more than 2,000 free icons available in the `fontawesome` package:
+For example, here is a small sample of the 2,000+ free icons available:
 
-| List of Font Awesome icons                                                                                                                     | Preview                                                                                                       |
-|:-----------------------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
-| **Sample icons:** <br>- home <br>- user <br>- envelope <br>- bell <br>- camera <br>- cog <br>- heart <br>- calendar <br>- cart-plus <br>- check <br>- cloud <br>- comment <br>- comments <br>- download <br>- edit <br>- file <br>- filter <br>- flag <br>- folder <br>- phone | <img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome_icons.png" width="900px" alt="fontawesome table preview" /> |
+`home` · `user` · `envelope` · `bell` · `camera` · `cog` · `heart` · `calendar` · `cart-plus` · `check` · `cloud` · `comment` · `download` · `edit` · `file` · `filter` · `flag` · `folder` · `phone`
+
+<p align="center"><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome_icons.png" width="70%" alt="fontawesome table preview" /></p>
 
 You can check the full list of icons at the [Font Awesome website](https://fontawesome.com/icons?d=gallery&p=2&m=free).
 
