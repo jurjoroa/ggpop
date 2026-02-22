@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "ggpop: Visualizing Population Data"
+abstract: "Create in R visually engaging and informative population charts. ggpop
+  allows users to represent population data proportionally using customizable icons,
+  facilitating the creation of circular representative population charts."
+authors:
+  - family-names: "Roa-Contreras"
+    given-names: "Jorge A."
+    orcid: "https://orcid.org/0000-0002-3972-9793"
+    email: "jorgeroa@stanford.edu"
+  - family-names: "Soultanova"
+    given-names: "Ralitza"
+    orcid: "https://orcid.org/0009-0000-9324-5653"
+    email: "Ralitza.soultanova@gmail.com"
+  - family-names: "Alarid-Escudero"
+    given-names: "Fernando"
+    orcid: "https://orcid.org/0000-0001-5076-1172"
+    email: "falarid@stanford.edu"
+  - family-names: "Pineda-Antunez"
+    given-names: "Carlos"
+    orcid: "https://orcid.org/0000-0002-8352-7080"
+    email: "cpinedaa@uw.edu"
+version: "1.7.0"
+date-released: "2024-01-01"
+license: MIT
+url: "https://jurjoroa.github.io/ggpop/"
+repository-code: "https://github.com/jurjoroa/ggpop"
