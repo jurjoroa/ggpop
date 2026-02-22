@@ -35,3 +35,7 @@ articles:
     desc: "Learn the core ggpop workflow from data to plot."
     contents:
       - getting-started
+  - title: "Icon Scatter Plots"
+    desc: "Use geom_icon_point() to build icon-based scatter plots."
+    contents:
+      - geom-icon-point
