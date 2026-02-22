@@ -386,7 +386,7 @@ Each brand gets its own icon and color. Icon size is mapped to number of employe
 library(ggplot2)
 library(ggpop)
 
-brand_data <- data.frame(
+df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
                  "Netflix", "Spotify", "Uber", "Airbnb"),
   revenue    = c(394, 283, 212, 117, 514, 32, 13, 37, 9),
@@ -398,38 +398,29 @@ brand_data <- data.frame(
                  "tv", "spotify", "uber", "airbnb")
 )
 
-brand_data$sector <- factor(brand_data$sector,
-  levels = c("Hardware", "Search", "Cloud", "Social",
-             "Commerce", "Streaming", "Mobility"))
+df_brand <- scales::rescale(df_brand, to = c(0.8, 2.5))
 
-brand_data$size_scaled <- scales::rescale(brand_data$employees, to = c(0.8, 2.5))
-
-ggplot(brand_data, aes(x = revenue, y = market_cap,
+ggplot(df_brand, aes(x = revenue, y = market_cap,
                        icon = icon, color = brand, size = size_scaled)) +
-  geom_icon_point(dpi = 100) +
-  theme_pop() +
+  geom_icon_point(dpi = 120) +
   scale_x_log10(labels = scales::dollar_format(suffix = "B")) +
   scale_y_log10(labels = scales::dollar_format(suffix = "B")) +
   scale_color_manual(values = c(
-    "Apple"     = "#FF5252",
-    "Google"    = "#42A5F5",
-    "Microsoft" = "#4DB6AC",
-    "Meta"      = "#8E24AA",
-    "Amazon"    = "#FFB300",
-    "Netflix"   = "#E53935",
-    "Spotify"   = "#1DB954",
-    "Uber"      = "#546E7A",
-    "Airbnb"    = "#FF4081"
-  )) +
+    "Apple"     = "#FF5252", "Google"    = "#42A5F5",
+    "Microsoft" = "#4DB6AC", "Meta"      = "#8E24AA",
+    "Amazon"    = "#FFB300", "Netflix"   = "#E53935",
+    "Spotify"   = "#1DB954", "Uber"      = "#546E7A",
+    "Airbnb"    = "#FF4081")) +
   scale_size_continuous(range = c(1, 3), labels = scales::comma) +
   labs(
     title    = "Tech Giants: Revenue vs. Market Cap",
-    subtitle = "Icon = brand  ·  Color = brand  ·  Size = employees (millions)  ·  Log scales",
+    subtitle = "Size = employees (millions)  ·  Log scales",
     x        = "Annual Revenue (log scale)",
     y        = "Market Cap (log scale)",
     color    = "Brand",
     size     = "Employees (M)"
   )
+
 ```
 
 ![Tech Brand Revenue vs. Market Cap](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/tech_brands_revenue_marketcap.png)
