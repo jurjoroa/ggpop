@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggpop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,54 @@
       <small>Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.7.0" id="ggpop-170">ggpop 1.7.0<a class="anchor" aria-label="anchor" href="#ggpop-170"></a></h2>
+<p>This release of <code>ggpop</code> delivers new theming support, expanded icon customization, critical bug fixes, and significant internal refactoring toward a fully ggplot-native architecture. Deprecated functionality has been removed and the public API has been finalized.</p>
+<div class="section level3">
+<h3 id="bug-fixes-1-7-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-0"></a></h3>
+<ul><li>Fixed icon size inconsistency across different ggplot2 themes and corrected <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> to properly reflect theme settings (<a href="https://github.com/jurjoroa/ggpop/issues/287" class="external-link">#287</a>).</li>
+<li>Fixed legend icon ordering for factor variables mapped to <code>colour</code>, ensuring legend icons follow factor level order rather than data row order (<a href="https://github.com/jurjoroa/ggpop/issues/294" class="external-link">#294</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-1-7-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-1-7-0"></a></h3>
+<ul><li>Refactored internal geom functions to be fully ggplot-native, using plot-scoped layer computation and removing reliance on <code><a href="https://ggplot2.tidyverse.org/reference/get_last_plot.html" class="external-link">last_plot()</a></code> during layer construction (<a href="https://github.com/jurjoroa/ggpop/issues/266" class="external-link">#266</a>).</li>
+<li>Added robustness unit tests for the <code>stroke_width</code> parameter to validate behavior across edge cases (<a href="https://github.com/jurjoroa/ggpop/issues/269" class="external-link">#269</a>).</li>
+<li>Expanded unit tests for internal helper functions and incorporated code improvements for reliability and maintainability (<a href="https://github.com/jurjoroa/ggpop/issues/275" class="external-link">#275</a>).</li>
+<li>Cleaned up error and warning messages by removing file-level path details, replacing them with concise, user-facing descriptions (<a href="https://github.com/jurjoroa/ggpop/issues/277" class="external-link">#277</a>).</li>
+<li>Normalized icon size calculation to ensure consistent rendering between <code>geom_pop</code> and <code>geom_icon_point</code> (<a href="https://github.com/jurjoroa/ggpop/issues/282" class="external-link">#282</a>).</li>
+<li>Added unit tests and visual snapshot tests for <code>scale_legend_icon</code> to validate legend sizing and rendering behavior (<a href="https://github.com/jurjoroa/ggpop/issues/289" class="external-link">#289</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-1-7-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-7-0"></a></h3>
+<ul><li>Added <code>stroke_width</code> parameter to <code>geom_icon_point</code>, allowing users to control icon outline thickness for improved visual contrast (<a href="https://github.com/jurjoroa/ggpop/issues/268" class="external-link">#268</a>).</li>
+<li>Introduced personalized ggpop themes (e.g., <code>theme_pop</code>) for consistent, opinionated plot styling out of the box (<a href="https://github.com/jurjoroa/ggpop/issues/291" class="external-link">#291</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="breaking-changes-1-7-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-7-0"></a></h3>
+<ul><li>Removed the deprecated <code>caption_pop</code> function. Users should migrate to standard ggplot2 annotation approaches (<a href="https://github.com/jurjoroa/ggpop/issues/279" class="external-link">#279</a>).</li>
+<li>Finalized public function names and key glyph implementations for <code>geom_pop</code> and <code>geom_icon_point</code>, standardizing the API. Existing code relying on previous internal names may require updates (<a href="https://github.com/jurjoroa/ggpop/issues/281" class="external-link">#281</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="issues-resolved-in-v170-1-7-0">Issues Resolved in v1.7.0<a class="anchor" aria-label="anchor" href="#issues-resolved-in-v170-1-7-0"></a></h3>
+<p>Issues are listed in chronological merge order.</p>
+<ul><li>#266</li>
+<li>#268</li>
+<li>#269</li>
+<li>#275</li>
+<li>#277</li>
+<li>#279</li>
+<li>#281</li>
+<li>#282</li>
+<li>#287</li>
+<li>#289</li>
+<li>#291</li>
+<li>#294</li>
+</ul></div>
+<div class="section level3">
+<h3 id="version-1-7-0">Version<a class="anchor" aria-label="anchor" href="#version-1-7-0"></a></h3>
+<ul><li>#265</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.6.1" id="ggpop-161">ggpop 1.6.1<a class="anchor" aria-label="anchor" href="#ggpop-161"></a></h2>
 <p>This release of <code>ggpop</code> introduces a set of targeted updates addressing multiple reported issues related to icon rendering, size handling, validation logic, and internal refactoring. The changes improve robustness, consistency, and maintainability while preserving expected user-facing behavior.</p>
@@ -314,7 +362,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-1-3-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-1-3-0"></a></h3>
-<ul><li>Updated icon handling in <code><a href="../reference/draw_key_pop_image.html">draw_key_pop_image()</a></code> to use a centralized <code>key/</code> directory for consistency.</li>
+<ul><li>Updated icon handling in <code>draw_key_pop_image()</code> to use a centralized <code>key/</code> directory for consistency.</li>
 <li>Changed icon format from SVG to PNG in <code><a href="../reference/geom_pop.html">geom_pop()</a></code> to enhance compatibility and performance:
 <ul><li>Improved rendering speed by up to 90% for Font Awesome icons.</li>
 </ul></li>
@@ -634,7 +682,7 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="ggpop-030">ggpop 0.3.0<a class="anchor" aria-label="anchor" href="#ggpop-030"></a></h2>
-<p>This release of <strong>ggpop</strong> introduces new features and improvements, including a correction of the icon library. A new <code>facet</code> argument allows users to specify the name of the variable to facet as a string, ensuring proper grouping and plotting. The <code><a href="../reference/caption_pop.html">caption_pop()</a></code> function has been enhanced to provide greater flexibility for crafting captions with seamlessly integrated icons. Additionally, the README has been improved with detailed examples to help users better leverage the new features and enhancements.</p>
+<p>This release of <strong>ggpop</strong> introduces new features and improvements, including a correction of the icon library. A new <code>facet</code> argument allows users to specify the name of the variable to facet as a string, ensuring proper grouping and plotting. The <code>caption_pop()</code> function has been enhanced to provide greater flexibility for crafting captions with seamlessly integrated icons. Additionally, the README has been improved with detailed examples to help users better leverage the new features and enhancements.</p>
 <div class="section level3">
 <h3 id="bug-fixes-0-3-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h3>
 <ul><li>Fixed a bug that prevented the plot from arranging properly when using <code>facet_wrap</code> or <code>facet_grid</code>.</li>
@@ -656,10 +704,10 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="ggpop-020">ggpop 0.2.0<a class="anchor" aria-label="anchor" href="#ggpop-020"></a></h2>
-<p>This release of <strong>ggpop</strong> introduces exciting new features and improvements. The expanded icon library offers a broader range of options for meaningful and context-specific visualizations. The new <code><a href="../reference/process_data.html">process_data()</a></code> function enables grouping variables under higher-level categories, simplifying hierarchical data representation. Enhancements to <code><a href="../reference/caption_pop.html">caption_pop()</a></code> provide greater flexibility for crafting captions with seamlessly integrated icons. Additionally, improved support for <code><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid()</a></code> allows for clearer, more cohesive multi-group plots. These updates make <strong>ggpop</strong> an even more powerful tool for creating impactful population visualizations.</p>
+<p>This release of <strong>ggpop</strong> introduces exciting new features and improvements. The expanded icon library offers a broader range of options for meaningful and context-specific visualizations. The new <code><a href="../reference/process_data.html">process_data()</a></code> function enables grouping variables under higher-level categories, simplifying hierarchical data representation. Enhancements to <code>caption_pop()</code> provide greater flexibility for crafting captions with seamlessly integrated icons. Additionally, improved support for <code><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid()</a></code> allows for clearer, more cohesive multi-group plots. These updates make <strong>ggpop</strong> an even more powerful tool for creating impactful population visualizations.</p>
 <div class="section level3">
 <h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
-<ul><li>Fixed an issue where the <code>icon_size</code> argument in <code><a href="../reference/caption_pop.html">caption_pop()</a></code> was not working as expected. The argument now correctly adjusts the size of the icons in the caption.</li>
+<ul><li>Fixed an issue where the <code>icon_size</code> argument in <code>caption_pop()</code> was not working as expected. The argument now correctly adjusts the size of the icons in the caption.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-0-2-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-2-0"></a></h3>

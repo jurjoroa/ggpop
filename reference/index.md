@@ -2,12 +2,6 @@
 
 ## All functions
 
-- [`caption_pop()`](https://jurjoroa.github.io/ggpop/reference/caption_pop.md)
-  : Add Custom Captions with Icons to a geom_pop object
-
-- [`draw_key_pop_image()`](https://jurjoroa.github.io/ggpop/reference/draw_key_pop_image.md)
-  : Key drawing function for population-based image keys
-
 - [`fetch_df_coordinates()`](https://jurjoroa.github.io/ggpop/reference/fetch_df_coordinates.md)
   :
 
@@ -23,4 +17,13 @@
   : Process Population Data for Visualization
 
 - [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md)
-  : Legend helper for geom_pop icon legends
+  : Legend helper for geom_pop/geom_icon_point legends
+
+- [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md)
+  : Population Plot Theme
+
+- [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md)
+  : Dark Population Plot Theme
+
+- [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md)
+  : Minimal Population Plot Theme

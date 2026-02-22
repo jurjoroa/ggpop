@@ -18,6 +18,7 @@ geom_icon_point(
   size = 1,
   dpi = 50,
   legend_icons = TRUE,
+  stroke_width = NULL,
   ...
 )
 ```
@@ -108,7 +109,7 @@ geom_icon_point(
 
 - size:
 
-  Default icon size (default: 3).
+  Default icon size (default: 1).
 
 - dpi:
 
@@ -117,6 +118,10 @@ geom_icon_point(
 - legend_icons:
 
   Show icons in legend (default: TRUE).
+
+- stroke_width:
+
+  Numeric. Width of the icon outline/stroke.
 
 - ...:
 
@@ -141,3 +146,25 @@ geom_icon_point uses standard ggplot2 scatter plot aesthetics:
 - **alpha** - Transparency
 
 - **size** - Icon size
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+library(ggplot2)
+data <- data.frame(
+  x = rnorm(20),
+  y = rnorm(20),
+  category = sample(c("A", "B", "C"), 20, replace = TRUE),
+  icon = sample(c("heart", "star", "circle"), 20, replace = TRUE)
+)
+
+# Map icon to a column
+ggplot(data, aes(x = x, y = y, icon = icon, color = category)) +
+  geom_icon_point()
+
+# Use a fixed icon
+ggplot(data, aes(x = x, y = y, color = category)) +
+  geom_icon_point(icon = "star")
+} # }
+```

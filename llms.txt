@@ -1,5 +1,7 @@
 # ggpop ![](inst/figures/logo.png)
 
+> **Turn numbers into people. Turn data into stories.**
+
 `ggpop` is an R package built on top of ggplot2 that simplifies the
 creation of engaging, icon-based population charts. By combining
 features from `ggplot2` and `ggimage`, `ggpop` lets users easily
@@ -7,8 +9,8 @@ visualize population data using proportional, customizable icons
 arranged in intuitive, circular layouts. The package also includes
 functionality for adding clear, icon-enhanced captions, which makes
 charts easier to understand and visually attractive. Designed primarily
-for visual storytelling, ggpop helps users communicate complex
-population statistics in a straightforward and appealing manner.
+for visual storytelling, ggpop helps users communicate population
+statistics in a straightforward and appealing manner.
 
 ## An Alternative Approach to Visualization
 
@@ -22,15 +24,34 @@ to tell more compelling and accessible stories.
 
 ## Why ggpop?
 
-Traditional charts can feel abstract. **ggpop** makes data human by:
-
-- **Visual Impact**: Icons create immediate connection
+- **Visual Impact**: Icons create an immediate emotional connection with
+  your audience.
 - **Intuitive Understanding**: Proportional representation simplifies
-  complex data
-- **Flexible**: Support for 2,000+ Font Awesome icons + native optimized
-  icons
-- **Fast**: Optimized rendering handles up to 1,000 icons smoothly
+  data.
+- **Flexible**: Support for 2,000+ Font Awesome icons.
+- **Fast**: Optimized rendering handles up to 1,000 icons smoothly for
+  [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+  and unlimited for
+  [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
 - **ggplot2 Native**: Integrates seamlessly with your existing workflow
+  — themes, facets, scales and all.
+
+------------------------------------------------------------------------
+
+## Two Main Geoms
+
+ggpop has with two principal geoms. Each solves a different
+visualization problem:
+
+|                         | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)                                    | [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) |
+|:------------------------|:----------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------|
+| **Best for**            | Population & proportion data                                                                              | Any x / y scatter data                                                               |
+| **Layout**              | Circular proportional grid                                                                                | Free x / y positioning                                                               |
+| **What one icon means** | A fixed share of the total population                                                                     | A single observation                                                                 |
+| **Data prep needed**    | Yes — run [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md) first (optional) | No — plug in any data directly                                                       |
+| **Think of it as**      | A pictogram / isotype chart                                                                               | [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html) with icons |
+
+------------------------------------------------------------------------
 
 ## Installation
 
@@ -48,7 +69,14 @@ install.packages("remotes")
 remotes::install_github("jurjoroa/ggpop")
 ```
 
-## Quick Start
+------------------------------------------------------------------------
+
+## `geom_pop()` — Population Charts
+
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+creates proportional icon grids where each icon represents a share of
+the total population. Perfect for making demographic, health, or social
+statistics in a nice format.
 
 ### 1.- Create a Small Dataset or Use a Built-in Dataset
 
@@ -56,23 +84,12 @@ The dataset **`df_pop_mx`** is a **minimal example** illustrating
 population counts by sex in Mexico in 2024. It has the following
 structure:
 
-- **sex**:  
-  A categorical variable indicating the sex, with two entries:
-
-  - `"male"`
-  - `"female"`
-
-- **n**:  
-  A numeric variable representing the population size for each sex
-  category.
-
-- **country**:  
-  A constant value `"Mexico"`, indicating the country these observations
-  belong to.
-
-- **continent**:  
-  A constant value `"America"`, indicating the continent these
-  observations belong to.
+- **sex**: A categorical variable indicating the sex (`"male"` /
+  `"female"`)
+- **n**: A numeric variable representing the population size for each
+  sex category
+- **country**: A constant value `"Mexico"`
+- **continent**: A constant value `"America"`
 
 ``` r
 library(dplyr)
@@ -93,8 +110,6 @@ df_pop_mx <- data.frame(sex = c("male", "female"),
 
 ``` r
 df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, sample_size = 1000)
-
-head(df_pop_mx_prop)
 ```
 
 We apply the
@@ -119,17 +134,23 @@ from the 1,000 samples. Notable columns:
 - **n**: total population count of the corresponding group.
 - **prop**: proportion of that group in the overall dataset.
 
+> **Note:**
+> [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
+> is optional. You can pass your own data frame directly to
+> [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+> — as long as each row represents one icon. The maximum is 1,000 rows
+> per plot (you can pass more only if you doing per facet group).
+
 ### 3.- Assign icons to groups
 
 Here, we create a new column called `icon` in the `df_pop_mx_prop`
 dataset. The
 [`case_when()`](https://dplyr.tidyverse.org/reference/case-and-replace-when.html)
 function checks each row’s **type** (either “male” or “female”) and
-assigns a matching value (“ggmale” or “ggfemale”) to the `icon` column.
+assigns a matching value to the `icon` column.
 
 ``` r
-
-df_pop_mx_prop <- df_pop_mx_prop %>% 
+df_pop_mx_prop <- df_pop_mx_prop %>%
   mutate(icon = case_when(
     type == "male" ~ "male",
     type == "female" ~ "female"))
@@ -137,14 +158,12 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 
 ### 4.- Icons
 
-![Logo](inst/figures/logo.png)![Fontawesome](inst/figures/fontawesome.png)
+![Logo](inst/figures/logo.png)![Fontawesome](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome.svg)
 
 This package supports **Font Awesome icons**.
 
 - **Font Awesome icons** offer greater flexibility and a broader icon
-  set (2,000+ free icons). However, rendering these icons can be slower
-  if the sample size is large (e.g., 1,000+ observations) or if plot is
-  faceted.
+  set (2,000+ free icons).
 
 - The icons are stored in the `fontawesome` package. The only thing you
   need to specify is the icon’s name.
@@ -154,7 +173,7 @@ available in the `fontawesome` package:
 
 [TABLE]
 
-You can check the full list of icons in the [Font Awesome
+You can check the full list of icons at the [Font Awesome
 website](https://fontawesome.com/icons?d=gallery&p=2&m=free).
 
 ### 5.- Plot population chart
@@ -163,11 +182,11 @@ Now we can proceed to plot the population chart using the assigned
 icons.
 
 ``` r
-
 library(ggplot2)
+
 ggplot() +
-  geom_pop(data = df_pop_mx_prop, aes(icon = icon, group=type, color=type),
-           size = 1, arrange=F, legend_icons=F) +
+  geom_pop(data = df_pop_mx_prop, aes(icon = icon, group = type, color = type),
+           size = 1, arrange = F, legend_icons = F) +
   theme_void() +
   theme(legend.position = "bottom")
 ```
@@ -179,38 +198,35 @@ Example Plot
 
 The
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-function creates a population chart using the `df_prop_mx_f` dataset.
-The object work as a
+function creates a population chart using the `df_pop_mx_prop` dataset.
+The object works as a
 [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
-figure plotted by determined x and y coordinates. We can also group and
-color the icons by the **type** variable or the variable that we are
-grouping for.
+figure plotted at determined x and y coordinates. We can also group and
+color the icons by the **type** variable or the variable we are grouping
+for.
 
-#### 5.1 Improve plot
+#### 5.1 Improve the plot
 
-Like a ggplot object, we can improve it to have a more presentable plot.
-We can arrange our icons, add them as part of the legend, give color to
-the background, and add a title and caption to the plot.
+Like any ggplot object, we can layer on themes, colors, titles, and a
+legend to make the chart presentation-ready.
 
 ``` r
-
-ggplot() +
-    geom_pop(data = df_pop_mx_prop, aes(icon = icon, group=type, color=type),
-    size = 1, arrange=T) +
-    scale_legend_icon() + #add icon to the legend
-    theme_void(base_size = 40) +
-    theme(legend.position = "bottom") + 
-labs(title = "Population in Mexico by Sex",
-     subtitle = "2024",
-     caption = "Source: demogmx") +
+ggplot(data = df_pop_mx_prop, aes(icon = icon, group = type, color = type)) +
+  geom_pop(size = 1, arrange = T) +
+  theme_void(base_size = 40) +
+  theme(legend.position = "bottom") +
+  labs(title = "Population in Mexico by Sex",
+       subtitle = "2024",
+       caption = "Source: demogmx") +
   theme(legend.title = element_blank(),
-        plot.background = element_rect(fill = "black"),
-        panel.background = element_rect(fill = "black"),
-        legend.background = element_rect(fill = "black"),
-        legend.text = element_text(color = "white"),
-        plot.title = element_text(color = "white"),
-        plot.subtitle = element_text(color = "white"),
-        plot.caption = element_text(color = "white")) +
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        legend.background = element_blank(),
+        legend.text = element_text(color = "#D4AF37"),
+        plot.title = element_text(color = "#D4AF37"),
+        plot.subtitle = element_text(color = "#D4AF37"),
+        plot.caption = element_text(color = "#D4AF37")) +
+  scale_legend_icon(size = 10) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60"),
                      labels = c("female" = "Females: 51%", "male" = "Males: 49%"))
 ```
@@ -221,44 +237,56 @@ Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/exa
 Example Plot
 
 We can also include more than two icons in the same plot. In this
-example, we will identify the people that is disabled, and we will
+example, we will identify the people that are disabled, and we will
 change some parameters.
 
 ``` r
-
 #1.- We load or create the data
 df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled males", "disabled females"),
-                        value = c(53726732, 54978806, 9731396, 11106712),
-                        country = "Mexico",
-                        continent = "America")
+                            value = c(53726732, 54978806, 9731396, 11106712),
+                            country = "Mexico",
+                            continent = "America")
 
 #2.- We process the data
-df_pop_dis_mx_prop <- process_data(data = df_pop_dis_mx, group_var = sex, 
-                               sum_var = value, sample_size = 500)
+df_pop_dis_mx_prop <- process_data(data = df_pop_dis_mx, group_var = sex,
+                                   sum_var = value, sample_size = 500)
 
 #3.- Assign icons to groups
-df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>% 
+df_pop_dis_mx_prop <- df_pop_dis_mx_prop %>%
   mutate(icon = case_when(
     type == "male" ~ "male",
     type == "female" ~ "female",
     type == "disabled males" ~ "wheelchair",
     type == "disabled females" ~ "wheelchair"))
 
-#4.- Plot 
+#4.- Plot
 
-ggplot() +
-  geom_pop(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type),
-           size = 1.3, arrange = T) +
-  scale_legend_icon(size = 10) +
-  theme_void(base_size = 36) +
+library(showtext)
+font_add_google("Quicksand", "quicksand")
+showtext_auto()
+
+ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type)) +
+  geom_pop(size = 1.1, arrange = F) +
+  theme_pop(base_size = 100, base_family = "quicksand") +
+  scale_legend_icon(size = 10,
+                    legend.text = element_text(color = "#D4AF37", family = "quicksand"),
+                    plot.title = element_text(color = "#D4AF37", family = "quicksand",
+                                              face = "bold", size = 90, hjust = 0.5),
+                    plot.subtitle = element_text(color = "#D4AF37", family = "quicksand",
+                                                 size = 70, hjust = 0.5),
+                    plot.caption = element_text(color = "#D4AF37", family = "quicksand",
+                                                size = 70, hjust = 0)) +
   labs(title = "Population in Mexico by Sex and disability status",
-       subtitle = "2022",
+       subtitle = "2023",
        caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
-  theme(legend.position = "bottom",legend.title = element_blank()) +
+  theme(legend.position = "bottom", legend.title = element_blank(),
+        legend.box.spacing = unit(-.4, "cm"),
+        legend.margin = margin(t = 0, b = 0),
+        legend.box.margin = margin(t = 0, b = 0)) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60",
-                                "disabled males" = "#90CAF9", 
+                                "disabled males" = "#90CAF9",
                                 "disabled females" = "#F48FB1"),
-                     labels = c("male" = "Males", "female" = "Females", 
+                     labels = c("male" = "Males", "female" = "Females",
                                 "disabled females" = "Disabled Females",
                                 "disabled males" = "Disabled Males"))
 ```
@@ -268,386 +296,224 @@ ggplot() +
 
 Example Plot 3
 
-### 6.- More examples employing facets and other packages
+------------------------------------------------------------------------
 
-#### Facet wrap/grid
+## `geom_icon_point()` — Icon Scatter Plots
+
+[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+is the scatter plot cousin of
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
+It works exactly like
+[`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
+— but swaps dots for Font Awesome icons. No preprocessing required: just
+pass any data with `x` and `y` variables and let the icons do the
+talking.
+
+This is ideal when you want to add visual identity to individual
+observations — making your audience immediately recognize *what* they
+are looking at, not just *where* a point sits on a chart.
+
+### Key differences from `geom_pop()`
+
+- No
+  [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
+  step needed — works with raw data
+- Icons are placed freely at x / y coordinates, not arranged in a grid
+- Each icon = one row in your dataset (not a population share)
+- Supports mapped icons: different categories can show different icons
+
+### Example 1: Diet & Health Outcomes by Food Group
+
+Each point is a food item plotted by its calorie and protein content.
+Every food gets its own icon — apple, banana, orange, drumstick, bacon,
+fish, bottle-water, cheese, and jar — while color groups them by
+category.
 
 ``` r
-
-# Example: Transportation Methods Across Cities with 7 Icon Groups
-
 library(ggplot2)
-library(dplyr)
+library(ggpop)
 
-# 1. Create sample data for transportation methods across different cities
-df_transport <- data.frame(
-  method = rep(c("car", "bus", "train", "bicycle", "motorcycle", "walking", "taxi"), 5),
-  value = c(
-    # New York
-    45000, 32000, 28000, 15000, 8000, 25000, 18000,
-    # Los Angeles
-    62000, 28000, 12000, 10000, 12000, 15000, 22000,
-    # Chicago
-    38000, 35000, 30000, 12000, 6000, 22000, 15000,
-    # Houston
-    58000, 25000, 8000, 8000, 14000, 12000, 16000,
-    # San Francisco
-    35000, 30000, 25000, 22000, 10000, 20000, 20000
-  ),
-  city = rep(c("New York", "Los Angeles", "Chicago", "Houston", "San Francisco"), each = 7)
+df_food <- data.frame(
+  food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
+               "Milk", "Cheese", "Yogurt"),
+  calories = c(52, 41, 47, 165, 250, 208, 61, 402, 59),
+  protein  = c(0.3, 1.1, 0.9, 31, 26, 20, 3.2, 25, 10),
+  group    = c(rep("Fruit", 3), rep("Meat", 3), rep("Dairy", 3)),
+  icon     = c("apple-whole", "carrot", "lemon",
+               "drumstick-bite", "bacon", "fish",
+               "bottle-water", "cheese", "jar")
 )
 
-# 2. Process the data for each city
-df_transport_prop <- process_data(
-  data = df_transport, 
-  group_var = method, 
-  sum_var = value, 
-  sample_size = 400,
-  high_group_var = "city"
-)
-
-# 3. Assign Font Awesome icons to transportation methods
-df_transport_prop <- df_transport_prop %>% 
-  mutate(icon = case_when(
-    type == "car" ~ "car",
-    type == "bus" ~ "bus",
-    type == "train" ~ "train",
-    type == "bicycle" ~ "bicycle",
-    type == "motorcycle" ~ "motorcycle",
-    type == "walking" ~ "person-walking",
-    type == "taxi" ~ "taxi"
-  ))
-
-# 4. Plot with facet_wrap
-ggplot() +
-  geom_pop(
-    data = df_transport_prop, 
-    aes(icon = icon, group = type, color = type),
-    size = 1, 
-    arrange = TRUE
-  ) +
-  facet_wrap(~ group, ncol = 2) +
-  scale_legend_icon(size = 6) +
-  theme_void(base_size = 26) +
+ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
+  geom_icon_point(size = 2, dpi = 100) +
+  scale_color_manual(values = c(
+    "Apple" = "#FF5252", "Carrot" = "#FFA726", "Orange" = "#FFB74D",
+    "Chicken" = "#8D6E63", "Beef" = "#6D4C41",
+    "Salmon" = "#EF5350", "Milk" = "#42A5F5", "Cheese" = "#FFD54F", 
+    "Yogurt" = "#4DB6AC"
+  )) +
   labs(
-    title = "Primary Transportation Methods Across Major US Cities",
-    subtitle = "Distribution of daily commuters by transportation type",
-    caption = "Each icon represents approximately 400 commuters | Data for demonstration purposes"
-  ) +
-  theme(
-    legend.position = "bottom",
-    legend.title = element_blank(),
-    plot.background = element_rect(fill = "#1a1a1a"),
-    panel.background = element_rect(fill = "#1a1a1a"),
-    strip.text = element_text(face = "bold", size = 13, color = "white"),
-    legend.background = element_rect(fill = "#1a1a1a"),
-    legend.text = element_text(color = "white", size = 10),
-    plot.title = element_text(hjust = 0.5, face = "bold", color = "white"),
-    plot.subtitle = element_text(hjust = 0.5, color = "#cccccc"),
-    plot.caption = element_text(hjust = 0.5, color = "#999999", size = 9)
-  ) +
-  scale_color_manual(
-    values = c(
-      "car" = "#E53935",
-      "bus" = "#FB8C00",
-      "train" = "#43A047",
-      "bicycle" = "#00ACC1",
-      "motorcycle" = "#8E24AA",
-      "walking" = "#FDD835",
-      "taxi" = "#FFB300"
-    ),
-    labels = c(
-      "car" = "Car",
-      "bus" = "Bus",
-      "train" = "Train/Subway",
-      "bicycle" = "Bicycle",
-      "motorcycle" = "Motorcycle",
-      "walking" = "Walking",
-      "taxi" = "Taxi/Ride-share"
-    )
+    title = "Calories vs. Protein by Food Group",
+    subtitle = "Each icon represents a specific food; color reflects the group",
+    x = "Calories (per 100g)",
+    y = "Protein (g per 100g)",
+    color = "Food Group"
   )
 ```
 
-![Example Plot
-3](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/transportation_methods_countries.png)
+![Diet & Health Outcomes by Food
+Group](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/food_calories_protein.png)
 
-Example Plot 3
+Diet & Health Outcomes by Food Group
 
-#### Geofacet
+### Example 2: Tech Brand Revenue vs. Market Cap
+
+Each brand gets its own icon and color. Icon size is mapped to number of
+employees — bigger companies appear larger on the chart, adding a third
+dimension of information at a glance.
 
 ``` r
-# ---- Load hexgrid (for reference only) ----
-my_sf <- read_sf("us_states_hexgrid.geojson") %>%
-  mutate(
-    google_name = gsub(" \\(United States\\)", "", google_name)
-  )
+library(ggplot2)
+library(ggpop)
 
-stopifnot("iso3166_2" %in% names(my_sf))
-
-states_in_hex <- my_sf %>%
-  st_drop_geometry() %>%
-  transmute(state = iso3166_2) %>%
-  distinct()
-# ---- Real state-level infant mortality rates ----
-# Data from CDC National Vital Statistics System, 2023
-# Infant deaths per 1,000 live births
-
-# ---- Real state-level gun death rates ----
-# Data from CDC/Violence Policy Center, 2023
-# Gun deaths per 100,000 population (all causes: homicide, suicide, unintentional)
-
-df_rates <- states_in_hex %>%
-  mutate(gun_death_rate_per_100k = case_when(
-    state == "AL" ~ 25.6,
-    state == "AK" ~ 23.5,
-    state == "AZ" ~ 18.5,
-    state == "AR" ~ 21.9,
-    state == "CA" ~ 8.0,
-    state == "CO" ~ 16.6,
-    state == "CT" ~ 6.2,
-    state == "DE" ~ 12.0,
-    state == "FL" ~ 13.7,
-    state == "GA" ~ 18.6,
-    state == "HI" ~ 4.9,
-    state == "ID" ~ 17.9,
-    state == "IL" ~ 13.5,
-    state == "IN" ~ 18.3,
-    state == "IA" ~ 10.5,
-    state == "KS" ~ 16.3,
-    state == "KY" ~ 18.4,
-    state == "LA" ~ 28.3,
-    state == "ME" ~ 14.0,
-    state == "MD" ~ 12.3,
-    state == "MA" ~ 3.7,  # Lowest
-    state == "MI" ~ 13.9,
-    state == "MN" ~ 8.9,
-    state == "MS" ~ 29.4,  # Highest
-    state == "MO" ~ 21.4,
-    state == "MT" ~ 21.5,
-    state == "NE" ~ 10.6,
-    state == "NV" ~ 18.4,
-    state == "NH" ~ 9.6,
-    state == "NJ" ~ 4.6,
-    state == "NM" ~ 25.3,
-    state == "NY" ~ 4.7,
-    state == "NC" ~ 16.4,
-    state == "ND" ~ 12.8,
-    state == "OH" ~ 15.0,
-    state == "OK" ~ 19.9,
-    state == "OR" ~ 14.2,
-    state == "PA" ~ 13.6,
-    state == "RI" ~ 4.8,
-    state == "SC" ~ 19.1,
-    state == "SD" ~ 12.3,
-    state == "TN" ~ 22.0,
-    state == "TX" ~ 14.9,
-    state == "UT" ~ 14.8,
-    state == "VT" ~ 12.0,
-    state == "VA" ~ 13.8,
-    state == "WA" ~ 13.0,
-    state == "WV" ~ 16.8,
-    state == "WI" ~ 12.7,
-    state == "WY" ~ 21.5,
-    state == "DC" ~ 28.5,  # DC has very high rate
-    TRUE ~ 13.7  # US average as fallback
-  )) %>%
-  # Convert rate per 100,000 to expected cases per 100 people
-  # Rate is per 100,000, so divide by 1,000 to get per 100
-  mutate(
-    cases_per_100 = round(gun_death_rate_per_100k / 1000, 1),
-    # Convert to probability for binomial sampling
-    gun_death_rate = gun_death_rate_per_100k / 100000
-  )
-# ---- Real state-level gun death rates ----
-# Data from CDC/Violence Policy Center, 2023
-# Gun deaths per 100,000 population (all causes: homicide, suicide, unintentional)
-# Each icon represents 1,000 people, so 100 icons = 100,000 people
-
-df_rates <- states_in_hex %>%
-  mutate(gun_death_rate_per_100k = case_when(
-    state == "AL" ~ 25.6,
-    state == "AK" ~ 23.5,
-    state == "AZ" ~ 18.5,
-    state == "AR" ~ 21.9,
-    state == "CA" ~ 8.0,
-    state == "CO" ~ 16.6,
-    state == "CT" ~ 6.2,
-    state == "DE" ~ 12.0,
-    state == "FL" ~ 13.7,
-    state == "GA" ~ 18.6,
-    state == "HI" ~ 4.9,
-    state == "ID" ~ 17.9,
-    state == "IL" ~ 13.5,
-    state == "IN" ~ 18.3,
-    state == "IA" ~ 10.5,
-    state == "KS" ~ 16.3,
-    state == "KY" ~ 18.4,
-    state == "LA" ~ 28.3,
-    state == "ME" ~ 14.0,
-    state == "MD" ~ 12.3,
-    state == "MA" ~ 3.7,  # Lowest
-    state == "MI" ~ 13.9,
-    state == "MN" ~ 8.9,
-    state == "MS" ~ 29.4,  # Highest
-    state == "MO" ~ 21.4,
-    state == "MT" ~ 21.5,
-    state == "NE" ~ 10.6,
-    state == "NV" ~ 18.4,
-    state == "NH" ~ 9.6,
-    state == "NJ" ~ 4.6,
-    state == "NM" ~ 25.3,
-    state == "NY" ~ 4.7,
-    state == "NC" ~ 16.4,
-    state == "ND" ~ 12.8,
-    state == "OH" ~ 15.0,
-    state == "OK" ~ 19.9,
-    state == "OR" ~ 14.2,
-    state == "PA" ~ 13.6,
-    state == "RI" ~ 4.8,
-    state == "SC" ~ 19.1,
-    state == "SD" ~ 12.3,
-    state == "TN" ~ 22.0,
-    state == "TX" ~ 14.9,
-    state == "UT" ~ 14.8,
-    state == "VT" ~ 12.0,
-    state == "VA" ~ 13.8,
-    state == "WA" ~ 13.0,
-    state == "WV" ~ 16.8,
-    state == "WI" ~ 12.7,
-    state == "WY" ~ 21.5,
-    state == "DC" ~ 28.5,
-    TRUE ~ 13.7  # US average as fallback
-  )) %>%
-  # Since each icon = 1,000 people and we have 100 icons (100,000 people)
-  # The rate per 100,000 is exactly the number of affected icons
-  mutate(
-    expected_deaths_per_100_icons = gun_death_rate_per_100k,
-    # Round to get whole number of deaths
-    deaths_count = round(gun_death_rate_per_100k)
-  )
-
-# ---- Create 100-icon samples per state ----
-# Each icon represents 1,000 people
-df_people <- df_rates %>%
-  group_by(state, deaths_count, gun_death_rate_per_100k) %>%
-  summarise(
-    # Create 100 icons: deaths_count will be "gun death", rest will be "survived"
-    icon_id = 1:100,
-    status = if_else(icon_id <= unique(deaths_count), "gun death", "no gun death"),
-    .groups = "drop"
-  )
-
-# ---- Convert to ggpop format ----
-df_hex_prop <- process_data(
-  data = df_people,
-  group_var = status,
-  sum_var = NULL,
-  sample_size = 50,
-  high_group_var = "state"
+df_brand <- data.frame(
+  brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
+                 "Netflix", "Spotify", "Uber", "Airbnb"),
+  revenue    = c(394, 283, 212, 117, 514, 32, 13, 37, 9),
+  market_cap = c(2950, 1750, 2800, 1200, 1750, 190, 55, 140, 75),
+  employees  = c(160, 180, 220, 86, 1540, 13, 9, 32, 6),
+  sector     = c("Hardware", "Search", "Cloud", "Social", "Commerce",
+                 "Streaming", "Streaming", "Mobility", "Mobility"),
+  icon       = c("apple", "google", "windows", "meta", "amazon",
+                 "tv", "spotify", "uber", "airbnb")
 )
 
-df_hex_prop <- df_hex_prop %>%
-  mutate(
-    icon = case_when(
-      type == "gun death" ~ "skull",
-      type == "no gun death" ~ "person",
-      TRUE ~ "person"
-    )
-  ) %>%
-  rename(code = group)
+df_brand <- scales::rescale(df_brand, to = c(0.8, 2.5))
 
-# ---- Plot using facet_geo ----
-# ---- Plot using facet_geo with black background and enhanced design ----
-# ---- Plot using facet_geo with black background and enhanced design ----
-ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
-  geom_pop(size = 4, arrange = TRUE, facet = "code") +  # Increased size since fewer icons
-  facet_geo(~ code, grid = "us_state_grid3", label = "name") +
-  scale_color_manual(
-    values = c("gun death" = "#FF1744", "no gun death" = "#42A5F5"),
-    labels = c("Gun death (each skull = 2,000 people)", "No gun death")
-  ) +
-  theme_void(base_size = 14) +
+ggplot(df_brand, aes(x = revenue, y = market_cap,
+                       icon = icon, color = brand, size = size_scaled)) +
+  geom_icon_point(dpi = 120) +
+  scale_x_log10(labels = scales::dollar_format(suffix = "B")) +
+  scale_y_log10(labels = scales::dollar_format(suffix = "B")) +
+  scale_color_manual(values = c(
+    "Apple"     = "#FF5252", "Google"    = "#42A5F5",
+    "Microsoft" = "#4DB6AC", "Meta"      = "#8E24AA",
+    "Amazon"    = "#FFB300", "Netflix"   = "#E53935",
+    "Spotify"   = "#1DB954", "Uber"      = "#546E7A",
+    "Airbnb"    = "#FF4081")) +
+  scale_size_continuous(range = c(1, 3), labels = scales::comma) +
   labs(
-    title = "GUN VIOLENCE ACROSS AMERICA",
-    subtitle = "Each icon represents 2,000 people • Skulls show gun deaths per 100,000 population\nMississippi has nearly 8× the gun death rate of Massachusetts",
-    caption = "Data: CDC/Violence Policy Center, 2023 (age-adjusted rates: homicide, suicide, accidents)\nHighest: Mississippi (29.4 per 100k = ~15 skulls) • Lowest: Massachusetts (3.7 per 100k = ~2 skulls) • National Average: 13.7 per 100k"
-  ) +
-  theme(
-    # Black background
-    plot.background = element_rect(fill = "#000000", color = NA),
-    panel.background = element_rect(fill = "#000000", color = NA),
-    
-    # Legend styling
-    legend.position = "bottom",
-    legend.title = element_blank(),
-    legend.text = element_text(color = "#FFFFFF", size = 16, face = "bold"),
-    legend.background = element_rect(fill = "#000000", color = NA),
-    legend.key = element_rect(fill = "#000000", color = NA),
-    legend.margin = margin(t = 15, b = 5),
-    
-    # State labels
-    strip.text = element_text(
-      size = 12, 
-      color = "#FFFFFF",
-      margin = margin(b = 4)
-    ),
-    
-    # Title styling
-    plot.title = element_text(
-      hjust = 0.5, 
-      face = "bold", 
-      size = 24, 
-      color = "#FF1744",
-      margin = margin(b = 10),
-      family = "sans"
-    ),
-    
-    # Subtitle styling
-    plot.subtitle = element_text(
-      hjust = 0.5, 
-      size = 13, 
-      lineheight = 1.3,
-      color = "#E0E0E0",
-      margin = margin(b = 15)
-    ),
-    
-    # Caption styling
-    plot.caption = element_text(
-      hjust = 0.5, 
-      size = 9.5, 
-      color = "#9E9E9E", 
-      lineheight = 1.4,
-      margin = margin(t = 15)
-    ),
-    plot.margin = margin(t = 40, r = 40, b = 40, l = 40)
-    
-    # Overall plot margins
-
+    title    = "Tech Giants: Revenue vs. Market Cap",
+    subtitle = "Size = employees (millions)  ·  Log scales",
+    x        = "Annual Revenue (log scale)",
+    y        = "Market Cap (log scale)",
+    color    = "Brand",
+    size     = "Employees (M)"
   )
 ```
 
+![Tech Brand Revenue vs. Market
+Cap](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/tech_brands_revenue_marketcap.png)
+
+Tech Brand Revenue vs. Market Cap
+
+### Featured Example: More Spending ≠ Longer Lives
+
+This example shows
+[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+in combination with five other geoms —
+[`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html),
+[`geom_vline()`](https://ggplot2.tidyverse.org/reference/geom_abline.html),
+[`geom_hline()`](https://ggplot2.tidyverse.org/reference/geom_abline.html),
+[`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html),
+and
+[`annotate()`](https://ggplot2.tidyverse.org/reference/annotate.html) —
+to build a fully annotated analytical chart. The icons encode income
+group visually (hospital for high-income countries, stethoscope for
+upper-middle, pills for lower-middle and low),
+[`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html)
+labels every country directly above its icon with no background, and the
+trend line, reference lines, and quadrant annotations do the analytical
+heavy lifting. The result is a chart that is both rigorous and
+immediately readable.
+
+![Health Spending vs Life
+Expectancy](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/health_spending_life_exp.png)
+
+Health Spending vs Life Expectancy
+
+------------------------------------------------------------------------
+
+## More Examples: Facets & Other Packages
+
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+integrates natively with ggplot2’s faceting system, letting you compare
+populations across groups or geographies without any extra setup. Just
+add a `facet` parameter or a standard
+[`facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html)
+/
+[`facet_grid()`](https://ggplot2.tidyverse.org/reference/facet_grid.html)
+call, and ggpop handles the rest.
+
+For even more examples, vignettes, and the full function reference,
+visit the **[ggpop package
+website](https://jurjoroa.github.io/ggpop/)**.
+
+### `facet_wrap()` — Transportation Methods Across US Cities
+
+Using `facet_wrap(~ group)`, this chart breaks down the daily commute
+mix across major US cities. Each panel shows one city’s full
+distribution of transportation modes — car, bus, train, bicycle,
+motorcycle, walking, and ride-share — with each icon representing
+approximately 400 commuters. The dark background and per-mode color
+coding make it easy to compare cities at a glance.
+
+**[Code available in ggpop package
+website](https://jurjoroa.github.io/ggpop/)**.
+
 ![Example Plot
-4](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)
+facet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/transportation_methods_countries.png)
 
-Example Plot 4
+Example Plot facet
 
-### Citation
+### `facet_geo()` — Gun Violence Across US States
 
-\`\`\`bibtex @Manual{ggpop2024, title = {ggpop: Visualizing Population
-Data}, author = {Roa-Contreras, Jorge A. and Soultanova, Ralitza and
-Alarid-Escudero, Fernando and Pineda-Antunez, Carlos}, year = {2024},
-note = {R package version 1.5.0}, url =
-{<https://github.com/jurjoroa/ggpop>}, license = {CC BY-NC-SA 4.0} }
+Combining
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+with the `geofacet` package places each state’s panel in its actual
+geographic position on the US map. Here, skull icons represent gun
+deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000
+people. The layout immediately reveals regional patterns that a standard
+bar chart would hide — Mississippi sits at nearly 8× the rate of
+Massachusetts, and the South and rural West cluster visually as the
+hardest-hit regions.
+
+**[Code available in ggpop package
+website](https://jurjoroa.github.io/ggpop/)**.
+
+![Example Plot
+geofacet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)
+
+Example Plot geofacet
+
+------------------------------------------------------------------------
+
+## Citation
+
+``` bibtex
+@Manual{ggpop2024,
+  title   = {ggpop: Visualizing Population Data},
+  author  = {Roa-Contreras, Jorge A. and Soultanova, Ralitza and Alarid-Escudero, Fernando and Pineda-Antunez, Carlos},
+  year    = {2024},
+  note    = {R package version 1.7.0},
+  url     = {https://github.com/jurjoroa/ggpop},
+  license = {MIT}
+}
+```
 
 # Package index
 
 ## All functions
-
-- [`caption_pop()`](https://jurjoroa.github.io/ggpop/reference/caption_pop.md)
-  : Add Custom Captions with Icons to a geom_pop object
-
-- [`draw_key_pop_image()`](https://jurjoroa.github.io/ggpop/reference/draw_key_pop_image.md)
-  : Key drawing function for population-based image keys
 
 - [`fetch_df_coordinates()`](https://jurjoroa.github.io/ggpop/reference/fetch_df_coordinates.md)
   :
@@ -664,5 +530,14 @@ note = {R package version 1.5.0}, url =
   : Process Population Data for Visualization
 
 - [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md)
-  : Legend helper for geom_pop icon legends
+  : Legend helper for geom_pop/geom_icon_point legends
+
+- [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md)
+  : Population Plot Theme
+
+- [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md)
+  : Dark Population Plot Theme
+
+- [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md)
+  : Minimal Population Plot Theme
 

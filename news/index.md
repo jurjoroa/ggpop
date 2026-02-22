@@ -1,5 +1,86 @@
 # Changelog
 
+## ggpop 1.7.0
+
+This release of `ggpop` delivers new theming support, expanded icon
+customization, critical bug fixes, and significant internal refactoring
+toward a fully ggplot-native architecture. Deprecated functionality has
+been removed and the public API has been finalized.
+
+### Bug Fixes
+
+- Fixed icon size inconsistency across different ggplot2 themes and
+  corrected
+  [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md)
+  to properly reflect theme settings
+  ([\#287](https://github.com/jurjoroa/ggpop/issues/287)).
+- Fixed legend icon ordering for factor variables mapped to `colour`,
+  ensuring legend icons follow factor level order rather than data row
+  order ([\#294](https://github.com/jurjoroa/ggpop/issues/294)).
+
+### Improvements
+
+- Refactored internal geom functions to be fully ggplot-native, using
+  plot-scoped layer computation and removing reliance on
+  [`last_plot()`](https://ggplot2.tidyverse.org/reference/get_last_plot.html)
+  during layer construction
+  ([\#266](https://github.com/jurjoroa/ggpop/issues/266)).
+- Added robustness unit tests for the `stroke_width` parameter to
+  validate behavior across edge cases
+  ([\#269](https://github.com/jurjoroa/ggpop/issues/269)).
+- Expanded unit tests for internal helper functions and incorporated
+  code improvements for reliability and maintainability
+  ([\#275](https://github.com/jurjoroa/ggpop/issues/275)).
+- Cleaned up error and warning messages by removing file-level path
+  details, replacing them with concise, user-facing descriptions
+  ([\#277](https://github.com/jurjoroa/ggpop/issues/277)).
+- Normalized icon size calculation to ensure consistent rendering
+  between `geom_pop` and `geom_icon_point`
+  ([\#282](https://github.com/jurjoroa/ggpop/issues/282)).
+- Added unit tests and visual snapshot tests for `scale_legend_icon` to
+  validate legend sizing and rendering behavior
+  ([\#289](https://github.com/jurjoroa/ggpop/issues/289)).
+
+### New Features
+
+- Added `stroke_width` parameter to `geom_icon_point`, allowing users to
+  control icon outline thickness for improved visual contrast
+  ([\#268](https://github.com/jurjoroa/ggpop/issues/268)).
+- Introduced personalized ggpop themes (e.g., `theme_pop`) for
+  consistent, opinionated plot styling out of the box
+  ([\#291](https://github.com/jurjoroa/ggpop/issues/291)).
+
+### Breaking Changes
+
+- Removed the deprecated `caption_pop` function. Users should migrate to
+  standard ggplot2 annotation approaches
+  ([\#279](https://github.com/jurjoroa/ggpop/issues/279)).
+- Finalized public function names and key glyph implementations for
+  `geom_pop` and `geom_icon_point`, standardizing the API. Existing code
+  relying on previous internal names may require updates
+  ([\#281](https://github.com/jurjoroa/ggpop/issues/281)).
+
+### Issues Resolved in v1.7.0
+
+Issues are listed in chronological merge order.
+
+- \#266
+- \#268
+- \#269
+- \#275
+- \#277
+- \#279
+- \#281
+- \#282
+- \#287
+- \#289
+- \#291
+- \#294
+
+### Version
+
+- \#265
+
 ## ggpop 1.6.1
 
 This release of `ggpop` introduces a set of targeted updates addressing
@@ -437,9 +518,8 @@ effectively.
 
 ### Improvements
 
-- Updated icon handling in
-  [`draw_key_pop_image()`](https://jurjoroa.github.io/ggpop/reference/draw_key_pop_image.md)
-  to use a centralized `key/` directory for consistency.
+- Updated icon handling in `draw_key_pop_image()` to use a centralized
+  `key/` directory for consistency.
 - Changed icon format from SVG to PNG in
   [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
   to enhance compatibility and performance:
@@ -868,12 +948,11 @@ No breaking changes have been introduced in this version of ggpop.
 This release of **ggpop** introduces new features and improvements,
 including a correction of the icon library. A new `facet` argument
 allows users to specify the name of the variable to facet as a string,
-ensuring proper grouping and plotting. The
-[`caption_pop()`](https://jurjoroa.github.io/ggpop/reference/caption_pop.md)
-function has been enhanced to provide greater flexibility for crafting
-captions with seamlessly integrated icons. Additionally, the README has
-been improved with detailed examples to help users better leverage the
-new features and enhancements.
+ensuring proper grouping and plotting. The `caption_pop()` function has
+been enhanced to provide greater flexibility for crafting captions with
+seamlessly integrated icons. Additionally, the README has been improved
+with detailed examples to help users better leverage the new features
+and enhancements.
 
 ### Bug fixes
 
@@ -908,9 +987,8 @@ options for meaningful and context-specific visualizations. The new
 [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
 function enables grouping variables under higher-level categories,
 simplifying hierarchical data representation. Enhancements to
-[`caption_pop()`](https://jurjoroa.github.io/ggpop/reference/caption_pop.md)
-provide greater flexibility for crafting captions with seamlessly
-integrated icons. Additionally, improved support for
+`caption_pop()` provide greater flexibility for crafting captions with
+seamlessly integrated icons. Additionally, improved support for
 [`facet_grid()`](https://ggplot2.tidyverse.org/reference/facet_grid.html)
 allows for clearer, more cohesive multi-group plots. These updates make
 **ggpop** an even more powerful tool for creating impactful population
@@ -918,10 +996,9 @@ visualizations.
 
 ### Bug fixes
 
-- Fixed an issue where the `icon_size` argument in
-  [`caption_pop()`](https://jurjoroa.github.io/ggpop/reference/caption_pop.md)
-  was not working as expected. The argument now correctly adjusts the
-  size of the icons in the caption.
+- Fixed an issue where the `icon_size` argument in `caption_pop()` was
+  not working as expected. The argument now correctly adjusts the size
+  of the icons in the caption.
 
 ### Improvements
 

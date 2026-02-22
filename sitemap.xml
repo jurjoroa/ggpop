@@ -1,11 +1,12 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://jurjoroa.github.io/ggpop/404.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/CONTRIBUTING.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/LICENSE-text.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/LICENSE.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/authors.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/index.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/news/index.html</loc></url>
-<url><loc>https://jurjoroa.github.io/ggpop/reference/caption_pop.html</loc></url>
-<url><loc>https://jurjoroa.github.io/ggpop/reference/draw_key_pop_image.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/fetch_df_coordinates.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/geom_icon_point.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/geom_pop.html</loc></url>
@@ -13,6 +14,9 @@
 <url><loc>https://jurjoroa.github.io/ggpop/reference/index.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/process_data.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/reference/theme_pop.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/validators.html</loc></url>
 </urlset>
 
