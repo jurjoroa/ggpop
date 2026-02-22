@@ -4,6 +4,13 @@
 [![CRAN status](https://www.r-pkg.org/badges/version/ggpop)](https://CRAN.R-project.org/package=ggpop)
 [![R-CMD-check](https://github.com/jurjoroa/ggpop/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jurjoroa/ggpop/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/ggpop)](https://CRAN.R-project.org/package=ggpop)
+[![CRAN total downloads](https://cranlogs.r-pkg.org/badges/grand-total/ggpop)](https://CRAN.R-project.org/package=ggpop)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub issues](https://img.shields.io/github/issues/jurjoroa/ggpop)](https://github.com/jurjoroa/ggpop/issues)
+[![GitHub last commit](https://img.shields.io/github/last-commit/jurjoroa/ggpop)](https://github.com/jurjoroa/ggpop/commits/main)
+[![pkgdown](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://jurjoroa.github.io/ggpop/)
+[![codecov](https://codecov.io/gh/jurjoroa/ggpop/branch/main/graph/badge.svg)](https://codecov.io/gh/jurjoroa/ggpop)
 <!-- badges: end -->
 
 > **Turn numbers into people. Turn data into stories.**
