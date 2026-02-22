@@ -29,3 +29,9 @@ home:
   links:
     - text: Report a bug
       href: https://github.com/jurjoroa/ggpop/issues
+
+articles:
+  - title: "Getting Started"
+    desc: "Learn the core ggpop workflow from data to plot."
+    contents:
+      - getting-started
