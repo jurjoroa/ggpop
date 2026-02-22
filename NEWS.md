@@ -2,6 +2,56 @@
 
 `ggpop` is an R package built on top of `ggplot2` that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users easily visualize population data using proportional, customizable icons arranged in intuitive, circular layouts. The package also includes functionality for adding clear, icon-enhanced captions, which makes charts easier to understand and visually attractive. Designed primarily for visual storytelling, `ggpop` helps users communicate complex population statistics in a straightforward and appealing manner.
 
+# ggpop 1.7.0
+
+This release of `ggpop` delivers new theming support, expanded icon customization, critical bug fixes, and significant internal refactoring toward a fully ggplot-native architecture. Deprecated functionality has been removed and the public API has been finalized.
+
+## Bug Fixes
+
+- Fixed icon size inconsistency across different ggplot2 themes and corrected `scale_legend_icon()` to properly reflect theme settings (#287).
+- Fixed legend icon ordering for factor variables mapped to `colour`, ensuring legend icons follow factor level order rather than data row order (#294).
+
+## Improvements
+
+- Refactored internal geom functions to be fully ggplot-native, using plot-scoped layer computation and removing reliance on `last_plot()` during layer construction (#266).
+- Added robustness unit tests for the `stroke_width` parameter to validate behavior across edge cases (#269).
+- Expanded unit tests for internal helper functions and incorporated code improvements for reliability and maintainability (#275).
+- Cleaned up error and warning messages by removing file-level path details, replacing them with concise, user-facing descriptions (#277).
+- Normalized icon size calculation to ensure consistent rendering between `geom_pop` and `geom_icon_point` (#282).
+- Added unit tests and visual snapshot tests for `scale_legend_icon` to validate legend sizing and rendering behavior (#289).
+
+## New Features
+
+- Added `stroke_width` parameter to `geom_icon_point`, allowing users to control icon outline thickness for improved visual contrast (#268).
+- Introduced personalized ggpop themes (e.g., `theme_pop`) for consistent, opinionated plot styling out of the box (#291).
+
+## Breaking Changes
+
+- Removed the deprecated `caption_pop` function. Users should migrate to standard ggplot2 annotation approaches (#279).
+- Finalized public function names and key glyph implementations for `geom_pop` and `geom_icon_point`, standardizing the API. Existing code relying on previous internal names may require updates (#281).
+
+## Issues Resolved in v1.7.0
+
+Issues are listed in chronological merge order.
+
+- #266
+- #268
+- #269
+- #275
+- #277
+- #279
+- #281
+- #282
+- #287
+- #289
+- #291
+- #294
+
+## Version
+
+- #265
+
+
 # ggpop 1.6.1
 
 This release of `ggpop` introduces a set of targeted updates addressing multiple reported issues related to icon rendering, size handling, validation logic, and internal refactoring. The changes improve robustness, consistency, and maintainability while preserving expected user-facing behavior.
