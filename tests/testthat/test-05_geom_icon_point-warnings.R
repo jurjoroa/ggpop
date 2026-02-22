@@ -67,11 +67,8 @@ df_scatter_no_icon <- data.frame(
 
 testthat::test_that("Warning: size in aes() overrides geom param (ggplot pattern)", {
   testthat::expect_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, size = point_size, color = category)) +
-      geom_icon_point(
-        size = 10,
-        dpi  = 100
-      )
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category, size = point_size)) +
+      geom_icon_point(size = 10, dpi = 100)
   )
 })
 
@@ -547,6 +544,19 @@ testthat::test_that("Pattern comparison: high dpi (mixed)", {
   testthat::expect_warning(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
       geom_icon_point(ggplot2::aes(icon = icon), dpi = 800)
+  )
+})
+
+# ******************************************************************************
+## 03.10 Warnings: stroke_width -----------------------------------------------
+# ******************************************************************************
+
+### 03.10.01 stroke_width very large (absolute) --------------------------------
+
+testthat::test_that("Warning: very large stroke_width (ggplot pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = 40, dpi = 60)
   )
 })
 

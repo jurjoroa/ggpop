@@ -214,8 +214,51 @@ testthat::test_that("Error: size is vector", {
   )
 })
 
+### 03.01.05 stroke_width inputs ----------------------------------------------
 
-### 03.01.05 alpha inputs -------------------------------------------------------
+testthat::test_that("Error: stroke_width is NA", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = NA)
+  )
+})
+
+testthat::test_that("Error: stroke_width is Inf", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = Inf)
+  )
+})
+
+testthat::test_that("Error: stroke_width is -Inf", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = -Inf)
+  )
+})
+
+testthat::test_that("Error: stroke_width is negative", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = -1)
+  )
+})
+
+testthat::test_that("Error: stroke_width is non-numeric", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = "thick")
+  )
+})
+
+testthat::test_that("Error: stroke_width is vector", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+      geom_icon_point(stroke_width = c(1, 2))
+  )
+})
+
+### 03.01.06 alpha inputs -------------------------------------------------------
 
 testthat::test_that("Error: alpha = -0.1 throws error (ggplot pattern)", {
   testthat::expect_error(
@@ -252,7 +295,6 @@ testthat::test_that("Error: alpha = NULL throws error", {
     p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point(alpha = NULL, color = "blue")
     ggplot2::ggplot_build(p)
-    
   })
 })
 
@@ -296,7 +338,7 @@ testthat::test_that("Error: alpha = -Inf throws error", {
 })
 
 
-### 03.01.06 data inputs -------------------------------------------------------
+### 03.01.07 data inputs -------------------------------------------------------
 
 testthat::test_that("Error: data is not a data frame", {
   testthat::expect_error(

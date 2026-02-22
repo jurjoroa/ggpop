@@ -20,7 +20,7 @@
 #' @importFrom tidyr nest unnest unite
 #' @importFrom purrr map
 #' @importFrom stats setNames
-#' @importFrom rlang enquo quo_is_null as_label syms ensym
+#' @importFrom rlang enquo quo_is_null as_label syms ensym :=
 #'
 #' @export
 
@@ -295,14 +295,15 @@ process_data <- function(data,
     # Construct a named vector for joining
     join_by <- c("type" = group_var_name, stats::setNames(high_group_var, high_group_var))
 
-    df_final <- left_join(df_sample, df_proportion, by = join_by) %>%
-      tidyr::unite("group", all_of(high_group_var), sep = "_", remove = TRUE)
+    data <- left_join(df_sample, df_proportion, by = join_by) %>%
+      tidyr::unite("group", all_of(high_group_var), sep = "_", remove = TRUE) %>%
+      select(-pos)
   } else {
     # Handle case without high_group_var
     join_by <- c("type" = group_var_name)
-    df_final <- left_join(df_sample, df_proportion, by = join_by)
-    df_final <- df_final %>% select(-pos)
+    data <- left_join(df_sample, df_proportion, by = join_by)
+    data <- data %>% select(-pos)
   }
 
-  return(df_final)
+  return(data)
 }

@@ -18,6 +18,31 @@ testthat::skip_if_not_installed("dplyr")
 testthat::skip_if_not_installed("ggimage")
 testthat::skip_if_not_installed("fontawesome")
 
+
+expect_doppelganger <- function(title, fig, path = NULL, ...) {
+  testthat::skip_if_not_installed("vdiffr")
+  vdiffr::expect_doppelganger(title, fig, ...)
+}
+
+# ******************************************************************************
+# Test fixtures -------------------------------------------------------------
+# ******************************************************************************
+
+df_scatter <- data.frame(
+  x = 1:10,
+  y = 1:10,
+  icon = rep(c("circle", "star"), 5),
+  category = rep(c("A", "B"), 5),
+  stringsAsFactors = FALSE
+)
+
+df_pop <- data.frame(
+  sex = rep(c("M", "F"), each = 20),
+  icon = rep(c("male", "female"), each = 20),
+  stringsAsFactors = FALSE
+)
+
+
 # ******************************************************************************
 # 01 Basic clean cases ---------------------------------------------------
 # ******************************************************************************
@@ -397,6 +422,94 @@ testthat::test_that("Same seed is stable across builds", {
   )
 })
 
+testthat::test_that("geom_pop with seed produces reproducible results", {
+  df_pop <- data.frame(
+    sex = rep(c("M", "F"), each = 20),
+    icon = rep(c("male", "female"), each = 20),
+    stringsAsFactors = FALSE
+  )
+
+  p1 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 12345,
+      arrange = FALSE
+    )
+
+  p2 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 12345,
+      arrange = FALSE
+    )
+
+  data1 <- ggplot2::ggplot_build(p1)$data[[1]]
+  data2 <- ggplot2::ggplot_build(p2)$data[[1]]
+
+  testthat::expect_equal(data1$x1, data2$x1)
+  testthat::expect_equal(data1$y1, data2$y1)
+})
+
+testthat::test_that("geom_pop with different seeds produces different results", {
+  df_pop <- data.frame(
+    sex = rep(c("M", "F"), each = 20),
+    icon = rep(c("male", "female"), each = 20),
+    stringsAsFactors = FALSE
+  )
+
+  p1 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 111,
+      arrange = FALSE
+    )
+
+  p2 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 222,
+      arrange = FALSE
+    )
+
+  data1 <- ggplot2::ggplot_build(p1)$data[[1]]
+  data2 <- ggplot2::ggplot_build(p2)$data[[1]]
+
+  testthat::expect_true(all(data1$x1 == data2$x1))
+})
+
+testthat::test_that("geom_pop with arrange=TRUE ignores seed", {
+  df_pop <- data.frame(
+    sex = rep(c("M", "F"), each = 20),
+    icon = rep(c("male", "female"), each = 20),
+    stringsAsFactors = FALSE
+  )
+
+  p1 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 111,
+      arrange = TRUE
+    )
+
+  p2 <- ggplot2::ggplot() +
+    geom_pop(
+      data = df_pop,
+      ggplot2::aes(icon = icon, group = sex),
+      seed = 222,
+      arrange = TRUE
+    )
+
+  data1 <- ggplot2::ggplot_build(p1)$data[[1]]
+  data2 <- ggplot2::ggplot_build(p2)$data[[1]]
+
+  testthat::expect_equal(data1$type, data2$type)
+})
+
 # ******************************************************************************
 # 09 Facet grid (rows OR cols) inference ---------------------------------
 # ******************************************************************************
@@ -474,7 +587,6 @@ testthat::test_that("Many groups pooled into one circle (50 icons)", {
   )
 })
 
-
 # ******************************************************************************
 # 11 Large-but-valid icon count (stress under MAX) ------------------------
 # ******************************************************************************
@@ -504,42 +616,11 @@ testthat::test_that("stress test with 900 icons", {
 })
 
 testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)", {
-  # Big pool of icons (can be > 250; we will slice to exactly 250)
-  icons_pool <- c(
-    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-    "a", "accessible-icon", "accusoft", "address-book", "address-card", "adn", "adversal", "affiliatetheme", "airbnb", "algolia",
-    "align-center", "align-justify", "align-left", "align-right", "alipay", "amazon", "amazon-pay", "amilia", "anchor", "anchor-circle-check",
-    "anchor-circle-exclamation", "anchor-circle-xmark", "anchor-lock", "android", "angellist", "angle-down", "angle-left", "angle-right", "angle-up", "angles-down",
-    "angles-left", "angles-right", "angles-up", "angrycreative", "angular", "ankh", "app-store", "app-store-ios", "apper", "apple",
-    "apple-pay", "apple-whole", "archway", "arrow-down", "arrow-down-1-9", "arrow-down-9-1", "arrow-down-a-z", "arrow-down-long", "arrow-down-short-wide", "arrow-down-up-across-line",
-    "arrow-down-up-lock", "arrow-down-wide-short", "arrow-down-z-a", "arrow-left", "arrow-left-long", "arrow-pointer", "arrow-right", "arrow-right-arrow-left", "arrow-right-from-bracket", "arrow-right-long",
-    "arrow-right-to-bracket", "arrow-right-to-city", "arrow-rotate-left", "arrow-rotate-right", "arrow-trend-down", "arrow-trend-up", "arrow-turn-down", "arrow-turn-up", "arrow-up", "arrow-up-1-9",
-    "arrow-up-9-1", "arrow-up-a-z", "arrow-up-from-bracket", "arrow-up-from-ground-water", "arrow-up-from-water-pump", "arrow-up-long", "arrow-up-right-dots", "arrow-up-right-from-square", "arrow-up-short-wide", "arrow-up-wide-short",
-    "arrow-up-z-a", "arrows-down-to-line", "arrows-down-to-people", "arrows-left-right", "arrows-left-right-to-line", "arrows-rotate", "arrows-spin", "arrows-split-up-and-left", "arrows-to-circle", "arrows-to-dot",
-    "arrows-to-eye", "arrows-turn-right", "arrows-turn-to-dots", "arrows-up-down", "arrows-up-down-left-right", "arrows-up-to-line", "artstation", "asterisk", "asymmetrik", "at",
-    "atlassian", "atom", "audible", "audio-description", "austral-sign", "autoprefixer", "avianex", "aviato", "award", "aws",
-    "b", "baby", "baby-carriage", "backward", "backward-fast", "backward-step", "bacon", "bacteria", "bacterium", "bag-shopping",
-    "bahai", "baht-sign", "ban", "ban-smoking", "bandage", "bandcamp", "bangladeshi-taka-sign", "barcode", "bars", "bars-progress",
-    "bars-staggered", "baseball", "baseball-bat-ball", "basket-shopping", "basketball", "bath", "battery-empty", "battery-full", "battery-half", "battery-quarter",
-    "battery-three-quarters", "battle-net", "bed", "bed-pulse", "beer-mug-empty", "behance", "bell", "bell-concierge", "bell-slash", "bezier-curve",
-    "bicycle", "bilibili", "bimobject", "binoculars", "biohazard", "bitbucket", "bitcoin", "bitcoin-sign", "bity", "black-tie",
-    "blackberry", "blender", "blender-phone", "blog", "blogger", "blogger-b", "bluesky", "bluetooth", "bluetooth-b", "bold",
-    "bolt", "bolt-lightning", "bomb", "bone", "bong", "book", "book-atlas", "book-bible", "book-bookmark", "book-journal-whills",
-    "book-medical", "book-open", "book-open-reader", "book-quran", "book-skull", "book-tanakh", "bookmark", "bootstrap", "border-all", "border-none",
-    "border-top-left", "bore-hole", "bots", "bottle-droplet", "bottle-water", "bowl-food", "bowl-rice", "bowling-ball", "box", "box-archive",
-    "box-open", "box-tissue", "boxes-packing", "boxes-stacked", "braille", "brain", "brave", "brave-reverse", "brazilian-real-sign", "bread-slice",
-    "bridge", "bridge-circle-check", "bridge-circle-exclamation", "bridge-circle-xmark", "bridge-lock", "bridge-water", "briefcase", "briefcase-medical", "broom", "broom-ball",
-    "brush", "btc", "bucket", "buffer", "bug", "bug-slash", "bugs", "building", "building-circle-arrow-right", "building-circle-check",
-    "building-circle-exclamation", "building-circle-xmark", "building-columns", "building-flag", "building-lock", "building-ngo", "building-shield", "building-un", "building-user", "building-wheat",
-    "bullhorn", "bullseye", "burger", "buromobelexperte", "burst", "bus", "bus-simple", "business-time", "buy-n-large", "buysellads",
-    "c", "cable-car", "cake-candles", "calculator", "calendar", "calendar-check", "calendar-day", "calendar-days", "calendar-minus", "calendar-plus",
-    "calendar-week", "calendar-xmark", "camera", "camera-retro", "camera-rotate", "campground", "canadian-maple-leaf", "candy-cane", "cannabis", "capsules",
-    "car", "car-battery", "car-burst", "car-on", "car-rear", "car-side", "car-tunnel", "caravan", "caret-down", "caret-left",
-    "caret-right", "caret-up", "carrot", "cart-arrow-down", "cart-flatbed", "cart-flatbed-suitcase", "cart-plus", "cart-shopping", "cash-register", "cat"
-  )
+  all_icons <- fontawesome::fa_metadata()$icon_names
+  testthat::skip_if(length(all_icons) < 250)
 
-  # Enforce uniqueness and slice to EXACTLY 250
-  icons_250 <- unique(icons_pool)[seq_len(250)]
+  set.seed(42)
+  icons_250 <- sample(all_icons, 250, replace = FALSE)
   testthat::expect_equal(length(icons_250), 250)
 
   facets <- paste0("Facet_", 1:5)
@@ -549,7 +630,6 @@ testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)",
     lapply(seq_along(facets), function(i) {
       groups_i <- paste0("F", i, "_G", sprintf("%02d", 1:50))
 
-      # 50 unique icons per facet (disjoint slices)
       idx <- ((i - 1) * 50 + 1):((i - 1) * 50 + 50)
       icons_i <- icons_250[idx]
 
@@ -571,7 +651,7 @@ testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)",
           geom_pop(
             ggplot2::aes(icon = icon, group = facet, color = grp),
             facet = facet,
-            size = 0.55,
+            size = 1,
             arrange = FALSE,
             seed = 42,
             dpi = 50,
@@ -579,7 +659,7 @@ testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)",
           ) +
           ggplot2::facet_wrap(~facet, ncol = 3) +
           ggplot2::theme_void() +
-          scale_legend_icon(size = 3)
+          scale_legend_icon(size = 6)
       )
     )
   )
@@ -589,9 +669,7 @@ testthat::test_that("5 facets, 50 different icons per facet (250 unique icons)",
 testthat::test_that("single plot with 1000 rows and random Font Awesome icons", {
   all_icons <- fontawesome::fa_metadata()$icon_names
 
-  all_icons
-
-  # Sample 1000 icons (allow repeats → safe even if FA < 1000 icons)
+  # Sample 1000 icons (allow repeats - safe even if FA < 1000 icons)
   icons_1000 <- sample(all_icons, 1000, replace = TRUE)
 
   testthat::expect_equal(length(icons_1000), 1000)
@@ -812,7 +890,7 @@ testthat::test_that("50 icons Legend draws one unique raster icon per unique", {
 # ******************************************************************************
 
 #' Extract icon names from PNG file paths
-#' 
+#'
 #' @param png_paths Character vector of PNG file paths
 #' @return Character vector of icon names extracted from filenames
 extract_icon_names <- function(png_paths) {
@@ -826,10 +904,10 @@ testthat::test_that("Icons: custom column 'my_icons' renders CORRECT icons", {
   # Data with custom icon column name
   df_custom <- data.frame(
     sex = c("M", "M", "F", "F"),
-    my_icons = c("male", "male", "female", "female"),  # Custom column name!
+    my_icons = c("male", "male", "female", "female"), # Custom column name!
     stringsAsFactors = FALSE
   )
-  
+
   p <- suppressWarnings(
     ggplot2::ggplot() +
       geom_pop(
@@ -838,13 +916,13 @@ testthat::test_that("Icons: custom column 'my_icons' renders CORRECT icons", {
         dpi = 60
       )
   )
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   # Extract rendered icons
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Should match exactly what's in my_icons column
   testthat::expect_setequal(unique(rendered_icons), c("male", "female"))
   testthat::expect_true("male" %in% rendered_icons)
@@ -854,10 +932,10 @@ testthat::test_that("Icons: custom column 'my_icons' renders CORRECT icons", {
 testthat::test_that("Icons: column 'icon_2' renders circle and square icons", {
   df_icon2 <- data.frame(
     category = c("A", "A", "B", "B"),
-    icon_2 = c("circle", "circle", "square", "square"),  # Custom column name
+    icon_2 = c("circle", "circle", "square", "square"), # Custom column name
     stringsAsFactors = FALSE
   )
-  
+
   p <- suppressWarnings(
     ggplot2::ggplot() +
       geom_pop(
@@ -866,12 +944,12 @@ testthat::test_that("Icons: column 'icon_2' renders circle and square icons", {
         dpi = 60
       )
   )
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Should be circle and square, NOT "user" or any default fallback
   testthat::expect_setequal(unique(rendered_icons), c("circle", "square"))
   testthat::expect_false("user" %in% rendered_icons)
@@ -884,7 +962,7 @@ testthat::test_that("Icons: very custom name 'fontawesome_symbol' works", {
     fontawesome_symbol = c("pizza-slice", "pizza-slice", "coffee", "coffee", "heart", "heart"),
     stringsAsFactors = FALSE
   )
-  
+
   p <- suppressWarnings(
     ggplot2::ggplot() +
       geom_pop(
@@ -893,32 +971,32 @@ testthat::test_that("Icons: very custom name 'fontawesome_symbol' works", {
         dpi = 60
       )
   )
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Should use the actual icons from fontawesome_symbol column
   testthat::expect_setequal(unique(rendered_icons), c("pizza-slice", "coffee", "heart"))
-  
+
   # Should NOT fall back to defaults
   testthat::expect_false("user" %in% rendered_icons)
   testthat::expect_false("circle" %in% rendered_icons)
   testthat::expect_false("ggmale" %in% rendered_icons)
 })
 
-testthat::test_that("REGRESSION: 'icon' column does NOT override 'icon_custom' content", {
+testthat::test_that("Regression: 'icon' column does NOT override 'icon_custom' content", {
   # This is the bug we fixed: having a column named 'icon' should not
   # interfere when user maps aes(icon = icon_custom)
-  
+
   df_regression <- data.frame(
     type = c("A", "A", "A", "B", "B", "B"),
-    icon = c("WRONG", "WRONG", "WRONG", "WRONG", "WRONG", "WRONG"),  # Decoy column
-    icon_custom = c("star", "star", "star", "heart", "heart", "heart"),  # Correct column
+    icon = c("WRONG", "WRONG", "WRONG", "WRONG", "WRONG", "WRONG"), # Decoy column
+    icon_custom = c("star", "star", "star", "heart", "heart", "heart"), # Correct column
     stringsAsFactors = FALSE
   )
-  
+
   # User explicitly maps icon_custom
   p <- suppressWarnings(
     ggplot2::ggplot() +
@@ -928,15 +1006,15 @@ testthat::test_that("REGRESSION: 'icon' column does NOT override 'icon_custom' c
         dpi = 60
       )
   )
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Should render star and heart (from icon_custom)
   testthat::expect_setequal(unique(rendered_icons), c("star", "heart"))
-  
+
   # Should NOT render "WRONG" (from icon column)
   testthat::expect_false("WRONG" %in% rendered_icons)
 })
@@ -944,10 +1022,10 @@ testthat::test_that("REGRESSION: 'icon' column does NOT override 'icon_custom' c
 testthat::test_that("Icons: renders ALL hearts from 'icon_column' with custom name", {
   df_hearts <- data.frame(
     sex = c("A", "A", "A", "A"),
-    icon_column = c("heart", "heart", "heart", "heart"),  # Custom column, all hearts
+    icon_column = c("heart", "heart", "heart", "heart"), # Custom column, all hearts
     stringsAsFactors = FALSE
   )
-  
+
   p <- suppressWarnings(
     ggplot2::ggplot() +
       geom_pop(
@@ -956,12 +1034,12 @@ testthat::test_that("Icons: renders ALL hearts from 'icon_column' with custom na
         dpi = 60
       )
   )
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # ALL should be "heart"
   testthat::expect_true(all(rendered_icons == "heart"))
   testthat::expect_equal(length(unique(rendered_icons)), 1)
@@ -975,7 +1053,7 @@ testthat::test_that("Icons: consistent per-group rendering with custom column", 
     my_icon_col = c("circle", "circle", "circle", "square", "square", "square"),
     stringsAsFactors = FALSE
   )
-  
+
   p <- suppressWarnings(
     ggplot2::ggplot() +
       geom_pop(
@@ -984,18 +1062,18 @@ testthat::test_that("Icons: consistent per-group rendering with custom column", 
         dpi = 60
       )
   )
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # All should be circle or square
   testthat::expect_true(all(rendered_icons %in% c("circle", "square")))
-  
+
   # Should have both icons
   testthat::expect_setequal(unique(rendered_icons), c("circle", "square"))
-  
+
   # Verify counts (6 rows total)
   testthat::expect_equal(sum(rendered_icons == "circle"), 3)
   testthat::expect_equal(sum(rendered_icons == "square"), 3)
@@ -1004,7 +1082,7 @@ testthat::test_that("Icons: consistent per-group rendering with custom column", 
 testthat::test_that("Icons: with process_data and custom icon column", {
   df_raw <- data.frame(
     sex = c("M", "F", "M", "F"),
-    custom_icons = c("male", "female", "male", "female"),  # Custom column name
+    custom_icons = c("male", "female", "male", "female"), # Custom column name
     count = c(30, 70, 30, 70),
     stringsAsFactors = FALSE
   )
@@ -1015,24 +1093,24 @@ testthat::test_that("Icons: with process_data and custom icon column", {
     sum_var = count,
     sample_size = 20
   )
-  
+
   # Add custom icon column to processed data
   df_processed$my_icon_var <- ifelse(df_processed$type == "M", "male", "female")
-  
+
   p <- ggplot2::ggplot() +
     geom_pop(
       data = df_processed,
       ggplot2::aes(icon = my_icon_var, group = type, color = type),
       dpi = 60
     )
-  
+
   testthat::expect_no_error(ggplot2::ggplot_build(p))
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Should have male and female icons
   testthat::expect_setequal(unique(rendered_icons), c("male", "female"))
   testthat::expect_false("user" %in% rendered_icons)
@@ -1042,11 +1120,11 @@ testthat::test_that("Icons: multiple custom columns in same dataset", {
   # Dataset with multiple icon columns - user picks which one to use
   df_multi <- data.frame(
     category = c("A", "A", "B", "B"),
-    icons_v1 = c("heart", "heart", "star", "star"),      # Option 1
+    icons_v1 = c("heart", "heart", "star", "star"), # Option 1
     icons_v2 = c("circle", "circle", "square", "square"), # Option 2
     stringsAsFactors = FALSE
   )
-  
+
   # Test using icons_v1
   p1 <- suppressWarnings(
     ggplot2::ggplot() +
@@ -1056,12 +1134,12 @@ testthat::test_that("Icons: multiple custom columns in same dataset", {
         dpi = 60
       )
   )
-  
+
   built1 <- ggplot2::ggplot_build(p1)
   rendered1 <- extract_icon_names(built1$data[[1]]$image)
-  
+
   testthat::expect_setequal(unique(rendered1), c("heart", "star"))
-  
+
   # Test using icons_v2
   p2 <- suppressWarnings(
     ggplot2::ggplot() +
@@ -1071,10 +1149,10 @@ testthat::test_that("Icons: multiple custom columns in same dataset", {
         dpi = 60
       )
   )
-  
+
   built2 <- ggplot2::ggplot_build(p2)
   rendered2 <- extract_icon_names(built2$data[[1]]$image)
-  
+
   testthat::expect_setequal(unique(rendered2), c("circle", "square"))
 })
 
@@ -1088,10 +1166,10 @@ testthat::test_that("dpi parameter controls actual PNG resolution", {
     icon = "user",
     stringsAsFactors = FALSE
   )
-  
+
   # Test different DPI values
   dpi_values <- c(50, 100, 600)
-  
+
   for (dpi_val in dpi_values) {
     # Create plot with specific DPI
     # Suppress warnings for high DPI (600) - we're testing functionality, not validation
@@ -1104,31 +1182,31 @@ testthat::test_that("dpi parameter controls actual PNG resolution", {
           size = 10
         )
     )
-    
+
     # Build the plot to trigger PNG generation
     built <- ggplot2::ggplot_build(p)
-    
+
     # Get the layer data which contains image paths
     layer_data <- built$data[[1]]
-    
+
     # Extract unique PNG paths
     png_paths <- unique(layer_data$image)
     png_paths <- png_paths[!is.na(png_paths) & file.exists(png_paths)]
-    
+
     expect_true(
       length(png_paths) > 0,
       info = sprintf("No PNG files generated for DPI = %d", dpi_val)
     )
-    
+
     # Check each generated PNG
     for (png_path in png_paths) {
       # Read PNG metadata
       img_info <- png::readPNG(png_path, info = TRUE)
       img_attr <- attributes(img_info)
-      
+
       # Get actual dimensions
       actual_height <- nrow(img_info)
-      
+
       # Expected height should match DPI (fontawesome::fa_png uses height parameter)
       expect_equal(
         actual_height,
@@ -1139,13 +1217,13 @@ testthat::test_that("dpi parameter controls actual PNG resolution", {
           dpi_val, dpi_val, actual_height, png_path
         )
       )
-      
+
       # Additional check: verify image is not empty
       expect_true(
         actual_height > 0,
         info = sprintf("PNG has zero height for DPI = %d", dpi_val)
       )
-      
+
       # Verify the image has content (not all transparent/white)
       pixel_values <- as.vector(img_info)
       expect_true(
@@ -1338,3 +1416,84 @@ testthat::test_that("DPI validation errors work correctly", {
     ignore.case = TRUE
   )
 })
+
+
+# ******************************************************************************
+# 14 Snapshot ------------------------------------------------------------------
+# ******************************************************************************
+
+
+testthat::test_that("geom_pop", {
+  df <- data.frame(
+    sex = c("male", "female", "male", "female"),
+    icon = c("male", "female", "male", "female"),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data = df,
+      ggplot2::aes(icon = icon, group = sex, color = sex)
+    ) +
+    ggplot2::theme_void()
+
+  expect_doppelganger(
+    title = "geom_pop",
+    fig = p
+  )
+})
+
+
+testthat::test_that("geom_pop scale_legend_icon()", {
+  df <- data.frame(
+    sex = c("male", "female", "male", "female"),
+    icon = c("male", "female", "male", "female"),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data = df,
+      ggplot2::aes(icon = icon, group = sex, color = sex)
+    ) +
+    ggplot2::theme_void() +
+    scale_legend_icon(size = 10)
+
+  expect_doppelganger(
+    title = "geom_pop scale_legend_icon()",
+    fig = p
+  )
+})
+
+
+testthat::test_that("geom_pop factor levels", {
+  df <- data.frame(
+    income = c(rep("Low", 1), rep("Mid", 1), rep("High", 1)),
+    icon   = c(rep("pills", 1), rep("stethoscope", 1), rep("hospital", 1))
+  )
+
+  # Factor: legend should show Low → Mid → High with matching icons
+  df$income <- factor(df$income, levels = c("Low", "Mid", "High"))
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data = df,
+      aes(icon = icon, color = income),
+      size = 3, arrange = T
+    ) +
+    ggplot2::scale_color_manual(values = c(
+      "Low"  = "#FF5252",
+      "Mid"  = "#FFD54F",
+      "High" = "#00BFA5"
+    ))
+
+
+  expect_doppelganger(
+    title = "geom_pop factor levels",
+    fig = p
+  )
+})
+
+# ******************************************************************************
+# END --------------------------------------------------------------------------
+# ******************************************************************************

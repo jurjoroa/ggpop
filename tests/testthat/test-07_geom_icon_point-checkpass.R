@@ -18,9 +18,24 @@ testthat::skip_if_not_installed("dplyr")
 testthat::skip_if_not_installed("ggimage")
 testthat::skip_if_not_installed("fontawesome")
 
+expect_doppelganger <- function(title, fig, path = NULL, ...) {
+  testthat::skip_if_not_installed("vdiffr")
+  vdiffr::expect_doppelganger(title, fig, ...)
+}
+
 # ******************************************************************************
 ## 01.01 Test dataframes -------------------------------------------------------
 # ******************************************************************************
+
+# ******************************************************************************
+# Test fixtures -------------------------------------------------------------
+# ******************************************************************************
+
+df_pop <- data.frame(
+  sex = rep(c("M", "F"), each = 20),
+  icon = rep(c("male", "female"), each = 20),
+  stringsAsFactors = FALSE
+)
 
 df_scatter <- data.frame(
   x = c(1, 2, 3, 4, 5),
@@ -86,6 +101,36 @@ testthat::test_that("Basic: different icons per row", {
   })
 })
 
+testthat::test_that("Basic: multiple geom_icon_point layers work together", {
+  df_scatter <- data.frame(
+    x = 1:10,
+    y = 1:10,
+    icon = rep(c("circle", "star"), 5),
+    category = rep(c("A", "B"), 5),
+    stringsAsFactors = FALSE
+  )
+
+  df1 <- df_scatter[1:5, ]
+  df2 <- df_scatter[6:10, ]
+
+  p <- ggplot2::ggplot() +
+    geom_icon_point(
+      data = df1,
+      ggplot2::aes(x = x, y = y, icon = icon),
+      size = 2,
+      color = "blue"
+    ) +
+    geom_icon_point(
+      data = df2,
+      ggplot2::aes(x = x, y = y, icon = icon),
+      size = 3,
+      color = "red"
+    )
+
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_equal(length(p$layers), 2)
+})
+
 # ******************************************************************************
 # 03 Color and aesthetics ------------------------------------------------------
 # ******************************************************************************
@@ -116,6 +161,27 @@ testthat::test_that("Color: color mapped to continuous variable", {
   )
 })
 
+testthat::test_that("Color: scale_color_manual works", {
+  p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+    geom_icon_point(size = 2) +
+    ggplot2::scale_color_manual(values = c("A" = "red", "B" = "blue"))
+
+  testthat::expect_no_error(ggplot2::ggplot_build(p))
+})
+
+testthat::test_that("Color: scale_color_viridis works", {
+  testthat::skip_if_not_installed("viridis")
+
+  df_numeric_color <- df_scatter
+  df_numeric_color$value <- 1:5
+
+  p <- ggplot2::ggplot(df_numeric_color, ggplot2::aes(x = x, y = y, icon = icon, color = value)) +
+    geom_icon_point(size = 2) +
+    ggplot2::scale_color_viridis_c()
+
+  testthat::expect_no_error(ggplot2::ggplot_build(p))
+})
+
 ### 03.02 Alpha transparency ---------------------------------------------------
 
 testthat::test_that("Alpha: fixed alpha parameter", {
@@ -129,6 +195,15 @@ testthat::test_that("Alpha: alpha mapped to variable", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point(alpha = 0.3, color = "blue")
+  )
+})
+
+### 03.03 stroke parameter ---------------------------------------------------
+
+testthat::test_that("Stroke: valid stroke width", {
+  testthat::expect_no_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = icon)) +
+      geom_icon_point(size = 4, stroke_width = 0.5)
   )
 })
 
@@ -189,6 +264,30 @@ testthat::test_that("Size: size and color both mapped", {
   )
 })
 
+testthat::test_that("Size: handles NA in size aesthetic", {
+  df_scatter <- data.frame(
+    x = 1:10,
+    y = 1:10,
+    icon = rep(c("circle", "star"), 5),
+    category = rep(c("A", "B"), 5),
+    stringsAsFactors = FALSE
+  )
+
+  df_na_size <- df_scatter
+  df_na_size$size_var <- c(1, 2, NA, 3, 4, 1, 2, 3, 4, 5)
+
+  testthat::expect_warning({
+    tmp <- tempfile(fileext = ".png")
+    png(tmp)
+    print(
+      ggplot2::ggplot(df_na_size, ggplot2::aes(x = x, y = y, icon = icon, size = size_var)) +
+        geom_icon_point()
+    )
+    dev.off()
+    unlink(tmp)
+  })
+})
+
 # ******************************************************************************
 # 05 DPI settings --------------------------------------------------------------
 # ******************************************************************************
@@ -215,7 +314,6 @@ testthat::test_that("DPI: high quality (150)", {
       geom_icon_point(dpi = 150)
   )
 })
-
 
 # ******************************************************************************
 # 06 Legend control ------------------------------------------------------------
@@ -764,6 +862,30 @@ testthat::test_that("Theme: theme_classic", {
   )
 })
 
+testthat::test_that("Theme: custom theme with blank grid", {
+  p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+    geom_icon_point(size = 2) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      legend.position = "bottom",
+      panel.grid = ggplot2::element_blank()
+    )
+
+  testthat::expect_s3_class(p, "ggplot")
+})
+
+testthat::test_that("Theme: legend can be positioned", {
+  positions <- c("top", "bottom", "left", "right", "none")
+
+  for (pos in positions) {
+    p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category)) +
+      geom_icon_point(size = 2) +
+      ggplot2::theme(legend.position = pos)
+
+    testthat::expect_s3_class(p, "ggplot")
+  }
+})
+
 ### 11.02 Custom theme elements ------------------------------------------------
 
 testthat::test_that("Theme: custom legend position", {
@@ -882,13 +1004,13 @@ testthat::test_that("Icons: icon names with hyphens", {
 # ******************************************************************************
 
 #' Extract icon names from PNG file paths
-#' 
+#'
 #' @param png_paths Character vector of PNG file paths
 #' @return Character vector of icon names extracted from filenames
 extract_icon_names <- function(png_paths) {
   basenames <- basename(png_paths)
   # Icon name is the first part before "_c" (color marker)
-  icon_names <- sub("_c.*", "", basenames)
+  icon_names <- sub("_.*", "", basenames)
   icon_names
 }
 
@@ -897,20 +1019,20 @@ testthat::test_that("Icons: custom column 'my_icons' renders CORRECT icons", {
   df_custom <- data.frame(
     x = c(1, 2, 3, 4),
     y = c(1, 2, 3, 4),
-    my_icons = c("circle", "square", "star", "heart"),  # Custom column name!
+    my_icons = c("circle", "square", "star", "heart"), # Custom column name!
     category = c("A", "B", "C", "D"),
     stringsAsFactors = FALSE
   )
-  
+
   p <- ggplot2::ggplot(df_custom, ggplot2::aes(x = x, y = y, icon = my_icons, color = category)) +
     geom_icon_point(dpi = 60)
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   # Extract rendered icons
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Should match exactly what's in my_icons column
   testthat::expect_setequal(rendered_icons, c("circle", "square", "star", "heart"))
   testthat::expect_true("circle" %in% rendered_icons)
@@ -923,18 +1045,18 @@ testthat::test_that("Icons: column 'icon_2' renders male and female icons", {
   df_icon2 <- data.frame(
     x = c(1, 2),
     y = c(1, 2),
-    icon_2 = c("male", "female"),  # Custom column name
+    icon_2 = c("male", "female"), # Custom column name
     stringsAsFactors = FALSE
   )
-  
+
   p <- ggplot2::ggplot(df_icon2, ggplot2::aes(x = x, y = y, icon = icon_2)) +
     geom_icon_point(dpi = 60)
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Should be male and female, NOT "user" or any default fallback
   testthat::expect_setequal(rendered_icons, c("male", "female"))
   testthat::expect_false("user" %in% rendered_icons)
@@ -949,16 +1071,16 @@ testthat::test_that("Icons: per-row rendering with custom column 'icon_column'",
     icon_column = c("heart", "star", "circle", "square", "heart"),
     stringsAsFactors = FALSE
   )
-  
+
   p <- ggplot2::ggplot(df_custom_rows, ggplot2::aes(x = x, y = y, icon = icon_column)) +
     geom_icon_point(dpi = 60)
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   # Extract icons IN ORDER
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Row 1 should be heart
   testthat::expect_equal(rendered_icons[1], "heart")
   # Row 2 should be star
@@ -978,45 +1100,44 @@ testthat::test_that("Icons: very custom name 'fontawesome_symbol' works", {
     fontawesome_symbol = c("pizza-slice", "coffee", "heart"),
     stringsAsFactors = FALSE
   )
-  
+
   p <- ggplot2::ggplot(df_weird, ggplot2::aes(x = x, y = y, icon = fontawesome_symbol)) +
     geom_icon_point(dpi = 60)
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Should use the actual icons from fontawesome_symbol column
   testthat::expect_setequal(rendered_icons, c("pizza-slice", "coffee", "heart"))
-  
+
   # Should NOT fall back to defaults
   testthat::expect_false("user" %in% rendered_icons)
   testthat::expect_false("circle" %in% rendered_icons)
 })
 
 testthat::test_that("REGRESSION: 'icon' column does NOT override 'icon_2' content", {
-  
   df_regression <- data.frame(
-    icon = c("WRONG", "WRONG", "WRONG"),      # Decoy column with wrong icons
-    icon_2 = c("heart", "star", "circle"),    # Correct column user mapped
+    icon = c("WRONG", "WRONG", "WRONG"), # Decoy column with wrong icons
+    icon_2 = c("heart", "star", "circle"), # Correct column user mapped
     x = 1:3,
     y = 1:3,
     stringsAsFactors = FALSE
   )
-  
+
   # User explicitly maps icon_2
   p <- ggplot2::ggplot(df_regression, ggplot2::aes(x = x, y = y, icon = icon_2)) +
     geom_icon_point(dpi = 60)
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # Should render heart, star, circle (from icon_2)
   testthat::expect_setequal(rendered_icons, c("heart", "star", "circle"))
-  
+
   # Should NOT render "WRONG" (from icon column)
   testthat::expect_false("WRONG" %in% rendered_icons)
 })
@@ -1025,19 +1146,19 @@ testthat::test_that("Icons: renders ALL hearts from 'icon_custom' column", {
   df_hearts <- data.frame(
     x = c(1, 2, 3),
     y = c(1, 2, 3),
-    icon_custom = c("heart", "heart", "heart"),  # All hearts
+    icon_custom = c("heart", "heart", "heart"), # All hearts
     category = c("A", "A", "A"),
     stringsAsFactors = FALSE
   )
-  
+
   p <- ggplot2::ggplot(df_hearts, ggplot2::aes(x = x, y = y, icon = icon_custom)) +
     geom_icon_point(dpi = 60)
-  
+
   built <- ggplot2::ggplot_build(p)
   layer_data <- built$data[[1]]
-  
+
   rendered_icons <- extract_icon_names(layer_data$image)
-  
+
   # ALL should be "heart"
   testthat::expect_true(all(rendered_icons == "heart"))
   testthat::expect_equal(length(unique(rendered_icons)), 1)
@@ -1068,7 +1189,6 @@ testthat::test_that("Inheritance: x/y from ggplot, icon from geom", {
       geom_icon_point(ggplot2::aes(icon = icon, color = category))
   )
 })
-
 
 # ******************************************************************************
 # 15 Coordinate system variations ----------------------------------------------
@@ -1102,6 +1222,23 @@ testthat::test_that("Coords: coord_equal", {
       geom_icon_point() +
       ggplot2::coord_equal()
   )
+})
+
+testthat::test_that("Coords: coord_cartesian with limits", {
+  p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+    geom_icon_point(size = 2) +
+    ggplot2::coord_cartesian(xlim = c(0, 15), ylim = c(0, 15))
+
+  testthat::expect_s3_class(p, "ggplot")
+})
+
+testthat::test_that("Coords: reversed axes", {
+  p <- ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
+    geom_icon_point(size = 2) +
+    ggplot2::scale_x_reverse() +
+    ggplot2::scale_y_reverse()
+
+  testthat::expect_s3_class(p, "ggplot")
 })
 
 # ******************************************************************************
@@ -1174,6 +1311,342 @@ testthat::test_that("Edge: multiple points at same coordinates", {
   testthat::expect_no_error(
     ggplot2::ggplot(df_overlap, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point()
+  )
+})
+
+### 17.03 other geoms --------------------------------------------------
+
+testthat::test_that("geom_icon_point works with multiple ggplot2 layers", {
+  df <- data.frame(
+    x = 1:10,
+    y = rnorm(10),
+    category = rep(c("A", "B"), each = 5),
+    icon = rep(c("star", "heart"), each = 5)
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_smooth(
+      method = "lm",
+      se = FALSE,
+      color = "gray50",
+      formula = y ~ x
+    ) + # Layer 1: Trend line
+    ggplot2::geom_hline(yintercept = 0, linetype = "dashed") + # Layer 2: Reference line
+    geom_icon_point(ggplot2::aes(icon = icon, color = category), size = 5, dpi = 100) + # Layer 3: Icon points
+    ggplot2::geom_text(ggplot2::aes(label = category), nudge_y = 0.3) + # Layer 4: Labels
+    ggplot2::theme_minimal() # Layer 5: Theme
+
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_length(p$layers, 4) # smooth, hline, icon_point, text
+  testthat::expect_s3_class(p$layers[[3]], "ggpop_icon_point_layer")
+})
+### 17.04 ggrepel for non-overlapping labels --------------------
+
+testthat::test_that("works with ggrepel layers", {
+  testthat::skip_if_not_installed("ggrepel")
+
+  df <- data.frame(
+    x = rnorm(15),
+    y = rnorm(15),
+    label = paste0("Point", 1:15),
+    icon = sample(c("circle", "square", "heart"), 15, replace = TRUE),
+    size_val = runif(15, 0.5, 2)
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_density_2d(color = "lightgray") + # Layer 1: Density contours
+    geom_icon_point(ggplot2::aes(icon = icon, size = size_val, color = icon)) + # Layer 2: Icon points
+    ggrepel::geom_text_repel(ggplot2::aes(label = label), # Layer 3: Non-overlapping labels
+      max.overlaps = 20
+    ) +
+    ggplot2::geom_vline(xintercept = 0, alpha = 0.3) + # Layer 4: Vertical reference
+    ggplot2::geom_hline(yintercept = 0, alpha = 0.3) # Layer 5: Horizontal reference
+
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_length(p$layers, 5)
+})
+
+### 17.05 ggforce for circles and hulls ------------------------------
+
+testthat::test_that("works with ggforce layers", {
+  testthat::skip_if_not_installed("ggforce")
+
+  df <- data.frame(
+    x = c(1, 2, 3, 4, 5, 1.5, 2.5, 3.5, 4.5),
+    y = c(2, 3, 2, 4, 3, 1, 2, 3, 2),
+    group = c(rep("A", 5), rep("B", 4)),
+    icon = c(rep("star", 5), rep("heart", 4))
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y, color = group)) +
+    ggforce::geom_mark_hull(ggplot2::aes(fill = group), # Layer 1: Convex hull
+      alpha = 0.1, expand = 0.05
+    ) +
+    ggforce::geom_circle(ggplot2::aes(x0 = x, y0 = y, r = 0.2), # Layer 2: Circles around points
+      alpha = 0.2
+    ) +
+    geom_icon_point(ggplot2::aes(icon = icon), size = 2) + # Layer 3: Icon points
+    ggplot2::geom_path(alpha = 0.5) + # Layer 4: Connect points
+    ggplot2::coord_equal() # Layer 5: Equal scales
+
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_true(length(p$layers) >= 4)
+})
+
+### 17.05 gghighlight for animated plots ------------------------------
+
+testthat::test_that("works with gghighlight", {
+  testthat::skip_if_not_installed("gghighlight")
+
+  df <- data.frame(
+    x = 1:20,
+    y = cumsum(rnorm(20)),
+    category = rep(c("A", "B", "C", "D"), each = 5),
+    icon = rep(c("arrow-up", "arrow-down", "circle", "square"), each = 5)
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y, color = category)) +
+    ggplot2::geom_line(linewidth = 1) + # Layer 1: Lines
+    geom_icon_point(ggplot2::aes(icon = icon), size = 1.5) + # Layer 2: Icon points
+    gghighlight::gghighlight(use_direct_label = FALSE) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 0.5, ymax = y + 0.5), # Layer 4: Ribbon
+      alpha = 0.2
+    ) +
+    ggplot2::theme_minimal() # Layer 5: Theme
+
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_true(length(p$layers) >= 3)
+})
+
+### 17.06 patchwork for circles and hulls ------------------------------
+
+testthat::test_that("works in patchwork compositions", {
+  testthat::skip_if_not_installed("patchwork")
+
+  df <- data.frame(
+    x = rnorm(25),
+    y = rnorm(25),
+    category = sample(c("A", "B", "C"), 25, replace = TRUE)
+  )
+
+  df$icon <- ifelse(df$category == "A", "star",
+    ifelse(df$category == "B", "heart", "circle")
+  )
+
+  # Plot 1: Scatter with icons
+  p1 <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y, color = category)) +
+    geom_icon_point(ggplot2::aes(icon = icon)) +
+    ggplot2::ggtitle("Icon Scatter")
+
+  # Plot 2: Boxplot
+  p2 <- ggplot2::ggplot(df, ggplot2::aes(x = category, y = y, fill = category)) +
+    ggplot2::geom_boxplot() +
+    ggplot2::ggtitle("Boxplot by Category")
+
+  # Plot 3: Density with icons
+  p3 <- ggplot2::ggplot(df, ggplot2::aes(x = x)) +
+    ggplot2::geom_density(fill = "lightblue", alpha = 0.5) +
+    ggplot2::ggtitle("Density")
+
+  # Plot 4: Bar chart with icon annotations
+  df_summary <- dplyr::count(df, category, icon)
+  p4 <- ggplot2::ggplot(df_summary, ggplot2::aes(
+    x = category, y = n,
+    fill = category
+  )) +
+    ggplot2::geom_col() +
+    ggplot2::ggtitle("Counts")
+
+  # Combine with patchwork
+  combined <- patchwork::wrap_plots(p1, p2, p3, p4, ncol = 2)
+
+  testthat::expect_s3_class(combined, "patchwork")
+  testthat::expect_s3_class(p1$layers[[1]], "ggpop_icon_point_layer")
+})
+
+### 17.07 multiple annotation layers -------------------------------------------
+
+testthat::test_that("works with complex annotations", {
+  df <- data.frame(
+    x = 1:8,
+    y = c(3, 5, 4, 7, 6, 8, 7, 9),
+    label = letters[1:8],
+    icon = rep(c("star", "circle"), each = 4)
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_area(fill = "lightgray", alpha = 0.3) + # Layer 1: Area
+    ggplot2::geom_line(color = "blue", linewidth = 1) + # Layer 2: Line
+    geom_icon_point(ggplot2::aes(icon = icon, color = icon), size = 2) + # Layer 3: Icons
+    ggplot2::annotate("rect",
+      xmin = 2, xmax = 4, ymin = 3, ymax = 8, # Layer 4: Rectangle
+      alpha = 0.1, fill = "red"
+    ) +
+    ggplot2::annotate("text",
+      x = 3, y = 9, label = "Peak", # Layer 5: Annotation
+      size = 5, fontface = "bold"
+    )
+
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_length(p$layers, 5)
+  testthat::expect_s3_class(p$layers[[3]], "ggpop_icon_point_layer")
+})
+
+### 17.08 facets and multiple geoms --------------------------------------------
+
+testthat::test_that("works with facets and multiple layers", {
+  df <- data.frame(
+    x = rep(1:10, 3),
+    y = c(cumsum(rnorm(10)), cumsum(rnorm(10)), cumsum(rnorm(10))),
+    panel = rep(c("Panel A", "Panel B", "Panel C"), each = 10),
+    icon = rep(c("arrow-up", "arrow-down", "circle"), each = 10),
+    highlight = rep(c(TRUE, FALSE), length.out = 30)
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 1, ymax = y + 1), # Layer 1: Ribbon
+      fill = "lightblue", alpha = 0.3
+    ) +
+    ggplot2::geom_line(color = "darkblue") + # Layer 2: Line
+    geom_icon_point(
+      ggplot2::aes(
+        icon = icon,
+        color = icon
+      ),
+      size = 1.5,
+      alpha = .8
+    ) +
+    ggplot2::geom_hline(yintercept = 0, linetype = "dashed") + # Layer 4: Reference
+    ggplot2::facet_wrap(~panel) + # Layer 5: Facets
+    ggplot2::theme_bw()
+
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_length(p$layers, 4)
+  testthat::expect_equal(length(p$facet$params$facets), 1)
+})
+
+### 17.09 stress test ------------------------------------------------------------
+testthat::test_that("handles many layers", {
+  df <- data.frame(
+    x = 1:50,
+    y = cumsum(rnorm(50)),
+    category = sample(c("A", "B", "C"), 50, replace = TRUE)
+  )
+
+  df$icon <- ifelse(df$category == "A", "star",
+    ifelse(df$category == "B", "heart", "circle")
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 2, ymax = y + 2), fill = "gray90") +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = y - 1, ymax = y + 1), fill = "gray70") +
+    ggplot2::geom_line(color = "black", linewidth = 0.5) +
+    ggplot2::geom_smooth(
+      method = "loess",
+      se = FALSE,
+      color = "red",
+      linetype = "dashed",
+      formula = y ~ x
+    ) +
+    geom_icon_point(ggplot2::aes(icon = icon, color = category), size = 1.2) +
+    ggplot2::geom_hline(yintercept = mean(df$y), color = "blue") +
+    ggplot2::geom_vline(xintercept = 25, color = "green", alpha = 0.5) +
+    ggplot2::theme_minimal() +
+    ggplot2::labs(title = "Multi-layer plot with icons")
+
+  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_true(length(p$layers) >= 7)
+})
+# ******************************************************************************
+# 18 Snapshot ------------------------------------------------------------------
+# ******************************************************************************
+
+testthat::test_that("geom_icon_point", {
+  set.seed(1)
+  n <- 5
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    grp = rep(c("A", "B", "C"), length.out = n),
+    icon = rep(c("user", "car", "heart"), length.out = n),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    geom_icon_point(
+      ggplot2::aes(icon = icon, color = grp),
+      size = 0.8,
+      legend_icons = TRUE
+    ) +
+    scale_legend_icon(size = 2.5) +
+    ggplot2::theme_void(base_size = 8) +
+    ggplot2::theme(
+      legend.position = "right",
+      plot.margin = grid::unit(rep(2, 4), "pt")
+    ) +
+    ggplot2::geom_blank()
+
+  expect_doppelganger(
+    title = "geom_icon_point",
+    fig = p
+  )
+})
+
+testthat::test_that("geom_icon_point scale_legend_icon()", {
+  set.seed(1)
+  n <- 5
+  df <- data.frame(
+    x = rnorm(n),
+    y = rnorm(n),
+    grp = rep(c("A", "B", "C"), length.out = n),
+    icon = rep(c("user", "car", "heart"), length.out = n),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y)) +
+    geom_icon_point(
+      ggplot2::aes(icon = icon, color = grp),
+      size = 0.8,
+      legend_icons = TRUE
+    ) +
+    ggplot2::theme_void(base_size = 8) +
+    ggplot2::theme(
+      legend.position = "right",
+      plot.margin = grid::unit(rep(2, 4), "pt")
+    ) +
+    ggplot2::geom_blank() +
+    scale_legend_icon(size = 10)
+
+  expect_doppelganger(
+    title = "geom_icon_point scale_legend_icon()",
+    fig = p
+  )
+})
+
+
+testthat::test_that("geom_icon_point factor levels", {
+  df <- data.frame(
+    x      = c(1, 2, 3),
+    y      = c(1, 1, 1),
+    income = c(rep("Low", 1), rep("Mid", 1), rep("High", 1)),
+    icon   = c(rep("pills", 1), rep("stethoscope", 1), rep("hospital", 1))
+  )
+
+  # Factor: legend should show Low → Mid → High with matching icons
+  df$income <- factor(df$income, levels = c("Low", "Mid", "High"))
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y, icon = icon, color = income)) +
+    geom_icon_point(size = 1.5) +
+    ggplot2::scale_color_manual(values = c(
+      "Low"  = "#FF5252",
+      "Mid"  = "#FFD54F",
+      "High" = "#00BFA5"
+    ))
+
+
+  expect_doppelganger(
+    title = "geom_icon_point factor levels",
+    fig = p
   )
 })
 

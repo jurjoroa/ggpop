@@ -15,6 +15,7 @@ geom_icon_point(
   size = 1,
   dpi = 50,
   legend_icons = TRUE,
+  stroke_width = NULL,
   ...
 )
 }
@@ -74,11 +75,13 @@ the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{ann
 
 \item{icon}{Default Font Awesome icon (default: NULL).}
 
-\item{size}{Default icon size (default: 3).}
+\item{size}{Default icon size (default: 1).}
 
 \item{dpi}{Icon resolution (default: 50).}
 
 \item{legend_icons}{Show icons in legend (default: TRUE).}
+
+\item{stroke_width}{Numeric. Width of the icon outline/stroke.}
 
 \item{...}{additional parameters}
 }
@@ -102,3 +105,23 @@ geom_icon_point uses standard ggplot2 scatter plot aesthetics:
 }
 }
 
+\examples{
+\dontrun{
+library(ggplot2)
+data <- data.frame(
+  x = rnorm(20),
+  y = rnorm(20),
+  category = sample(c("A", "B", "C"), 20, replace = TRUE),
+  icon = sample(c("heart", "star", "circle"), 20, replace = TRUE)
+)
+
+# Map icon to a column
+ggplot(data, aes(x = x, y = y, icon = icon, color = category)) +
+  geom_icon_point()
+
+# Use a fixed icon
+ggplot(data, aes(x = x, y = y, color = category)) +
+  geom_icon_point(icon = "star")
+}
+
+}
