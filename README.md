@@ -375,7 +375,7 @@ ggplot(food_data, aes(x = calories, y = protein, icon = icon, color = food)) +
   )
 
 ```
-![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/food_calories_protein.png)
+![Diet & Health Outcomes by Food Group](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/food_calories_protein.png)
 
 
 ### Example 2: Tech Brand Revenue vs. Market Cap
@@ -432,7 +432,7 @@ ggplot(brand_data, aes(x = revenue, y = market_cap,
   )
 ```
 
-![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/tech_brands_revenue_marketcap.png)
+![Tech Brand Revenue vs. Market Cap](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/tech_brands_revenue_marketcap.png)
 
 ### Featured Example: More Spending ≠ Longer Lives
 
