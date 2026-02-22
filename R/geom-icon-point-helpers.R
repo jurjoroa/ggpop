@@ -202,7 +202,7 @@ detect_legend_variable <- function(combined_mapping, data) {
 #' @noRd
 create_icon_by_legend <- function(data, legend_var, icon, has_icon_param) {
   if (!is.null(legend_var) && legend_var %in% names(data)) {
-    data %>%
+    result <- data %>%
       dplyr::mutate(
         .legend = as.character(.data[[legend_var]]),
         icon    = as.character(.data$icon)
@@ -219,6 +219,16 @@ create_icon_by_legend <- function(data, legend_var, icon, has_icon_param) {
       {
         stats::setNames(.$icon, .$.legend)
       }
+
+    # If the legend variable is a factor, reorder by factor levels so that
+    # the index-based legend key lookup (.id) aligns with the display order.
+    if (is.factor(data[[legend_var]])) {
+      lvls <- levels(data[[legend_var]])
+      lvls <- lvls[lvls %in% names(result)]
+      result <- result[lvls]
+    }
+
+    result
   } else {
     first_icon <- if (has_icon_param) {
       icon
