@@ -238,92 +238,6 @@ ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type)) 
 
 ![Example Plot 3](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot3.png)
 
-### Featured Example: The Global Clean Water Divide
-
-This example shows `geom_pop()` at full power — faceted across five world regions, combining `high_group_var` for automatic multi-panel processing, a dark narrative theme, and icon choices that carry meaning on their own. Each icon represents 1% of a region's population. A blue droplet means access to safe drinking water. An orange person icon means no access. The disparity between Sub-Saharan Africa and Europe becomes visceral in a way no bar chart achieves.
-
-``` r
-library(ggplot2)
-library(ggpop)
-library(dplyr)
-
-# Approximate data — WHO/UNICEF Joint Monitoring Programme 2023
-water_data <- data.frame(
-  region = rep(c(
-    "Sub-Saharan Africa", "South Asia",
-    "Latin America",      "East Asia & Pacific",
-    "Europe & N. America"
-  ), each = 2),
-  status = rep(c("Clean Water Access", "No Clean Water"), 5),
-  pop_millions = c(
-     756,  444,   # Sub-Saharan Africa ~63% access
-    1700,  300,   # South Asia         ~85% access
-     600,   37,   # Latin America      ~94% access
-    2185,  115,   # East Asia & Pacific ~95% access
-    1089,   11    # Europe & N. America ~99% access
-  )
-)
-
-# process_data handles the proportional sampling for every region at once
-water_prop <- process_data(
-  data           = water_data,
-  group_var      = status,
-  sum_var        = pop_millions,
-  high_group_var = region,
-  sample_size    = 100
-) |>
-  mutate(icon = if_else(type == "Clean Water Access", "droplet", "person"))
-
-ggplot(water_prop, aes(icon = icon, group = type, color = type)) +
-  geom_pop(size = 1.3, arrange = TRUE, facet = "group") +
-  facet_wrap(~ group, nrow = 1) +
-  scale_color_manual(
-    values = c(
-      "Clean Water Access" = "#29B6F6",
-      "No Clean Water"     = "#E64A19"
-    ),
-    labels = c(
-      "Clean Water Access" = "Has access to safe drinking water",
-      "No Clean Water"     = "No access to safe water"
-    )
-  ) +
-  scale_legend_icon(size = 8) +
-  theme_void(base_size = 13) +
-  labs(
-    title    = "THE GLOBAL CLEAN WATER DIVIDE",
-    subtitle = "Each icon represents 1% of the regional population",
-    caption  = "Source: WHO/UNICEF Joint Monitoring Programme, 2023"
-  ) +
-  theme(
-    plot.background   = element_rect(fill = "#0A1929", color = NA),
-    panel.background  = element_rect(fill = "#0A1929", color = NA),
-    strip.text        = element_text(
-      color = "#90CAF9", face = "bold", size = 10,
-      margin = margin(b = 8)
-    ),
-    legend.position   = "bottom",
-    legend.title      = element_blank(),
-    legend.text       = element_text(color = "white", size = 11),
-    legend.background = element_blank(),
-    legend.margin     = margin(t = 12),
-    plot.title        = element_text(
-      hjust = 0.5, face = "bold", size = 20,
-      color = "#29B6F6", margin = margin(b = 6)
-    ),
-    plot.subtitle     = element_text(
-      hjust = 0.5, size = 12, color = "#90CAF9",
-      margin = margin(b = 20)
-    ),
-    plot.caption      = element_text(
-      hjust = 0.5, size = 9, color = "#546E7A",
-      margin = margin(t = 12)
-    ),
-    plot.margin       = margin(30, 40, 20, 40)
-  )
-```
-
-![Clean Water Divide](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/clean_water_divide.png)
-
 ---
 
 ## `geom_icon_point()` — Icon Scatter Plots
@@ -347,7 +261,7 @@ Each point is a food item plotted by its calorie and protein content. Every food
 library(ggplot2)
 library(ggpop)
 
-food_data <- data.frame(
+df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
                "Milk", "Cheese", "Yogurt"),
   calories = c(52, 41, 47, 165, 250, 208, 61, 402, 59),
@@ -358,7 +272,7 @@ food_data <- data.frame(
                "bottle-water", "cheese", "jar")
 )
 
-ggplot(food_data, aes(x = calories, y = protein, icon = icon, color = food)) +
+ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
   geom_icon_point(size = 2, dpi = 100) +
   scale_color_manual(values = c(
     "Apple" = "#FF5252", "Carrot" = "#FFA726", "Orange" = "#FFB74D",
