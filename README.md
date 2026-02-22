@@ -15,7 +15,7 @@
 
 > **Turn numbers into people. Turn data into stories.**
 
-`ggpop` is an R package built on top of ggplot2 that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users easily visualize population data using proportional, customizable icons arranged in intuitive, circular layouts. The package also includes functionality for adding clear, icon-enhanced captions, which makes charts easier to understand and visually attractive. Designed primarily for visual storytelling, ggpop helps users communicate complex population statistics in a straightforward and appealing manner.
+`ggpop` is an R package built on top of ggplot2 that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users easily visualize population data using proportional, customizable icons arranged in intuitive, circular layouts. The package also includes functionality for adding clear, icon-enhanced captions, which makes charts easier to understand and visually attractive. Designed primarily for visual storytelling, ggpop helps users communicate population statistics in a straightforward and appealing manner.
 
 ## An Alternative Approach to Visualization
 
@@ -23,26 +23,24 @@
 
 ## Why ggpop?
 
-Traditional charts can feel abstract. **ggpop** makes data human by:
-
-- **Visual Impact**: Icons create an immediate emotional connection with your audience
-- **Intuitive Understanding**: Proportional representation simplifies complex data at a glance
-- **Flexible**: Support for 2,000+ Font Awesome icons
-- **Fast**: Optimized rendering handles up to 1,000 icons smoothly
-- **ggplot2 Native**: Integrates seamlessly with your existing workflow — themes, facets, scales and all
+- **Visual Impact**: Icons create an immediate emotional connection with your audience.
+- **Intuitive Understanding**: Proportional representation simplifies data.
+- **Flexible**: Support for 2,000+ Font Awesome icons.
+- **Fast**: Optimized rendering handles up to 1,000 icons smoothly for `geom_pop()` and unlimited for `geom_icon_point()`
+- **ggplot2 Native**: Integrates seamlessly with your existing workflow — themes, facets, scales and all.
 
 ---
 
-## Two Powerful Geoms
+## Two Main Geoms
 
-ggpop ships with two complementary geoms. Each solves a different visualization problem:
+ggpop has with two principal geoms. Each solves a different visualization problem:
 
 |  | `geom_pop()` | `geom_icon_point()` |
 |:---|:---|:---|
 | **Best for** | Population & proportion data | Any x / y scatter data |
 | **Layout** | Circular proportional grid | Free x / y positioning |
 | **What one icon means** | A fixed share of the total population | A single observation |
-| **Data prep needed** | Yes — run `process_data()` first | No — plug in any data directly |
+| **Data prep needed** | Yes — run `process_data()` first (optional) | No — plug in any data directly |
 | **Think of it as** | A pictogram / isotype chart | `geom_point()` with icons |
 
 ---
@@ -67,7 +65,7 @@ remotes::install_github("jurjoroa/ggpop")
 
 ## `geom_pop()` — Population Charts
 
-`geom_pop()` creates proportional icon grids where each icon represents a share of the total population. Perfect for making demographic, health, or social statistics feel tangible and human.
+`geom_pop()` creates proportional icon grids where each icon represents a share of the total population. Perfect for making demographic, health, or social statistics in a nice format.
 
 ### 1.- Create a Small Dataset or Use a Built-in Dataset
 
@@ -98,7 +96,6 @@ df_pop_mx <- data.frame(sex = c("male", "female"),
 ``` r
 df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, sample_size = 1000)
 
-head(df_pop_mx_prop)
 ```
 
 We apply the `process_data()` function to the population data `df_pop_mx` with the following parameters:
@@ -112,6 +109,9 @@ The function calculates group proportions, then performs sampling to create a ne
 - **type**: which group (male or female) was sampled.
 - **n**: total population count of the corresponding group.
 - **prop**: proportion of that group in the overall dataset.
+
+> **Note:** `process_data()` is optional. You can pass your own data frame directly to `geom_pop()` — as long as each row represents one icon. The maximum is 1,000 rows per plot (you can pass more only if you doing per facet group).
+
 
 ### 3.- Assign icons to groups
 
@@ -128,7 +128,7 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 
 <p style="display: flex; align-items: center;">
   <img src="inst/figures/logo.png" width="115px" alt="Logo" />
-  <img src="inst/figures/fontawesome.png" width="125px" alt="Fontawesome" />
+  <img src="inst/figures/fontawesome.svg" width="125px" alt="Fontawesome" />
 </p>
 
 This package supports **Font Awesome icons**.
