@@ -133,7 +133,7 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 
 This package supports **Font Awesome icons**.
 
-- **Font Awesome icons** offer greater flexibility and a broader icon set (2,000+ free icons). However, rendering these icons can be slower if the sample size is large (e.g., 1,000+ observations) or if the plot is faceted.
+- **Font Awesome icons** offer greater flexibility and a broader icon set (2,000+ free icons).
 
 - The icons are stored in the `fontawesome` package. The only thing you need to specify is the icon's name.
 
@@ -365,11 +365,15 @@ For even more examples, vignettes, and the full function reference, visit the **
 
 Using `facet_wrap(~ group)`, this chart breaks down the daily commute mix across major US cities. Each panel shows one city's full distribution of transportation modes — car, bus, train, bicycle, motorcycle, walking, and ride-share — with each icon representing approximately 400 commuters. The dark background and per-mode color coding make it easy to compare cities at a glance.
 
+**[Code avaialble in ggpop package website](https://jurjoroa.github.io/ggpop/)**.
+
 ![Example Plot facet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/transportation_methods_countries.png)
 
 ### `facet_geo()` — Gun Violence Across US States
 
 Combining `geom_pop()` with the `geofacet` package places each state's panel in its actual geographic position on the US map. Here, skull icons represent gun deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000 people. The layout immediately reveals regional patterns that a standard bar chart would hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the South and rural West cluster visually as the hardest-hit regions.
+
+**[Code avaialble in ggpop package website](https://jurjoroa.github.io/ggpop/)**.
 
 ![Example Plot geofacet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)
 
