@@ -238,6 +238,92 @@ ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type)) 
 
 ![Example Plot 3](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot3.png)
 
+### Featured Example: The Global Clean Water Divide
+
+This example shows `geom_pop()` at full power — faceted across five world regions, combining `high_group_var` for automatic multi-panel processing, a dark narrative theme, and icon choices that carry meaning on their own. Each icon represents 1% of a region's population. A blue droplet means access to safe drinking water. An orange person icon means no access. The disparity between Sub-Saharan Africa and Europe becomes visceral in a way no bar chart achieves.
+
+``` r
+library(ggplot2)
+library(ggpop)
+library(dplyr)
+
+# Approximate data — WHO/UNICEF Joint Monitoring Programme 2023
+water_data <- data.frame(
+  region = rep(c(
+    "Sub-Saharan Africa", "South Asia",
+    "Latin America",      "East Asia & Pacific",
+    "Europe & N. America"
+  ), each = 2),
+  status = rep(c("Clean Water Access", "No Clean Water"), 5),
+  pop_millions = c(
+     756,  444,   # Sub-Saharan Africa ~63% access
+    1700,  300,   # South Asia         ~85% access
+     600,   37,   # Latin America      ~94% access
+    2185,  115,   # East Asia & Pacific ~95% access
+    1089,   11    # Europe & N. America ~99% access
+  )
+)
+
+# process_data handles the proportional sampling for every region at once
+water_prop <- process_data(
+  data           = water_data,
+  group_var      = status,
+  sum_var        = pop_millions,
+  high_group_var = region,
+  sample_size    = 100
+) |>
+  mutate(icon = if_else(type == "Clean Water Access", "droplet", "person"))
+
+ggplot(water_prop, aes(icon = icon, group = type, color = type)) +
+  geom_pop(size = 1.3, arrange = TRUE, facet = "group") +
+  facet_wrap(~ group, nrow = 1) +
+  scale_color_manual(
+    values = c(
+      "Clean Water Access" = "#29B6F6",
+      "No Clean Water"     = "#E64A19"
+    ),
+    labels = c(
+      "Clean Water Access" = "Has access to safe drinking water",
+      "No Clean Water"     = "No access to safe water"
+    )
+  ) +
+  scale_legend_icon(size = 8) +
+  theme_void(base_size = 13) +
+  labs(
+    title    = "THE GLOBAL CLEAN WATER DIVIDE",
+    subtitle = "Each icon represents 1% of the regional population",
+    caption  = "Source: WHO/UNICEF Joint Monitoring Programme, 2023"
+  ) +
+  theme(
+    plot.background   = element_rect(fill = "#0A1929", color = NA),
+    panel.background  = element_rect(fill = "#0A1929", color = NA),
+    strip.text        = element_text(
+      color = "#90CAF9", face = "bold", size = 10,
+      margin = margin(b = 8)
+    ),
+    legend.position   = "bottom",
+    legend.title      = element_blank(),
+    legend.text       = element_text(color = "white", size = 11),
+    legend.background = element_blank(),
+    legend.margin     = margin(t = 12),
+    plot.title        = element_text(
+      hjust = 0.5, face = "bold", size = 20,
+      color = "#29B6F6", margin = margin(b = 6)
+    ),
+    plot.subtitle     = element_text(
+      hjust = 0.5, size = 12, color = "#90CAF9",
+      margin = margin(b = 20)
+    ),
+    plot.caption      = element_text(
+      hjust = 0.5, size = 9, color = "#546E7A",
+      margin = margin(t = 12)
+    ),
+    plot.margin       = margin(30, 40, 20, 40)
+  )
+```
+
+![Clean Water Divide](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/clean_water_divide.png)
+
 ---
 
 ## `geom_icon_point()` — Icon Scatter Plots
@@ -327,15 +413,145 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   )
 ```
 
+### Featured Example: More Spending ≠ Longer Lives
+
+This example shows `geom_icon_point()` in combination with five other geoms — `geom_smooth()`, `geom_vline()`, `geom_hline()`, `geom_text()`, and `annotate()` — to build a fully annotated analytical chart. The icons encode income group visually (hospital for high-income countries, stethoscope for upper-middle, pills for lower-middle and low), `geom_text()` labels every country directly above its icon with no background, and the trend line, reference lines, and quadrant annotations do the analytical heavy lifting. The result is a chart that is both rigorous and immediately readable.
+
+``` r
+library(ggplot2)
+library(ggpop)
+library(dplyr)
+
+# Approximate data — World Bank 2022 health expenditure & life expectancy
+health_data <- data.frame(
+  country  = c(
+    "United States", "Switzerland", "Germany",  "France",   "Japan",
+    "United Kingdom","Canada",      "Australia","S. Korea", "Spain",
+    "Brazil",        "Mexico",      "China",    "Thailand", "S. Africa",
+    "India",         "Nigeria",     "Ethiopia", "Bangladesh","Pakistan"
+  ),
+  spend    = c(
+    12318, 9666, 7383, 6630, 4717,
+     5387, 5905, 6651, 3346, 3616,
+     1754, 1095,  867,  723,  688,
+      267,   83,   41,   88,   52
+  ),
+  life_exp = c(
+    76.1, 83.4, 80.9, 82.3, 84.2,
+    81.3, 82.0, 83.0, 83.6, 83.2,
+    75.9, 75.0, 77.4, 77.2, 64.1,
+    70.2, 53.4, 66.0, 72.6, 67.3
+  ),
+  income   = c(
+    rep("High Income",          10),
+    rep("Upper-Middle Income",   5),
+    rep("Lower-Middle / Low",    5)
+  ),
+  icon     = c(
+    rep("hospital",     10),
+    rep("stethoscope",   5),
+    rep("pills",         5)
+  )
+)
+
+ggplot(health_data, aes(x = spend, y = life_exp, icon = icon, color = income)) +
+
+  # Reference lines: approximate world averages
+  geom_vline(xintercept = 1060, linetype = "dashed",
+             color = "#546E7A", linewidth = 0.5) +
+  geom_hline(yintercept = 72.0, linetype = "dashed",
+             color = "#546E7A", linewidth = 0.5) +
+
+  # Overall log-linear trend across all countries
+  geom_smooth(aes(group = 1), method = "lm", se = TRUE,
+              color = "#78909C", fill = "#1E3A5F",
+              linewidth = 0.7, linetype = "dotted", alpha = 0.5) +
+
+  # Icon scatter — the star of the show
+  geom_icon_point(size = 1.7) +
+
+  # Country name above every icon — no background, white text
+  geom_text(aes(label = country), color = "white",
+            vjust = -1.4, size = 2.3, fontface = "plain") +
+
+  # Callout: USA anomaly
+  annotate("text", x = 12318, y = 74.3,
+           label = "USA: spends 2× its peers\nbut ranks last in\nlife expectancy among\nhigh-income nations",
+           color = "#FFB74D", size = 2.7, hjust = 1.05,
+           lineheight = 1.15, fontface = "italic") +
+
+  # Callout: Japan
+  annotate("text", x = 4717, y = 85.6,
+           label = "Japan: world leader\nin life expectancy",
+           color = "#A5D6A7", size = 2.7, hjust = 0.5,
+           lineheight = 1.15, fontface = "italic") +
+
+  # Quadrant labels
+  annotate("text", x = 42,   y = 86.5, label = "EFFICIENT",
+           color = "#37474F", size = 2.4, hjust = 0, fontface = "bold") +
+  annotate("text", x = 5500, y = 54.0, label = "COSTLY &\nINEFFICIENT",
+           color = "#37474F", size = 2.4, hjust = 0,
+           fontface = "bold", lineheight = 0.9) +
+
+  scale_x_log10(labels = scales::dollar_format()) +
+  scale_color_manual(values = c(
+    "High Income"          = "#29B6F6",
+    "Upper-Middle Income"  = "#66BB6A",
+    "Lower-Middle / Low"   = "#FF7043"
+  )) +
+  theme_pop() +
+  labs(
+    title    = "More Spending \u2260 Longer Lives",
+    subtitle = paste(
+      "Health expenditure per capita vs. life expectancy across 20 countries (World Bank, 2022)",
+      "Icon type reflects income group  \u00b7  Dashed lines mark world averages  \u00b7  X-axis is log-scaled",
+      sep = "\n"
+    ),
+    x     = "Health Spending per Capita (USD, log scale)",
+    y     = "Life Expectancy (years)",
+    color = "Income Group"
+  ) +
+  theme(
+    plot.background   = element_rect(fill = "#0D1B2A", color = NA),
+    panel.background  = element_rect(fill = "#0D1B2A", color = NA),
+    panel.grid.major  = element_line(color = "#1E3A5F", linewidth = 0.3),
+    panel.grid.minor  = element_blank(),
+    plot.title        = element_text(
+      face = "bold", size = 18, color = "white",
+      margin = margin(b = 6)
+    ),
+    plot.subtitle     = element_text(
+      size = 10, color = "#90CAF9",
+      lineheight = 1.4, margin = margin(b = 16)
+    ),
+    axis.text         = element_text(color = "#78909C"),
+    axis.title        = element_text(color = "#90CAF9", size = 11),
+    legend.background = element_blank(),
+    legend.text       = element_text(color = "white"),
+    legend.title      = element_text(color = "#90CAF9"),
+    plot.margin       = margin(25, 30, 20, 25)
+  )
+```
+
+![Health Spending vs Life Expectancy](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/health_spending_life_exp.png)
+
 ---
 
 ## More Examples: Facets & Other Packages
 
-### Facet wrap / grid
+`geom_pop()` integrates natively with ggplot2's faceting system, letting you compare populations across groups or geographies without any extra setup. Just add a `facet` parameter or a standard `facet_wrap()` / `facet_grid()` call, and ggpop handles the rest.
+
+For even more examples, vignettes, and the full function reference, visit the **[ggpop package website](https://jurjoroa.github.io/ggpop/)**.
+
+### `facet_wrap()` — Transportation Methods Across US Cities
+
+Using `facet_wrap(~ group)`, this chart breaks down the daily commute mix across major US cities. Each panel shows one city's full distribution of transportation modes — car, bus, train, bicycle, motorcycle, walking, and ride-share — with each icon representing approximately 400 commuters. The dark background and per-mode color coding make it easy to compare cities at a glance.
 
 ![Example Plot facet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/transportation_methods_countries.png)
 
-### Geofacet
+### `facet_geo()` — Gun Violence Across US States
+
+Combining `geom_pop()` with the `geofacet` package places each state's panel in its actual geographic position on the US map. Here, skull icons represent gun deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000 people. The layout immediately reveals regional patterns that a standard bar chart would hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the South and rural West cluster visually as the hardest-hit regions.
 
 ![Example Plot geofacet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)
 
