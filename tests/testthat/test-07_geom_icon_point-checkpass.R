@@ -1623,6 +1623,35 @@ testthat::test_that("geom_icon_point scale_legend_icon()", {
   )
 })
 
+
+testthat::test_that("geom_icon_point factor levels", {
+
+  df <- data.frame(
+    x      = c(1, 2, 3),                                                                                                                                                                                                 
+    y      = c(1, 1, 1),
+    income = c(rep("Low", 1), rep("Mid", 1), rep("High", 1)),
+    icon   = c(rep("pills", 1), rep("stethoscope", 1), rep("hospital", 1))
+  )
+  
+  # Factor: legend should show Low → Mid → High with matching icons
+  df$income <- factor(df$income, levels = c("Low", "Mid", "High"))
+  
+  p <- ggplot2::ggplot(df,  ggplot2::aes(x = x, y = y, icon = icon, color = income)) +
+    geom_icon_point(size = 1.5) +
+    ggplot2::scale_color_manual(values = c(
+      "Low"  = "#FF5252",
+      "Mid"  = "#FFD54F",
+      "High" = "#00BFA5"
+    ))
+  
+  
+  
+  expect_doppelganger(
+    title = "geom_icon_point factor levels",
+    fig = p
+  )
+})
+
 # ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************
