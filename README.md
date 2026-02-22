@@ -339,199 +339,105 @@ This is ideal when you want to add visual identity to individual observations �
 - Each icon = one row in your dataset (not a population share)
 - Supports mapped icons: different categories can show different icons
 
-### Example 1: Fuel Efficiency by Transmission Type
+### Example 1: Diet & Health Outcomes by Food Group
 
-Use the built-in `mtcars` dataset to compare car weight vs. fuel efficiency, with each data point rendered as a car icon colored by transmission type.
-
-``` r
-library(ggplot2)
-library(ggpop)
-library(dplyr)
-
-car_data <- mtcars %>%
-  tibble::rownames_to_column("car") %>%
-  mutate(
-    transmission = ifelse(am == 0, "Automatic", "Manual"),
-    icon = ifelse(am == 0, "car-side", "truck")
-  )
-
-ggplot(car_data, aes(x = wt, y = mpg, icon = icon, color = transmission)) +
-  geom_icon_point(size = 1.5) +
-  theme_pop() +
-  labs(
-    title = "Fuel Efficiency by Weight & Transmission Type",
-    subtitle = "Each icon represents one car model from the mtcars dataset",
-    x = "Weight (1000 lbs)",
-    y = "Miles per Gallon"
-  ) +
-  scale_color_manual(values = c("Automatic" = "#1E88E5", "Manual" = "#D81B60"))
-```
-
-### Example 2: Mapping Different Icons to Different Categories
-
-`geom_icon_point()` shines when you want each category to carry its own visual identity. Here, cities are represented by their primary mode of transit — and the icon *is* the legend.
+Each point is a food item plotted by its calorie and protein content. Every food gets its own icon — apple, banana, orange, drumstick, bacon, fish, bottle-water, cheese, and jar — while color groups them by category.
 
 ``` r
 library(ggplot2)
 library(ggpop)
 
-transport_data <- data.frame(
-  city      = c("New York", "London", "Paris", "Tokyo", "Sydney"),
-  cost      = c(2.75, 3.20, 2.10, 2.30, 3.50),
-  rating    = c(72, 85, 90, 95, 78),
-  icon      = c("subway", "train", "bicycle", "train", "bus"),
-  continent = c("Americas", "Europe", "Europe", "Asia", "Oceania")
+food_data <- data.frame(
+  food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
+               "Milk", "Cheese", "Yogurt"),
+  calories = c(52, 41, 47, 165, 250, 208, 61, 402, 59),
+  protein  = c(0.3, 1.1, 0.9, 31, 26, 20, 3.2, 25, 10),
+  group    = c(rep("Fruit", 3), rep("Meat", 3), rep("Dairy", 3)),
+  icon     = c("apple-whole", "carrot", "lemon",
+               "drumstick-bite", "bacon", "fish",
+               "bottle-water", "cheese", "jar")
 )
 
-ggplot(transport_data, aes(x = cost, y = rating, icon = icon, color = continent)) +
-  geom_icon_point(size = 2.5) +
-  theme_pop() +
+ggplot(food_data, aes(x = calories, y = protein, icon = icon, color = food)) +
+  geom_icon_point(size = 2, dpi = 100) +
+  scale_color_manual(values = c(
+    "Apple" = "#FF5252", "Carrot" = "#FFA726", "Orange" = "#FFB74D",
+    "Chicken" = "#8D6E63", "Beef" = "#6D4C41",
+    "Salmon" = "#EF5350", "Milk" = "#42A5F5", "Cheese" = "#FFD54F", 
+    "Yogurt" = "#4DB6AC"
+  )) +
   labs(
-    title = "Urban Transit: Cost vs. Rider Satisfaction",
-    subtitle = "Icon = primary transit mode in each city",
-    x = "Ticket Cost (USD)",
-    y = "Satisfaction Score"
+    title = "Calories vs. Protein by Food Group",
+    subtitle = "Each icon represents a specific food; color reflects the group",
+    x = "Calories (per 100g)",
+    y = "Protein (g per 100g)",
+    color = "Food Group"
   )
+
 ```
+![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/food_calories_protein.png)
 
-### Example 3: A Single Icon Across All Points
 
-You can also fix the same icon for every observation and let color carry the grouping — the simplest way to add character to a scatter plot.
+### Example 2: Tech Brand Revenue vs. Market Cap
+
+Each brand gets its own icon and color. Icon size is mapped to number of employees — bigger companies appear larger on the chart, adding a third dimension of information at a glance.
 
 ``` r
 library(ggplot2)
 library(ggpop)
 
-ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
-  geom_icon_point(icon = "seedling", size = 1.2) +
+brand_data <- data.frame(
+  brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
+                 "Netflix", "Spotify", "Uber", "Airbnb"),
+  revenue    = c(394, 283, 212, 117, 514, 32, 13, 37, 9),
+  market_cap = c(2950, 1750, 2800, 1200, 1750, 190, 55, 140, 75),
+  employees  = c(160, 180, 220, 86, 1540, 13, 9, 32, 6),
+  sector     = c("Hardware", "Search", "Cloud", "Social", "Commerce",
+                 "Streaming", "Streaming", "Mobility", "Mobility"),
+  icon       = c("apple", "google", "windows", "meta", "amazon",
+                 "tv", "spotify", "uber", "airbnb")
+)
+
+brand_data$sector <- factor(brand_data$sector,
+  levels = c("Hardware", "Search", "Cloud", "Social",
+             "Commerce", "Streaming", "Mobility"))
+
+brand_data$size_scaled <- scales::rescale(brand_data$employees, to = c(0.8, 2.5))
+
+ggplot(brand_data, aes(x = revenue, y = market_cap,
+                       icon = icon, color = brand, size = size_scaled)) +
+  geom_icon_point(dpi = 100) +
   theme_pop() +
+  scale_x_log10(labels = scales::dollar_format(suffix = "B")) +
+  scale_y_log10(labels = scales::dollar_format(suffix = "B")) +
+  scale_color_manual(values = c(
+    "Apple"     = "#FF5252",
+    "Google"    = "#42A5F5",
+    "Microsoft" = "#4DB6AC",
+    "Meta"      = "#8E24AA",
+    "Amazon"    = "#FFB300",
+    "Netflix"   = "#E53935",
+    "Spotify"   = "#1DB954",
+    "Uber"      = "#546E7A",
+    "Airbnb"    = "#FF4081"
+  )) +
+  scale_size_continuous(range = c(1, 3), labels = scales::comma) +
   labs(
-    title = "Iris: Sepal vs. Petal Length",
-    subtitle = "geom_icon_point() with a fixed icon and color grouping",
-    x = "Sepal Length",
-    y = "Petal Length"
+    title    = "Tech Giants: Revenue vs. Market Cap",
+    subtitle = "Icon = brand  ·  Color = brand  ·  Size = employees (millions)  ·  Log scales",
+    x        = "Annual Revenue (log scale)",
+    y        = "Market Cap (log scale)",
+    color    = "Brand",
+    size     = "Employees (M)"
   )
 ```
+
+![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/tech_brands_revenue_marketcap.png)
 
 ### Featured Example: More Spending ≠ Longer Lives
 
 This example shows `geom_icon_point()` in combination with five other geoms — `geom_smooth()`, `geom_vline()`, `geom_hline()`, `geom_text()`, and `annotate()` — to build a fully annotated analytical chart. The icons encode income group visually (hospital for high-income countries, stethoscope for upper-middle, pills for lower-middle and low), `geom_text()` labels every country directly above its icon with no background, and the trend line, reference lines, and quadrant annotations do the analytical heavy lifting. The result is a chart that is both rigorous and immediately readable.
 
-``` r
-library(ggplot2)
-library(ggpop)
-library(dplyr)
-
-# Approximate data — World Bank 2022 health expenditure & life expectancy
-health_data <- data.frame(
-  country  = c(
-    "United States", "Switzerland", "Germany",  "France",   "Japan",
-    "United Kingdom","Canada",      "Australia","S. Korea", "Spain",
-    "Brazil",        "Mexico",      "China",    "Thailand", "S. Africa",
-    "India",         "Nigeria",     "Ethiopia", "Bangladesh","Pakistan"
-  ),
-  spend    = c(
-    12318, 9666, 7383, 6630, 4717,
-     5387, 5905, 6651, 3346, 3616,
-     1754, 1095,  867,  723,  688,
-      267,   83,   41,   88,   52
-  ),
-  life_exp = c(
-    76.1, 83.4, 80.9, 82.3, 84.2,
-    81.3, 82.0, 83.0, 83.6, 83.2,
-    75.9, 75.0, 77.4, 77.2, 64.1,
-    70.2, 53.4, 66.0, 72.6, 67.3
-  ),
-  income   = c(
-    rep("High Income",          10),
-    rep("Upper-Middle Income",   5),
-    rep("Lower-Middle / Low",    5)
-  ),
-  icon     = c(
-    rep("hospital",     10),
-    rep("stethoscope",   5),
-    rep("pills",         5)
-  )
-)
-
-ggplot(health_data, aes(x = spend, y = life_exp, icon = icon, color = income)) +
-
-  # Reference lines: approximate world averages
-  geom_vline(xintercept = 1060, linetype = "dashed",
-             color = "#546E7A", linewidth = 0.5) +
-  geom_hline(yintercept = 72.0, linetype = "dashed",
-             color = "#546E7A", linewidth = 0.5) +
-
-  # Overall log-linear trend across all countries
-  geom_smooth(aes(group = 1), method = "lm", se = TRUE,
-              color = "#78909C", fill = "#1E3A5F",
-              linewidth = 0.7, linetype = "dotted", alpha = 0.5) +
-
-  # Icon scatter — the star of the show
-  geom_icon_point(size = 1.7) +
-
-  # Country name above every icon — no background, white text
-  geom_text(aes(label = country), color = "white",
-            vjust = -1.4, size = 2.3, fontface = "plain") +
-
-  # Callout: USA anomaly
-  annotate("text", x = 12318, y = 74.3,
-           label = "USA: spends 2× its peers\nbut ranks last in\nlife expectancy among\nhigh-income nations",
-           color = "#FFB74D", size = 2.7, hjust = 1.05,
-           lineheight = 1.15, fontface = "italic") +
-
-  # Callout: Japan
-  annotate("text", x = 4717, y = 85.6,
-           label = "Japan: world leader\nin life expectancy",
-           color = "#A5D6A7", size = 2.7, hjust = 0.5,
-           lineheight = 1.15, fontface = "italic") +
-
-  # Quadrant labels
-  annotate("text", x = 42,   y = 86.5, label = "EFFICIENT",
-           color = "#37474F", size = 2.4, hjust = 0, fontface = "bold") +
-  annotate("text", x = 5500, y = 54.0, label = "COSTLY &\nINEFFICIENT",
-           color = "#37474F", size = 2.4, hjust = 0,
-           fontface = "bold", lineheight = 0.9) +
-
-  scale_x_log10(labels = scales::dollar_format()) +
-  scale_color_manual(values = c(
-    "High Income"          = "#29B6F6",
-    "Upper-Middle Income"  = "#66BB6A",
-    "Lower-Middle / Low"   = "#FF7043"
-  )) +
-  theme_pop() +
-  labs(
-    title    = "More Spending \u2260 Longer Lives",
-    subtitle = paste(
-      "Health expenditure per capita vs. life expectancy across 20 countries (World Bank, 2022)",
-      "Icon type reflects income group  \u00b7  Dashed lines mark world averages  \u00b7  X-axis is log-scaled",
-      sep = "\n"
-    ),
-    x     = "Health Spending per Capita (USD, log scale)",
-    y     = "Life Expectancy (years)",
-    color = "Income Group"
-  ) +
-  theme(
-    plot.background   = element_rect(fill = "#0D1B2A", color = NA),
-    panel.background  = element_rect(fill = "#0D1B2A", color = NA),
-    panel.grid.major  = element_line(color = "#1E3A5F", linewidth = 0.3),
-    panel.grid.minor  = element_blank(),
-    plot.title        = element_text(
-      face = "bold", size = 18, color = "white",
-      margin = margin(b = 6)
-    ),
-    plot.subtitle     = element_text(
-      size = 10, color = "#90CAF9",
-      lineheight = 1.4, margin = margin(b = 16)
-    ),
-    axis.text         = element_text(color = "#78909C"),
-    axis.title        = element_text(color = "#90CAF9", size = 11),
-    legend.background = element_blank(),
-    legend.text       = element_text(color = "white"),
-    legend.title      = element_text(color = "#90CAF9"),
-    plot.margin       = margin(25, 30, 20, 25)
-  )
-```
 
 ![Health Spending vs Life Expectancy](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/health_spending_life_exp.png)
 
