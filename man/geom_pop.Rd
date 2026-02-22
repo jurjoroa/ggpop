@@ -88,48 +88,72 @@ rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
-\item{icon}{The icon to be used in the chart.}
+\item{icon}{Default icon to use when no icon column is mapped.}
 
-\item{group_var}{The variable used to group individuals.}
+\item{group_var}{(Deprecated) Use \code{aes(group = ...)} instead.}
 
-\item{sample_size}{The total number of individuals (points) to be drawn.}
+\item{sample_size}{The total number of individuals (points) to draw.}
 
-\item{arrange}{Logical; if TRUE, the output data is arranged by group.}
+\item{arrange}{Logical; if TRUE, output data is arranged by group.}
 
-\item{seed}{Optional numeric seed used only when \code{arrange = FALSE} (randomized layouts).}
+\item{seed}{Optional numeric seed used only when \code{arrange = FALSE}.}
 
 \item{sum_var}{Optional variable to sum over instead of counting.}
 
-\item{facet}{Optional facetting variable. NOTE: final plot must be faceted; enforce with
-\code{validate_geom_pop_faceting(p)} after building the ggplot object.}
+\item{facet}{Optional faceting variable. If provided, final plot must be faceted
+with ggplot2 (use \code{validate_geom_pop_faceting(p)}).}
 
-\item{size}{The size of the points.}
+\item{size}{Icon size. If mapped in \code{aes(size = ...)} the parameter is ignored.}
 
-\item{dpi}{Height (in \strong{pixels}) of the PNG icon when rendered with \code{fontawesome::fa_png()}.
-Higher values produce sharper icons. Defaults to 50. This affects \strong{image dpi}, not icon size in the plot.}
+\item{dpi}{Height (in \strong{pixels}) of the rendered PNG when using
+\code{fontawesome::fa_png()}. Higher values produce sharper icons.}
 
-\item{legend_icons}{Logical; if TRUE, the legend will display the selected icons by the user.}
+\item{legend_icons}{Logical; if TRUE, legend displays the selected icons.}
 
-\item{stroke_width}{Numeric. Width of the black outline/border around icons in pixels.}
+\item{stroke_width}{Numeric. Width of the icon outline in pixels (single value).}
 
 \item{...}{additional parameters}
 }
 \value{
-A ggplot layer with a circular representative population chart.
+A ggplot layer that renders a circular population chart with icons.
 }
 \description{
-Draws a circular representative population chart based on the proportion of the groups,
-where each point (person) represents a determined number of individuals.
-Every person is represented by an image with a given icon.
+Draws a circular representative population chart based on group proportions,
+where each point (person) represents a fixed number of individuals.
+Each person is rendered as a Font Awesome icon.
 }
 \section{Aesthetics}{
 
-geom_pop employs the following aesthetics:
+geom_pop understands the following aesthetics:
 \itemize{
-\item \strong{sample_size} - The number of individuals to be represented in the chart.
-\item \strong{alpha} - The transparency of the points.
-\item \strong{color} - The color of the points.
-\item \strong{size} - The size of the points.
+\item \strong{icon}: Font Awesome icon name (mapped column)
+\item \strong{group}: grouping variable for raw data mode
+\item \strong{color/colour}: icon color
+\item \strong{alpha}: transparency (must be mapped)
+\item \strong{size}: icon size (mapped or fixed)
 }
 }
 
+\examples{
+\dontrun{
+library(ggplot2)
+
+df <- data.frame(
+  sex  = rep(c("F", "M"), each = 10),
+  icon = rep(c("female", "male"), each = 10)
+)
+
+ggplot() +
+  geom_pop(
+    data = df,
+    aes(icon = icon, group = sex, color = sex),
+    size = 3,
+    dpi = 80
+  )
+}
+
+}
+\seealso{
+\code{\link{geom_icon_point}}, \code{\link{process_data}},
+\code{\link[ggimage]{geom_image}}
+}

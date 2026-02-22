@@ -2,7 +2,10 @@
 # created by dplyr or internal processing.
 if (getRversion() >= "2.15.1") {
   utils::globalVariables(
-    c("group", "prop", "type", "original_order", "df_coordinates_final")
+    c(
+      "group", "prop", "type", "original_order", "df_coordinates_final",
+      "size", "n_icons", "icons", "msg"
+    )
   )
 }
 

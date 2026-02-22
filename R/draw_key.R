@@ -152,7 +152,7 @@ key_glyph_icon_point <- function(
 #'   Must include: `icon` and either `colour` or `color`.
 #'   Optional: `alpha`.
 #' @param params A list of additional parameters supplied to the geom.
-#' @param size The width and height of the key in mm (unused, retained for ggplot2 signature).
+#' @param size The width and height of the key in mm (from theme legend.key.size).
 #' @param stroke_width Numeric. Width of icon outline in pixels. If NULL or 0, no outline is drawn.
 #' @param cache_dir Directory to cache rendered icons (default: tempdir()/ggpop-legend-icons).
 #' @param png_px Integer. PNG size in pixels used for icon rendering.
@@ -162,7 +162,7 @@ key_glyph_icon_point <- function(
 #' @param fallback_alpha Numeric. Default alpha if missing (default: 1).
 #' @return A grid grob containing the image icons with the specified colors and transparency.
 #' @importFrom magick image_read image_quantize image_colorize image_info
-#' @importFrom grid rasterGrob gTree unit
+#' @importFrom grid rasterGrob gTree unit convertUnit
 #' @importFrom grDevices as.raster
 #' @keywords internal
 #' @noRd
@@ -173,7 +173,7 @@ draw_key_pop_image <- function(
   stroke_width = NULL,
   cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
   png_px = 480L,
-  max_fill = 0.90,
+  max_fill = 0.9,
   fallback_icon = "user",
   fallback_colour = "black",
   fallback_alpha = 1
@@ -188,6 +188,28 @@ draw_key_pop_image <- function(
 
   # Configuration
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
+
+  # Get the legend key size from the theme
+  # The 'size' parameter is a unit object from theme(legend.key.size = ...)
+  # Convert to mm for consistent sizing
+  key_size_mm <- tryCatch(
+    {
+      if (inherits(size, "unit")) {
+        as.numeric(grid::convertUnit(size, "mm"))
+      } else if (is.numeric(size)) {
+        size # Already in mm
+      } else {
+        10 # Fallback default
+      }
+    },
+    error = function(e) {
+      10 # Fallback if conversion fails
+    }
+  )
+
+  # Calculate target icon size in mm (apply max_fill to the key size)
+  # User has full control - no minimum constraint
+  target_size_mm <- key_size_mm * max_fill
 
   # Create grobs for each icon
   grobs <- lapply(seq_along(data$colour), function(i) {
@@ -270,18 +292,22 @@ draw_key_pop_image <- function(
     }
 
     # Smart size calculation based on aspect ratio
+    # Use absolute mm units based on the theme's legend.key.size
     img_info <- magick::image_info(img)
     aspect_ratio <- img_info$width / img_info$height
 
     if (aspect_ratio > 1) {
-      icon_width <- grid::unit(max_fill, "npc")
-      icon_height <- grid::unit(max_fill / aspect_ratio, "npc")
+      # Wide icon: constrain width, scale height
+      icon_width <- grid::unit(target_size_mm, "mm")
+      icon_height <- grid::unit(target_size_mm / aspect_ratio, "mm")
     } else if (aspect_ratio < 1) {
-      icon_height <- grid::unit(max_fill, "npc")
-      icon_width <- grid::unit(max_fill * aspect_ratio, "npc")
+      # Tall icon: constrain height, scale width
+      icon_height <- grid::unit(target_size_mm, "mm")
+      icon_width <- grid::unit(target_size_mm * aspect_ratio, "mm")
     } else {
-      icon_width <- grid::unit(max_fill, "npc")
-      icon_height <- grid::unit(max_fill, "npc")
+      # Square icon
+      icon_width <- grid::unit(target_size_mm, "mm")
+      icon_height <- grid::unit(target_size_mm, "mm")
     }
 
     grid::rasterGrob(

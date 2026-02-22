@@ -476,6 +476,269 @@ validate_seed <- function(seed, arg_name = "seed") {
   invisible(seed)
 }
 
+
+# ******************************************************************************
+## 01.07 Scale Legend Icon -----------------------------------------------------
+# ******************************************************************************
+
+#' Validate scale_legend_icon parameters
+#'
+#' Validates size, unit, and spacing parameters for scale_legend_icon().
+#' Note: Size thresholds account for the 2x multiplier applied internally,
+#' so warnings trigger at half the actual mm values.
+#'
+#' @param size Numeric. Legend key size value
+#' @param unit Character. Unit for legend key sizing
+#' @param spacing Numeric. Spacing between legend items as fraction of size
+#' @param arg_size Name of size argument for error messages (default "size")
+#' @param arg_unit Name of unit argument for error messages (default "unit")
+#' @param arg_spacing Name of spacing argument for error messages (default "spacing")
+#' @return Invisible list with validated parameters
+#' @keywords internal
+#' @noRd
+validate_scale_legend_icon <- function(size, unit, spacing,
+                                       arg_size = "size",
+                                       arg_unit = "unit",
+                                       arg_spacing = "spacing") {
+  # Validate size - Type check
+  if (!is.numeric(size)) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_size}` parameter.",
+        "x" = "Must be numeric.",
+        "i" = "You provided: {.cls {class(size)[1]}}",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10)}"
+      ),
+      call = NULL
+    )
+  }
+
+  # Validate size - Length check
+  if (length(size) != 1) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_size}` parameter.",
+        "x" = "Must be a single numeric value.",
+        "i" = "You provided a vector of length {length(size)}.",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10)}  # Single value"
+      ),
+      call = NULL
+    )
+  }
+
+  # Validate size - Positive check
+  if (size <= 0) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_size}` value.",
+        "x" = "Must be greater than 0.",
+        "i" = "You provided: {.val {size}}",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10)}  # Positive value"
+      ),
+      call = NULL
+    )
+  }
+
+  # Validate size - Finite check
+  if (!is.finite(size)) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_size}` value.",
+        "x" = "Must be a finite number.",
+        "i" = "You provided: {.val {size}}",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10)}  # Finite value"
+      ),
+      call = NULL
+    )
+  }
+
+  # Validate unit - Type and length check
+  if (!is.character(unit) || length(unit) != 1) {
+    cli::cli_abort(
+      c(
+        "Invalid `{arg_unit}` parameter.",
+        "x" = "Must be a single character string.",
+        "i" = "You provided: {.cls {class(unit)[1]}} of length {length(unit)}",
+        " " = "",
+        "i" = "Fix:",
+        " " = "  {.code scale_legend_icon(size = 10, unit = 'mm')}"
+      ),
+      call = NULL
+    )
+  }
+
+  # BAN npc unit - Abort if npc is used
+  if (unit == "npc") {
+    cli::cli_abort(
+      c(
+        "Banned unit: `{arg_unit} = 'npc'`",
+        "x" = "The 'npc' unit is not allowed for legend icons.",
+        "i" = "Reason: 'npc' (normalized parent coordinates) is relative and causes unpredictable sizing.",
+        " " = "",
+        "i" = "Use absolute units instead:",
+        " " = "  {.code scale_legend_icon(size = 10, unit = 'mm')}",
+        " " = "  {.code scale_legend_icon(size = 1, unit = 'cm')}",
+        " " = "  {.code scale_legend_icon(size = 0.2, unit = 'inches')}",
+        " " = "  {.code scale_legend_icon(size = 14, unit = 'points')}"
+      ),
+      call = NULL
+    )
+  }
+
+  # Validate unit - Valid grid units (warning only)
+  valid_units <- c(
+    "cm", "inches", "mm", "points", "picas",
+    "bigpts", "dida", "cicero", "scaledpts", "lines",
+    "char", "native", "snpc", "strwidth", "strheight",
+    "grobwidth", "grobheight"
+  )
+
+  if (!unit %in% valid_units) {
+    cli::cli_warn(
+      c(
+        "Potentially invalid `{arg_unit}` value.",
+        "!" = "You provided: {.val {unit}}",
+        " " = "",
+        "i" = "Common units:",
+        " " = "  {.val mm}, {.val cm}, {.val inches}, {.val points}",
+        " " = "",
+        "i" = "Proceeding anyway, but check your output."
+      ),
+      call = NULL
+    )
+  }
+
+  # Validate spacing - Type and length check
+  if (!is.numeric(spacing) || length(spacing) != 1) {
+    cli::cli_warn(
+      c(
+        "Invalid `{arg_spacing}` parameter.",
+        "!" = "Must be a single numeric value.",
+        "i" = "You provided: {.cls {class(spacing)[1]}} of length {length(spacing)}",
+        " " = "",
+        "i" = "Using default: {.code spacing = 0.2}"
+      ),
+      call = NULL
+    )
+    spacing <- 0.2
+  }
+
+  # Validate spacing - Non-negative check
+  if (spacing < 0) {
+    cli::cli_warn(
+      c(
+        "Invalid `{arg_spacing}` value.",
+        "!" = "Should be non-negative.",
+        "i" = "You provided: {.val {spacing}}",
+        " " = "",
+        "i" = "Using: {.code spacing = 0} instead."
+      ),
+      call = NULL
+    )
+    spacing <- 0
+  }
+
+  # SIZE WARNING: Convert to mm and warn if > 25mm
+  # Only check for absolute units (not relative like lines, etc.)
+
+  absolute_units <- c("mm", "cm", "inches", "points", "picas", "bigpts")
+
+  if (unit %in% absolute_units) {
+    # Convert to mm (user input value)
+    size_mm <- switch(unit,
+      "mm" = size,
+      "cm" = size * 10,
+      "inches" = size * 25.4,
+      "points" = size * 0.3528,
+      "picas" = size * 4.2333,
+      "bigpts" = size * 0.3528,
+      size
+    )
+
+    # Actual size after 2x multiplier
+    actual_size_mm <- size_mm * 2
+
+    # Warn if actual size > 50mm (so warn when user input > 25mm)
+    if (size_mm > 25) {
+      # Build conversion info based on unit
+      conversion_info <- switch(unit,
+        "mm" = c(
+          " " = "  Input: {size} mm -> Actual: {round(actual_size_mm, 1)} mm",
+          " " = "  = {round(actual_size_mm / 10, 1)} cm",
+          " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
+        ),
+        "cm" = c(
+          " " = "  Input: {size} cm -> Actual: {round(actual_size_mm / 10, 1)} cm",
+          " " = "  = {round(actual_size_mm, 1)} mm",
+          " " = "  = {round(actual_size_mm / 25.4, 2)} inches"
+        ),
+        "inches" = c(
+          " " = "  Input: {size} inches -> Actual: {round(actual_size_mm / 25.4, 2)} inches",
+          " " = "  = {round(actual_size_mm / 10, 1)} cm",
+          " " = "  = {round(actual_size_mm, 1)} mm"
+        ),
+        "points" = c(
+          " " = "  Input: {size} points -> Actual: {round(size * 2, 1)} points",
+          " " = "  = {round(actual_size_mm / 72, 2)} inches",
+          " " = "  = {round(actual_size_mm, 1)} mm"
+        ),
+        "picas" = c(
+          " " = "  Input: {size} picas -> Actual: {round(size * 2, 1)} picas",
+          " " = "  = {round(actual_size_mm / 6, 2)} inches",
+          " " = "  = {round(actual_size_mm, 1)} mm"
+        ),
+        c(" " = "")
+      )
+
+      cli::cli_warn(
+        c(
+          "Very large `{arg_size}` value.",
+          "!" = "{.val {size}} {unit}",
+          "i" = "Actual legend icon size:",
+          conversion_info,
+          " " = "",
+          "i" = "Recommended input values:",
+          " " = "  Small icons: 2.5-5 mm -> 5-10 mm actual",
+          " " = "  Medium icons: 5-10 mm -> 10-20 mm actual",
+          " " = "  Large icons: 10-15 mm -> 20-30 mm actual",
+          " " = "  Maximum: 25 mm -> 50 mm actual",
+          " " = "",
+          "!" = "Your legend icons may be very large and overlap with plot content."
+        ),
+        call = NULL
+      )
+    }
+
+    # Warn if too small: < 1.5mm input
+    if (size_mm < 1.5) {
+      cli::cli_warn(
+        c(
+          "Very small `{arg_size}` value.",
+          "!" = "{.val {size}} {unit}",
+          "i" = "Actual legend icon size: approximately {round(actual_size_mm, 2)} mm.",
+          " " = "",
+          "i" = "Icons may be difficult to see in the legend.",
+          " " = "",
+          "i" = "Recommended minimum:",
+          " " = "  At least 2.5 mm input -> 5 mm actual for visibility"
+        ),
+        call = NULL
+      )
+    }
+  }
+
+  invisible(list(size = size, unit = unit, spacing = spacing))
+}
+
+
 # ******************************************************************************
 # 02 Data Validators -----------------------------------------------------------
 # ******************************************************************************

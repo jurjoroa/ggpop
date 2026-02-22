@@ -19,6 +19,11 @@ testthat::skip_if_not_installed("ggimage")
 testthat::skip_if_not_installed("fontawesome")
 
 
+expect_doppelganger <- function(title, fig, path = NULL, ...) {
+  testthat::skip_if_not_installed("vdiffr")
+  vdiffr::expect_doppelganger(title, fig, ...)
+}
+
 # ******************************************************************************
 # Test fixtures -------------------------------------------------------------
 # ******************************************************************************
@@ -1432,8 +1437,63 @@ testthat::test_that("geom_pop", {
     ) +
     ggplot2::theme_void()
 
-  vdiffr::expect_doppelganger(
+  expect_doppelganger(
     title = "geom_pop",
     fig = p
   )
 })
+
+
+testthat::test_that("geom_pop scale_legend_icon()", {
+  df <- data.frame(
+    sex = c("male", "female", "male", "female"),
+    icon = c("male", "female", "male", "female"),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data = df,
+      ggplot2::aes(icon = icon, group = sex, color = sex)
+    ) +
+    ggplot2::theme_void() +
+    scale_legend_icon(size = 10)
+
+  expect_doppelganger(
+    title = "geom_pop scale_legend_icon()",
+    fig = p
+  )
+})
+
+
+testthat::test_that("geom_pop factor levels", {
+  df <- data.frame(
+    income = c(rep("Low", 1), rep("Mid", 1), rep("High", 1)),
+    icon   = c(rep("pills", 1), rep("stethoscope", 1), rep("hospital", 1))
+  )
+
+  # Factor: legend should show Low → Mid → High with matching icons
+  df$income <- factor(df$income, levels = c("Low", "Mid", "High"))
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data = df,
+      aes(icon = icon, color = income),
+      size = 3, arrange = T
+    ) +
+    ggplot2::scale_color_manual(values = c(
+      "Low"  = "#FF5252",
+      "Mid"  = "#FFD54F",
+      "High" = "#00BFA5"
+    ))
+
+
+  expect_doppelganger(
+    title = "geom_pop factor levels",
+    fig = p
+  )
+})
+
+# ******************************************************************************
+# END --------------------------------------------------------------------------
+# ******************************************************************************
