@@ -2,7 +2,7 @@
 
 #' Population Plot Theme
 #'
-#' A minimal theme optimized for icon-based population plots. Similar to 
+#' A minimal theme optimized for icon-based population plots. Similar to
 #' \code{theme_void()} but with automatic legend key sizing, appropriate margins,
 #' and sensible defaults for population visualizations.
 #'
@@ -10,7 +10,7 @@
 #' @param base_family Base font family (default: "").
 #' @param base_line_size Base size for line elements (default: base_size/22).
 #' @param base_rect_size Base size for rect elements (default: base_size/22).
-#' @param legend_icon_size Size of legend icons in cm. If NULL (default), 
+#' @param legend_icon_size Size of legend icons in cm. If NULL (default),
 #'   automatically calculated as base_size/20 for proportional sizing.
 #' @param legend_spacing Spacing between legend items in cm (default: 0.3 * legend_icon_size).
 #' @param plot_margin Plot margins. Default: margin(5.5, 5.5, 5.5, 5.5, "pt").
@@ -34,26 +34,25 @@
 #'
 #' @export
 theme_pop <- function(
-    base_size = 11,
-    base_family = "",
-    base_line_size = base_size / 22,
-    base_rect_size = base_size / 22,
-    legend_icon_size = NULL,
-    legend_spacing = NULL,
-    plot_margin = NULL,
-    legend_position = "right"
+  base_size = 11,
+  base_family = "",
+  base_line_size = base_size / 22,
+  base_rect_size = base_size / 22,
+  legend_icon_size = NULL,
+  legend_spacing = NULL,
+  plot_margin = NULL,
+  legend_position = "right"
 ) {
-  
   # Auto-calculate legend icon size based on base_size if not provided
   if (is.null(legend_icon_size)) {
     legend_icon_size <- base_size / 20
   }
-  
+
   # Auto-calculate legend spacing if not provided
   if (is.null(legend_spacing)) {
     legend_spacing <- 0.3 * legend_icon_size
   }
-  
+
   # Use normal ggplot2 default margins if not provided
   if (is.null(plot_margin)) {
     plot_margin <- ggplot2::margin(
@@ -68,7 +67,7 @@ theme_pop <- function(
       plot_margin, plot_margin, plot_margin, plot_margin, "pt"
     )
   }
-  
+
   # Build theme from scratch
   ggplot2::theme(
     # Remove all axis elements
@@ -76,16 +75,16 @@ theme_pop <- function(
     axis.text = ggplot2::element_blank(),
     axis.ticks = ggplot2::element_blank(),
     axis.title = ggplot2::element_blank(),
-    
+
     # Remove panel elements
     panel.background = ggplot2::element_blank(),
     panel.border = ggplot2::element_blank(),
     panel.grid = ggplot2::element_blank(),
     panel.spacing = grid::unit(0, "pt"),
-    
+
     # Remove plot background
     plot.background = ggplot2::element_blank(),
-    
+
     # Title elements
     plot.title = ggplot2::element_text(
       size = base_size * 1.2,
@@ -115,10 +114,10 @@ theme_pop <- function(
       vjust = 0.5,
       family = base_family
     ),
-    
+
     # Plot margins - normal default (5.5pt all sides)
     plot.margin = plot_margin,
-    
+
     # Legend styling
     legend.background = ggplot2::element_blank(),
     legend.key = ggplot2::element_blank(),
@@ -146,7 +145,7 @@ theme_pop <- function(
     legend.margin = ggplot2::margin(0, 0, 0, 0, "pt"),
     legend.text.align = NULL,
     legend.title.align = NULL,
-    
+
     # Strip (facet) elements
     strip.background = ggplot2::element_blank(),
     strip.text = ggplot2::element_text(
@@ -163,7 +162,7 @@ theme_pop <- function(
     strip.placement = "inside",
     strip.switch.pad.grid = grid::unit(base_size * 0.5, "pt"),
     strip.switch.pad.wrap = grid::unit(base_size * 0.5, "pt"),
-    
+
     # Complete theme
     complete = TRUE
   )
@@ -190,16 +189,16 @@ theme_pop <- function(
 #'
 #' @export
 theme_pop_dark <- function(
-    base_size = 11,
-    base_family = "",
-    base_line_size = base_size / 22,
-    base_rect_size = base_size / 22,
-    legend_icon_size = NULL,
-    legend_spacing = NULL,
-    plot_margin = NULL,
-    legend_position = "right",
-    bg_color = "black",
-    text_color = "white"
+  base_size = 11,
+  base_family = "",
+  base_line_size = base_size / 22,
+  base_rect_size = base_size / 22,
+  legend_icon_size = NULL,
+  legend_spacing = NULL,
+  plot_margin = NULL,
+  legend_position = "right",
+  bg_color = "black",
+  text_color = "white"
 ) {
   theme_pop(
     base_size = base_size,
@@ -228,7 +227,7 @@ theme_pop_dark <- function(
 
 #' Minimal Population Plot Theme
 #'
-#' An ultra-minimal variant with no margins or legend, perfect for 
+#' An ultra-minimal variant with no margins or legend, perfect for
 #' icon arrays without annotations.
 #'
 #' @inheritParams theme_pop
@@ -244,8 +243,8 @@ theme_pop_dark <- function(
 #'
 #' @export
 theme_pop_minimal <- function(
-    base_size = 11,
-    base_family = ""
+  base_size = 11,
+  base_family = ""
 ) {
   theme_pop(
     base_size = base_size,
