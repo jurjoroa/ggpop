@@ -545,3 +545,11 @@ Example Plot geofacet
 - [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md)
   : Minimal Population Plot Theme
 
+# Articles
+
+### Getting Started
+
+Learn the core ggpop workflow from data to plot.
+
+- [Getting Started with
+  ggpop](https://jurjoroa.github.io/ggpop/articles/getting-started.md):
