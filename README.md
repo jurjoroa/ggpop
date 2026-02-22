@@ -128,7 +128,7 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 
 <p style="display: flex; align-items: center;">
   <img src="inst/figures/logo.png" width="115px" alt="Logo" />
-  <img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome.svg" width="125px" alt="Fontawesome" />
+  <img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome.svg" width="115px" alt="Fontawesome" />
 </p>
 
 This package supports **Font Awesome icons**.
