@@ -16,10 +16,20 @@ navbar:
     - icon: fa-home fa-lg
       href: index.html
     - text: "Vignettes"
+      icon: fa-book
       href: articles/index.html
+    - text: "Examples"
+      icon: fa-cubes
+      menu:
+        - text: "geom_pop()"
+          href: articles/examples-geom-pop.html
+        - text: "geom_icon_point()"
+          href: articles/examples-geom-icon-point.html
     - text: "Functions"
+      icon: fa-cogs
       href: reference/index.html
     - text: "News"
+      icon: fa-newspaper
       href: news/index.html
   right:
     - icon: fa-github
@@ -30,8 +40,42 @@ home:
     - text: Report a bug
       href: https://github.com/jurjoroa/ggpop/issues
 
+authors:
+  "Jorge A. Roa-Contreras":
+    href: https://orcid.org/0000-0002-3972-9793
+  "Ralitza Soultanova":
+    href: https://orcid.org/0009-0000-9324-5653
+  "Fernando Alarid-Escudero":
+    href: https://orcid.org/0000-0001-5076-1172
+  "Carlos Pineda-Antunez":
+    href: https://orcid.org/0000-0002-8352-7080
+
+footer:
+  structure:
+    left: [package_logo, developed_by]
+    right: built_with
+  components:
+    package_logo: "<a href='index.html'><img src='inst/figures/shp.png' height='40' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
+
 articles:
+  - title: "Data Preparation"
+    desc: "Prepare your data for ggpop."
+    contents:
+      - process-data
   - title: "Getting Started"
-    desc: "Learn the core ggpop workflow from data to plot."
+    desc: "Learn the core geom_pop() workflow from data to plot."
     contents:
       - getting-started
+  - title: "Icon Scatter Plots"
+    desc: "Use geom_icon_point() to build icon-based scatter plots."
+    contents:
+      - geom-icon-point
+  - title: "Themes & Customization"
+    desc: "Customize your plots with themes, colors, legend options, and stroke."
+    contents:
+      - themes-customization
+  - title: "Examples"
+    desc: "Ready-to-use examples for both geoms."
+    contents:
+      - examples-geom-pop
+      - examples-geom-icon-point

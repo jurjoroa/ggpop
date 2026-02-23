@@ -3,6 +3,7 @@
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/ggpop)](https://CRAN.R-project.org/package=ggpop)
 [![R-CMD-check](https://github.com/jurjoroa/ggpop/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jurjoroa/ggpop/actions/workflows/R-CMD-check.yaml)
+[![pages-build-deployment](https://github.com/jurjoroa/ggpop/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/jurjoroa/ggpop/actions/workflows/pages/pages-build-deployment)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/ggpop)](https://CRAN.R-project.org/package=ggpop)
 [![CRAN total downloads](https://cranlogs.r-pkg.org/badges/grand-total/ggpop)](https://CRAN.R-project.org/package=ggpop)
@@ -94,7 +95,10 @@ df_pop_mx <- data.frame(sex = c("male", "female"),
 ### 2.- Process data
 
 ``` r
-df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, sample_size = 1000)
+df_pop_mx_prop <- process_data(data = df_pop_mx, 
+                               group_var = sex, 
+                               sum_var = n, 
+                               sample_size = 1000)
 
 ```
 
@@ -194,7 +198,8 @@ We can also include more than two icons in the same plot. In this example, we wi
 
 ``` r
 #1.- We load or create the data
-df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled males", "disabled females"),
+df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled males", 
+                                    "disabled females"),
                             value = c(53726732, 54978806, 9731396, 11106712),
                             country = "Mexico",
                             continent = "America")
@@ -221,16 +226,22 @@ ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type)) 
   geom_pop(size = 1.1, arrange = F) +
   theme_pop(base_size = 100, base_family = "quicksand") +
   scale_legend_icon(size = 10,
-                    legend.text = element_text(color = "#D4AF37", family = "quicksand"),
-                    plot.title = element_text(color = "#D4AF37", family = "quicksand",
-                                              face = "bold", size = 90, hjust = 0.5),
-                    plot.subtitle = element_text(color = "#D4AF37", family = "quicksand",
+                    legend.text = element_text(color = "#D4AF37", 
+                                               family = "quicksand"),
+                    plot.title = element_text(color = "#D4AF37", 
+                                               family = "quicksand",
+                                              face = "bold", size = 90, 
+                                              hjust = 0.5),
+                    plot.subtitle = element_text(color = "#D4AF37", 
+                                                 family = "quicksand",
                                                  size = 70, hjust = 0.5),
-                    plot.caption = element_text(color = "#D4AF37", family = "quicksand",
+                    plot.caption = element_text(color = "#D4AF37", 
+                                                family = "quicksand",
                                                 size = 70, hjust = 0)) +
   labs(title = "Population in Mexico by Sex and disability status",
        subtitle = "2023",
-       caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
+       caption = "As of 2023, 16% of the population in Mexico 
+                  has some form of disability.") +
   theme(legend.position = "bottom", legend.title = element_blank(),
         legend.box.spacing = unit(-.4, "cm"),
         legend.margin = margin(t = 0, b = 0),
@@ -384,7 +395,10 @@ Combining `geom_pop()` with the `geofacet` package places each state's panel in 
 ```bibtex
 @Manual{ggpop2024,
   title   = {ggpop: Visualizing Population Data},
-  author  = {Roa-Contreras, Jorge A. and Soultanova, Ralitza and Alarid-Escudero, Fernando and Pineda-Antunez, Carlos},
+  author  = {Roa-Contreras, Jorge A. and 
+             Soultanova, Ralitza and 
+             Alarid-Escudero, Fernando and 
+             Pineda-Antunez, Carlos},
   year    = {2024},
   note    = {R package version 1.7.0},
   url     = {https://github.com/jurjoroa/ggpop},
