@@ -19,34 +19,67 @@ a, a:visited {
   color: #FF6B6B !important;
 }
 
-/* ── Theme toggle button ────────────────────────────────────────── */
+/* ── Theme toggle switch ────────────────────────────────────────── */
 /* NOTE: The JS toggle sets data-bs-theme="dark" for LIGHT mode and
-   leaves it unset (or "light") for DARK mode. This is intentional —
+   data-bs-theme="light" for DARK mode. This is intentional —
    see _pkgdown.yml after_body script. Do NOT change the selector
    mapping without also updating the JS toggle logic.               */
-.navbar .light-switch {
-  color: white !important;
-  background: none !important;
-  border: 1px solid rgba(255,255,255,0.4) !important;
-  border-radius: 20px !important;
-  padding: 3px 10px !important;
+
+/* Button wrapper — no browser button styles */
+.theme-switch {
+  background: none;
+  border: none;
+  padding: 4px 2px;
   cursor: pointer;
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
 }
 
-.navbar .light-switch:hover {
-  border-color: #FF6B6B !important;
-  color: #FF6B6B !important;
+/* Track — dark mode default: white tones */
+.theme-switch-track {
+  width: 52px;
+  height: 26px;
+  border-radius: 13px;
+  background: rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(255,255,255,0.45);
+  position: relative;
+  display: block;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
-[data-bs-theme="dark"] .navbar .light-switch {
-  color: #01394f !important;
-  border-color: rgba(1,57,79,0.4) !important;
+/* Thumb — dark mode: white circle, sun icon, left side */
+.theme-switch-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  font-size: 10px;
+  color: #FF6B6B;
 }
 
-[data-bs-theme="dark"] .navbar .light-switch:hover {
-  border-color: #FF6B6B !important;
-  color: #FF6B6B !important;
+/* Light mode active: thumb slides right, track becomes teal-tinted */
+[data-bs-theme="dark"] .theme-switch-track {
+  background: rgba(1,57,79,0.12);
+  border-color: rgba(1,57,79,0.4);
+}
+
+[data-bs-theme="dark"] .theme-switch-thumb {
+  transform: translateX(26px);
+  background: #01394f;
+  color: #FFB74D;
+}
+
+/* Hover glow */
+.theme-switch:hover .theme-switch-track {
+  border-color: #FF6B6B;
+  box-shadow: 0 0 0 2px rgba(255,107,107,0.25);
 }
 
 pre a, pre a:visited {

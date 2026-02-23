@@ -8,44 +8,7 @@ template:
   assets: pkgdown/assets
   includes:
     after_body: |
-      <script>
-      (function () {
-        var STORAGE_KEY = 'ggpop-theme';
-        var theme = localStorage.getItem(STORAGE_KEY) || 'dark';
-        document.documentElement.setAttribute('data-bs-theme', theme);
-
-        function updateBtn(t) {
-          var btn = document.getElementById('ggpop-theme-btn');
-          if (!btn) return;
-          btn.innerHTML = t === 'dark'
-            ? '<i class="fa fa-sun" style="margin-right:4px"></i> Light'
-            : '<i class="fa fa-moon" style="margin-right:4px"></i> Dark';
-        }
-
-        function inject() {
-          var navRight = document.querySelector('.navbar-nav.ms-auto')
-                      || document.querySelector('.navbar-right')
-                      || document.querySelector('.navbar-nav:last-of-type');
-          if (!navRight) return;
-          var li = document.createElement('li');
-          li.className = 'nav-item';
-          li.innerHTML = '<button id="ggpop-theme-btn" class="btn light-switch nav-link ms-2"></button>';
-          navRight.appendChild(li);
-          updateBtn(theme);
-          document.getElementById('ggpop-theme-btn').addEventListener('click', function () {
-            var cur = document.documentElement.getAttribute('data-bs-theme');
-            var next = cur === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-bs-theme', next);
-            localStorage.setItem(STORAGE_KEY, next);
-            updateBtn(next);
-          });
-        }
-
-        document.readyState === 'loading'
-          ? document.addEventListener('DOMContentLoaded', inject)
-          : inject();
-      })();
-      </script>
+      <script src="https://jurjoroa.github.io/ggpop/theme-toggle.js"></script>
 
 navbar:
   title: 'ggpop'
