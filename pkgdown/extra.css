@@ -8,6 +8,13 @@ a, a:visited {
   color: white !important;
 }
 
+/* Align navbar icons with text */
+.navbar-nav .nav-link i.fa,
+.navbar-nav .dropdown-toggle i.fa {
+  vertical-align: -0.1em;
+  margin-right: 0.3em;
+}
+
 .navbar a:hover {
   color: #FF6B6B !important;
 }

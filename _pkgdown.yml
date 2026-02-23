@@ -16,16 +16,20 @@ navbar:
     - icon: fa-home fa-lg
       href: index.html
     - text: "Vignettes"
+      icon: fa-book
       href: articles/index.html
     - text: "Examples"
+      icon: fa-cubes
       menu:
         - text: "geom_pop()"
           href: articles/examples-geom-pop.html
         - text: "geom_icon_point()"
           href: articles/examples-geom-icon-point.html
     - text: "Functions"
+      icon: fa-cogs
       href: reference/index.html
     - text: "News"
+      icon: fa-newspaper
       href: news/index.html
   right:
     - icon: fa-github
@@ -35,6 +39,21 @@ home:
   links:
     - text: Report a bug
       href: https://github.com/jurjoroa/ggpop/issues
+
+authors:
+  "Jorge A. Roa-Contreras":
+    href: https://orcid.org/0000-0002-3972-9793
+  "Ralitza Soultanova":
+    href: https://orcid.org/0009-0000-9324-5653
+  "Fernando Alarid-Escudero":
+    href: https://orcid.org/0000-0001-5076-1172
+  "Carlos Pineda-Antunez":
+    href: https://orcid.org/0000-0002-8352-7080
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with
 
 articles:
   - title: "Data Preparation"
