@@ -31,8 +31,12 @@ home:
       href: https://github.com/jurjoroa/ggpop/issues
 
 articles:
+  - title: "Data Preparation"
+    desc: "Prepare your data for ggpop."
+    contents:
+      - process-data
   - title: "Getting Started"
-    desc: "Learn the core ggpop workflow from data to plot."
+    desc: "Learn the core geom_pop() workflow from data to plot."
     contents:
       - getting-started
   - title: "Icon Scatter Plots"
