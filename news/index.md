@@ -5,7 +5,7 @@
 This release of `ggpop` delivers new theming support, expanded icon
 customization, critical bug fixes, and significant internal refactoring
 toward a fully ggplot-native architecture. Deprecated functionality has
-been removed and the public API has been finalized.
+been removed and the package has been finalized.
 
 ### Bug Fixes
 
@@ -80,6 +80,9 @@ Issues are listed in chronological merge order.
 ### Version
 
 - \#265
+
+**Full Changelog**:
+<https://github.com/jurjoroa/ggpop/compare/v1.6.1>…v1.7.0
 
 ## ggpop 1.6.1
 

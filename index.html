@@ -34,9 +34,16 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="index.html"><span class="fa fa-home fa-lg"></span></a></li>
-<li class="nav-item"><a class="nav-link" href="articles/index.html">Vignettes</a></li>
-<li class="nav-item"><a class="nav-link" href="reference/index.html">Functions</a></li>
-<li class="nav-item"><a class="nav-link" href="news/index.html">News</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/index.html"><span class="fa fa-book"></span> Vignettes</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-cubes"></span> Examples</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
+<li><a class="dropdown-item" href="articles/examples-geom-pop.html">geom_pop()</a></li>
+    <li><a class="dropdown-item" href="articles/examples-geom-icon-point.html">geom_icon_point()</a></li>
+  </ul>
+</li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html"><span class="fa fa-cogs"></span> Functions</a></li>
+<li class="nav-item"><a class="nav-link" href="news/index.html"><span class="fa fa-newspaper"></span> News</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/jurjoroa/ggpop"><span class="fa fa-github"></span></a></li>
@@ -193,7 +200,10 @@
 <h3 id="id_2--process-data">2.- Process data<a class="anchor" aria-label="anchor" href="#id_2--process-data"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_pop_mx_prop</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/process_data.html">process_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_pop_mx</span>, group_var <span class="op">=</span> <span class="va">sex</span>, sum_var <span class="op">=</span> <span class="va">n</span>, sample_size <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">df_pop_mx_prop</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/process_data.html">process_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_pop_mx</span>, </span>
+<span>                               group_var <span class="op">=</span> <span class="va">sex</span>, </span>
+<span>                               sum_var <span class="op">=</span> <span class="va">n</span>, </span>
+<span>                               sample_size <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
 <p>We apply the <code><a href="reference/process_data.html">process_data()</a></code> function to the population data <code>df_pop_mx</code> with the following parameters:</p>
 <ul>
 <li>
@@ -287,7 +297,8 @@
 <p>We can also include more than two icons in the same plot. In this example, we will identify the people that are disabled, and we will change some parameters.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#1.- We load or create the data</span></span>
-<span><span class="va">df_pop_dis_mx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"disabled males"</span>, <span class="st">"disabled females"</span><span class="op">)</span>,</span>
+<span><span class="va">df_pop_dis_mx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"disabled males"</span>, </span>
+<span>                                    <span class="st">"disabled females"</span><span class="op">)</span>,</span>
 <span>                            value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">53726732</span>, <span class="fl">54978806</span>, <span class="fl">9731396</span>, <span class="fl">11106712</span><span class="op">)</span>,</span>
 <span>                            country <span class="op">=</span> <span class="st">"Mexico"</span>,</span>
 <span>                            continent <span class="op">=</span> <span class="st">"America"</span><span class="op">)</span></span>
@@ -314,16 +325,22 @@
 <span>  <span class="fu"><a href="reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1.1</span>, arrange <span class="op">=</span> <span class="cn">F</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/theme_pop.html">theme_pop</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">100</span>, base_family <span class="op">=</span> <span class="st">"quicksand"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>                    legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, family <span class="op">=</span> <span class="st">"quicksand"</span><span class="op">)</span>,</span>
-<span>                    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, family <span class="op">=</span> <span class="st">"quicksand"</span>,</span>
-<span>                                              face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">90</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
-<span>                    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, family <span class="op">=</span> <span class="st">"quicksand"</span>,</span>
+<span>                    legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, </span>
+<span>                                               family <span class="op">=</span> <span class="st">"quicksand"</span><span class="op">)</span>,</span>
+<span>                    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, </span>
+<span>                                               family <span class="op">=</span> <span class="st">"quicksand"</span>,</span>
+<span>                                              face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">90</span>, </span>
+<span>                                              hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>                    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, </span>
+<span>                                                 family <span class="op">=</span> <span class="st">"quicksand"</span>,</span>
 <span>                                                 size <span class="op">=</span> <span class="fl">70</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
-<span>                    plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, family <span class="op">=</span> <span class="st">"quicksand"</span>,</span>
+<span>                    plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, </span>
+<span>                                                family <span class="op">=</span> <span class="st">"quicksand"</span>,</span>
 <span>                                                size <span class="op">=</span> <span class="fl">70</span>, hjust <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Population in Mexico by Sex and disability status"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"2023"</span>,</span>
-<span>       caption <span class="op">=</span> <span class="st">"As of 2023, 16% of the population in Mexico has some form of disability."</span><span class="op">)</span> <span class="op">+</span></span>
+<span>       caption <span class="op">=</span> <span class="st">"As of 2023, 16% of the population in Mexico </span></span>
+<span><span class="st">                  has some form of disability."</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span>, legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>        legend.box.spacing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="op">-</span><span class="fl">.4</span>, <span class="st">"cm"</span><span class="op">)</span>,</span>
 <span>        legend.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
@@ -484,12 +501,15 @@
 </h2>
 <div class="sourceCode" id="cb11"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">ggpop2024</span>,</span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="dt">title</span>   = {ggpop: Visualizing Population Data},</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="dt">author</span>  = {Roa-Contreras, Jorge A. and Soultanova, Ralitza and Alarid-Escudero, Fernando and Pineda-Antunez, Carlos},</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="dt">year</span>    = {2024},</span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="dt">note</span>    = {R package version 1.7.0},</span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="dt">url</span>     = {https://github.com/jurjoroa/ggpop},</span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="dt">license</span> = {MIT}</span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="dt">author</span>  = {Roa-Contreras, Jorge A. and </span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>             Soultanova, Ralitza and </span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>             Alarid-Escudero, Fernando and </span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>             Pineda-Antunez, Carlos},</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="dt">year</span>    = {2024},</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="dt">note</span>    = {R package version 1.7.0},</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  <span class="dt">url</span>     = {https://github.com/jurjoroa/ggpop},</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  <span class="dt">license</span> = {MIT}</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -527,10 +547,14 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Jorge A. Roa-Contreras <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-3972-9793" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li>Ralitza Soultanova <br><small class="roles"> Author </small> <a href="https://orcid.org/0009-0000-9324-5653" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li>Fernando Alarid-Escudero <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-5076-1172" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li>Carlos Pineda-Antunez <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-8352-7080" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>
+<a href="https://orcid.org/0000-0002-3972-9793" class="external-link">Jorge A. Roa-Contreras</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-3972-9793" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>
+<a href="https://orcid.org/0009-0000-9324-5653" class="external-link">Ralitza Soultanova</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0009-0000-9324-5653" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>
+<a href="https://orcid.org/0000-0001-5076-1172" class="external-link">Fernando Alarid-Escudero</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-5076-1172" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>
+<a href="https://orcid.org/0000-0002-8352-7080" class="external-link">Carlos Pineda-Antunez</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-8352-7080" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -539,6 +563,7 @@
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=ggpop" class="external-link"><img src="https://www.r-pkg.org/badges/version/ggpop" alt="CRAN status"></a></li>
 <li><a href="https://github.com/jurjoroa/ggpop/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/jurjoroa/ggpop/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/jurjoroa/ggpop/actions/workflows/pages/pages-build-deployment" class="external-link"><img src="https://github.com/jurjoroa/ggpop/actions/workflows/pages/pages-build-deployment/badge.svg" alt="pages-build-deployment"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://CRAN.R-project.org/package=ggpop" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/ggpop" alt="CRAN downloads"></a></li>
 <li><a href="https://CRAN.R-project.org/package=ggpop" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/ggpop" alt="CRAN total downloads"></a></li>
@@ -555,7 +580,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Jorge A. Roa-Contreras, Ralitza Soultanova, Fernando Alarid-Escudero, Carlos Pineda-Antunez.</p>
+  <p><a href="index.html"><img src="inst/figures/shp.png" height="40" alt="ggpop" style="vertical-align: middle; margin-right: 6px;"></a> Developed by <a href="https://orcid.org/0000-0002-3972-9793" class="external-link">Jorge A. Roa-Contreras</a>, <a href="https://orcid.org/0009-0000-9324-5653" class="external-link">Ralitza Soultanova</a>, <a href="https://orcid.org/0000-0001-5076-1172" class="external-link">Fernando Alarid-Escudero</a>, <a href="https://orcid.org/0000-0002-8352-7080" class="external-link">Carlos Pineda-Antunez</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

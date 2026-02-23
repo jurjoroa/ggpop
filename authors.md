@@ -2,17 +2,17 @@
 
 ## Authors
 
-- **Jorge A. Roa-Contreras**. Author, maintainer.
-  [](https://orcid.org/0000-0002-3972-9793)
+- **[Jorge A. Roa-Contreras](https://orcid.org/0000-0002-3972-9793)**.
+  Author, maintainer. [](https://orcid.org/0000-0002-3972-9793)
 
-- **Ralitza Soultanova**. Author.
-  [](https://orcid.org/0009-0000-9324-5653)
+- **[Ralitza Soultanova](https://orcid.org/0009-0000-9324-5653)**.
+  Author. [](https://orcid.org/0009-0000-9324-5653)
 
-- **Fernando Alarid-Escudero**. Author.
-  [](https://orcid.org/0000-0001-5076-1172)
+- **[Fernando Alarid-Escudero](https://orcid.org/0000-0001-5076-1172)**.
+  Author. [](https://orcid.org/0000-0001-5076-1172)
 
-- **Carlos Pineda-Antunez**. Author.
-  [](https://orcid.org/0000-0002-8352-7080)
+- **[Carlos Pineda-Antunez](https://orcid.org/0000-0002-8352-7080)**.
+  Author. [](https://orcid.org/0000-0002-8352-7080)
 
 ## Citation
 

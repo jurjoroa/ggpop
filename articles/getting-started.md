@@ -144,7 +144,6 @@ ggplot() +
     subtitle = "Each icon represents ~1% of the total population",
     color    = "Sex"
   )
-#> Downloading dataset...
 ```
 
 ![](getting-started_files/figure-html/basic-plot-1.png)

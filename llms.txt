@@ -109,7 +109,10 @@ df_pop_mx <- data.frame(sex = c("male", "female"),
 ### 2.- Process data
 
 ``` r
-df_pop_mx_prop <- process_data(data = df_pop_mx, group_var = sex, sum_var = n, sample_size = 1000)
+df_pop_mx_prop <- process_data(data = df_pop_mx, 
+                               group_var = sex, 
+                               sum_var = n, 
+                               sample_size = 1000)
 ```
 
 We apply the
@@ -246,7 +249,8 @@ change some parameters.
 
 ``` r
 #1.- We load or create the data
-df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled males", "disabled females"),
+df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled males", 
+                                    "disabled females"),
                             value = c(53726732, 54978806, 9731396, 11106712),
                             country = "Mexico",
                             continent = "America")
@@ -273,16 +277,22 @@ ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type)) 
   geom_pop(size = 1.1, arrange = F) +
   theme_pop(base_size = 100, base_family = "quicksand") +
   scale_legend_icon(size = 10,
-                    legend.text = element_text(color = "#D4AF37", family = "quicksand"),
-                    plot.title = element_text(color = "#D4AF37", family = "quicksand",
-                                              face = "bold", size = 90, hjust = 0.5),
-                    plot.subtitle = element_text(color = "#D4AF37", family = "quicksand",
+                    legend.text = element_text(color = "#D4AF37", 
+                                               family = "quicksand"),
+                    plot.title = element_text(color = "#D4AF37", 
+                                               family = "quicksand",
+                                              face = "bold", size = 90, 
+                                              hjust = 0.5),
+                    plot.subtitle = element_text(color = "#D4AF37", 
+                                                 family = "quicksand",
                                                  size = 70, hjust = 0.5),
-                    plot.caption = element_text(color = "#D4AF37", family = "quicksand",
+                    plot.caption = element_text(color = "#D4AF37", 
+                                                family = "quicksand",
                                                 size = 70, hjust = 0)) +
   labs(title = "Population in Mexico by Sex and disability status",
        subtitle = "2023",
-       caption = "As of 2023, 16% of the population in Mexico has some form of disability.") +
+       caption = "As of 2023, 16% of the population in Mexico 
+                  has some form of disability.") +
   theme(legend.position = "bottom", legend.title = element_blank(),
         legend.box.spacing = unit(-.4, "cm"),
         legend.margin = margin(t = 0, b = 0),
@@ -507,7 +517,10 @@ Example Plot geofacet
 ``` bibtex
 @Manual{ggpop2024,
   title   = {ggpop: Visualizing Population Data},
-  author  = {Roa-Contreras, Jorge A. and Soultanova, Ralitza and Alarid-Escudero, Fernando and Pineda-Antunez, Carlos},
+  author  = {Roa-Contreras, Jorge A. and 
+             Soultanova, Ralitza and 
+             Alarid-Escudero, Fernando and 
+             Pineda-Antunez, Carlos},
   year    = {2024},
   note    = {R package version 1.7.0},
   url     = {https://github.com/jurjoroa/ggpop},
@@ -547,9 +560,39 @@ Example Plot geofacet
 
 # Articles
 
+### Data Preparation
+
+Prepare your data for ggpop.
+
+- [Preparing Data with
+  process_data()](https://jurjoroa.github.io/ggpop/articles/process-data.md):
+
 ### Getting Started
 
-Learn the core ggpop workflow from data to plot.
+Learn the core geom_pop() workflow from data to plot.
 
 - [Getting Started with
   ggpop](https://jurjoroa.github.io/ggpop/articles/getting-started.md):
+
+### Icon Scatter Plots
+
+Use geom_icon_point() to build icon-based scatter plots.
+
+- [Icon Scatter Plots with
+  geom_icon_point()](https://jurjoroa.github.io/ggpop/articles/geom-icon-point.md):
+
+### Themes & Customization
+
+Customize your plots with themes, colors, legend options, and stroke.
+
+- [Themes &
+  Customization](https://jurjoroa.github.io/ggpop/articles/themes-customization.md):
+
+### Examples
+
+Ready-to-use examples for both geoms.
+
+- [geom_pop()
+  Examples](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.md):
+- [geom_icon_point()
+  Examples](https://jurjoroa.github.io/ggpop/articles/examples-geom-icon-point.md):
