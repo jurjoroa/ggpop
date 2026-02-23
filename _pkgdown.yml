@@ -6,6 +6,9 @@ template:
     fg: "white"
     primary: "#FF6B6B"
   assets: pkgdown/assets
+  includes:
+    after_body: |
+      <script src="https://jurjoroa.github.io/ggpop/theme-toggle.js"></script>
 
 navbar:
   title: 'ggpop'
