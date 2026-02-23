@@ -1,4 +1,4 @@
-# ggpop ![](inst/figures/logo.png)
+# ggpop
 
 > **Turn numbers into people. Turn data into stories.**
 

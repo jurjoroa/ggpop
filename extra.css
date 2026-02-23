@@ -59,7 +59,8 @@ a, a:visited {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease;
+  transform: translateX(0);
+  transition: transform 0.3s ease, background 0.3s, color 0.3s;
   font-size: 10px;
   color: #FF6B6B;
 }

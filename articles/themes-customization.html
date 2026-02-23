@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Themes &amp; Customization • ggpop</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -56,8 +61,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Themes &amp; Customization</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Themes &amp; Customization</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/themes-customization.Rmd" class="external-link"><code>vignettes/themes-customization.Rmd</code></a></small>
@@ -368,6 +372,46 @@ website</a> for the full function reference.</p>
 
 
 
-  <script src="https://jurjoroa.github.io/ggpop/theme-toggle.js"></script>
+  <script>
+(function () {
+  var STORAGE_KEY = 'ggpop-theme';
+  var theme = localStorage.getItem(STORAGE_KEY) || 'light';
+  document.documentElement.setAttribute('data-bs-theme', theme);
+
+  function updateBtn(t) {
+    var icon = document.querySelector('#ggpop-theme-btn .theme-icon');
+    if (!icon) return;
+    /* t='light' = dark mode active → show sun (click to go light)
+       t='dark'  = light mode active → show moon (click to go dark) */
+    icon.className = 'fa theme-icon ' + (t === 'light' ? 'fa-sun' : 'fa-moon');
+  }
+
+  function inject() {
+    var navRight = document.querySelector('.navbar-nav.ms-auto')
+                || document.querySelector('.navbar-right')
+                || document.querySelector('.navbar-nav:last-of-type');
+    if (!navRight) return;
+    var li = document.createElement('li');
+    li.className = 'nav-item d-flex align-items-center ms-2';
+    li.innerHTML = '<button id="ggpop-theme-btn" class="theme-switch" aria-label="Toggle theme">'
+      + '<span class="theme-switch-track">'
+      + '<span class="theme-switch-thumb"><i class="fa theme-icon fa-sun"></i></span>'
+      + '</span></button>';
+    navRight.appendChild(li);
+    updateBtn(theme);
+    document.getElementById('ggpop-theme-btn').addEventListener('click', function () {
+      var cur = document.documentElement.getAttribute('data-bs-theme');
+      var next = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-bs-theme', next);
+      localStorage.setItem(STORAGE_KEY, next);
+      updateBtn(next);
+    });
+  }
+
+  document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', inject)
+    : inject();
+})();
+</script>
 </body>
 </html>
