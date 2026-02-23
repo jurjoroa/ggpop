@@ -52,8 +52,10 @@ authors:
 
 footer:
   structure:
-    left: developed_by
+    left: [package_logo, developed_by]
     right: built_with
+  components:
+    package_logo: "<a href='index.html'><img src='inst/figures/shp.png' height='40' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
 
 articles:
   - title: "Data Preparation"
