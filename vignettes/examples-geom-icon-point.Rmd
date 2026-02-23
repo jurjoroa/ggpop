@@ -1,8 +1,8 @@
 ---
-title: "Icon Scatter Plots with geom_icon_point()"
+title: "geom_icon_point() Examples"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Icon Scatter Plots with geom_icon_point()}
+  %\VignetteIndexEntry{geom_icon_point() Examples}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,10 +18,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-## What is `geom_icon_point()`?
-
-`geom_icon_point()` is the scatter plot cousin of `geom_pop()`. It works exactly like `ggplot2::geom_point()` — but replaces dots with Font Awesome icons. No data preprocessing is required: just supply any data frame with `x` and `y` variables and let the icons do the talking.
-
 ```{r load}
 library(ggpop)
 library(ggplot2)
@@ -30,11 +26,11 @@ library(dplyr)
 
 ---
 
-## 1. Basic Usage — A Fixed Icon
+## Example 1: Single Icon Scatter Plot
 
-The simplest use case: a single icon for all points, with `color` carrying the grouping information. Use the `icon` parameter (not `aes()`) to fix one icon across all observations.
+The simplest use: a fixed icon for all points, color encodes the grouping variable.
 
-```{r basic}
+```{r single-icon}
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -54,9 +50,9 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 
 ---
 
-## 2. Mapping Icons to Categories
+## Example 2: Different Icon per Category
 
-`geom_icon_point()` shines when each category gets its own icon. Map `icon` inside `aes()` to a column in your data — each group then carries its own visual identity.
+Each food item gets its own icon. The icon is the identity — no legend needed to understand what each point represents.
 
 ```{r mapped-icons}
 df_food <- data.frame(
@@ -92,9 +88,9 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
 
 ---
 
-## 3. Size Mapping
+## Example 3: Size Mapping
 
-Map a continuous variable to `size` inside `aes()` to add a third dimension of information. Use `scales::rescale()` to keep icon sizes in a readable range — raw values that are too large or too small make icons unreadable.
+Map a continuous variable to icon size. Use `scales::rescale()` to keep sizes readable.
 
 ```{r size-mapping}
 df_brand <- data.frame(
@@ -107,11 +103,10 @@ df_brand <- data.frame(
                  "tv", "spotify", "uber", "airbnb")
 )
 
-# Rescale employees to a readable icon size range
 df_brand$size_scaled <- scales::rescale(df_brand$employees, to = c(0.8, 2.5))
 
 ggplot(df_brand, aes(x = revenue, y = market_cap,
-                     icon = icon, color = brand, size = size_scaled)) +
+                       icon = icon, color = brand, size = size_scaled)) +
   geom_icon_point(dpi = 100) +
   scale_x_log10(labels = scales::dollar_format(suffix = "B")) +
   scale_y_log10(labels = scales::dollar_format(suffix = "B")) +
@@ -136,26 +131,25 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 
 ---
 
-## 4. Factor Ordering
+## Example 4: Factor Ordering
 
-When `color` is mapped to a factor, the legend follows **factor level order**. `geom_icon_point()` automatically assigns icons to legend entries in the same order — so setting factor levels is all you need for a correctly ordered legend.
+Factor levels control both legend order and icon assignment. Always set levels explicitly.
 
 ```{r factor-ordering}
 df_health <- data.frame(
-  country    = c("Chad", "Mali", "Niger", "Bolivia", "Egypt", "Morocco",
-                 "Germany", "France", "Japan"),
-  spend      = c(27, 30, 22, 215, 185, 190, 5986, 4902, 4717),
-  life_exp   = c(54, 58, 62, 71, 72, 74, 81, 83, 84),
-  income     = c(rep("Low", 3), rep("Middle", 3), rep("High", 3)),
-  icon       = c(rep("pills", 3), rep("stethoscope", 3), rep("hospital", 3))
+  country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
+               "Morocco", "Germany", "France", "Japan"),
+  spend    = c(27, 30, 22, 215, 185, 190, 5986, 4902, 4717),
+  life_exp = c(54, 58, 62, 71, 72, 74, 81, 83, 84),
+  income   = c(rep("Low", 3), rep("Middle", 3), rep("High", 3)),
+  icon     = c(rep("pills", 3), rep("stethoscope", 3), rep("hospital", 3))
 )
 
-# Factor level order controls both legend order AND icon assignment
 df_health$income <- factor(df_health$income,
   levels = c("Low", "Middle", "High"))
 
 ggplot(df_health, aes(x = spend, y = life_exp,
-                      icon = icon, color = income)) +
+                        icon = icon, color = income)) +
   geom_icon_point(size = 2, dpi = 100) +
   scale_x_log10(labels = scales::dollar_format()) +
   scale_color_manual(values = c(
@@ -174,38 +168,31 @@ ggplot(df_health, aes(x = spend, y = life_exp,
   )
 ```
 
-> **Tip:** Always set factor levels explicitly with `factor(..., levels = ...)` before plotting. This guarantees that the icon in the legend matches the correct group, regardless of data row order.
-
 ---
 
-## 5. Combining with Other Geoms
+## Example 5: Combined Geoms
 
-`geom_icon_point()` is fully compatible with all standard ggplot2 geoms. Here we combine it with `geom_smooth()`, `geom_vline()`, `geom_hline()`, `geom_label()`, and `annotate()` to build a fully annotated analytical chart.
+`geom_icon_point()` works alongside any ggplot2 geom. Here combined with `geom_smooth()`, reference lines, labels, and quadrant annotations.
 
-```{r combined-geoms, fig.height = 6}
+```{r combined, fig.height = 6}
 ggplot(df_health, aes(x = spend, y = life_exp,
-                      icon = icon, color = income)) +
-  # Reference lines: world averages
-  geom_vline(xintercept = 1060, linetype = "dashed",
+                        icon = icon, color = income)) +
+  geom_vline(xintercept = 500, linetype = "dashed",
              color = "#546E7A", linewidth = 0.5) +
-  geom_hline(yintercept = 72.0, linetype = "dashed",
+  geom_hline(yintercept = 72, linetype = "dashed",
              color = "#546E7A", linewidth = 0.5) +
-  # Trend line across all groups
   geom_smooth(aes(group = 1), method = "lm", se = TRUE,
-              color = "#78909C", fill = "#37474F",
+              color = "#78909C", fill = "#ECEFF1",
               linewidth = 0.7, linetype = "dotted", alpha = 0.4) +
-  # Icons
   geom_icon_point(size = 2, dpi = 100) +
-  # Country labels
   geom_label(aes(label = country), color = "white",
              fill = "#1E3A5F", label.size = 0,
              label.padding = unit(0.15, "lines"),
              vjust = -1.3, size = 3) +
-  # Quadrant annotations
   annotate("text", x = 20, y = 84, label = "EFFICIENT",
-           color = "#78909C", size = 2.5, hjust = 0, fontface = "bold") +
-  annotate("text", x = 2000, y = 56, label = "COSTLY &\nINEFFICIENT",
-           color = "#78909C", size = 2.5, hjust = 0,
+           color = "#546E7A", size = 2.5, hjust = 0, fontface = "bold") +
+  annotate("text", x = 1500, y = 56, label = "COSTLY &\nINEFFICIENT",
+           color = "#546E7A", size = 2.5, hjust = 0,
            fontface = "bold", lineheight = 0.9) +
   scale_x_log10(labels = scales::dollar_format()) +
   scale_color_manual(values = c(
@@ -215,6 +202,10 @@ ggplot(df_health, aes(x = spend, y = life_exp,
   )) +
   scale_legend_icon(size = 6) +
   theme_pop() +
+  theme(
+    axis.text  = element_text(color = "#546E7A", size = 9),
+    axis.title = element_text(color = "#37474F", size = 10)
+  ) +
   labs(
     title    = "More Spending \u2260 Longer Lives",
     subtitle = "Health expenditure per capita vs. life expectancy  \u00b7  X-axis is log-scaled",
@@ -226,14 +217,43 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 ---
 
-## Summary
+## Example 6: Dark Theme Scatter
 
-| Feature | How |
-|:---|:---|
-| Fixed icon | `geom_icon_point(icon = "circle")` |
-| Mapped icons | `aes(icon = icon_column)` |
-| Size mapping | `aes(size = var)` + `scales::rescale()` |
-| Factor ordering | `factor(..., levels = ...)` before plotting |
-| Combine geoms | Add any ggplot2 geom before or after |
+`geom_icon_point()` with `theme_pop_dark()` for a presentation-ready chart.
 
-Visit the [ggpop website](https://jurjoroa.github.io/ggpop/) for the full function reference and more examples.
+```{r dark-theme}
+df_academic <- data.frame(
+  name        = c("Alice", "Bob", "Carol", "Dan", "Eve",
+                  "Prof. A", "Prof. B", "Prof. C",
+                  "Dr. X", "Dr. Y", "Dr. Z"),
+  study_hours = c(6, 4, 7, 3, 5, 8, 9, 7, 10, 12, 11),
+  score       = c(78, 65, 88, 55, 72, 91, 95, 87, 98, 99, 96),
+  role        = c(rep("Student", 5), rep("Teacher", 3), rep("Researcher", 3)),
+  icon        = c(rep("user-graduate", 5), rep("chalkboard-user", 3), rep("flask", 3))
+)
+
+df_academic$role <- factor(df_academic$role,
+  levels = c("Student", "Teacher", "Researcher"))
+
+ggplot(df_academic, aes(x = study_hours, y = score,
+                          icon = icon, color = role)) +
+  geom_icon_point(size = 2, dpi = 100) +
+  scale_color_manual(values = c(
+    "Student"    = "#CE93D8",
+    "Teacher"    = "#80DEEA",
+    "Researcher" = "#FFCC80"
+  )) +
+  scale_legend_icon(size = 6) +
+  theme_pop_dark(bg_color = "#0D1B2A", text_color = "white") +
+  theme(
+    axis.text  = element_text(color = "#90A4AE"),
+    axis.title = element_text(color = "#B0BEC5")
+  ) +
+  labs(
+    title    = "Study Hours vs. Performance Score",
+    subtitle = "Icon reflects academic role",
+    x        = "Weekly Study Hours",
+    y        = "Performance Score",
+    color    = "Role"
+  )
+```

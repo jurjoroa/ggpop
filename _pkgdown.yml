@@ -17,6 +17,12 @@ navbar:
       href: index.html
     - text: "Vignettes"
       href: articles/index.html
+    - text: "Examples"
+      menu:
+        - text: "geom_pop()"
+          href: articles/examples-geom-pop.html
+        - text: "geom_icon_point()"
+          href: articles/examples-geom-icon-point.html
     - text: "Functions"
       href: reference/index.html
     - text: "News"
@@ -47,3 +53,8 @@ articles:
     desc: "Customize your plots with themes, colors, legend options, and stroke."
     contents:
       - themes-customization
+  - title: "Examples"
+    desc: "Ready-to-use examples for both geoms."
+    contents:
+      - examples-geom-pop
+      - examples-geom-icon-point

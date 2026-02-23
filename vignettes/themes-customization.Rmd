@@ -25,13 +25,13 @@ library(dplyr)
 ```
 
 ```{r shared-data, include = FALSE}
-df <- data.frame(
+df_sex <- data.frame(
   sex = c("male", "female"),
   n   = c(63459580, 67401427)
 )
 
-df_processed <- process_data(
-  data        = df,
+df_sex_proc <- process_data(
+  data        = df_sex,
   group_var   = sex,
   sum_var     = n,
   sample_size = 100
@@ -61,7 +61,7 @@ The default theme. Removes axes and gridlines, keeping the focus on the icons. A
 ```{r theme-pop}
 ggplot() +
   geom_pop(
-    data         = df_processed,
+    data         = df_sex_proc,
     aes(icon = icon, color = type),
     size         = 2,
     dpi          = 100,
@@ -86,7 +86,7 @@ ggplot() +
 ```{r theme-pop-params}
 ggplot() +
   geom_pop(
-    data         = df_processed,
+    data         = df_sex_proc,
     aes(icon = icon, color = type),
     size         = 2,
     dpi          = 100,
@@ -110,7 +110,7 @@ A dark variant built on top of `theme_pop()`. Accepts `bg_color` and `text_color
 ```{r theme-pop-dark}
 ggplot() +
   geom_pop(
-    data         = df_processed,
+    data         = df_sex_proc,
     aes(icon = icon, color = type),
     size         = 2,
     dpi          = 100,
@@ -131,7 +131,7 @@ Custom background and text colors:
 ```{r theme-pop-dark-custom}
 ggplot() +
   geom_pop(
-    data         = df_processed,
+    data         = df_sex_proc,
     aes(icon = icon, color = type),
     size         = 2,
     dpi          = 100,
@@ -156,7 +156,7 @@ Strips everything — no title, no legend, no margins. Best for embedding icon a
 ```{r theme-pop-minimal}
 ggplot() +
   geom_pop(
-    data = df_processed,
+    data = df_sex_proc,
     aes(icon = icon, color = type),
     size = 2,
     dpi  = 100
@@ -174,7 +174,7 @@ Controls the size of icons in the legend. Use it alongside `legend_icons = TRUE`
 ```{r scale-legend}
 ggplot() +
   geom_pop(
-    data         = df_processed,
+    data         = df_sex_proc,
     aes(icon = icon, color = type),
     size         = 2,
     dpi          = 100,
@@ -195,7 +195,7 @@ Add an outline to icons with `stroke_width`. Higher values produce a thicker bor
 ```{r stroke}
 ggplot() +
   geom_pop(
-    data         = df_processed,
+    data         = df_sex_proc,
     aes(icon = icon, color = type),
     size         = 2,
     dpi          = 100,
@@ -217,7 +217,7 @@ ggplot() +
 ```{r custom-theme}
 ggplot() +
   geom_pop(
-    data         = df_processed,
+    data         = df_sex_proc,
     aes(icon = icon, color = type),
     size         = 2,
     dpi          = 100,

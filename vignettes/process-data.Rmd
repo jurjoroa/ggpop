@@ -41,19 +41,19 @@ library(dplyr)
 The minimum inputs are `data`, `group_var` (the grouping column), and `sum_var` (the count column). `sample_size` controls how many icons appear in the final chart (max 1,000).
 
 ```{r basic}
-df <- data.frame(
+df_sex <- data.frame(
   sex = c("male", "female"),
   n   = c(63459580, 67401427)
 )
 
-df_processed <- process_data(
-  data        = df,
+df_sex_proc <- process_data(
+  data        = df_sex,
   group_var   = sex,
   sum_var     = n,
   sample_size = 100
 )
 
-head(df_processed)
+head(df_sex_proc)
 ```
 
 The output contains:
@@ -70,7 +70,7 @@ The output contains:
 `process_data()` calculates each group's share of the total and allocates icons proportionally. With `sample_size = 100`, a group with 48% of the population gets ~48 icons.
 
 ```{r proportions}
-df_processed %>%
+df_sex_proc %>%
   group_by(type) %>%
   summarise(
     icons      = n(),
