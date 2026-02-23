@@ -1,3 +1,25 @@
+/* ── Hyperlinks — restore default, override inside code only ────── */
+a, a:visited {
+  color: #FF6B6B;
+}
+
+/* Navbar links stay white */
+.navbar a, .navbar a:visited {
+  color: white !important;
+}
+
+.navbar a:hover {
+  color: #FF6B6B !important;
+}
+
+pre a, pre a:visited {
+  color: #80DEEA !important;
+}
+
+pre a:hover {
+  color: #FF6B6B !important;
+}
+
 .navbar-brand::before {
   content: "";
   display: inline-block;
@@ -9,4 +31,43 @@
   background-repeat: no-repeat;
   vertical-align: middle;
 }
+
+/* ── Code blocks ────────────────────────────────────────────────── */
+
+/* Fenced code blocks — lighter than page bg so they lift off */
+pre {
+  background-color: #1e576b !important;
+  border: 1px solid #FF6B6B !important;
+  border-radius: 6px !important;
+  padding: 1rem !important;
+  color: #e8f4f8 !important;
+}
+
+/* Inline code */
+code {
+  background-color: #1e576b !important;
+  color: #FF6B6B !important;
+  border-radius: 4px !important;
+  padding: 0.15em 0.4em !important;
+  font-size: 0.9em !important;
+}
+
+/* Syntax highlighting */
+pre code {
+  color: #e8f4f8 !important;         /* bright white-teal — default text */
+}
+
+/* downlit classes (used by pkgdown for R highlighting) */
+.sourceCode .op       { color: #FF6B6B !important; }   /* coral  — operators: <- = () + ~ */
+.sourceCode .kw       { color: #FF6B6B !important; }   /* coral  — keywords: if, for, function */
+.sourceCode .fu       { color: #80CBC4 !important; }   /* teal   — function calls */
+.sourceCode .st       { color: #A5D6A7 !important; }   /* cyan   — strings */
+.sourceCode .dv,
+.sourceCode .fl,
+.sourceCode .in       { color: #FFD54F !important; }   /* yellow — numbers */
+.sourceCode .co       { color: #90A4AE !important; font-style: italic; } /* muted — comments */
+.sourceCode .cn       { color: #FFB74D !important; }   /* amber  — TRUE, FALSE, NULL, NA */
+.sourceCode .sc       { color: #FF6B6B !important; }   /* coral  — special characters */
+.sourceCode .va       { color: #e8f4f8 !important; }   /* white  — variable names */
+.sourceCode .ot       { color: #e8f4f8 !important; }   /* white  — other identifiers */
 
