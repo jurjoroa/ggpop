@@ -6,9 +6,6 @@ template:
     fg: "white"
     primary: "#FF6B6B"
   assets: pkgdown/assets
-  includes:
-    in_header: |
-      <link rel="stylesheet" href="extra.css">
 
 navbar:
   title: 'ggpop'
@@ -55,7 +52,7 @@ footer:
     left: [package_logo, developed_by]
     right: built_with
   components:
-    package_logo: "<a href='index.html'><img src='inst/figures/shp.png' height='40' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
+    package_logo: "<a href='https://jurjoroa.github.io/ggpop/'><img src='https://jurjoroa.github.io/ggpop/inst/figures/shp.png' height='40' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
 
 articles:
   - title: "Data Preparation"
