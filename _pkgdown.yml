@@ -43,3 +43,7 @@ articles:
     desc: "Use geom_icon_point() to build icon-based scatter plots."
     contents:
       - geom-icon-point
+  - title: "Themes & Customization"
+    desc: "Customize your plots with themes, colors, legend options, and stroke."
+    contents:
+      - themes-customization
