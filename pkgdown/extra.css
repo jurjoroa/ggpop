@@ -19,6 +19,69 @@ a, a:visited {
   color: #FF6B6B !important;
 }
 
+/* ── Theme toggle switch ────────────────────────────────────────── */
+/* NOTE: The JS toggle sets data-bs-theme="dark" for LIGHT mode and
+   data-bs-theme="light" for DARK mode. This is intentional —
+   see _pkgdown.yml after_body script. Do NOT change the selector
+   mapping without also updating the JS toggle logic.               */
+
+/* Button wrapper — no browser button styles */
+.theme-switch {
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Track — dark mode default: white tones */
+.theme-switch-track {
+  width: 52px;
+  height: 26px;
+  border-radius: 13px;
+  background: rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(255,255,255,0.45);
+  position: relative;
+  display: block;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Thumb — dark mode: white circle, sun icon, left side */
+.theme-switch-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  font-size: 10px;
+  color: #FF6B6B;
+}
+
+/* Light mode active: thumb slides right, track becomes teal-tinted */
+[data-bs-theme="dark"] .theme-switch-track {
+  background: rgba(1,57,79,0.12);
+  border-color: rgba(1,57,79,0.4);
+}
+
+[data-bs-theme="dark"] .theme-switch-thumb {
+  transform: translateX(26px);
+  background: #01394f;
+  color: #FFB74D;
+}
+
+/* Hover glow */
+.theme-switch:hover .theme-switch-track {
+  border-color: #FF6B6B;
+  box-shadow: 0 0 0 2px rgba(255,107,107,0.25);
+}
+
 pre a, pre a:visited {
   color: #80DEEA !important;
 }
@@ -39,7 +102,10 @@ pre a:hover {
   vertical-align: middle;
 }
 
-/* ── Code blocks ────────────────────────────────────────────────── */
+/* ── Code blocks — default = DARK theme ────────────────────────── */
+/* Unscoped styles apply when data-bs-theme is unset or "light".
+   bslib compiles the dark background (#01394f) as the site default,
+   so these dark code block styles match that default state.        */
 
 /* Fenced code blocks — lighter than page bg so they lift off */
 pre {
@@ -78,3 +144,46 @@ pre code {
 .sourceCode .va       { color: #e8f4f8 !important; }   /* white  — variable names */
 .sourceCode .ot       { color: #e8f4f8 !important; }   /* white  — other identifiers */
 
+/* ── Code blocks — LIGHT theme (selector = "dark") ─────────────── */
+/* Scoped under [data-bs-theme="dark"] because the JS sets that
+   attribute when the user switches TO light mode. Counterintuitive
+   but intentional — matches the JS toggle in _pkgdown.yml.        */
+
+[data-bs-theme="dark"] pre {
+  background-color: #f5f5f5 !important;
+  border: 1px solid #FF6B6B !important;
+  border-radius: 6px !important;
+  padding: 1rem !important;
+  color: #1a1a1a !important;
+}
+
+[data-bs-theme="dark"] code {
+  background-color: #f0f0f0 !important;
+  color: #c0392b !important;
+  border-radius: 4px !important;
+  padding: 0.15em 0.4em !important;
+  font-size: 0.9em !important;
+}
+
+[data-bs-theme="dark"] pre code {
+  color: #1a1a1a !important;
+}
+
+[data-bs-theme="dark"] .sourceCode .op  { color: #c0392b !important; }
+[data-bs-theme="dark"] .sourceCode .kw  { color: #c0392b !important; }
+[data-bs-theme="dark"] .sourceCode .fu  { color: #00796b !important; }
+[data-bs-theme="dark"] .sourceCode .st  { color: #2e7d32 !important; }
+[data-bs-theme="dark"] .sourceCode .dv,
+[data-bs-theme="dark"] .sourceCode .fl,
+[data-bs-theme="dark"] .sourceCode .in  { color: #e65100 !important; }
+[data-bs-theme="dark"] .sourceCode .co  { color: #78909c !important; font-style: italic; }
+[data-bs-theme="dark"] .sourceCode .cn  { color: #6a1a6a !important; }
+[data-bs-theme="dark"] .sourceCode .sc  { color: #c0392b !important; }
+[data-bs-theme="dark"] .sourceCode .va  { color: #1a1a1a !important; }
+[data-bs-theme="dark"] .sourceCode .ot  { color: #1a1a1a !important; }
+
+[data-bs-theme="dark"] a,
+[data-bs-theme="dark"] a:visited      { color: #c0392b; }
+[data-bs-theme="dark"] pre a,
+[data-bs-theme="dark"] pre a:visited  { color: #00796b !important; }
+[data-bs-theme="dark"] pre a:hover    { color: #FF6B6B !important; }
