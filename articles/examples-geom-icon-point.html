@@ -141,8 +141,8 @@ legend needed to understand what each point represents.</p>
 <span>    x        <span class="op">=</span> <span class="st">"Calories (per 100g)"</span>,</span>
 <span>    y        <span class="op">=</span> <span class="st">"Protein (g per 100g)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Group"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Multiple icons per color/group detected.</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Warning: Multiple icons per color/group detected.</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Why you are seeing this warning:</span></span>
 <span><span class="co">#&gt;   The legend can only display ONE icon per group, but some groups have</span></span>
@@ -170,7 +170,7 @@ legend needed to understand what each point represents.</p>
 <span><span class="co">#&gt;   `ggplot() + geom_pop(aes(icon = icon, color = group))`</span></span>
 <span><span class="co">#&gt;   </span></span>
 <span><span class="co">#&gt;   Option 3: Set legend_icons = FALSE to use point markers</span></span>
-<span><span class="co">#&gt;   `geom_pop(..., legend_icons = FALSE)`</span></span></code></pre></div>
+<span><span class="co">#&gt;   `geom_pop(..., legend_icons = FALSE)`</span></span></code></pre>
 <p><img src="examples-geom-icon-point_files/figure-html/mapped-icons-1.png" class="r-plt" alt="" width="100%"></p>
 <hr>
 </div>
@@ -179,7 +179,7 @@ legend needed to understand what each point represents.</p>
 </h2>
 <p>Map a continuous variable to icon size. Use
 <code><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">scales::rescale()</a></code> to keep sizes readable.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_brand</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  brand      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Google"</span>, <span class="st">"Microsoft"</span>, <span class="st">"Meta"</span>, <span class="st">"Amazon"</span>,</span>
 <span>                 <span class="st">"Netflix"</span>, <span class="st">"Spotify"</span>, <span class="st">"Uber"</span>, <span class="st">"Airbnb"</span><span class="op">)</span>,</span>
@@ -213,9 +213,9 @@ legend needed to understand what each point represents.</p>
 <span>    y        <span class="op">=</span> <span class="st">"Market Cap (log scale)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Brand"</span>,</span>
 <span>    size     <span class="op">=</span> <span class="st">"Employees"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">size</span> : <span style="color: #0000BB;">"Employees"</span></span></span></code></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">size</span> : <span style="color: #0000BB;">"Employees"</span></span></span></code></pre>
 <p><img src="examples-geom-icon-point_files/figure-html/size-mapping-1.png" class="r-plt" alt="" width="100%"></p>
 <hr>
 </div>
@@ -224,7 +224,7 @@ legend needed to understand what each point represents.</p>
 </h2>
 <p>Factor levels control both legend order and icon assignment. Always
 set levels explicitly.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  country  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chad"</span>, <span class="st">"Mali"</span>, <span class="st">"Niger"</span>, <span class="st">"Bolivia"</span>, <span class="st">"Egypt"</span>,</span>
 <span>               <span class="st">"Morocco"</span>, <span class="st">"Germany"</span>, <span class="st">"France"</span>, <span class="st">"Japan"</span><span class="op">)</span>,</span>
@@ -264,7 +264,7 @@ set levels explicitly.</p>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> works alongside any ggplot2 geom. Here
 combined with <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth()</a></code>, reference lines, labels, and
 quadrant annotations.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_health</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">spend</span>, y <span class="op">=</span> <span class="va">life_exp</span>,</span>
 <span>                        icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">income</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">500</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
@@ -334,7 +334,7 @@ quadrant annotations.</p>
 </h2>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> with <code><a href="../reference/theme_pop_dark.html">theme_pop_dark()</a></code> for
 a presentation-ready chart.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_academic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  name        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Carol"</span>, <span class="st">"Dan"</span>, <span class="st">"Eve"</span>,</span>
 <span>                  <span class="st">"Prof. A"</span>, <span class="st">"Prof. B"</span>, <span class="st">"Prof. C"</span>,</span>

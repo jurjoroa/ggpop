@@ -78,36 +78,37 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
     y        = "Protein (g per 100g)",
     color    = "Group"
   )
-#> Warning: Multiple icons per color/group detected.
-#>   
-#> ! Why you are seeing this warning:
-#>   The legend can only display ONE icon per group, but some groups have
-#>   multiple:
-#>   
-#> - Fruit & Veg: 3 icons (apple-whole, carrot, lemon)
-#> - Dairy: 3 icons (bottle-water, cheese, jar)
-#> - Meat & Fish: 3 icons (drumstick-bite, bacon, fish)
-#>   
-#> ℹ What happens:
-#>   - The most frequent icon for each group will be shown in the legend
-#>   - Other icons in that group will still appear in the plot
-#>   - This may confuse viewers if icons have different meanings
-#>   
-#> ℹ Recommended fixes:
-#>   
-#>   Option 1: Use consistent icons per group
-#>   `df <- df %>% mutate(icon = case_when(`
-#>   `sex == 'A' ~ 'male',`
-#>   `sex == 'B' ~ 'female'`
-#>   `))`
-#>   
-#>   Option 2: Create a separate grouping variable
-#>   `df <- df %>% mutate(group = paste(sex, icon, sep = '_'))`
-#>   `ggplot() + geom_pop(aes(icon = icon, color = group))`
-#>   
-#>   Option 3: Set legend_icons = FALSE to use point markers
-#>   `geom_pop(..., legend_icons = FALSE)`
 ```
+
+    #> Warning: Multiple icons per color/group detected.
+    #>   
+    #> ! Why you are seeing this warning:
+    #>   The legend can only display ONE icon per group, but some groups have
+    #>   multiple:
+    #>   
+    #> - Fruit & Veg: 3 icons (apple-whole, carrot, lemon)
+    #> - Dairy: 3 icons (bottle-water, cheese, jar)
+    #> - Meat & Fish: 3 icons (drumstick-bite, bacon, fish)
+    #>   
+    #> ℹ What happens:
+    #>   - The most frequent icon for each group will be shown in the legend
+    #>   - Other icons in that group will still appear in the plot
+    #>   - This may confuse viewers if icons have different meanings
+    #>   
+    #> ℹ Recommended fixes:
+    #>   
+    #>   Option 1: Use consistent icons per group
+    #>   `df <- df %>% mutate(icon = case_when(`
+    #>   `sex == 'A' ~ 'male',`
+    #>   `sex == 'B' ~ 'female'`
+    #>   `))`
+    #>   
+    #>   Option 2: Create a separate grouping variable
+    #>   `df <- df %>% mutate(group = paste(sex, icon, sep = '_'))`
+    #>   `ggplot() + geom_pop(aes(icon = icon, color = group))`
+    #>   
+    #>   Option 3: Set legend_icons = FALSE to use point markers
+    #>   `geom_pop(..., legend_icons = FALSE)`
 
 ![](examples-geom-icon-point_files/figure-html/mapped-icons-1.png)
 
@@ -154,9 +155,10 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
     color    = "Brand",
     size     = "Employees"
   )
-#> Ignoring unknown labels:
-#> • size : "Employees"
 ```
+
+    #> Ignoring unknown labels:
+    #> • size : "Employees"
 
 ![](examples-geom-icon-point_files/figure-html/size-mapping-1.png)
 
