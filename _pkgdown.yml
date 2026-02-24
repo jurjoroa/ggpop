@@ -1,4 +1,5 @@
 url: https://jurjoroa.github.io/ggpop/
+title: "ggpop"
 template:
   bootstrap: 5
   bslib:
@@ -13,6 +14,13 @@ template:
         var STORAGE_KEY = 'ggpop-theme';
         var theme = localStorage.getItem(STORAGE_KEY) || 'light';
         document.documentElement.setAttribute('data-bs-theme', theme);
+
+        /* Enable transitions after first paint — prevents flash on page load */
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            document.documentElement.classList.add('theme-ready');
+          });
+        });
 
         function updateBtn(t) {
           var icon = document.querySelector('#ggpop-theme-btn .theme-icon');
@@ -53,7 +61,8 @@ template:
 navbar:
   title: 'ggpop'
   left:
-    - icon: fa-home fa-lg
+    - text: "Home"
+      icon: fa-home fa-lg
       href: index.html
     - text: "Vignettes"
       icon: fa-book
