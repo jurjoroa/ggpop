@@ -22,6 +22,34 @@ a, a:visited {
   color: white !important;
 }
 
+/* ── Navbar tab animation — smooth coral hover + glow ───────────── */
+/* Override Bootstrap's active-color variable so it uses coral instead
+   of full-white emphasis, removing the built-in brightness "shadow". */
+.navbar-nav {
+  --bs-navbar-active-color: #FF6B6B;
+  --bs-navbar-hover-color: #FF6B6B;
+}
+
+.navbar-nav .nav-link {
+  transition: color 0.25s ease, text-shadow 0.25s ease !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+  background: none !important;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-item.active > .nav-link,
+.navbar-nav .nav-item.show > .nav-link {
+  color: #FF6B6B !important;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.55);
+  box-shadow: none !important;
+  background: none !important;
+  border: none !important;
+}
+
 /* Align navbar icons with text */
 .navbar-nav .nav-link i.fa,
 .navbar-nav .dropdown-toggle i.fa {
