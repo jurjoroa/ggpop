@@ -15,7 +15,7 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="index.html"><span class="fa fa-home fa-lg"></span></a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="index.html"><span class="fa fa-home fa-lg"></span> Home</a></li>
 <li class="nav-item"><a class="nav-link" href="articles/index.html"><span class="fa fa-book"></span> Vignettes</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-cubes"></span> Examples</button>
@@ -61,11 +61,11 @@
       <p><small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/DESCRIPTION" class="external-link"><code>DESCRIPTION</code></a></small></p>
 
       <p>Roa-Contreras J, Soultanova R, Alarid-Escudero F, Pineda-Antunez C (2026).
-<em>ggpop: Visualizing Population Data (ggpop)</em>.
+<em>ggpop: ggpop - R package to visualize population data</em>.
 R package version 1.7.0, <a href="https://jurjoroa.github.io/ggpop/">https://jurjoroa.github.io/ggpop/</a>.
 </p>
       <pre>@Manual{,
-  title = {ggpop: Visualizing Population Data (ggpop)},
+  title = {ggpop: ggpop - R package to visualize population data},
   author = {Jorge A. Roa-Contreras and Ralitza Soultanova and Fernando Alarid-Escudero and Carlos Pineda-Antunez},
   year = {2026},
   note = {R package version 1.7.0},
@@ -94,6 +94,13 @@ R package version 1.7.0, <a href="https://jurjoroa.github.io/ggpop/">https://jur
   var STORAGE_KEY = 'ggpop-theme';
   var theme = localStorage.getItem(STORAGE_KEY) || 'light';
   document.documentElement.setAttribute('data-bs-theme', theme);
+
+  /* Enable transitions after first paint — prevents flash on page load */
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      document.documentElement.classList.add('theme-ready');
+    });
+  });
 
   function updateBtn(t) {
     var icon = document.querySelector('#ggpop-theme-btn .theme-icon');
