@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
   fig.width  = 7,
   fig.height = 5,
   dpi = 100,
-  out.width = "100%"
+  out.width = "100%",
+  dev.args  = list(bg = "transparent")
 )
 ```
 
@@ -24,13 +25,28 @@ library(ggplot2)
 library(dplyr)
 ```
 
+```{r theme-setup, include = FALSE}
+theme_transp <- theme(
+  plot.background   = element_rect(fill = "transparent", color = NA),
+  panel.background  = element_rect(fill = "transparent", color = NA),
+  legend.background = element_rect(fill = "transparent", color = NA),
+  legend.key        = element_rect(fill = "transparent", color = NA),
+  plot.title        = element_text(color = "white"),
+  plot.subtitle     = element_text(color = "white"),
+  legend.text       = element_text(color = "white"),
+  legend.title      = element_text(color = "white"),
+  axis.text         = element_text(color = "white"),
+  axis.title        = element_text(color = "white")
+)
+```
+
 ---
 
 ## Example 1: Single Icon Scatter Plot
 
 The simplest use: a fixed icon for all points, color encodes the grouping variable.
 
-```{r single-icon}
+```{r single-icon-display, eval = FALSE}
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -48,13 +64,32 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   )
 ```
 
+```{r single-icon, echo = FALSE}
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
+  geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
+  scale_color_manual(values = c(
+    "setosa"     = "#43A047",
+    "versicolor" = "#1E88E5",
+    "virginica"  = "#E53935"
+  )) +
+  theme_pop() +
+  theme_transp +
+  labs(
+    title    = "Iris: Sepal vs. Petal Length",
+    subtitle = "Fixed icon — color encodes species",
+    x        = "Sepal Length (cm)",
+    y        = "Petal Length (cm)",
+    color    = "Species"
+  )
+```
+
 ---
 
 ## Example 2: Different Icon per Category
 
 Each food item gets its own icon. The icon is the identity — no legend needed to understand what each point represents.
 
-```{r mapped-icons}
+```{r mapped-icons-display, eval = FALSE}
 df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
                "Milk", "Cheese", "Yogurt"),
@@ -86,13 +121,46 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
   )
 ```
 
+```{r mapped-icons, echo = FALSE}
+df_food <- data.frame(
+  food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
+               "Milk", "Cheese", "Yogurt"),
+  calories = c(52, 41, 47, 165, 250, 208, 61, 402, 59),
+  protein  = c(0.3, 1.1, 0.9, 31, 26, 20, 3.2, 25, 10),
+  group    = c(rep("Fruit & Veg", 3), rep("Meat & Fish", 3), rep("Dairy", 3)),
+  icon     = c("apple-whole", "carrot", "lemon",
+               "drumstick-bite", "bacon", "fish",
+               "bottle-water", "cheese", "jar")
+)
+
+df_food$group <- factor(df_food$group,
+  levels = c("Fruit & Veg", "Dairy", "Meat & Fish"))
+
+ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
+  geom_icon_point(size = 2, dpi = 100) +
+  scale_color_manual(values = c(
+    "Fruit & Veg"  = "#43A047",
+    "Dairy"        = "#1E88E5",
+    "Meat & Fish"  = "#E53935"
+  )) +
+  theme_pop() +
+  theme_transp +
+  labs(
+    title    = "Calories vs. Protein by Food",
+    subtitle = "Each icon represents a specific food; color reflects the group",
+    x        = "Calories (per 100g)",
+    y        = "Protein (g per 100g)",
+    color    = "Group"
+  )
+```
+
 ---
 
 ## Example 3: Size Mapping
 
 Map a continuous variable to icon size. Use `scales::rescale()` to keep sizes readable.
 
-```{r size-mapping}
+```{r size-mapping-display, eval = FALSE}
 df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
                  "Netflix", "Spotify", "Uber", "Airbnb"),
@@ -129,13 +197,51 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
   )
 ```
 
+```{r size-mapping, echo = FALSE}
+df_brand <- data.frame(
+  brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
+                 "Netflix", "Spotify", "Uber", "Airbnb"),
+  revenue    = c(394, 283, 212, 117, 514, 32, 13, 37, 9),
+  market_cap = c(2950, 1750, 2800, 1200, 1750, 190, 55, 140, 75),
+  employees  = c(160, 180, 220, 86, 1540, 13, 9, 32, 6),
+  icon       = c("apple", "google", "windows", "meta", "amazon",
+                 "tv", "spotify", "uber", "airbnb")
+)
+
+df_brand$size_scaled <- scales::rescale(df_brand$employees, to = c(0.8, 2.5))
+
+ggplot(df_brand, aes(x = revenue, y = market_cap,
+                       icon = icon, color = brand, size = size_scaled)) +
+  geom_icon_point(dpi = 100) +
+  scale_x_log10(labels = scales::dollar_format(suffix = "B")) +
+  scale_y_log10(labels = scales::dollar_format(suffix = "B")) +
+  scale_color_manual(values = c(
+    "Apple"     = "#FF5252", "Google"    = "#42A5F5",
+    "Microsoft" = "#4DB6AC", "Meta"      = "#8E24AA",
+    "Amazon"    = "#FFB300", "Netflix"   = "#E53935",
+    "Spotify"   = "#1DB954", "Uber"      = "#546E7A",
+    "Airbnb"    = "#FF4081"
+  )) +
+  scale_size_continuous(range = c(1, 3), labels = scales::comma) +
+  theme_pop() +
+  theme_transp +
+  labs(
+    title    = "Tech Giants: Revenue vs. Market Cap",
+    subtitle = "Icon = brand  ·  Size = employees (rescaled)  ·  Log scales",
+    x        = "Annual Revenue (log scale)",
+    y        = "Market Cap (log scale)",
+    color    = "Brand",
+    size     = "Employees"
+  )
+```
+
 ---
 
 ## Example 4: Factor Ordering
 
 Factor levels control both legend order and icon assignment. Always set levels explicitly.
 
-```{r factor-ordering}
+```{r factor-ordering-display, eval = FALSE}
 df_health <- data.frame(
   country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
                "Morocco", "Germany", "France", "Japan"),
@@ -159,6 +265,40 @@ ggplot(df_health, aes(x = spend, y = life_exp,
   )) +
   scale_legend_icon(size = 6) +
   theme_pop() +
+  labs(
+    title    = "Health Spending vs. Life Expectancy",
+    subtitle = "Factor levels control legend order and icon assignment",
+    x        = "Health Spending per Capita (log scale)",
+    y        = "Life Expectancy (years)",
+    color    = "Income Group"
+  )
+```
+
+```{r factor-ordering, echo = FALSE}
+df_health <- data.frame(
+  country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
+               "Morocco", "Germany", "France", "Japan"),
+  spend    = c(27, 30, 22, 215, 185, 190, 5986, 4902, 4717),
+  life_exp = c(54, 58, 62, 71, 72, 74, 81, 83, 84),
+  income   = c(rep("Low", 3), rep("Middle", 3), rep("High", 3)),
+  icon     = c(rep("pills", 3), rep("stethoscope", 3), rep("hospital", 3))
+)
+
+df_health$income <- factor(df_health$income,
+  levels = c("Low", "Middle", "High"))
+
+ggplot(df_health, aes(x = spend, y = life_exp,
+                        icon = icon, color = income)) +
+  geom_icon_point(size = 2, dpi = 100) +
+  scale_x_log10(labels = scales::dollar_format()) +
+  scale_color_manual(values = c(
+    "Low"    = "#E53935",
+    "Middle" = "#FFB300",
+    "High"   = "#43A047"
+  )) +
+  scale_legend_icon(size = 6) +
+  theme_pop() +
+  theme_transp +
   labs(
     title    = "Health Spending vs. Life Expectancy",
     subtitle = "Factor levels control legend order and icon assignment",
