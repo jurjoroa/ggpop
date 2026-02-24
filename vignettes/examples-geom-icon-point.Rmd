@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
   fig.width  = 7,
   fig.height = 5,
   dpi = 100,
-  out.width = "100%"
+  out.width = "100%",
+  dev.args  = list(bg = "transparent")
 )
 ```
 
@@ -22,6 +23,21 @@ knitr::opts_chunk$set(
 library(ggpop)
 library(ggplot2)
 library(dplyr)
+```
+
+```{r theme-setup, include = FALSE}
+theme_transp <- theme(
+  plot.background   = element_rect(fill = "transparent", color = NA),
+  panel.background  = element_rect(fill = "transparent", color = NA),
+  legend.background = element_rect(fill = "transparent", color = NA),
+  legend.key        = element_rect(fill = "transparent", color = NA),
+  plot.title        = element_text(color = "white"),
+  plot.subtitle     = element_text(color = "white"),
+  legend.text       = element_text(color = "white"),
+  legend.title      = element_text(color = "white"),
+  axis.text         = element_text(color = "white"),
+  axis.title        = element_text(color = "white")
+)
 ```
 
 ---
@@ -39,6 +55,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
     "virginica"  = "#E53935"
   )) +
   theme_pop() +
+  theme_transp +
   labs(
     title    = "Iris: Sepal vs. Petal Length",
     subtitle = "Fixed icon — color encodes species",
@@ -77,6 +94,7 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
     "Meat & Fish"  = "#E53935"
   )) +
   theme_pop() +
+  theme_transp +
   labs(
     title    = "Calories vs. Protein by Food",
     subtitle = "Each icon represents a specific food; color reflects the group",
@@ -119,6 +137,7 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
   )) +
   scale_size_continuous(range = c(1, 3), labels = scales::comma) +
   theme_pop() +
+  theme_transp +
   labs(
     title    = "Tech Giants: Revenue vs. Market Cap",
     subtitle = "Icon = brand  ·  Size = employees (rescaled)  ·  Log scales",
@@ -159,6 +178,7 @@ ggplot(df_health, aes(x = spend, y = life_exp,
   )) +
   scale_legend_icon(size = 6) +
   theme_pop() +
+  theme_transp +
   labs(
     title    = "Health Spending vs. Life Expectancy",
     subtitle = "Factor levels control legend order and icon assignment",

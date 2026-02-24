@@ -15,7 +15,8 @@ knitr::opts_chunk$set(
   fig.width  = 7,
   fig.height = 5,
   dpi = 100,
-  out.width = "100%"
+  out.width = "100%",
+  dev.args  = list(bg = "transparent")
 )
 ```
 
@@ -23,6 +24,21 @@ knitr::opts_chunk$set(
 library(ggpop)
 library(ggplot2)
 library(dplyr)
+```
+
+```{r theme-setup, include = FALSE}
+theme_transp <- theme(
+  plot.background   = element_rect(fill = "transparent", color = NA),
+  panel.background  = element_rect(fill = "transparent", color = NA),
+  legend.background = element_rect(fill = "transparent", color = NA),
+  legend.key        = element_rect(fill = "transparent", color = NA),
+  plot.title        = element_text(color = "white"),
+  plot.subtitle     = element_text(color = "white"),
+  legend.text       = element_text(color = "white"),
+  legend.title      = element_text(color = "white"),
+  axis.text         = element_text(color = "white"),
+  axis.title        = element_text(color = "white")
+)
 ```
 
 ---
@@ -133,6 +149,7 @@ ggplot() +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
   scale_legend_icon(size = 5) +
   theme_pop() +
+  theme_transp +
   labs(
     title    = "Mexico Population by Sex (2024)",
     subtitle = "Each icon represents ~1% of the total population",
@@ -170,6 +187,7 @@ ggplot() +
   )) +
   scale_legend_icon(size = 5) +
   theme_pop() +
+  theme_transp +
   labs(
     title    = "Simulated Patient Population (n = 100)",
     subtitle = "Each icon represents one patient",
@@ -216,6 +234,7 @@ ggplot() +
   )) +
   scale_legend_icon(size = 5) +
   theme_pop() +
+  theme_transp +
   labs(
     title    = "Education Attainment",
     subtitle = "Each icon represents 1% of the population",
@@ -311,6 +330,7 @@ ggplot() +
   ) +
   scale_legend_icon(size = 5) +
   theme_pop() +
+  theme_transp +
   labs(
     title    = "Population by Sex and Disability Status",
     subtitle = "Icons outlined with stroke_width = 6",
