@@ -1,6 +1,7 @@
 ---
 title: "geom_pop() Examples"
 output: rmarkdown::html_vignette
+code_folding: hide
 vignette: >
   %\VignetteIndexEntry{geom_pop() Examples}
   %\VignetteEngine{knitr::rmarkdown}
@@ -26,7 +27,81 @@ library(dplyr)
 
 ---
 
-## Example 1: Population by Sex
+## Example 1: World Population by Continent
+
+Out of every 100 people on Earth, how many come from each continent? Each icon uses a distinct symbol and color per continent, and the legend shows the exact count.
+
+```{r world-population, fig.width = 15, fig.height = 15, class.source = 'fold-show'}
+df_world <- data.frame(
+  continent = c("Asia", "Africa", "Europe", "Latin America", "North America", "Oceania"),
+  n         = c(4753079000, 1441090000, 748000000, 662000000, 376000000, 45000000)
+)
+
+df_world_proc <- process_data(
+  data        = df_world,
+  group_var   = continent,
+  sum_var     = n,
+  sample_size = 500
+) %>%
+  mutate(icon = case_when(
+    type == "Asia"          ~ "torii-gate",
+    type == "Africa"        ~ "sun",
+    type == "Europe"        ~ "landmark",
+    type == "Latin America" ~ "pepper-hot",
+    type == "North America" ~ "mountain-sun",
+    type == "Oceania"       ~ "fish"
+  ))
+
+df_world_proc$type <- factor(df_world_proc$type,
+  levels = c("Asia", "Africa", "Europe", 
+             "Latin America", "North America", "Oceania"))
+
+# Build legend labels showing exact icon count per continent
+df_counts <- df_world_proc %>%
+  group_by(type) %>%
+  summarise(n_icons = n(), .groups = "drop") %>%
+  mutate(label = paste0(type, " \u00b7 ", n_icons, " persons"))
+
+v_labels <- setNames(df_counts$label, as.character(df_counts$type))
+
+ggplot(data = df_world_proc,
+    aes(icon = icon, color = type)) +
+  geom_pop(size         = 1,
+            dpi          = 100,
+            legend_icons = TRUE,
+            arrange      = TRUE) +
+  scale_color_manual(
+    values = c(
+      "Asia"          = "#E64A19",
+      "Africa"        = "#F9A825",
+      "Europe"        = "#1565C0",
+      "Latin America" = "#00897B",
+      "North America" = "#2E7D32",
+      "Oceania"       = "#0277BD"
+    ),
+    labels = v_labels
+  ) +
+  scale_legend_icon(size = 5)+
+  theme_pop(base_size = 25) +
+  theme(legend.position = "bottom",plot.title = element_text(color = "white"), 
+        plot.subtitle = element_text(color = "white"),
+        legend.text = element_text(color = "white"),
+        legend.title = element_text(color = "white"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA)) +
+        
+  labs(
+    title    = "World Population by Continent (2024)",
+    subtitle = "Each icon represents ~1% of the global 
+                population  \u00b7  Sample of 500",
+    color    = "Continent"
+  )
+
+```
+
+---
+
+## Example 2: Population by Sex
 
 A simple two-group population chart using Mexico's 2024 population data.
 
@@ -67,7 +142,7 @@ ggplot() +
 
 ---
 
-## Example 2: Health Status
+## Example 3: Health Status
 
 A three-group chart showing a simulated patient population broken down by health status.
 
@@ -104,7 +179,7 @@ ggplot() +
 
 ---
 
-## Example 3: Education Levels
+## Example 4: Education Levels
 
 Population chart showing education attainment across four levels.
 
@@ -150,7 +225,7 @@ ggplot() +
 
 ---
 
-## Example 4: Disease Burden with Dark Theme
+## Example 5: Disease Burden with Dark Theme
 
 A dark-themed chart showing disease categories in a simulated population.
 
@@ -193,7 +268,7 @@ ggplot() +
 
 ---
 
-## Example 5: Disability Status with Stroke
+## Example 6: Disability Status with Stroke
 
 Using `stroke_width` to outline icons for better visibility and `arrange = TRUE` to group icons by type.
 

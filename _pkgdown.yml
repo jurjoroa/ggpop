@@ -58,6 +58,9 @@ template:
       })();
       </script>
 
+code:
+  folding: show
+
 navbar:
   title: 'ggpop'
   left:
