@@ -541,19 +541,6 @@ df_transport_prop <- df_transport_prop %>%
     type == "taxi"       ~ "taxi"
   ))
 
-library(showtext)
-library(sysfonts)
-
-sysfonts::font_add_google("Inter", "inter")
-
-
-showtext::showtext_auto()
-
-
-font_add_google("Inter", "inter")
-
-showtext::showtext_auto(FALSE)
-
 # 4. Plot with facet_wrap + legend placed inside bottom-right
 ggplot(data = df_transport_prop,
     aes(icon = icon, group = type, color = type)) +
@@ -568,7 +555,6 @@ ggplot(data = df_transport_prop,
         Each icon represents roughly 750–840 commuters, varying by country.",
         width = 35), collapse = "\n")) +
   theme(
-    text = element_text(family = "inter"),
     # Put legend INSIDE plot area (bottom-right)
     legend.position = c(0.9, 0.05),
     legend.justification = c(1, 0),
@@ -668,18 +654,6 @@ df_transport_prop <- df_transport_prop %>%
     type == "taxi"       ~ "taxi"
   ))
 
-library(showtext)
-library(sysfonts)
-
-sysfonts::font_add_google("Inter", "inter")
-
-
-showtext::showtext_auto()
-
-
-font_add_google("Inter", "inter")
-
-showtext::showtext_auto(FALSE)
 
 # 4. Plot with facet_wrap + legend placed inside bottom-right (the “empty panel” area)
 ggplot() +
@@ -703,7 +677,6 @@ ggplot() +
     )
   ) +
   theme(
-    text = element_text(family = "inter"),
     # Put legend INSIDE plot area (bottom-right)
     legend.position = c(0.9, 0.05),
     legend.justification = c(1, 0),
