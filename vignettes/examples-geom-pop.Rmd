@@ -746,525 +746,97 @@ ggplot() +
 
 Combining `geom_pop()` with the `geofacet` package places each state's panel in its actual geographic position on the US map. Here, skull icons represent gun deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000 people. The layout immediately reveals regional patterns that a standard bar chart would hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the South and rural West cluster visually as the hardest-hit regions.
 
+Note: According to issue #488 from geofacet package 
+
+"You may want to install ggplot2 v3.5.2 until it is fixed so the plot can work. Note that this is the case for all grids, not the US states grid alone (so if possible, please update the issue title).".
+
+```{r geofacet, eval = FALSE, message=FALSE, warning=FALSE}
+devtools::install_version(package = "ggplot2", 
+                          version = "3.5.2", 
+                          repos = "http://cran.us.r-project.org")
+
+```
 
 
 ```{r guns_plot, eval = FALSE, message=FALSE, warning=FALSE}
 
 
-library(sf)
-library(dplyr)
-library(geofacet)
+library(sf); library(dplyr); library(geofacet)
 
 url <- "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/7a5e5e1b1009312506ebd873d7858fa424c14b68/DATA/us_states_hexgrid.geojson.json"
 
-my_sf <- read_sf(url) %>%
-  mutate(
-    google_name = gsub(" \\(United States\\)", "", google_name)
-  )
-
-stopifnot("iso3166_2" %in% names(my_sf))
-
-states_in_hex <- my_sf %>%
+states_in_hex <- read_sf(url) %>%
+  mutate(google_name = gsub(" \\(United States\\)", "", google_name)) %>%
   st_drop_geometry() %>%
   transmute(state = iso3166_2) %>%
   distinct()
-# ---- Real state-level infant mortality rates ----
-# Data from CDC National Vital Statistics System, 2023
-# Infant deaths per 1,000 live births
-
-# ---- Real state-level gun death rates ----
-# Data from CDC/Violence Policy Center, 2023
-# Gun deaths per 100,000 population (all causes: homicide, suicide, unintentional)
 
 df_rates <- states_in_hex %>%
   mutate(gun_death_rate_per_100k = case_when(
-    state == "AL" ~ 25.6,
-    state == "AK" ~ 23.5,
-    state == "AZ" ~ 18.5,
-    state == "AR" ~ 21.9,
-    state == "CA" ~ 8.0,
-    state == "CO" ~ 16.6,
-    state == "CT" ~ 6.2,
-    state == "DE" ~ 12.0,
-    state == "FL" ~ 13.7,
-    state == "GA" ~ 18.6,
-    state == "HI" ~ 4.9,
-    state == "ID" ~ 17.9,
-    state == "IL" ~ 13.5,
-    state == "IN" ~ 18.3,
-    state == "IA" ~ 10.5,
-    state == "KS" ~ 16.3,
-    state == "KY" ~ 18.4,
-    state == "LA" ~ 28.3,
-    state == "ME" ~ 14.0,
-    state == "MD" ~ 12.3,
-    state == "MA" ~ 3.7,  # Lowest
-    state == "MI" ~ 13.9,
-    state == "MN" ~ 8.9,
-    state == "MS" ~ 29.4,  # Highest
-    state == "MO" ~ 21.4,
-    state == "MT" ~ 21.5,
-    state == "NE" ~ 10.6,
-    state == "NV" ~ 18.4,
-    state == "NH" ~ 9.6,
-    state == "NJ" ~ 4.6,
-    state == "NM" ~ 25.3,
-    state == "NY" ~ 4.7,
-    state == "NC" ~ 16.4,
-    state == "ND" ~ 12.8,
-    state == "OH" ~ 15.0,
-    state == "OK" ~ 19.9,
-    state == "OR" ~ 14.2,
-    state == "PA" ~ 13.6,
-    state == "RI" ~ 4.8,
-    state == "SC" ~ 19.1,
-    state == "SD" ~ 12.3,
-    state == "TN" ~ 22.0,
-    state == "TX" ~ 14.9,
-    state == "UT" ~ 14.8,
-    state == "VT" ~ 12.0,
-    state == "VA" ~ 13.8,
-    state == "WA" ~ 13.0,
-    state == "WV" ~ 16.8,
-    state == "WI" ~ 12.7,
-    state == "WY" ~ 21.5,
-    state == "DC" ~ 28.5,  # DC has very high rate
-    TRUE ~ 13.7  # US average as fallback
+    state == "AL" ~ 25.6, state == "AK" ~ 23.5, state == "AZ" ~ 18.5, state == "AR" ~ 21.9,
+    state == "CA" ~  8.0, state == "CO" ~ 16.6, state == "CT" ~  6.2, state == "DE" ~ 12.0,
+    state == "FL" ~ 13.7, state == "GA" ~ 18.6, state == "HI" ~  4.9, state == "ID" ~ 17.9,
+    state == "IL" ~ 13.5, state == "IN" ~ 18.3, state == "IA" ~ 10.5, state == "KS" ~ 16.3,
+    state == "KY" ~ 18.4, state == "LA" ~ 28.3, state == "ME" ~ 14.0, state == "MD" ~ 12.3,
+    state == "MA" ~  3.7, state == "MI" ~ 13.9, state == "MN" ~  8.9, state == "MS" ~ 29.4,
+    state == "MO" ~ 21.4, state == "MT" ~ 21.5, state == "NE" ~ 10.6, state == "NV" ~ 18.4,
+    state == "NH" ~  9.6, state == "NJ" ~  4.6, state == "NM" ~ 25.3, state == "NY" ~  4.7,
+    state == "NC" ~ 16.4, state == "ND" ~ 12.8, state == "OH" ~ 15.0, state == "OK" ~ 19.9,
+    state == "OR" ~ 14.2, state == "PA" ~ 13.6, state == "RI" ~  4.8, state == "SC" ~ 19.1,
+    state == "SD" ~ 12.3, state == "TN" ~ 22.0, state == "TX" ~ 14.9, state == "UT" ~ 14.8,
+    state == "VT" ~ 12.0, state == "VA" ~ 13.8, state == "WA" ~ 13.0, state == "WV" ~ 16.8,
+    state == "WI" ~ 12.7, state == "WY" ~ 21.5, state == "DC" ~ 28.5,
+    TRUE ~ 13.7
   )) %>%
-  # Convert rate per 100,000 to expected cases per 100 people
-  # Rate is per 100,000, so divide by 1,000 to get per 100
-  mutate(
-    cases_per_100 = round(gun_death_rate_per_100k / 1000, 1),
-    # Convert to probability for binomial sampling
-    gun_death_rate = gun_death_rate_per_100k / 100000
-  )
-# ---- Real state-level gun death rates ----
-# Data from CDC/Violence Policy Center, 2023
-# Gun deaths per 100,000 population (all causes: homicide, suicide, unintentional)
-# Each icon represents 1,000 people, so 100 icons = 100,000 people
+  mutate(deaths_count = round(gun_death_rate_per_100k))
 
-df_rates <- states_in_hex %>%
-  mutate(gun_death_rate_per_100k = case_when(
-    state == "AL" ~ 25.6,
-    state == "AK" ~ 23.5,
-    state == "AZ" ~ 18.5,
-    state == "AR" ~ 21.9,
-    state == "CA" ~ 8.0,
-    state == "CO" ~ 16.6,
-    state == "CT" ~ 6.2,
-    state == "DE" ~ 12.0,
-    state == "FL" ~ 13.7,
-    state == "GA" ~ 18.6,
-    state == "HI" ~ 4.9,
-    state == "ID" ~ 17.9,
-    state == "IL" ~ 13.5,
-    state == "IN" ~ 18.3,
-    state == "IA" ~ 10.5,
-    state == "KS" ~ 16.3,
-    state == "KY" ~ 18.4,
-    state == "LA" ~ 28.3,
-    state == "ME" ~ 14.0,
-    state == "MD" ~ 12.3,
-    state == "MA" ~ 3.7,  # Lowest
-    state == "MI" ~ 13.9,
-    state == "MN" ~ 8.9,
-    state == "MS" ~ 29.4,  # Highest
-    state == "MO" ~ 21.4,
-    state == "MT" ~ 21.5,
-    state == "NE" ~ 10.6,
-    state == "NV" ~ 18.4,
-    state == "NH" ~ 9.6,
-    state == "NJ" ~ 4.6,
-    state == "NM" ~ 25.3,
-    state == "NY" ~ 4.7,
-    state == "NC" ~ 16.4,
-    state == "ND" ~ 12.8,
-    state == "OH" ~ 15.0,
-    state == "OK" ~ 19.9,
-    state == "OR" ~ 14.2,
-    state == "PA" ~ 13.6,
-    state == "RI" ~ 4.8,
-    state == "SC" ~ 19.1,
-    state == "SD" ~ 12.3,
-    state == "TN" ~ 22.0,
-    state == "TX" ~ 14.9,
-    state == "UT" ~ 14.8,
-    state == "VT" ~ 12.0,
-    state == "VA" ~ 13.8,
-    state == "WA" ~ 13.0,
-    state == "WV" ~ 16.8,
-    state == "WI" ~ 12.7,
-    state == "WY" ~ 21.5,
-    state == "DC" ~ 28.5,
-    TRUE ~ 13.7  # US average as fallback
-  )) %>%
-  # Since each icon = 1,000 people and we have 100 icons (100,000 people)
-  # The rate per 100,000 is exactly the number of affected icons
-  mutate(
-    expected_deaths_per_100_icons = gun_death_rate_per_100k,
-    # Round to get whole number of deaths
-    deaths_count = round(gun_death_rate_per_100k)
-  )
-
-# ---- Create 100-icon samples per state ----
-# Each icon represents 1,000 people
 df_people <- df_rates %>%
   group_by(state, deaths_count, gun_death_rate_per_100k) %>%
   reframe(
-    # Create 100 icons: deaths_count will be "gun death", rest will be "survived"
     icon_id = 1:100,
-    status = if_else(icon_id <= unique(deaths_count), "gun death", "no gun death")
+    status  = if_else(icon_id <= unique(deaths_count), "gun death", "no gun death")
   )
 
-# ---- Convert to ggpop format ----
 df_hex_prop <- process_data(
-  data = df_people,
-  group_var = status,
-  sum_var = NULL,
-  sample_size = 50,
-  high_group_var = "state"
-)
-
-df_hex_prop <- df_hex_prop %>%
-  mutate(
-    icon = case_when(
-      type == "gun death" ~ "skull",
-      type == "no gun death" ~ "person",
-      TRUE ~ "person"
-    )
-  ) %>%
+  data = df_people, group_var = status, sum_var = NULL,
+  sample_size = 50, high_group_var = "state"
+) %>%
+  mutate(icon = if_else(type == "gun death", "skull", "person")) %>%
   rename(code = group)
-# ---- Plot using facet_geo ----
-# ---- Plot using facet_geo with black background and enhanced design ----
-# ---- Plot using facet_geo with black background and enhanced design ----
+
 ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
-  geom_pop(size = 3.5, arrange = TRUE, facet = "code") +  # Increased size since fewer icons
+  geom_pop(size = 3.5, arrange = TRUE, facet = "code") +
   geofacet::facet_geo(~ code, grid = "us_state_grid3", label = "name") +
   scale_color_manual(
     values = c("gun death" = "#FF1744", "no gun death" = "#42A5F5"),
     labels = c("Gun death (each skull = 2,000 people)", "No gun death")
   ) +
+  scale_legend_icon(size = 6) +
   theme_void(base_size = 14) +
   labs(
-    title = "GUN VIOLENCE ACROSS AMERICA",
+    title    = "GUN VIOLENCE ACROSS AMERICA",
     subtitle = "Each icon represents 2,000 people • Skulls show gun deaths per 100,000 population\nMississippi has nearly 8× the gun death rate of Massachusetts",
-    caption = "Data: CDC/Violence Policy Center, 2023 (age-adjusted rates: homicide, suicide, accidents)\nHighest: Mississippi (29.4 per 100k = ~15 skulls) • Lowest: Massachusetts (3.7 per 100k = ~2 skulls) • National Average: 13.7 per 100k"
+    caption  = "Data: CDC/Violence Policy Center, 2023 (age-adjusted rates: homicide, suicide, accidents)\nHighest: Mississippi (29.4 per 100k = ~15 skulls) • Lowest: Massachusetts (3.7 per 100k = ~2 skulls) • National Average: 13.7 per 100k"
   ) +
-  scale_legend_icon(size = 6) +
   theme(
-    # Black background
-    plot.background = element_blank(),
-    panel.background = element_blank(),
-    
-    # Legend styling
-    legend.position = "bottom",
-    legend.title = element_blank(),
-    legend.text = element_text(color = "#D4AF37", size = 16, face = "bold"),
-    legend.background =  element_blank(),
-    legend.key = element_blank(),
-    legend.margin = margin(t = 15, b = 5),
-    
-    # State labels
-    strip.text = element_text(
-      size = 12, 
-      color = "#D4AF37",
-      margin = margin(b = 4)
-    ),
-    
-    # Title styling
-    plot.title = element_text(
-      hjust = 0.5, 
-      face = "bold", 
-      size = 24, 
-      color = "#FF1744",
-      margin = margin(b = 10),
-      family = "sans"
-    ),
-    
-    # Subtitle styling
-    plot.subtitle = element_text(
-      hjust = 0.5, 
-      size = 13, 
-      lineheight = 1.3,
-      color = "#D4AF37",
-      margin = margin(b = 15)
-    ),
-    
-    # Caption styling
-    plot.caption = element_text(
-      hjust = 0.5, 
-      size = 9.5, 
-      color = "#D4AF37", 
-      lineheight = 1.4,
-      margin = margin(t = 15)
-    ),
-    plot.margin = margin(t = 40, r = 40, b = 40, l = 40)
-    
-    # Overall plot margins
-    
+    plot.background  = element_blank(), panel.background = element_blank(),
+    legend.position  = "bottom",       legend.title     = element_blank(),
+    legend.background = element_blank(), legend.key      = element_blank(),
+    legend.text      = element_text(color = "#D4AF37", size = 16, face = "bold"),
+    legend.margin    = margin(t = 15, b = 5),
+    strip.text       = element_text(size = 12, color = "#D4AF37", margin = margin(b = 4)),
+    plot.title       = element_text(hjust = 0.5, face = "bold", size = 24, color = "#FF1744",
+                                    margin = margin(b = 10), family = "sans"),
+    plot.subtitle    = element_text(hjust = 0.5, size = 13, lineheight = 1.3,
+                                    color = "#D4AF37", margin = margin(b = 15)),
+    plot.caption     = element_text(hjust = 0.5, size = 9.5, color = "#D4AF37",
+                                    lineheight = 1.4, margin = margin(t = 15)),
+    plot.margin      = margin(t = 40, r = 40, b = 40, l = 40)
   )
 
 ```
 
-
-```{r guns, echo = FALSE, fig.width = 15, fig.height = 15, message=FALSE, warning=FALSE}
-
-
-library(sf)
-library(dplyr)
-library(geofacet)
-
-url <- "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/7a5e5e1b1009312506ebd873d7858fa424c14b68/DATA/us_states_hexgrid.geojson.json"
-
-my_sf <- read_sf(url) %>%
-  mutate(
-    google_name = gsub(" \\(United States\\)", "", google_name)
-  )
-
-stopifnot("iso3166_2" %in% names(my_sf))
-
-states_in_hex <- my_sf %>%
-  st_drop_geometry() %>%
-  transmute(state = iso3166_2) %>%
-  distinct()
-# ---- Real state-level infant mortality rates ----
-# Data from CDC National Vital Statistics System, 2023
-# Infant deaths per 1,000 live births
-
-# ---- Real state-level gun death rates ----
-# Data from CDC/Violence Policy Center, 2023
-# Gun deaths per 100,000 population (all causes: homicide, suicide, unintentional)
-
-df_rates <- states_in_hex %>%
-  mutate(gun_death_rate_per_100k = case_when(
-    state == "AL" ~ 25.6,
-    state == "AK" ~ 23.5,
-    state == "AZ" ~ 18.5,
-    state == "AR" ~ 21.9,
-    state == "CA" ~ 8.0,
-    state == "CO" ~ 16.6,
-    state == "CT" ~ 6.2,
-    state == "DE" ~ 12.0,
-    state == "FL" ~ 13.7,
-    state == "GA" ~ 18.6,
-    state == "HI" ~ 4.9,
-    state == "ID" ~ 17.9,
-    state == "IL" ~ 13.5,
-    state == "IN" ~ 18.3,
-    state == "IA" ~ 10.5,
-    state == "KS" ~ 16.3,
-    state == "KY" ~ 18.4,
-    state == "LA" ~ 28.3,
-    state == "ME" ~ 14.0,
-    state == "MD" ~ 12.3,
-    state == "MA" ~ 3.7,  # Lowest
-    state == "MI" ~ 13.9,
-    state == "MN" ~ 8.9,
-    state == "MS" ~ 29.4,  # Highest
-    state == "MO" ~ 21.4,
-    state == "MT" ~ 21.5,
-    state == "NE" ~ 10.6,
-    state == "NV" ~ 18.4,
-    state == "NH" ~ 9.6,
-    state == "NJ" ~ 4.6,
-    state == "NM" ~ 25.3,
-    state == "NY" ~ 4.7,
-    state == "NC" ~ 16.4,
-    state == "ND" ~ 12.8,
-    state == "OH" ~ 15.0,
-    state == "OK" ~ 19.9,
-    state == "OR" ~ 14.2,
-    state == "PA" ~ 13.6,
-    state == "RI" ~ 4.8,
-    state == "SC" ~ 19.1,
-    state == "SD" ~ 12.3,
-    state == "TN" ~ 22.0,
-    state == "TX" ~ 14.9,
-    state == "UT" ~ 14.8,
-    state == "VT" ~ 12.0,
-    state == "VA" ~ 13.8,
-    state == "WA" ~ 13.0,
-    state == "WV" ~ 16.8,
-    state == "WI" ~ 12.7,
-    state == "WY" ~ 21.5,
-    state == "DC" ~ 28.5,  # DC has very high rate
-    TRUE ~ 13.7  # US average as fallback
-  )) %>%
-  # Convert rate per 100,000 to expected cases per 100 people
-  # Rate is per 100,000, so divide by 1,000 to get per 100
-  mutate(
-    cases_per_100 = round(gun_death_rate_per_100k / 1000, 1),
-    # Convert to probability for binomial sampling
-    gun_death_rate = gun_death_rate_per_100k / 100000
-  )
-# ---- Real state-level gun death rates ----
-# Data from CDC/Violence Policy Center, 2023
-# Gun deaths per 100,000 population (all causes: homicide, suicide, unintentional)
-# Each icon represents 1,000 people, so 100 icons = 100,000 people
-
-df_rates <- states_in_hex %>%
-  mutate(gun_death_rate_per_100k = case_when(
-    state == "AL" ~ 25.6,
-    state == "AK" ~ 23.5,
-    state == "AZ" ~ 18.5,
-    state == "AR" ~ 21.9,
-    state == "CA" ~ 8.0,
-    state == "CO" ~ 16.6,
-    state == "CT" ~ 6.2,
-    state == "DE" ~ 12.0,
-    state == "FL" ~ 13.7,
-    state == "GA" ~ 18.6,
-    state == "HI" ~ 4.9,
-    state == "ID" ~ 17.9,
-    state == "IL" ~ 13.5,
-    state == "IN" ~ 18.3,
-    state == "IA" ~ 10.5,
-    state == "KS" ~ 16.3,
-    state == "KY" ~ 18.4,
-    state == "LA" ~ 28.3,
-    state == "ME" ~ 14.0,
-    state == "MD" ~ 12.3,
-    state == "MA" ~ 3.7,  # Lowest
-    state == "MI" ~ 13.9,
-    state == "MN" ~ 8.9,
-    state == "MS" ~ 29.4,  # Highest
-    state == "MO" ~ 21.4,
-    state == "MT" ~ 21.5,
-    state == "NE" ~ 10.6,
-    state == "NV" ~ 18.4,
-    state == "NH" ~ 9.6,
-    state == "NJ" ~ 4.6,
-    state == "NM" ~ 25.3,
-    state == "NY" ~ 4.7,
-    state == "NC" ~ 16.4,
-    state == "ND" ~ 12.8,
-    state == "OH" ~ 15.0,
-    state == "OK" ~ 19.9,
-    state == "OR" ~ 14.2,
-    state == "PA" ~ 13.6,
-    state == "RI" ~ 4.8,
-    state == "SC" ~ 19.1,
-    state == "SD" ~ 12.3,
-    state == "TN" ~ 22.0,
-    state == "TX" ~ 14.9,
-    state == "UT" ~ 14.8,
-    state == "VT" ~ 12.0,
-    state == "VA" ~ 13.8,
-    state == "WA" ~ 13.0,
-    state == "WV" ~ 16.8,
-    state == "WI" ~ 12.7,
-    state == "WY" ~ 21.5,
-    state == "DC" ~ 28.5,
-    TRUE ~ 13.7  # US average as fallback
-  )) %>%
-  # Since each icon = 1,000 people and we have 100 icons (100,000 people)
-  # The rate per 100,000 is exactly the number of affected icons
-  mutate(
-    expected_deaths_per_100_icons = gun_death_rate_per_100k,
-    # Round to get whole number of deaths
-    deaths_count = round(gun_death_rate_per_100k)
-  )
-
-# ---- Create 100-icon samples per state ----
-# Each icon represents 1,000 people
-df_people <- df_rates %>%
-  group_by(state, deaths_count, gun_death_rate_per_100k) %>%
-  reframe(
-    # Create 100 icons: deaths_count will be "gun death", rest will be "survived"
-    icon_id = 1:100,
-    status = if_else(icon_id <= unique(deaths_count), "gun death", "no gun death")
-  )
-
-# ---- Convert to ggpop format ----
-df_hex_prop <- process_data(
-  data = df_people,
-  group_var = status,
-  sum_var = NULL,
-  sample_size = 50,
-  high_group_var = "state"
-)
-
-df_hex_prop <- df_hex_prop %>%
-  mutate(
-    icon = case_when(
-      type == "gun death" ~ "skull",
-      type == "no gun death" ~ "person",
-      TRUE ~ "person"
-    )
-  ) %>%
-  rename(code = group)
-# ---- Plot using facet_geo ----
-# ---- Plot using facet_geo with black background and enhanced design ----
-# ---- Plot using facet_geo with black background and enhanced design ----
-ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
-  geom_pop(size = 3.5, arrange = TRUE, facet = "code") +  # Increased size since fewer icons
-  geofacet::facet_geo(~ code, grid = "us_state_grid3", label = "name") +
-  scale_color_manual(
-    values = c("gun death" = "#FF1744", "no gun death" = "#42A5F5"),
-    labels = c("Gun death (each skull = 2,000 people)", "No gun death")
-  ) +
-  theme_void(base_size = 14) +
-  labs(
-    title = "GUN VIOLENCE ACROSS AMERICA",
-    subtitle = "Each icon represents 2,000 people • Skulls show gun deaths per 100,000 population\nMississippi has nearly 8× the gun death rate of Massachusetts",
-    caption = "Data: CDC/Violence Policy Center, 2023 (age-adjusted rates: homicide, suicide, accidents)\nHighest: Mississippi (29.4 per 100k = ~15 skulls) • Lowest: Massachusetts (3.7 per 100k = ~2 skulls) • National Average: 13.7 per 100k"
-  ) +
-  scale_legend_icon(size = 6) +
-  theme(
-    # Black background
-    plot.background = element_blank(),
-    panel.background = element_blank(),
-    
-    # Legend styling
-    legend.position = "bottom",
-    legend.title = element_blank(),
-    legend.text = element_text(color = "#D4AF37", size = 16, face = "bold"),
-    legend.background =  element_blank(),
-    legend.key = element_blank(),
-    legend.margin = margin(t = 15, b = 5),
-    
-    # State labels
-    strip.text = element_text(
-      size = 12, 
-      color = "#D4AF37",
-      margin = margin(b = 4)
-    ),
-    
-    # Title styling
-    plot.title = element_text(
-      hjust = 0.5, 
-      face = "bold", 
-      size = 24, 
-      color = "#FF1744",
-      margin = margin(b = 10),
-      family = "sans"
-    ),
-    
-    # Subtitle styling
-    plot.subtitle = element_text(
-      hjust = 0.5, 
-      size = 13, 
-      lineheight = 1.3,
-      color = "#D4AF37",
-      margin = margin(b = 15)
-    ),
-    
-    # Caption styling
-    plot.caption = element_text(
-      hjust = 0.5, 
-      size = 9.5, 
-      color = "#D4AF37", 
-      lineheight = 1.4,
-      margin = margin(t = 15)
-    ),
-    plot.margin = margin(t = 40, r = 40, b = 40, l = 40)
-    
-    # Overall plot margins
-    
-  )
-
-```
-
+![Example Plot geofacet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)
 
 
 
