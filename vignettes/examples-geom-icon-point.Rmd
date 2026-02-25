@@ -23,6 +23,7 @@ knitr::opts_chunk$set(
 library(ggpop)
 library(ggplot2)
 library(dplyr)
+library(ggtext)
 ```
 
 ```{r theme-setup, include = FALSE}
@@ -121,7 +122,7 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
   )
 ```
 
-```{r mapped-icons, echo = FALSE}
+```{r mapped-icons, echo = FALSE, message=FALSE, warning=FALSE}
 df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
                "Milk", "Cheese", "Yogurt"),
@@ -136,12 +137,14 @@ df_food <- data.frame(
 df_food$group <- factor(df_food$group,
   levels = c("Fruit & Veg", "Dairy", "Meat & Fish"))
 
-ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
+ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
   geom_icon_point(size = 2, dpi = 100) +
   scale_color_manual(values = c(
-    "Fruit & Veg"  = "#43A047",
+    "Apple" = "#43A047", "Carrot" = "#43A047", "Orange" = "#43A047",
     "Dairy"        = "#1E88E5",
-    "Meat & Fish"  = "#E53935"
+    "Milk" = "#1E88E5", "Cheese" = "#1E88E5", "Yogurt" = "#1E88E5",
+    "Meat & Fish"  = "#E53935",
+    "Chicken" = "#E53935", "Beef" = "#E53935", "Salmon" = "#E53935"
   )) +
   theme_pop() +
   theme_transp +
@@ -310,7 +313,215 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 ---
 
-## Example 5: Combined Geoms
+## Example 5: Paris 2024 Olympics — New Sports
+
+`geom_icon_point()` in a fixed-position grid with no traditional axes. All 45 Olympic disciplines at Paris 2024 are arranged in a 9×5 layout, each with its own icon. The 4 sports making their Olympic debut are highlighted in cyan; all existing disciplines are in gold. Annotations use `ggtext` for inline HTML styling.
+
+```{r paris-display, eval = FALSE}
+df_paris_disciplines <- data.frame(
+  sport = c(
+    # Aquatics (5)
+    "Swimming", "Diving", "Water Polo", "Artistic Swim", "Open Water",
+    # Racket (3)
+    "Badminton", "Tennis", "Table Tennis",
+    # Court / team (6)
+    "Volleyball", "Beach Volley", "Basketball", "3x3 Basketball",
+    "Handball", "Hockey",
+    # Combat (5)
+    "Boxing", "Judo", "Taekwondo", "Wrestling", "Fencing",
+    # Athletics (5)
+    "Athletics", "Triathlon", "Pentathlon", "Rowing", "Sailing",
+    # Ball (3)
+    "Football", "Rugby", "Golf",
+    # Precision (2)
+    "Archery", "Shooting",
+    # Cycling (5)
+    "Road Cycling", "Track Cycling", "MTB", "BMX Racing", "BMX Freestyle",
+    # Other (5)
+    "Equestrian", "Gymnastics", "Rhythmic Gym", "Trampoline", "Weightlifting",
+    # Canoe (2)
+    "Canoe Sprint", "Canoe Slalom",
+    # New (4)
+    "Breaking", "Skateboarding", "Sport Climbing", "Surfing"
+  ),
+  icon = c(
+    "person-swimming", "water", "droplet", "star", "wave-square",
+    "table-tennis-paddle-ball", "baseball-bat-ball", "circle",
+    "volleyball", "umbrella-beach", "basketball", "people-group",
+    "hand-holding", "hockey-puck",
+    "hand-fist", "hands", "shoe-prints", "person", "shield",
+    "person-running", "person-biking", "list-check", "anchor", "sailboat",
+    "futbol", "football", "golf-ball-tee",
+    "bullseye", "gun",
+    "road", "bicycle", "tree", "flag-checkered", "infinity",
+    "horse", "child", "ribbon", "arrows-up-to-line", "dumbbell",
+    "water-ladder", "person-falling-burst",
+    "music", "person-skating", "mountain", "compass"
+  ),
+  is_new = c(rep(FALSE, 41), TRUE, TRUE, TRUE, TRUE)
+)
+
+stopifnot(nrow(df_paris_disciplines) == 45)
+stopifnot(!anyDuplicated(df_paris_disciplines$sport))
+stopifnot(!anyDuplicated(df_paris_disciplines$icon))
+
+bg <- "#01394f"
+
+df_grid <- expand.grid(x = 1:9, y = 5:1) %>%
+  arrange(y, x) %>%
+  mutate(
+    sport  = df_paris_disciplines$sport,
+    icon   = df_paris_disciplines$icon,
+    is_new = df_paris_disciplines$is_new,
+    color  = ifelse(is_new, "#4DEEEA", "#E8C84A")
+  )
+
+ggplot(df_grid, aes(x = x, y = y)) +
+  geom_icon_point(
+    aes(icon = icon, color = I(color)),
+    size = 1.55, dpi = 100) +
+  geom_text(
+    aes(y = y - 0.38, label = sport, color = I(color)),
+    size = 1.5, lineheight = 0.85, fontface = "bold"
+  ) +
+  annotate(
+    "richtext",
+    x = 5, y = 7.8,
+    label = "<span style='color:#4DEEEA; font-size:28pt'><b>4 NEW SPORTS</b></span><br>
+             <span style='color:#E8C84A; font-size:18pt'>JOIN THE PARIS 2024 OLYMPICS</span>",
+    fill = NA, label.size = 0, lineheight = 1.2
+  ) +
+  annotate(
+    "richtext",
+    x = 5, y = 6.75,
+    label = "<span style='color:#4DEEEA; font-size:9pt'><b>BREAKING &nbsp;\u00b7&nbsp;
+             SKATEBOARDING &nbsp;\u00b7&nbsp; SPORT CLIMBING &nbsp;\u00b7&nbsp; SURFING</b></span>",
+    fill = NA, label.size = 0
+  ) +
+  annotate("point", x = 2.6, y = -0.55, color = "#E8C84A", size = 3.5) +
+  annotate("text",  x = 3.0, y = -0.55,
+           label = "Existing discipline (41)", color = "#E8C84A",
+           size = 3.0, hjust = 0, fontface = "bold") +
+  annotate("point", x = 6.2, y = -0.55, color = "#4DEEEA", size = 3.5) +
+  annotate("text",  x = 6.6, y = -0.55,
+           label = "New sport (4)", color = "#4DEEEA",
+           size = 3.0, hjust = 0, fontface = "bold") +
+  annotate(
+    "richtext",
+    x = 5, y = -1.15,
+    label = "<span style='color:#E8C84A'>Source: IOC / Paris 2024 &nbsp;\u00b7&nbsp;
+             Original concept: <span style='color:#4DEEEA'>G. Karamanis</span>
+             &nbsp; github.com/gkaramanis/30DayChartChallenge &nbsp;\u00b7&nbsp;
+             Remake: ggpop</span>",
+    fill = NA, label.size = 0, size = 2.5, lineheight = 1.2
+  ) +
+  coord_fixed(clip = "off", xlim = c(0.5, 9.5), ylim = c(-1.6, 9.2)) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = bg, color = NA),
+    plot.margin     = margin(30, 40, 60, 40)
+  )
+```
+
+```{r paris, echo = FALSE, fig.width = 7, fig.height = 9}
+df_paris_disciplines <- data.frame(
+  sport = c(
+    "Swimming", "Diving", "Water Polo", "Artistic Swim", "Open Water",
+    "Badminton", "Tennis", "Table Tennis",
+    "Volleyball", "Beach Volley", "Basketball", "3x3 Basketball",
+    "Handball", "Hockey",
+    "Boxing", "Judo", "Taekwondo", "Wrestling", "Fencing",
+    "Athletics", "Triathlon", "Pentathlon", "Rowing", "Sailing",
+    "Football", "Rugby", "Golf",
+    "Archery", "Shooting",
+    "Road Cycling", "Track Cycling", "MTB", "BMX Racing", "BMX Freestyle",
+    "Equestrian", "Gymnastics", "Rhythmic Gym", "Trampoline", "Weightlifting",
+    "Canoe Sprint", "Canoe Slalom",
+    "Breaking", "Skateboarding", "Sport Climbing", "Surfing"
+  ),
+  icon = c(
+    "person-swimming", "water", "droplet", "star", "wave-square",
+    "table-tennis-paddle-ball", "baseball-bat-ball", "circle",
+    "volleyball", "umbrella-beach", "basketball", "people-group",
+    "hand-holding", "hockey-puck",
+    "hand-fist", "hands", "shoe-prints", "person", "shield",
+    "person-running", "person-biking", "list-check", "anchor", "sailboat",
+    "futbol", "football", "golf-ball-tee",
+    "bullseye", "gun",
+    "road", "bicycle", "tree", "flag-checkered", "infinity",
+    "horse", "child", "ribbon", "arrows-up-to-line", "dumbbell",
+    "water-ladder", "person-falling-burst",
+    "music", "person-skating", "mountain", "compass"
+  ),
+  is_new = c(rep(FALSE, 41), TRUE, TRUE, TRUE, TRUE)
+)
+
+stopifnot(nrow(df_paris_disciplines) == 45)
+stopifnot(!anyDuplicated(df_paris_disciplines$sport))
+stopifnot(!anyDuplicated(df_paris_disciplines$icon))
+
+bg <- "#01394f"
+
+df_grid <- expand.grid(x = 1:9, y = 5:1) %>%
+  arrange(y, x) %>%
+  mutate(
+    sport  = df_paris_disciplines$sport,
+    icon   = df_paris_disciplines$icon,
+    is_new = df_paris_disciplines$is_new,
+    color  = ifelse(is_new, "#4DEEEA", "#E8C84A")
+  )
+
+ggplot(df_grid, aes(x = x, y = y)) +
+  geom_icon_point(
+    aes(icon = icon, color = I(color)),
+    size = 1.55, dpi = 100
+  ) +
+  geom_text(
+    aes(y = y - 0.38, label = sport, color = I(color)),
+    size = 1.5, lineheight = 0.85, fontface = "bold"
+  ) +
+  annotate(
+    "richtext",
+    x = 5, y = 7.8,
+    label = "<span style='color:#4DEEEA; font-size:28pt'><b>4 NEW SPORTS</b></span><br>
+             <span style='color:#E8C84A; font-size:18pt'>JOIN THE PARIS 2024 OLYMPICS</span>",
+    fill = NA, label.size = 0, lineheight = 1.2
+  ) +
+  annotate(
+    "richtext",
+    x = 5, y = 6.75,
+    label = "<span style='color:#4DEEEA; font-size:9pt'><b>BREAKING &nbsp;\u00b7&nbsp;
+             SKATEBOARDING &nbsp;\u00b7&nbsp; SPORT CLIMBING &nbsp;\u00b7&nbsp; SURFING</b></span>",
+    fill = NA, label.size = 0
+  ) +
+  annotate("point", x = 2.6, y = -0.55, color = "#E8C84A", size = 3.5) +
+  annotate("text",  x = 3.0, y = -0.55,
+           label = "Existing discipline (41)", color = "#E8C84A",
+           size = 3.0, hjust = 0, fontface = "bold") +
+  annotate("point", x = 6.2, y = -0.55, color = "#4DEEEA", size = 3.5) +
+  annotate("text",  x = 6.6, y = -0.55,
+           label = "New sport (4)", color = "#4DEEEA",
+           size = 3.0, hjust = 0, fontface = "bold") +
+  annotate(
+    "richtext",
+    x = 5, y = -1.15,
+    label = "<span style='color:#E8C84A'>Source: IOC / Paris 2024 &nbsp;\u00b7&nbsp;
+             Original concept: <span style='color:#4DEEEA'>G. Karamanis</span>
+             &nbsp; github.com/gkaramanis/30DayChartChallenge &nbsp;\u00b7&nbsp;
+             Remake: ggpop</span>",
+    fill = NA, label.size = 0, size = 2.5, lineheight = 1.2
+  ) +
+  coord_fixed(clip = "off", xlim = c(0.5, 9.5), ylim = c(-1.6, 9.2)) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = bg, color = NA),
+    plot.margin     = margin(30, 40, 60, 40)
+  )
+```
+
+---
+
+## Example 6: Combined Geoms
 
 `geom_icon_point()` works alongside any ggplot2 geom. Here combined with `geom_smooth()`, reference lines, labels, and quadrant annotations.
 
@@ -357,7 +568,7 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 ---
 
-## Example 6: Dark Theme Scatter
+## Example 7: Dark Theme Scatter
 
 `geom_icon_point()` with `theme_pop_dark()` for a presentation-ready chart.
 
@@ -397,3 +608,11 @@ ggplot(df_academic, aes(x = study_hours, y = score,
     color    = "Role"
   )
 ```
+
+
+
+---
+
+## Example 8: Dark Theme Scatter
+
+
