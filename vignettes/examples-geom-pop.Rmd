@@ -910,11 +910,10 @@ df_rates <- states_in_hex %>%
 # Each icon represents 1,000 people
 df_people <- df_rates %>%
   group_by(state, deaths_count, gun_death_rate_per_100k) %>%
-  summarise(
+  reframe(
     # Create 100 icons: deaths_count will be "gun death", rest will be "survived"
     icon_id = 1:100,
-    status = if_else(icon_id <= unique(deaths_count), "gun death", "no gun death"),
-    .groups = "drop"
+    status = if_else(icon_id <= unique(deaths_count), "gun death", "no gun death")
   )
 
 # ---- Convert to ggpop format ----
@@ -1170,11 +1169,10 @@ df_rates <- states_in_hex %>%
 # Each icon represents 1,000 people
 df_people <- df_rates %>%
   group_by(state, deaths_count, gun_death_rate_per_100k) %>%
-  summarise(
+  reframe(
     # Create 100 icons: deaths_count will be "gun death", rest will be "survived"
     icon_id = 1:100,
-    status = if_else(icon_id <= unique(deaths_count), "gun death", "no gun death"),
-    .groups = "drop"
+    status = if_else(icon_id <= unique(deaths_count), "gun death", "no gun death")
   )
 
 # ---- Convert to ggpop format ----
