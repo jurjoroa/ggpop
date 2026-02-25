@@ -81,7 +81,8 @@
 <span><span class="co">#&gt;     filter, lag</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span></code></pre></div>
 <hr>
 <div class="section level2">
 <h2 id="example-1-single-icon-scatter-plot">Example 1: Single Icon Scatter Plot<a class="anchor" aria-label="anchor" href="#example-1-single-icon-scatter-plot"></a>
@@ -142,35 +143,6 @@ legend needed to understand what each point represents.</p>
 <span>    y        <span class="op">=</span> <span class="st">"Protein (g per 100g)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Group"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Warning: Multiple icons per color/group detected.</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Why you are seeing this warning:</span></span>
-<span><span class="co">#&gt;   The legend can only display ONE icon per group, but some groups have</span></span>
-<span><span class="co">#&gt;   multiple:</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; - Fruit &amp; Veg: 3 icons (apple-whole, carrot, lemon)</span></span>
-<span><span class="co">#&gt; - Dairy: 3 icons (bottle-water, cheese, jar)</span></span>
-<span><span class="co">#&gt; - Meat &amp; Fish: 3 icons (drumstick-bite, bacon, fish)</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> What happens:</span></span>
-<span><span class="co">#&gt;   - The most frequent icon for each group will be shown in the legend</span></span>
-<span><span class="co">#&gt;   - Other icons in that group will still appear in the plot</span></span>
-<span><span class="co">#&gt;   - This may confuse viewers if icons have different meanings</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Recommended fixes:</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;   Option 1: Use consistent icons per group</span></span>
-<span><span class="co">#&gt;   `df &lt;- df %&gt;% mutate(icon = case_when(`</span></span>
-<span><span class="co">#&gt;   `sex == 'A' ~ 'male',`</span></span>
-<span><span class="co">#&gt;   `sex == 'B' ~ 'female'`</span></span>
-<span><span class="co">#&gt;   `))`</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;   Option 2: Create a separate grouping variable</span></span>
-<span><span class="co">#&gt;   `df &lt;- df %&gt;% mutate(group = paste(sex, icon, sep = '_'))`</span></span>
-<span><span class="co">#&gt;   `ggplot() + geom_pop(aes(icon = icon, color = group))`</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;   Option 3: Set legend_icons = FALSE to use point markers</span></span>
-<span><span class="co">#&gt;   `geom_pop(..., legend_icons = FALSE)`</span></span></code></pre>
 <p><img src="examples-geom-icon-point_files/figure-html/mapped-icons-1.png" class="r-plt" alt="" width="100%"></p>
 <hr>
 </div>
@@ -179,7 +151,7 @@ legend needed to understand what each point represents.</p>
 </h2>
 <p>Map a continuous variable to icon size. Use
 <code><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">scales::rescale()</a></code> to keep sizes readable.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_brand</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  brand      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Google"</span>, <span class="st">"Microsoft"</span>, <span class="st">"Meta"</span>, <span class="st">"Amazon"</span>,</span>
 <span>                 <span class="st">"Netflix"</span>, <span class="st">"Spotify"</span>, <span class="st">"Uber"</span>, <span class="st">"Airbnb"</span><span class="op">)</span>,</span>
@@ -224,7 +196,7 @@ legend needed to understand what each point represents.</p>
 </h2>
 <p>Factor levels control both legend order and icon assignment. Always
 set levels explicitly.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  country  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chad"</span>, <span class="st">"Mali"</span>, <span class="st">"Niger"</span>, <span class="st">"Bolivia"</span>, <span class="st">"Egypt"</span>,</span>
 <span>               <span class="st">"Morocco"</span>, <span class="st">"Germany"</span>, <span class="st">"France"</span>, <span class="st">"Japan"</span><span class="op">)</span>,</span>
@@ -259,7 +231,122 @@ set levels explicitly.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="example-5-combined-geoms">Example 5: Combined Geoms<a class="anchor" aria-label="anchor" href="#example-5-combined-geoms"></a>
+<h2 id="example-5-paris-2024-olympics-new-sports">Example 5: Paris 2024 Olympics — New Sports<a class="anchor" aria-label="anchor" href="#example-5-paris-2024-olympics-new-sports"></a>
+</h2>
+<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> in a fixed-position grid with no
+traditional axes. All 45 Olympic disciplines at Paris 2024 are arranged
+in a 9×5 layout, each with its own icon. The 4 sports making their
+Olympic debut are highlighted in cyan; all existing disciplines are in
+gold. Annotations use <code>ggtext</code> for inline HTML styling.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_paris_disciplines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  sport <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Aquatics (5)</span></span>
+<span>    <span class="st">"Swimming"</span>, <span class="st">"Diving"</span>, <span class="st">"Water Polo"</span>, <span class="st">"Artistic Swim"</span>, <span class="st">"Open Water"</span>,</span>
+<span>    <span class="co"># Racket (3)</span></span>
+<span>    <span class="st">"Badminton"</span>, <span class="st">"Tennis"</span>, <span class="st">"Table Tennis"</span>,</span>
+<span>    <span class="co"># Court / team (6)</span></span>
+<span>    <span class="st">"Volleyball"</span>, <span class="st">"Beach Volley"</span>, <span class="st">"Basketball"</span>, <span class="st">"3x3 Basketball"</span>,</span>
+<span>    <span class="st">"Handball"</span>, <span class="st">"Hockey"</span>,</span>
+<span>    <span class="co"># Combat (5)</span></span>
+<span>    <span class="st">"Boxing"</span>, <span class="st">"Judo"</span>, <span class="st">"Taekwondo"</span>, <span class="st">"Wrestling"</span>, <span class="st">"Fencing"</span>,</span>
+<span>    <span class="co"># Athletics (5)</span></span>
+<span>    <span class="st">"Athletics"</span>, <span class="st">"Triathlon"</span>, <span class="st">"Pentathlon"</span>, <span class="st">"Rowing"</span>, <span class="st">"Sailing"</span>,</span>
+<span>    <span class="co"># Ball (3)</span></span>
+<span>    <span class="st">"Football"</span>, <span class="st">"Rugby"</span>, <span class="st">"Golf"</span>,</span>
+<span>    <span class="co"># Precision (2)</span></span>
+<span>    <span class="st">"Archery"</span>, <span class="st">"Shooting"</span>,</span>
+<span>    <span class="co"># Cycling (5)</span></span>
+<span>    <span class="st">"Road Cycling"</span>, <span class="st">"Track Cycling"</span>, <span class="st">"MTB"</span>, <span class="st">"BMX Racing"</span>, <span class="st">"BMX Freestyle"</span>,</span>
+<span>    <span class="co"># Other (5)</span></span>
+<span>    <span class="st">"Equestrian"</span>, <span class="st">"Gymnastics"</span>, <span class="st">"Rhythmic Gym"</span>, <span class="st">"Trampoline"</span>, <span class="st">"Weightlifting"</span>,</span>
+<span>    <span class="co"># Canoe (2)</span></span>
+<span>    <span class="st">"Canoe Sprint"</span>, <span class="st">"Canoe Slalom"</span>,</span>
+<span>    <span class="co"># New (4)</span></span>
+<span>    <span class="st">"Breaking"</span>, <span class="st">"Skateboarding"</span>, <span class="st">"Sport Climbing"</span>, <span class="st">"Surfing"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  icon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"person-swimming"</span>, <span class="st">"water"</span>, <span class="st">"droplet"</span>, <span class="st">"star"</span>, <span class="st">"wave-square"</span>,</span>
+<span>    <span class="st">"table-tennis-paddle-ball"</span>, <span class="st">"baseball-bat-ball"</span>, <span class="st">"circle"</span>,</span>
+<span>    <span class="st">"volleyball"</span>, <span class="st">"umbrella-beach"</span>, <span class="st">"basketball"</span>, <span class="st">"people-group"</span>,</span>
+<span>    <span class="st">"hand-holding"</span>, <span class="st">"hockey-puck"</span>,</span>
+<span>    <span class="st">"hand-fist"</span>, <span class="st">"hands"</span>, <span class="st">"shoe-prints"</span>, <span class="st">"person"</span>, <span class="st">"shield"</span>,</span>
+<span>    <span class="st">"person-running"</span>, <span class="st">"person-biking"</span>, <span class="st">"list-check"</span>, <span class="st">"anchor"</span>, <span class="st">"sailboat"</span>,</span>
+<span>    <span class="st">"futbol"</span>, <span class="st">"football"</span>, <span class="st">"golf-ball-tee"</span>,</span>
+<span>    <span class="st">"bullseye"</span>, <span class="st">"gun"</span>,</span>
+<span>    <span class="st">"road"</span>, <span class="st">"bicycle"</span>, <span class="st">"tree"</span>, <span class="st">"flag-checkered"</span>, <span class="st">"infinity"</span>,</span>
+<span>    <span class="st">"horse"</span>, <span class="st">"child"</span>, <span class="st">"ribbon"</span>, <span class="st">"arrows-up-to-line"</span>, <span class="st">"dumbbell"</span>,</span>
+<span>    <span class="st">"water-ladder"</span>, <span class="st">"person-falling-burst"</span>,</span>
+<span>    <span class="st">"music"</span>, <span class="st">"person-skating"</span>, <span class="st">"mountain"</span>, <span class="st">"compass"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  is_new <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="fl">41</span><span class="op">)</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">df_paris_disciplines</span><span class="op">)</span> <span class="op">==</span> <span class="fl">45</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="va">df_paris_disciplines</span><span class="op">$</span><span class="va">sport</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="va">df_paris_disciplines</span><span class="op">$</span><span class="va">icon</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bg</span> <span class="op">&lt;-</span> <span class="st">"#01394f"</span></span>
+<span></span>
+<span><span class="va">df_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">9</span>, y <span class="op">=</span> <span class="fl">5</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    sport  <span class="op">=</span> <span class="va">df_paris_disciplines</span><span class="op">$</span><span class="va">sport</span>,</span>
+<span>    icon   <span class="op">=</span> <span class="va">df_paris_disciplines</span><span class="op">$</span><span class="va">icon</span>,</span>
+<span>    is_new <span class="op">=</span> <span class="va">df_paris_disciplines</span><span class="op">$</span><span class="va">is_new</span>,</span>
+<span>    color  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">is_new</span>, <span class="st">"#4DEEEA"</span>, <span class="st">"#E8C84A"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_grid</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">color</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">1.55</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span> <span class="op">-</span> <span class="fl">0.38</span>, label <span class="op">=</span> <span class="va">sport</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">color</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">1.5</span>, lineheight <span class="op">=</span> <span class="fl">0.85</span>, fontface <span class="op">=</span> <span class="st">"bold"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span></span>
+<span>    <span class="st">"richtext"</span>,</span>
+<span>    x <span class="op">=</span> <span class="fl">5</span>, y <span class="op">=</span> <span class="fl">7.8</span>,</span>
+<span>    label <span class="op">=</span> <span class="st">"&lt;span style='color:#4DEEEA; font-size:28pt'&gt;&lt;b&gt;4 NEW SPORTS&lt;/b&gt;&lt;/span&gt;&lt;br&gt;</span></span>
+<span><span class="st">             &lt;span style='color:#E8C84A; font-size:18pt'&gt;JOIN THE PARIS 2024 OLYMPICS&lt;/span&gt;"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="cn">NA</span>, label.size <span class="op">=</span> <span class="fl">0</span>, lineheight <span class="op">=</span> <span class="fl">1.2</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span></span>
+<span>    <span class="st">"richtext"</span>,</span>
+<span>    x <span class="op">=</span> <span class="fl">5</span>, y <span class="op">=</span> <span class="fl">6.75</span>,</span>
+<span>    label <span class="op">=</span> <span class="st">"&lt;span style='color:#4DEEEA; font-size:9pt'&gt;&lt;b&gt;BREAKING &amp;nbsp;\u00b7&amp;nbsp;</span></span>
+<span><span class="st">             SKATEBOARDING &amp;nbsp;\u00b7&amp;nbsp; SPORT CLIMBING &amp;nbsp;\u00b7&amp;nbsp; SURFING&lt;/b&gt;&lt;/span&gt;"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="cn">NA</span>, label.size <span class="op">=</span> <span class="fl">0</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"point"</span>, x <span class="op">=</span> <span class="fl">2.6</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">0.55</span>, color <span class="op">=</span> <span class="st">"#E8C84A"</span>, size <span class="op">=</span> <span class="fl">3.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>,  x <span class="op">=</span> <span class="fl">3.0</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">0.55</span>,</span>
+<span>           label <span class="op">=</span> <span class="st">"Existing discipline (41)"</span>, color <span class="op">=</span> <span class="st">"#E8C84A"</span>,</span>
+<span>           size <span class="op">=</span> <span class="fl">3.0</span>, hjust <span class="op">=</span> <span class="fl">0</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"point"</span>, x <span class="op">=</span> <span class="fl">6.2</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">0.55</span>, color <span class="op">=</span> <span class="st">"#4DEEEA"</span>, size <span class="op">=</span> <span class="fl">3.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>,  x <span class="op">=</span> <span class="fl">6.6</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">0.55</span>,</span>
+<span>           label <span class="op">=</span> <span class="st">"New sport (4)"</span>, color <span class="op">=</span> <span class="st">"#4DEEEA"</span>,</span>
+<span>           size <span class="op">=</span> <span class="fl">3.0</span>, hjust <span class="op">=</span> <span class="fl">0</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span></span>
+<span>    <span class="st">"richtext"</span>,</span>
+<span>    x <span class="op">=</span> <span class="fl">5</span>, y <span class="op">=</span> <span class="op">-</span><span class="fl">1.15</span>,</span>
+<span>    label <span class="op">=</span> <span class="st">"&lt;span style='color:#E8C84A'&gt;Source: IOC / Paris 2024 &amp;nbsp;\u00b7&amp;nbsp;</span></span>
+<span><span class="st">             Original concept: &lt;span style='color:#4DEEEA'&gt;G. Karamanis&lt;/span&gt;</span></span>
+<span><span class="st">             &amp;nbsp; github.com/gkaramanis/30DayChartChallenge &amp;nbsp;\u00b7&amp;nbsp;</span></span>
+<span><span class="st">             Remake: ggpop&lt;/span&gt;"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="cn">NA</span>, label.size <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">2.5</span>, lineheight <span class="op">=</span> <span class="fl">1.2</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span>clip <span class="op">=</span> <span class="st">"off"</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">9.5</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.6</span>, <span class="fl">9.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">bg</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    plot.margin     <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">60</span>, <span class="fl">40</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="examples-geom-icon-point_files/figure-html/paris-1.png" class="r-plt" alt="" width="100%"></p>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="example-6-combined-geoms">Example 6: Combined Geoms<a class="anchor" aria-label="anchor" href="#example-6-combined-geoms"></a>
 </h2>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> works alongside any ggplot2 geom. Here
 combined with <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth()</a></code>, reference lines, labels, and
@@ -330,7 +417,7 @@ quadrant annotations.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="example-6-dark-theme-scatter">Example 6: Dark Theme Scatter<a class="anchor" aria-label="anchor" href="#example-6-dark-theme-scatter"></a>
+<h2 id="example-7-dark-theme-scatter">Example 7: Dark Theme Scatter<a class="anchor" aria-label="anchor" href="#example-7-dark-theme-scatter"></a>
 </h2>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> with <code><a href="../reference/theme_pop_dark.html">theme_pop_dark()</a></code> for
 a presentation-ready chart.</p>
@@ -370,6 +457,11 @@ a presentation-ready chart.</p>
 <span>    color    <span class="op">=</span> <span class="st">"Role"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="examples-geom-icon-point_files/figure-html/dark-theme-1.png" class="r-plt" alt="" width="100%"></p>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="example-8-dark-theme-scatter">Example 8: Dark Theme Scatter<a class="anchor" aria-label="anchor" href="#example-8-dark-theme-scatter"></a>
+</h2>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

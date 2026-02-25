@@ -12,6 +12,7 @@ library(dplyr)
 #> The following objects are masked from 'package:base':
 #> 
 #>     intersect, setdiff, setequal, union
+library(ggtext)
 ```
 
 ------------------------------------------------------------------------
@@ -79,36 +80,6 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
     color    = "Group"
   )
 ```
-
-    #> Warning: Multiple icons per color/group detected.
-    #>   
-    #> ! Why you are seeing this warning:
-    #>   The legend can only display ONE icon per group, but some groups have
-    #>   multiple:
-    #>   
-    #> - Fruit & Veg: 3 icons (apple-whole, carrot, lemon)
-    #> - Dairy: 3 icons (bottle-water, cheese, jar)
-    #> - Meat & Fish: 3 icons (drumstick-bite, bacon, fish)
-    #>   
-    #> ℹ What happens:
-    #>   - The most frequent icon for each group will be shown in the legend
-    #>   - Other icons in that group will still appear in the plot
-    #>   - This may confuse viewers if icons have different meanings
-    #>   
-    #> ℹ Recommended fixes:
-    #>   
-    #>   Option 1: Use consistent icons per group
-    #>   `df <- df %>% mutate(icon = case_when(`
-    #>   `sex == 'A' ~ 'male',`
-    #>   `sex == 'B' ~ 'female'`
-    #>   `))`
-    #>   
-    #>   Option 2: Create a separate grouping variable
-    #>   `df <- df %>% mutate(group = paste(sex, icon, sep = '_'))`
-    #>   `ggplot() + geom_pop(aes(icon = icon, color = group))`
-    #>   
-    #>   Option 3: Set legend_icons = FALSE to use point markers
-    #>   `geom_pop(..., legend_icons = FALSE)`
 
 ![](examples-geom-icon-point_files/figure-html/mapped-icons-1.png)
 
@@ -206,7 +177,126 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 ------------------------------------------------------------------------
 
-## Example 5: Combined Geoms
+## Example 5: Paris 2024 Olympics — New Sports
+
+[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+in a fixed-position grid with no traditional axes. All 45 Olympic
+disciplines at Paris 2024 are arranged in a 9×5 layout, each with its
+own icon. The 4 sports making their Olympic debut are highlighted in
+cyan; all existing disciplines are in gold. Annotations use `ggtext` for
+inline HTML styling.
+
+``` r
+df_paris_disciplines <- data.frame(
+  sport = c(
+    # Aquatics (5)
+    "Swimming", "Diving", "Water Polo", "Artistic Swim", "Open Water",
+    # Racket (3)
+    "Badminton", "Tennis", "Table Tennis",
+    # Court / team (6)
+    "Volleyball", "Beach Volley", "Basketball", "3x3 Basketball",
+    "Handball", "Hockey",
+    # Combat (5)
+    "Boxing", "Judo", "Taekwondo", "Wrestling", "Fencing",
+    # Athletics (5)
+    "Athletics", "Triathlon", "Pentathlon", "Rowing", "Sailing",
+    # Ball (3)
+    "Football", "Rugby", "Golf",
+    # Precision (2)
+    "Archery", "Shooting",
+    # Cycling (5)
+    "Road Cycling", "Track Cycling", "MTB", "BMX Racing", "BMX Freestyle",
+    # Other (5)
+    "Equestrian", "Gymnastics", "Rhythmic Gym", "Trampoline", "Weightlifting",
+    # Canoe (2)
+    "Canoe Sprint", "Canoe Slalom",
+    # New (4)
+    "Breaking", "Skateboarding", "Sport Climbing", "Surfing"
+  ),
+  icon = c(
+    "person-swimming", "water", "droplet", "star", "wave-square",
+    "table-tennis-paddle-ball", "baseball-bat-ball", "circle",
+    "volleyball", "umbrella-beach", "basketball", "people-group",
+    "hand-holding", "hockey-puck",
+    "hand-fist", "hands", "shoe-prints", "person", "shield",
+    "person-running", "person-biking", "list-check", "anchor", "sailboat",
+    "futbol", "football", "golf-ball-tee",
+    "bullseye", "gun",
+    "road", "bicycle", "tree", "flag-checkered", "infinity",
+    "horse", "child", "ribbon", "arrows-up-to-line", "dumbbell",
+    "water-ladder", "person-falling-burst",
+    "music", "person-skating", "mountain", "compass"
+  ),
+  is_new = c(rep(FALSE, 41), TRUE, TRUE, TRUE, TRUE)
+)
+
+stopifnot(nrow(df_paris_disciplines) == 45)
+stopifnot(!anyDuplicated(df_paris_disciplines$sport))
+stopifnot(!anyDuplicated(df_paris_disciplines$icon))
+
+bg <- "#01394f"
+
+df_grid <- expand.grid(x = 1:9, y = 5:1) %>%
+  arrange(y, x) %>%
+  mutate(
+    sport  = df_paris_disciplines$sport,
+    icon   = df_paris_disciplines$icon,
+    is_new = df_paris_disciplines$is_new,
+    color  = ifelse(is_new, "#4DEEEA", "#E8C84A")
+  )
+
+ggplot(df_grid, aes(x = x, y = y)) +
+  geom_icon_point(
+    aes(icon = icon, color = I(color)),
+    size = 1.55, dpi = 100) +
+  geom_text(
+    aes(y = y - 0.38, label = sport, color = I(color)),
+    size = 1.5, lineheight = 0.85, fontface = "bold"
+  ) +
+  annotate(
+    "richtext",
+    x = 5, y = 7.8,
+    label = "<span style='color:#4DEEEA; font-size:28pt'><b>4 NEW SPORTS</b></span><br>
+             <span style='color:#E8C84A; font-size:18pt'>JOIN THE PARIS 2024 OLYMPICS</span>",
+    fill = NA, label.size = 0, lineheight = 1.2
+  ) +
+  annotate(
+    "richtext",
+    x = 5, y = 6.75,
+    label = "<span style='color:#4DEEEA; font-size:9pt'><b>BREAKING &nbsp;\u00b7&nbsp;
+             SKATEBOARDING &nbsp;\u00b7&nbsp; SPORT CLIMBING &nbsp;\u00b7&nbsp; SURFING</b></span>",
+    fill = NA, label.size = 0
+  ) +
+  annotate("point", x = 2.6, y = -0.55, color = "#E8C84A", size = 3.5) +
+  annotate("text",  x = 3.0, y = -0.55,
+           label = "Existing discipline (41)", color = "#E8C84A",
+           size = 3.0, hjust = 0, fontface = "bold") +
+  annotate("point", x = 6.2, y = -0.55, color = "#4DEEEA", size = 3.5) +
+  annotate("text",  x = 6.6, y = -0.55,
+           label = "New sport (4)", color = "#4DEEEA",
+           size = 3.0, hjust = 0, fontface = "bold") +
+  annotate(
+    "richtext",
+    x = 5, y = -1.15,
+    label = "<span style='color:#E8C84A'>Source: IOC / Paris 2024 &nbsp;\u00b7&nbsp;
+             Original concept: <span style='color:#4DEEEA'>G. Karamanis</span>
+             &nbsp; github.com/gkaramanis/30DayChartChallenge &nbsp;\u00b7&nbsp;
+             Remake: ggpop</span>",
+    fill = NA, label.size = 0, size = 2.5, lineheight = 1.2
+  ) +
+  coord_fixed(clip = "off", xlim = c(0.5, 9.5), ylim = c(-1.6, 9.2)) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = bg, color = NA),
+    plot.margin     = margin(30, 40, 60, 40)
+  )
+```
+
+![](examples-geom-icon-point_files/figure-html/paris-1.png)
+
+------------------------------------------------------------------------
+
+## Example 6: Combined Geoms
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
 works alongside any ggplot2 geom. Here combined with
@@ -281,7 +371,7 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 ------------------------------------------------------------------------
 
-## Example 6: Dark Theme Scatter
+## Example 7: Dark Theme Scatter
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
 with
@@ -326,3 +416,7 @@ ggplot(df_academic, aes(x = study_hours, y = score,
 ```
 
 ![](examples-geom-icon-point_files/figure-html/dark-theme-1.png)
+
+------------------------------------------------------------------------
+
+## Example 8: Dark Theme Scatter

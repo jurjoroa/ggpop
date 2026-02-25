@@ -483,7 +483,7 @@ approximately 400 commuters. The dark background and per-mode color
 coding make it easy to compare cities at a glance.
 
 **[Code available in ggpop package
-website](https://jurjoroa.github.io/ggpop/)**.
+website](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html#facet_wrap-transportation-methods-across-us-cities)**.
 
 ![Example Plot
 facet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/transportation_methods_countries.png)
@@ -503,7 +503,7 @@ Massachusetts, and the South and rural West cluster visually as the
 hardest-hit regions.
 
 **[Code available in ggpop package
-website](https://jurjoroa.github.io/ggpop/)**.
+website](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html#facet_geo-gun-violence-across-us-states)**.
 
 ![Example Plot
 geofacet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)

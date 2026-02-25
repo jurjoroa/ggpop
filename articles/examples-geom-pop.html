@@ -375,6 +375,396 @@ visibility and <code>arrange = TRUE</code> to group icons by type.</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="examples-geom-pop_files/figure-html/disability-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
+<div class="section level2">
+<h2 id="facet_wrap-transportation-methods-across-us-cities">
+<code>facet_wrap()</code> — Transportation Methods Across US
+Cities<a class="anchor" aria-label="anchor" href="#facet_wrap-transportation-methods-across-us-cities"></a>
+</h2>
+<p>Using <code>facet_wrap(~ group)</code>, this chart breaks down the
+daily commute mix across major US cities. Each panel shows one city’s
+full distribution of transportation modes — car, bus, train, bicycle,
+motorcycle, walking, and ride-share — with each icon representing
+approximately 400 commuters. The dark background and per-mode color
+coding make it easy to compare cities at a glance.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Example: Transportation Methods Across Cities with 7 Icon Groups</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 1. Create sample data for transportation methods across different countries</span></span>
+<span><span class="va">df_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"🇺🇸 United States"</span>, <span class="st">"🇩🇪 Germany"</span>, <span class="st">"🇳🇱 Netherlands"</span>, </span>
+<span>                  <span class="st">"🇯🇵 Japan"</span>, <span class="st">"🇲🇽 Mexico"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,</span>
+<span>  method  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"car"</span>, <span class="st">"bus"</span>, <span class="st">"train"</span>, <span class="st">"bicycle"</span>, </span>
+<span>                  <span class="st">"motorcycle"</span>, <span class="st">"walking"</span>, <span class="st">"taxi"</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span>            <span class="co"># United States (car-dominant, low walking)</span></span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70000</span>, <span class="fl">15000</span>, <span class="fl">12000</span>,  <span class="fl">6000</span>,  <span class="fl">8000</span>,  <span class="fl">5000</span>,  <span class="fl">9000</span>,</span>
+<span>            <span class="co"># Germany (balanced multimodal)</span></span>
+<span>            <span class="fl">35000</span>, <span class="fl">20000</span>, <span class="fl">25000</span>, <span class="fl">15000</span>,  <span class="fl">4000</span>, <span class="fl">22000</span>,  <span class="fl">4000</span>,</span>
+<span>            <span class="co"># Netherlands (bike + walking high)</span></span>
+<span>            <span class="fl">20000</span>, <span class="fl">12000</span>, <span class="fl">18000</span>, <span class="fl">35000</span>,  <span class="fl">3000</span>, <span class="fl">25000</span>,  <span class="fl">2000</span>,</span>
+<span>            <span class="co"># Japan (transit + walking high)</span></span>
+<span>            <span class="fl">15000</span>, <span class="fl">18000</span>, <span class="fl">40000</span>,  <span class="fl">5000</span>,  <span class="fl">2000</span>, <span class="fl">30000</span>,  <span class="fl">3000</span>,</span>
+<span>            <span class="co"># Mexico (walking high; mixed modes)</span></span>
+<span>            <span class="fl">30000</span>, <span class="fl">20000</span>, <span class="fl">18000</span>,  <span class="fl">4000</span>,  <span class="fl">5000</span>, <span class="fl">35000</span>,  <span class="fl">3000</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 2. Process the data for each country</span></span>
+<span><span class="va">df_transport_prop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_data.html">process_data</a></span><span class="op">(</span></span>
+<span>  data          <span class="op">=</span> <span class="va">df_transport</span>,</span>
+<span>  group_var     <span class="op">=</span> <span class="va">method</span>,</span>
+<span>  sum_var       <span class="op">=</span> <span class="va">value</span>,</span>
+<span>  sample_size   <span class="op">=</span> <span class="fl">150</span>,</span>
+<span>  high_group_var <span class="op">=</span> <span class="st">"country"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 3. Assign Font Awesome icons to transportation methods</span></span>
+<span><span class="va">df_transport_prop</span> <span class="op">&lt;-</span> <span class="va">df_transport_prop</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"car"</span>        <span class="op">~</span> <span class="st">"car"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"bus"</span>        <span class="op">~</span> <span class="st">"bus"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"train"</span>      <span class="op">~</span> <span class="st">"train"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"bicycle"</span>    <span class="op">~</span> <span class="st">"bicycle"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"motorcycle"</span> <span class="op">~</span> <span class="st">"motorcycle"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"walking"</span>    <span class="op">~</span> <span class="st">"person-walking"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"taxi"</span>       <span class="op">~</span> <span class="st">"taxi"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 4. Plot with facet_wrap + legend placed inside bottom-right</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_transport_prop</span>,</span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, group <span class="op">=</span> <span class="va">type</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1.5</span>, arrange <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">group</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">26</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title    <span class="op">=</span> <span class="st">"Primary Transportation Methods Across Countries"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"\nDistribution of daily commuters by transportation type"</span>,</span>
+<span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span></span>
+<span>        <span class="st">"Each panel displays a proportional sample (150 icons). </span></span>
+<span><span class="st">        Each icon represents roughly 750–840 commuters, varying by country."</span>,</span>
+<span>        width <span class="op">=</span> <span class="fl">35</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Put legend INSIDE plot area (bottom-right)</span></span>
+<span>    legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0.05</span><span class="op">)</span>,</span>
+<span>    legend.justification <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>    legend.direction <span class="op">=</span> <span class="st">"horizontal"</span>,</span>
+<span>    legend.box <span class="op">=</span> <span class="st">"horizontal"</span>,</span>
+<span>    strip.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">30</span>, color <span class="op">=</span> <span class="st">"#D4AF38"</span><span class="op">)</span>,</span>
+<span>    legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF38"</span>, size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>,</span>
+<span>    </span>
+<span>    plot.title    <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span>, color <span class="op">=</span> <span class="st">"#D4AF38"</span><span class="op">)</span>,</span>
+<span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">"#D4AF38"</span>, size <span class="op">=</span> <span class="fl">18</span>,</span>
+<span>                                 margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span></span>
+<span>      hjust <span class="op">=</span> <span class="fl">.85</span>, <span class="co"># Centers the caption horizontally</span></span>
+<span>      vjust <span class="op">=</span> <span class="fl">10</span>,   <span class="co"># Aligns the caption to the top of its available vertical space</span></span>
+<span>      size <span class="op">=</span> <span class="fl">18</span>,</span>
+<span>      color <span class="op">=</span> <span class="st">"#D4AF38"</span></span>
+<span>    <span class="op">)</span>,    </span>
+<span>    legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span></span>
+<span>      color <span class="op">=</span> <span class="st">"#D4AF38"</span>,</span>
+<span>      size  <span class="op">=</span> <span class="fl">18</span>,</span>
+<span>      face  <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>      margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>  <span class="co"># pushes title downward</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    legend.box.spacing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"pt"</span><span class="op">)</span>  <span class="co"># pulls title under icons</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span></span>
+<span>    name <span class="op">=</span> <span class="st">"Transportation mode"</span>,</span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"car"</span>        <span class="op">=</span> <span class="st">"#E53935"</span>,</span>
+<span>      <span class="st">"bus"</span>        <span class="op">=</span> <span class="st">"#FB8C00"</span>,</span>
+<span>      <span class="st">"train"</span>      <span class="op">=</span> <span class="st">"#43A047"</span>,</span>
+<span>      <span class="st">"bicycle"</span>    <span class="op">=</span> <span class="st">"#00ACC1"</span>,</span>
+<span>      <span class="st">"motorcycle"</span> <span class="op">=</span> <span class="st">"#8E24AA"</span>,</span>
+<span>      <span class="st">"walking"</span>    <span class="op">=</span> <span class="st">"#FDD835"</span>,</span>
+<span>      <span class="st">"taxi"</span>       <span class="op">=</span> <span class="st">"#FFB300"</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"car"</span>        <span class="op">=</span> <span class="st">"Car"</span>,</span>
+<span>      <span class="st">"bus"</span>        <span class="op">=</span> <span class="st">"Bus"</span>,</span>
+<span>      <span class="st">"train"</span>      <span class="op">=</span> <span class="st">"Train/Subway"</span>,</span>
+<span>      <span class="st">"bicycle"</span>    <span class="op">=</span> <span class="st">"Bicycle"</span>,</span>
+<span>      <span class="st">"motorcycle"</span> <span class="op">=</span> <span class="st">"Motorcycle"</span>,</span>
+<span>      <span class="st">"walking"</span>    <span class="op">=</span> <span class="st">"Walking"</span>,</span>
+<span>      <span class="st">"taxi"</span>       <span class="op">=</span> <span class="st">"Taxi/Ride-share"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span></span>
+<span>    color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span></span>
+<span>      ncol <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>      byrow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>      title.position <span class="op">=</span> <span class="st">"top"</span>,   <span class="co"># required internally</span></span>
+<span>      title.hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<p><img src="examples-geom-pop_files/figure-html/transportation_play-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="facet_geo-gun-violence-across-us-states">
+<code>facet_geo()</code> — Gun Violence Across US States<a class="anchor" aria-label="anchor" href="#facet_geo-gun-violence-across-us-states"></a>
+</h2>
+<p>Combining <code><a href="../reference/geom_pop.html">geom_pop()</a></code> with the <code>geofacet</code>
+package places each state’s panel in its actual geographic position on
+the US map. Here, skull icons represent gun deaths per 100,000 people
+(2023 CDC data), with each icon equal to 2,000 people. The layout
+immediately reveals regional patterns that a standard bar chart would
+hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the
+South and rural West cluster visually as the hardest-hit regions.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hafen/geofacet" class="external-link">geofacet</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/7a5e5e1b1009312506ebd873d7858fa424c14b68/DATA/us_states_hexgrid.geojson.json"</span></span>
+<span></span>
+<span><span class="va">my_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="va">url</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    google_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">" \\(United States\\)"</span>, <span class="st">""</span>, <span class="va">google_name</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="st">"iso3166_2"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">my_sf</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">states_in_hex</span> <span class="op">&lt;-</span> <span class="va">my_sf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>state <span class="op">=</span> <span class="va">iso3166_2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># ---- Real state-level infant mortality rates ----</span></span>
+<span><span class="co"># Data from CDC National Vital Statistics System, 2023</span></span>
+<span><span class="co"># Infant deaths per 1,000 live births</span></span>
+<span></span>
+<span><span class="co"># ---- Real state-level gun death rates ----</span></span>
+<span><span class="co"># Data from CDC/Violence Policy Center, 2023</span></span>
+<span><span class="co"># Gun deaths per 100,000 population (all causes: homicide, suicide, unintentional)</span></span>
+<span></span>
+<span><span class="va">df_rates</span> <span class="op">&lt;-</span> <span class="va">states_in_hex</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>gun_death_rate_per_100k <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"AL"</span> <span class="op">~</span> <span class="fl">25.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"AK"</span> <span class="op">~</span> <span class="fl">23.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"AZ"</span> <span class="op">~</span> <span class="fl">18.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"AR"</span> <span class="op">~</span> <span class="fl">21.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"CA"</span> <span class="op">~</span> <span class="fl">8.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"CO"</span> <span class="op">~</span> <span class="fl">16.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"CT"</span> <span class="op">~</span> <span class="fl">6.2</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"DE"</span> <span class="op">~</span> <span class="fl">12.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"FL"</span> <span class="op">~</span> <span class="fl">13.7</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"GA"</span> <span class="op">~</span> <span class="fl">18.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"HI"</span> <span class="op">~</span> <span class="fl">4.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"ID"</span> <span class="op">~</span> <span class="fl">17.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"IL"</span> <span class="op">~</span> <span class="fl">13.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"IN"</span> <span class="op">~</span> <span class="fl">18.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"IA"</span> <span class="op">~</span> <span class="fl">10.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"KS"</span> <span class="op">~</span> <span class="fl">16.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"KY"</span> <span class="op">~</span> <span class="fl">18.4</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"LA"</span> <span class="op">~</span> <span class="fl">28.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"ME"</span> <span class="op">~</span> <span class="fl">14.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MD"</span> <span class="op">~</span> <span class="fl">12.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MA"</span> <span class="op">~</span> <span class="fl">3.7</span>,  <span class="co"># Lowest</span></span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MI"</span> <span class="op">~</span> <span class="fl">13.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MN"</span> <span class="op">~</span> <span class="fl">8.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MS"</span> <span class="op">~</span> <span class="fl">29.4</span>,  <span class="co"># Highest</span></span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MO"</span> <span class="op">~</span> <span class="fl">21.4</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MT"</span> <span class="op">~</span> <span class="fl">21.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NE"</span> <span class="op">~</span> <span class="fl">10.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NV"</span> <span class="op">~</span> <span class="fl">18.4</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NH"</span> <span class="op">~</span> <span class="fl">9.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NJ"</span> <span class="op">~</span> <span class="fl">4.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NM"</span> <span class="op">~</span> <span class="fl">25.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NY"</span> <span class="op">~</span> <span class="fl">4.7</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NC"</span> <span class="op">~</span> <span class="fl">16.4</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"ND"</span> <span class="op">~</span> <span class="fl">12.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"OH"</span> <span class="op">~</span> <span class="fl">15.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"OK"</span> <span class="op">~</span> <span class="fl">19.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"OR"</span> <span class="op">~</span> <span class="fl">14.2</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"PA"</span> <span class="op">~</span> <span class="fl">13.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"RI"</span> <span class="op">~</span> <span class="fl">4.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"SC"</span> <span class="op">~</span> <span class="fl">19.1</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"SD"</span> <span class="op">~</span> <span class="fl">12.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"TN"</span> <span class="op">~</span> <span class="fl">22.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"TX"</span> <span class="op">~</span> <span class="fl">14.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"UT"</span> <span class="op">~</span> <span class="fl">14.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"VT"</span> <span class="op">~</span> <span class="fl">12.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"VA"</span> <span class="op">~</span> <span class="fl">13.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"WA"</span> <span class="op">~</span> <span class="fl">13.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"WV"</span> <span class="op">~</span> <span class="fl">16.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"WI"</span> <span class="op">~</span> <span class="fl">12.7</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"WY"</span> <span class="op">~</span> <span class="fl">21.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"DC"</span> <span class="op">~</span> <span class="fl">28.5</span>,  <span class="co"># DC has very high rate</span></span>
+<span>    <span class="cn">TRUE</span> <span class="op">~</span> <span class="fl">13.7</span>  <span class="co"># US average as fallback</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># Convert rate per 100,000 to expected cases per 100 people</span></span>
+<span>  <span class="co"># Rate is per 100,000, so divide by 1,000 to get per 100</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    cases_per_100 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">gun_death_rate_per_100k</span> <span class="op">/</span> <span class="fl">1000</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="co"># Convert to probability for binomial sampling</span></span>
+<span>    gun_death_rate <span class="op">=</span> <span class="va">gun_death_rate_per_100k</span> <span class="op">/</span> <span class="fl">100000</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co"># ---- Real state-level gun death rates ----</span></span>
+<span><span class="co"># Data from CDC/Violence Policy Center, 2023</span></span>
+<span><span class="co"># Gun deaths per 100,000 population (all causes: homicide, suicide, unintentional)</span></span>
+<span><span class="co"># Each icon represents 1,000 people, so 100 icons = 100,000 people</span></span>
+<span></span>
+<span><span class="va">df_rates</span> <span class="op">&lt;-</span> <span class="va">states_in_hex</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>gun_death_rate_per_100k <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"AL"</span> <span class="op">~</span> <span class="fl">25.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"AK"</span> <span class="op">~</span> <span class="fl">23.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"AZ"</span> <span class="op">~</span> <span class="fl">18.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"AR"</span> <span class="op">~</span> <span class="fl">21.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"CA"</span> <span class="op">~</span> <span class="fl">8.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"CO"</span> <span class="op">~</span> <span class="fl">16.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"CT"</span> <span class="op">~</span> <span class="fl">6.2</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"DE"</span> <span class="op">~</span> <span class="fl">12.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"FL"</span> <span class="op">~</span> <span class="fl">13.7</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"GA"</span> <span class="op">~</span> <span class="fl">18.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"HI"</span> <span class="op">~</span> <span class="fl">4.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"ID"</span> <span class="op">~</span> <span class="fl">17.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"IL"</span> <span class="op">~</span> <span class="fl">13.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"IN"</span> <span class="op">~</span> <span class="fl">18.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"IA"</span> <span class="op">~</span> <span class="fl">10.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"KS"</span> <span class="op">~</span> <span class="fl">16.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"KY"</span> <span class="op">~</span> <span class="fl">18.4</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"LA"</span> <span class="op">~</span> <span class="fl">28.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"ME"</span> <span class="op">~</span> <span class="fl">14.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MD"</span> <span class="op">~</span> <span class="fl">12.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MA"</span> <span class="op">~</span> <span class="fl">3.7</span>,  <span class="co"># Lowest</span></span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MI"</span> <span class="op">~</span> <span class="fl">13.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MN"</span> <span class="op">~</span> <span class="fl">8.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MS"</span> <span class="op">~</span> <span class="fl">29.4</span>,  <span class="co"># Highest</span></span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MO"</span> <span class="op">~</span> <span class="fl">21.4</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"MT"</span> <span class="op">~</span> <span class="fl">21.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NE"</span> <span class="op">~</span> <span class="fl">10.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NV"</span> <span class="op">~</span> <span class="fl">18.4</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NH"</span> <span class="op">~</span> <span class="fl">9.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NJ"</span> <span class="op">~</span> <span class="fl">4.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NM"</span> <span class="op">~</span> <span class="fl">25.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NY"</span> <span class="op">~</span> <span class="fl">4.7</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"NC"</span> <span class="op">~</span> <span class="fl">16.4</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"ND"</span> <span class="op">~</span> <span class="fl">12.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"OH"</span> <span class="op">~</span> <span class="fl">15.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"OK"</span> <span class="op">~</span> <span class="fl">19.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"OR"</span> <span class="op">~</span> <span class="fl">14.2</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"PA"</span> <span class="op">~</span> <span class="fl">13.6</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"RI"</span> <span class="op">~</span> <span class="fl">4.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"SC"</span> <span class="op">~</span> <span class="fl">19.1</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"SD"</span> <span class="op">~</span> <span class="fl">12.3</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"TN"</span> <span class="op">~</span> <span class="fl">22.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"TX"</span> <span class="op">~</span> <span class="fl">14.9</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"UT"</span> <span class="op">~</span> <span class="fl">14.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"VT"</span> <span class="op">~</span> <span class="fl">12.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"VA"</span> <span class="op">~</span> <span class="fl">13.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"WA"</span> <span class="op">~</span> <span class="fl">13.0</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"WV"</span> <span class="op">~</span> <span class="fl">16.8</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"WI"</span> <span class="op">~</span> <span class="fl">12.7</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"WY"</span> <span class="op">~</span> <span class="fl">21.5</span>,</span>
+<span>    <span class="va">state</span> <span class="op">==</span> <span class="st">"DC"</span> <span class="op">~</span> <span class="fl">28.5</span>,</span>
+<span>    <span class="cn">TRUE</span> <span class="op">~</span> <span class="fl">13.7</span>  <span class="co"># US average as fallback</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># Since each icon = 1,000 people and we have 100 icons (100,000 people)</span></span>
+<span>  <span class="co"># The rate per 100,000 is exactly the number of affected icons</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    expected_deaths_per_100_icons <span class="op">=</span> <span class="va">gun_death_rate_per_100k</span>,</span>
+<span>    <span class="co"># Round to get whole number of deaths</span></span>
+<span>    deaths_count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">gun_death_rate_per_100k</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ---- Create 100-icon samples per state ----</span></span>
+<span><span class="co"># Each icon represents 1,000 people</span></span>
+<span><span class="va">df_people</span> <span class="op">&lt;-</span> <span class="va">df_rates</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">state</span>, <span class="va">deaths_count</span>, <span class="va">gun_death_rate_per_100k</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Create 100 icons: deaths_count will be "gun death", rest will be "survived"</span></span>
+<span>    icon_id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>,</span>
+<span>    status <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">icon_id</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">deaths_count</span><span class="op">)</span>, <span class="st">"gun death"</span>, <span class="st">"no gun death"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ---- Convert to ggpop format ----</span></span>
+<span><span class="va">df_hex_prop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_data.html">process_data</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">df_people</span>,</span>
+<span>  group_var <span class="op">=</span> <span class="va">status</span>,</span>
+<span>  sum_var <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sample_size <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  high_group_var <span class="op">=</span> <span class="st">"state"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_hex_prop</span> <span class="op">&lt;-</span> <span class="va">df_hex_prop</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    icon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>      <span class="va">type</span> <span class="op">==</span> <span class="st">"gun death"</span> <span class="op">~</span> <span class="st">"skull"</span>,</span>
+<span>      <span class="va">type</span> <span class="op">==</span> <span class="st">"no gun death"</span> <span class="op">~</span> <span class="st">"person"</span>,</span>
+<span>      <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"person"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>code <span class="op">=</span> <span class="va">group</span><span class="op">)</span></span>
+<span><span class="co"># ---- Plot using facet_geo ----</span></span>
+<span><span class="co"># ---- Plot using facet_geo with black background and enhanced design ----</span></span>
+<span><span class="co"># ---- Plot using facet_geo with black background and enhanced design ----</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_hex_prop</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, group <span class="op">=</span> <span class="va">type</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3.5</span>, arrange <span class="op">=</span> <span class="cn">TRUE</span>, facet <span class="op">=</span> <span class="st">"code"</span><span class="op">)</span> <span class="op">+</span>  <span class="co"># Increased size since fewer icons</span></span>
+<span>  <span class="fu">geofacet</span><span class="fu">::</span><span class="fu"><a href="https://hafen.github.io/geofacet/reference/facet_geo.html" class="external-link">facet_geo</a></span><span class="op">(</span><span class="op">~</span> <span class="va">code</span>, grid <span class="op">=</span> <span class="st">"us_state_grid3"</span>, label <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span></span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gun death"</span> <span class="op">=</span> <span class="st">"#FF1744"</span>, <span class="st">"no gun death"</span> <span class="op">=</span> <span class="st">"#42A5F5"</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gun death (each skull = 2,000 people)"</span>, <span class="st">"No gun death"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"GUN VIOLENCE ACROSS AMERICA"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents 2,000 people • Skulls show gun deaths per 100,000 population\nMississippi has nearly 8× the gun death rate of Massachusetts"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Data: CDC/Violence Policy Center, 2023 (age-adjusted rates: homicide, suicide, accidents)\nHighest: Mississippi (29.4 per 100k = ~15 skulls) • Lowest: Massachusetts (3.7 per 100k = ~2 skulls) • National Average: 13.7 per 100k"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Black background</span></span>
+<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    </span>
+<span>    <span class="co"># Legend styling</span></span>
+<span>    legend.position <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, size <span class="op">=</span> <span class="fl">16</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.background <span class="op">=</span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.key <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">15</span>, b <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span>
+<span>    </span>
+<span>    <span class="co"># State labels</span></span>
+<span>    strip.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span></span>
+<span>      size <span class="op">=</span> <span class="fl">12</span>, </span>
+<span>      color <span class="op">=</span> <span class="st">"#D4AF37"</span>,</span>
+<span>      margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    </span>
+<span>    <span class="co"># Title styling</span></span>
+<span>    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span></span>
+<span>      hjust <span class="op">=</span> <span class="fl">0.5</span>, </span>
+<span>      face <span class="op">=</span> <span class="st">"bold"</span>, </span>
+<span>      size <span class="op">=</span> <span class="fl">24</span>, </span>
+<span>      color <span class="op">=</span> <span class="st">"#FF1744"</span>,</span>
+<span>      margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>      family <span class="op">=</span> <span class="st">"sans"</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    </span>
+<span>    <span class="co"># Subtitle styling</span></span>
+<span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span></span>
+<span>      hjust <span class="op">=</span> <span class="fl">0.5</span>, </span>
+<span>      size <span class="op">=</span> <span class="fl">13</span>, </span>
+<span>      lineheight <span class="op">=</span> <span class="fl">1.3</span>,</span>
+<span>      color <span class="op">=</span> <span class="st">"#D4AF37"</span>,</span>
+<span>      margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    </span>
+<span>    <span class="co"># Caption styling</span></span>
+<span>    plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span></span>
+<span>      hjust <span class="op">=</span> <span class="fl">0.5</span>, </span>
+<span>      size <span class="op">=</span> <span class="fl">9.5</span>, </span>
+<span>      color <span class="op">=</span> <span class="st">"#D4AF37"</span>, </span>
+<span>      lineheight <span class="op">=</span> <span class="fl">1.4</span>,</span>
+<span>      margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">40</span>, r <span class="op">=</span> <span class="fl">40</span>, b <span class="op">=</span> <span class="fl">40</span>, l <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="co"># Overall plot margins</span></span>
+<span>    </span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="examples-geom-pop_files/figure-html/guns-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
