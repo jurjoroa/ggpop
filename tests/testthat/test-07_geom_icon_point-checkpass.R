@@ -1651,5 +1651,27 @@ testthat::test_that("geom_icon_point factor levels", {
 })
 
 # ******************************************************************************
+## show.legend = FALSE ---------------------------------------------------------
+# ******************************************************************************
+
+testthat::test_that("geom_icon_point show.legend = FALSE hides icon legend", {
+  df_show <- data.frame(
+    x     = c(1, 2, 3),
+    y     = c(1, 1, 1),
+    group = c("A", "B", "C")
+  )
+
+  p <- ggplot2::ggplot(df_show, ggplot2::aes(x = x, y = y, color = group)) +
+    geom_icon_point(icon = "circle", size = 1, dpi = 50, show.legend = FALSE) +
+    ggplot2::geom_point(show.legend = TRUE) +
+    ggplot2::scale_color_manual(values = c("A" = "#E53935", "B" = "#1E88E5", "C" = "#43A047"))
+
+  expect_doppelganger(
+    title = "geom_icon_point show.legend FALSE",
+    fig   = p
+  )
+})
+
+# ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************
