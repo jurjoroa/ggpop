@@ -15,8 +15,11 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="examples-geom-pop_files/libs/quarto-html/popper.min.js"></script><script src="examples-geom-pop_files/libs/quarto-html/tippy.umd.min.js"></script><link href="examples-geom-pop_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="examples-geom-pop_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="geom_pop() Examples">
+<meta property="og:image" content="https://jurjoroa.github.io/ggpop/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -54,43 +57,34 @@
 
 
   </div>
-</nav><div class="container template-article">
-
-
-
-
+</nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>geom_pop() Examples</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/examples-geom-pop.Rmd" class="external-link"><code>vignettes/examples-geom-pop.Rmd</code></a></small>
-      <div class="d-none name"><code>examples-geom-pop.Rmd</code></div>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/examples-geom-pop.qmd" class="external-link"><code>vignettes/examples-geom-pop.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+
+
+
+
+
+    <hr>
+<section class="level2"><h2 id="example-1-world-population-by-continent">Example 1: World Population by Continent<a class="anchor" aria-label="anchor" href="#example-1-world-population-by-continent"></a>
+</h2>
+<p>Out of every 100 people on Earth, how many come from each continent? Each icon uses a distinct symbol and color per continent, and the legend shows the exact count.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
-<hr>
-<div class="section level2">
-<h2 id="example-1-world-population-by-continent">Example 1: World Population by Continent<a class="anchor" aria-label="anchor" href="#example-1-world-population-by-continent"></a>
-</h2>
-<p>Out of every 100 people on Earth, how many come from each continent?
-Each icon uses a distinct symbol and color per continent, and the legend
-shows the exact count.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_world</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span></span>
+<span><span class="va">df_world</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  continent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Asia"</span>, <span class="st">"Africa"</span>, <span class="st">"Europe"</span>, <span class="st">"Latin America"</span>, <span class="st">"North America"</span>, <span class="st">"Oceania"</span><span class="op">)</span>,</span>
 <span>  n         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4753079000</span>, <span class="fl">1441090000</span>, <span class="fl">748000000</span>, <span class="fl">662000000</span>, <span class="fl">376000000</span>, <span class="fl">45000000</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -111,7 +105,7 @@ shows the exact count.</p>
 <span>  <span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_world_proc</span><span class="op">$</span><span class="va">type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_world_proc</span><span class="op">$</span><span class="va">type</span>,</span>
-<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Asia"</span>, <span class="st">"Africa"</span>, <span class="st">"Europe"</span>, </span>
+<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Asia"</span>, <span class="st">"Africa"</span>, <span class="st">"Europe"</span>,</span>
 <span>             <span class="st">"Latin America"</span>, <span class="st">"North America"</span>, <span class="st">"Oceania"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Build legend labels showing exact icon count per continent</span></span>
@@ -139,32 +133,41 @@ shows the exact count.</p>
 <span>    <span class="op">)</span>,</span>
 <span>    labels <span class="op">=</span> <span class="va">v_labels</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span>,plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.background   <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        panel.background  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        legend.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        legend.key        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        legend.position <span class="op">=</span> <span class="st">"bottom"</span>, plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
 <span>        plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
 <span>        legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
-<span>        legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
-<span>        plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"transparent"</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
-<span>        legend.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"transparent"</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>        </span>
+<span>        legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"World Population by Continent (2024)"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the global </span></span>
-<span><span class="st">                population  \u00b7  Sample of 500"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the global population  \u00b7  Sample of 500"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Continent"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Downloading dataset...</span></span></code></pre></div>
-<p><img src="examples-geom-pop_files/figure-html/world-population-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stderr">
+<pre><code>Downloading dataset...</code></pre>
 </div>
-<div class="section level2">
-<h2 id="example-2-population-by-sex">Example 2: Population by Sex<a class="anchor" aria-label="anchor" href="#example-2-population-by-sex"></a>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-pop_files/figure-html/world-population-1.png" width="1440"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="example-2-population-by-sex">Example 2: Population by Sex<a class="anchor" aria-label="anchor" href="#example-2-population-by-sex"></a>
 </h2>
-<p>A simple two-group population chart using Mexico’s 2024 population
-data.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<p>A simple two-group population chart using Mexico’s 2024 population data.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span>,</span>
 <span>  n   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">63459580</span>, <span class="fl">67401427</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -196,16 +199,26 @@ data.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the total population"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="examples-geom-pop_files/figure-html/sex-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details>
 </div>
-<div class="section level2">
-<h2 id="example-3-health-status">Example 3: Health Status<a class="anchor" aria-label="anchor" href="#example-3-health-status"></a>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-pop_files/figure-html/sex-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="example-3-health-status">Example 3: Health Status<a class="anchor" aria-label="anchor" href="#example-3-health-status"></a>
 </h2>
-<p>A three-group chart showing a simulated patient population broken
-down by health status.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<p>A three-group chart showing a simulated patient population broken down by health status.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Healthy"</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"At Risk"</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Ill"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  icon   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person-half-dress"</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"bed-pulse"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -233,15 +246,27 @@ down by health status.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents one patient"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Status"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="examples-geom-pop_files/figure-html/health-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details>
 </div>
-<div class="section level2">
-<h2 id="example-4-education-levels">Example 4: Education Levels<a class="anchor" aria-label="anchor" href="#example-4-education-levels"></a>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-pop_files/figure-html/health-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="example-4-education-levels">Example 4: Education Levels<a class="anchor" aria-label="anchor" href="#example-4-education-levels"></a>
 </h2>
 <p>Population chart showing education attainment across four levels.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_edu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_edu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No Schooling"</span>, <span class="st">"Primary"</span>, <span class="st">"Secondary"</span>, <span class="st">"University"</span><span class="op">)</span>,</span>
 <span>  n     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">22</span>, <span class="fl">42</span>, <span class="fl">28</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -250,44 +275,108 @@ down by health status.</p>
 <span>  data        <span class="op">=</span> <span class="va">df_edu</span>,</span>
 <span>  group_var   <span class="op">=</span> <span class="va">level</span>,</span>
 <span>  sum_var     <span class="op">=</span> <span class="va">n</span>,</span>
-<span>  sample_size <span class="op">=</span> <span class="fl">100</span></span>
+<span>  sample_size <span class="op">=</span> <span class="fl">50</span></span>
 <span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"user"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"No Schooling"</span> <span class="op">~</span> <span class="st">"person"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Primary"</span>      <span class="op">~</span> <span class="st">"child"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Secondary"</span>    <span class="op">~</span> <span class="st">"person-chalkboard"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"University"</span>   <span class="op">~</span> <span class="st">"user-graduate"</span>,</span>
+<span>    <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"user"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_edu_proc</span><span class="op">$</span><span class="va">type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_edu_proc</span><span class="op">$</span><span class="va">type</span>,</span>
 <span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No Schooling"</span>, <span class="st">"Primary"</span>, <span class="st">"Secondary"</span>, <span class="st">"University"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"No Schooling"</span> <span class="op">=</span> <span class="st">"#EF5350"</span>,</span>
+<span>  <span class="st">"Primary"</span>      <span class="op">=</span> <span class="st">"#FFB74D"</span>,</span>
+<span>  <span class="st">"Secondary"</span>    <span class="op">=</span> <span class="st">"#42A5F5"</span>,</span>
+<span>  <span class="st">"University"</span>   <span class="op">=</span> <span class="st">"#66BB6A"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Annotation data for % labels below the grid</span></span>
+<span><span class="va">df_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  type    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No Schooling"</span>, <span class="st">"Primary"</span>, <span class="st">"Secondary"</span>, <span class="st">"University"</span><span class="op">)</span>,</span>
+<span>                   levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No Schooling"</span>, <span class="st">"Primary"</span>, <span class="st">"Secondary"</span>, <span class="st">"University"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  pct     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"8%"</span>, <span class="st">"22%"</span>, <span class="st">"42%"</span>, <span class="st">"28%"</span><span class="op">)</span>,</span>
+<span>  color   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">pal</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data         <span class="op">=</span> <span class="va">df_edu_proc</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span>,</span>
-<span>    size         <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    size         <span class="op">=</span> <span class="fl">2.2</span>,</span>
 <span>    dpi          <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>    legend_icons <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>    legend_icons <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    arrange      <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"No Schooling"</span> <span class="op">=</span> <span class="st">"#EF5350"</span>,</span>
-<span>    <span class="st">"Primary"</span>      <span class="op">=</span> <span class="st">"#FFB74D"</span>,</span>
-<span>    <span class="st">"Secondary"</span>    <span class="op">=</span> <span class="st">"#42A5F5"</span>,</span>
-<span>    <span class="st">"University"</span>   <span class="op">=</span> <span class="st">"#66BB6A"</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"No Schooling"</span> <span class="op">=</span> <span class="st">"&lt;span style='color:#EF5350'&gt;**No Schooling** — 8%&lt;/span&gt;"</span>,</span>
+<span>      <span class="st">"Primary"</span>      <span class="op">=</span> <span class="st">"&lt;span style='color:#FFB74D'&gt;**Primary** — 22%&lt;/span&gt;"</span>,</span>
+<span>      <span class="st">"Secondary"</span>    <span class="op">=</span> <span class="st">"&lt;span style='color:#42A5F5'&gt;**Secondary** — 42%&lt;/span&gt;"</span>,</span>
+<span>      <span class="st">"University"</span>   <span class="op">=</span> <span class="st">"&lt;span style='color:#66BB6A'&gt;**University** — 28%&lt;/span&gt;"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span></span>
+<span>    ncol           <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    byrow          <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    title.position <span class="op">=</span> <span class="st">"top"</span>,</span>
+<span>    title.hjust    <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>    label.theme    <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Education Attainment"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents 1% of the population"</span>,</span>
-<span>    color    <span class="op">=</span> <span class="st">"Level"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="examples-geom-pop_files/figure-html/education-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+<span>    <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    plot.title       <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span></span>
+<span>      size   <span class="op">=</span> <span class="fl">22</span>, face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>      color  <span class="op">=</span> <span class="st">"white"</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    plot.subtitle    <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span></span>
+<span>      size      <span class="op">=</span> <span class="fl">12</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">"#B0BEC5"</span>,</span>
+<span>      lineheight <span class="op">=</span> <span class="fl">1.4</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">18</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    plot.caption     <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span></span>
+<span>      size  <span class="op">=</span> <span class="fl">9</span>, color <span class="op">=</span> <span class="st">"#78909C"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>      margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    legend.position  <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    legend.title     <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#B0BEC5"</span>, size <span class="op">=</span> <span class="fl">11</span>,</span>
+<span>                                    face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.margin    <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>    legend.spacing.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">8</span>, <span class="st">"pt"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="va">theme_transp</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  title    <span class="op">=</span> <span class="st">"Educational Attainment"</span>,</span>
+<span>  subtitle <span class="op">=</span> <span class="st">"Each icon = 2% of the population &amp;nbsp;·&amp;nbsp;</span></span>
+<span><span class="st">              &lt;span style='color:#42A5F5'&gt;**42%**&lt;/span&gt; reached secondary,</span></span>
+<span><span class="st">              only &lt;span style='color:#66BB6A'&gt;**28%**&lt;/span&gt; completed university"</span>,</span>
+<span>  caption  <span class="op">=</span> <span class="st">"Hypothetical survey data · Visualization: ggpop"</span>,</span>
+<span>  color    <span class="op">=</span> <span class="st">"Education Level"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details>
 </div>
-<div class="section level2">
-<h2 id="example-5-disease-burden-with-dark-theme">Example 5: Disease Burden with Dark Theme<a class="anchor" aria-label="anchor" href="#example-5-disease-burden-with-dark-theme"></a>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-pop_files/figure-html/education-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="example-5-disease-burden-with-dark-theme">Example 5: Disease Burden with Dark Theme<a class="anchor" aria-label="anchor" href="#example-5-disease-burden-with-dark-theme"></a>
 </h2>
-<p>A dark-themed chart showing disease categories in a simulated
-population.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_disease</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<p>A dark-themed chart showing disease categories in a simulated population.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_disease</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Cardiovascular"</span>, <span class="fl">32</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Cancer"</span>, <span class="fl">18</span><span class="op">)</span>,</span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Respiratory"</span>, <span class="fl">14</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Diabetes"</span>, <span class="fl">12</span><span class="op">)</span>,</span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Other"</span>, <span class="fl">24</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -314,24 +403,41 @@ population.</p>
 <span>    <span class="st">"Diabetes"</span>       <span class="op">=</span> <span class="st">"#FFB74D"</span>,</span>
 <span>    <span class="st">"Other"</span>          <span class="op">=</span> <span class="st">"#78909C"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_pop_dark.html">theme_pop_dark</a></span><span class="op">(</span>bg_color <span class="op">=</span> <span class="st">"#0D1B2A"</span>, text_color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Disease Burden by Condition"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Simulated population of 100 individuals"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Condition"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    plot.title       <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">22</span>, face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>    plot.subtitle    <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, lineheight <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span>,</span>
+<span>    legend.position  <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    legend.title     <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">11</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.text      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>    legend.margin    <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>    legend.spacing.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">8</span>, <span class="st">"pt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="examples-geom-pop_files/figure-html/disease-dark-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-pop_files/figure-html/disease-dark-1.png" width="960"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="example-6-disability-status-with-stroke">Example 6: Disability Status with Stroke<a class="anchor" aria-label="anchor" href="#example-6-disability-status-with-stroke"></a>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="example-6-disability-status-with-stroke">Example 6: Disability Status with Stroke<a class="anchor" aria-label="anchor" href="#example-6-disability-status-with-stroke"></a>
 </h2>
-<p>Using <code>stroke_width</code> to outline icons for better
-visibility and <code>arrange = TRUE</code> to group icons by type.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_disability</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  sex      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"disabled males"</span>, <span class="st">"disabled females"</span><span class="op">)</span>,</span>
+<p>Using <code>stroke_width</code> to outline icons for better visibility and <code>arrange = TRUE</code> to group icons by type.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">df_disability</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  sex      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"Female"</span>, <span class="st">"Disabled Males"</span>, <span class="st">"Disabled Females"</span><span class="op">)</span>,</span>
 <span>  n        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">46</span>, <span class="fl">44</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -342,61 +448,66 @@ visibility and <code>arrange = TRUE</code> to group icons by type.</p>
 <span>  sample_size <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
-<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"male"</span>             <span class="op">~</span> <span class="st">"male"</span>,</span>
-<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"female"</span>           <span class="op">~</span> <span class="st">"female"</span>,</span>
-<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"disabled males"</span>   <span class="op">~</span> <span class="st">"person-cane"</span>,</span>
-<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"disabled females"</span> <span class="op">~</span> <span class="st">"person-cane"</span></span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Male"</span>             <span class="op">~</span> <span class="st">"male"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Female"</span>           <span class="op">~</span> <span class="st">"female"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Disabled Males"</span>   <span class="op">~</span> <span class="st">"person-cane"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Disabled Females"</span> <span class="op">~</span> <span class="st">"person-cane"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
-<span>    data         <span class="op">=</span> <span class="va">df_disability_proc</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span>,</span>
-<span>    size         <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>    dpi          <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>    arrange      <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    legend_icons <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>    stroke_width <span class="op">=</span> <span class="fl">6</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span></span>
+<span><span class="co">#Add levels to show first Male, Female, then Disabled</span></span>
+<span></span>
+<span><span class="va">df_disability_proc</span><span class="op">$</span><span class="va">type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_disability_proc</span><span class="op">$</span><span class="va">type</span>, </span>
+<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"Female"</span>, <span class="st">"Disabled Males"</span>, <span class="st">"Disabled Females"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_disability_proc</span>,</span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size         <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>           dpi          <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>           arrange      <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>           legend_icons <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>           stroke_width <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span></span>
 <span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>      <span class="st">"male"</span>             <span class="op">=</span> <span class="st">"#1565C0"</span>,</span>
-<span>      <span class="st">"female"</span>           <span class="op">=</span> <span class="st">"#AD1457"</span>,</span>
-<span>      <span class="st">"disabled males"</span>   <span class="op">=</span> <span class="st">"#0288D1"</span>,</span>
-<span>      <span class="st">"disabled females"</span> <span class="op">=</span> <span class="st">"#F48FB1"</span></span>
+<span>      <span class="st">"Male"</span>             <span class="op">=</span> <span class="st">"#1565C0"</span>,</span>
+<span>      <span class="st">"Female"</span>           <span class="op">=</span> <span class="st">"#AD1457"</span>,</span>
+<span>      <span class="st">"Disabled Males"</span>   <span class="op">=</span> <span class="st">"#0288D1"</span>,</span>
+<span>      <span class="st">"Disabled Females"</span> <span class="op">=</span> <span class="st">"#F48FB1"</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span>legend_position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Population by Sex and Disability Status"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Icons outlined with stroke_width = 6"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Group"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="examples-geom-pop_files/figure-html/disability-1.png" class="r-plt" alt="" width="100%"></p>
+</details>
 </div>
-<div class="section level2">
-<h2 id="facet_wrap-transportation-methods-across-us-cities">
-<code>facet_wrap()</code> — Transportation Methods Across US
-Cities<a class="anchor" aria-label="anchor" href="#facet_wrap-transportation-methods-across-us-cities"></a>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-pop_files/figure-html/disability-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="facet_wrap-transportation-methods-across-us-cities">
+<code>facet_wrap()</code> — Transportation Methods Across US Cities<a class="anchor" aria-label="anchor" href="#facet_wrap-transportation-methods-across-us-cities"></a>
 </h2>
-<p>Using <code>facet_wrap(~ group)</code>, this chart breaks down the
-daily commute mix across major US cities. Each panel shows one city’s
-full distribution of transportation modes — car, bus, train, bicycle,
-motorcycle, walking, and ride-share — with each icon representing
-approximately 400 commuters. The dark background and per-mode color
-coding make it easy to compare cities at a glance.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Example: Transportation Methods Across Cities with 7 Icon Groups</span></span>
+<p>Using <code>facet_wrap(~ group)</code>, this chart breaks down the daily commute mix across major US cities. Each panel shows one city’s full distribution of transportation modes — car, bus, train, bicycle, motorcycle, walking, and ride-share — with each icon representing approximately 400 commuters. The dark background and per-mode color coding make it easy to compare cities at a glance.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example: Transportation Methods Across Cities with 7 Icon Groups</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 1. Create sample data for transportation methods across different countries</span></span>
 <span><span class="va">df_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"🇺🇸 United States"</span>, <span class="st">"🇩🇪 Germany"</span>, <span class="st">"🇳🇱 Netherlands"</span>, </span>
+<span>  country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"🇺🇸 United States"</span>, <span class="st">"🇩🇪 Germany"</span>, <span class="st">"🇳🇱 Netherlands"</span>,</span>
 <span>                  <span class="st">"🇯🇵 Japan"</span>, <span class="st">"🇲🇽 Mexico"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,</span>
-<span>  method  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"car"</span>, <span class="st">"bus"</span>, <span class="st">"train"</span>, <span class="st">"bicycle"</span>, </span>
+<span>  method  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"car"</span>, <span class="st">"bus"</span>, <span class="st">"train"</span>, <span class="st">"bicycle"</span>,</span>
 <span>                  <span class="st">"motorcycle"</span>, <span class="st">"walking"</span>, <span class="st">"taxi"</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span>,</span>
 <span>            <span class="co"># United States (car-dominant, low walking)</span></span>
 <span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70000</span>, <span class="fl">15000</span>, <span class="fl">12000</span>,  <span class="fl">6000</span>,  <span class="fl">8000</span>,  <span class="fl">5000</span>,  <span class="fl">9000</span>,</span>
@@ -411,10 +522,10 @@ coding make it easy to compare cities at a glance.</p>
 <span></span>
 <span><span class="co"># 2. Process the data for each country</span></span>
 <span><span class="va">df_transport_prop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_data.html">process_data</a></span><span class="op">(</span></span>
-<span>  data          <span class="op">=</span> <span class="va">df_transport</span>,</span>
-<span>  group_var     <span class="op">=</span> <span class="va">method</span>,</span>
-<span>  sum_var       <span class="op">=</span> <span class="va">value</span>,</span>
-<span>  sample_size   <span class="op">=</span> <span class="fl">150</span>,</span>
+<span>  data           <span class="op">=</span> <span class="va">df_transport</span>,</span>
+<span>  group_var      <span class="op">=</span> <span class="va">method</span>,</span>
+<span>  sum_var        <span class="op">=</span> <span class="va">value</span>,</span>
+<span>  sample_size    <span class="op">=</span> <span class="fl">150</span>,</span>
 <span>  high_group_var <span class="op">=</span> <span class="st">"country"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -440,34 +551,32 @@ coding make it easy to compare cities at a glance.</p>
 <span>       subtitle <span class="op">=</span> <span class="st">"\nDistribution of daily commuters by transportation type"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>      <span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span></span>
-<span>        <span class="st">"Each panel displays a proportional sample (150 icons). </span></span>
+<span>        <span class="st">"Each panel displays a proportional sample (150 icons).</span></span>
 <span><span class="st">        Each icon represents roughly 750–840 commuters, varying by country."</span>,</span>
 <span>        width <span class="op">=</span> <span class="fl">35</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
-<span>    <span class="co"># Put legend INSIDE plot area (bottom-right)</span></span>
 <span>    legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0.05</span><span class="op">)</span>,</span>
 <span>    legend.justification <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>    legend.direction <span class="op">=</span> <span class="st">"horizontal"</span>,</span>
 <span>    legend.box <span class="op">=</span> <span class="st">"horizontal"</span>,</span>
 <span>    strip.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">30</span>, color <span class="op">=</span> <span class="st">"#D4AF38"</span><span class="op">)</span>,</span>
 <span>    legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF38"</span>, size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span>,</span>
-<span>    </span>
 <span>    plot.title    <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span>, color <span class="op">=</span> <span class="st">"#D4AF38"</span><span class="op">)</span>,</span>
 <span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">"#D4AF38"</span>, size <span class="op">=</span> <span class="fl">18</span>,</span>
 <span>                                 margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span></span>
-<span>      hjust <span class="op">=</span> <span class="fl">.85</span>, <span class="co"># Centers the caption horizontally</span></span>
-<span>      vjust <span class="op">=</span> <span class="fl">10</span>,   <span class="co"># Aligns the caption to the top of its available vertical space</span></span>
+<span>      hjust <span class="op">=</span> <span class="fl">.85</span>,</span>
+<span>      vjust <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>      size <span class="op">=</span> <span class="fl">18</span>,</span>
 <span>      color <span class="op">=</span> <span class="st">"#D4AF38"</span></span>
-<span>    <span class="op">)</span>,    </span>
+<span>    <span class="op">)</span>,</span>
 <span>    legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span></span>
 <span>      color <span class="op">=</span> <span class="st">"#D4AF38"</span>,</span>
 <span>      size  <span class="op">=</span> <span class="fl">18</span>,</span>
 <span>      face  <span class="op">=</span> <span class="st">"bold"</span>,</span>
-<span>      margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>  <span class="co"># pushes title downward</span></span>
+<span>      margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    legend.box.spacing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"pt"</span><span class="op">)</span>  <span class="co"># pulls title under icons</span></span>
+<span>    legend.box.spacing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"pt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span></span>
 <span>    name <span class="op">=</span> <span class="st">"Transportation mode"</span>,</span>
@@ -492,34 +601,30 @@ coding make it easy to compare cities at a glance.</p>
 <span>    color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span></span>
 <span>      ncol <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>      byrow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>      title.position <span class="op">=</span> <span class="st">"top"</span>,   <span class="co"># required internally</span></span>
+<span>      title.position <span class="op">=</span> <span class="st">"top"</span>,</span>
 <span>      title.hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<p><img src="examples-geom-pop_files/figure-html/transportation_play-1.png" class="r-plt" alt="" width="100%"></p>
+</details>
 </div>
-<div class="section level2">
-<h2 id="facet_geo-gun-violence-across-us-states">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/transportation_methods_countries.png"></p>
+<figcaption>Example Plot facet</figcaption></figure>
+</div>
+<hr></section><section class="level2"><h2 id="facet_geo-gun-violence-across-us-states">
 <code>facet_geo()</code> — Gun Violence Across US States<a class="anchor" aria-label="anchor" href="#facet_geo-gun-violence-across-us-states"></a>
 </h2>
-<p>Combining <code><a href="../reference/geom_pop.html">geom_pop()</a></code> with the <code>geofacet</code>
-package places each state’s panel in its actual geographic position on
-the US map. Here, skull icons represent gun deaths per 100,000 people
-(2023 CDC data), with each icon equal to 2,000 people. The layout
-immediately reveals regional patterns that a standard bar chart would
-hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the
-South and rural West cluster visually as the hardest-hit regions.</p>
+<p>Combining <code><a href="../reference/geom_pop.html">geom_pop()</a></code> with the <code>geofacet</code> package places each state’s panel in its actual geographic position on the US map. Here, skull icons represent gun deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000 people. The layout immediately reveals regional patterns that a standard bar chart would hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the South and rural West cluster visually as the hardest-hit regions.</p>
 <p>Note: According to issue #488 from geofacet package</p>
-<p>“You may want to install ggplot2 v3.5.2 until it is fixed so the plot
-can work. Note that this is the case for all grids, not the US states
-grid alone (so if possible, please update the issue title).”.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_version</span><span class="op">(</span>package <span class="op">=</span> <span class="st">"ggplot2"</span>, </span>
-<span>                          version <span class="op">=</span> <span class="st">"3.5.2"</span>, </span>
+<p>“You may want to install ggplot2 v3.5.2 until it is fixed so the plot can work. Note that this is the case for all grids, not the US states grid alone (so if possible, please update the issue title).”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_version</span><span class="op">(</span>package <span class="op">=</span> <span class="st">"ggplot2"</span>,</span>
+<span>                          version <span class="op">=</span> <span class="st">"3.5.2"</span>,</span>
 <span>                          repos <span class="op">=</span> <span class="st">"http://cran.us.r-project.org"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hafen/geofacet" class="external-link">geofacet</a></span><span class="op">)</span></span>
+</div>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hafen/geofacet" class="external-link">geofacet</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/7a5e5e1b1009312506ebd873d7858fa424c14b68/DATA/us_states_hexgrid.geojson.json"</span></span>
 <span></span>
@@ -591,14 +696,98 @@ grid alone (so if possible, please update the issue title).”.</p>
 <span>                                    lineheight <span class="op">=</span> <span class="fl">1.4</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    plot.margin      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">40</span>, r <span class="op">=</span> <span class="fl">40</span>, b <span class="op">=</span> <span class="fl">40</span>, l <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div class="float">
-<img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png" alt="Example Plot geofacet"><div class="figcaption">Example Plot geofacet</div>
+</details>
 </div>
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png"></p>
+<figcaption>Example Plot geofacet</figcaption></figure>
 </div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+</section><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
     <footer><div class="pkgdown-footer-left">

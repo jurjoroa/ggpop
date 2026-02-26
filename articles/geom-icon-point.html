@@ -15,8 +15,11 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="geom-icon-point_files/libs/quarto-html/popper.min.js"></script><script src="geom-icon-point_files/libs/quarto-html/tippy.umd.min.js"></script><link href="geom-icon-point_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="geom-icon-point_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Icon Scatter Plots with geom_icon_point()">
+<meta property="og:image" content="https://jurjoroa.github.io/ggpop/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -54,53 +57,38 @@
 
 
   </div>
-</nav><div class="container template-article">
-
-
-
-
+</nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Icon Scatter Plots with geom_icon_point()</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/geom-icon-point.Rmd" class="external-link"><code>vignettes/geom-icon-point.Rmd</code></a></small>
-      <div class="d-none name"><code>geom-icon-point.Rmd</code></div>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/geom-icon-point.qmd" class="external-link"><code>vignettes/geom-icon-point.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<div class="section level2">
-<h2 id="what-is-geom_icon_point">What is <code>geom_icon_point()</code>?<a class="anchor" aria-label="anchor" href="#what-is-geom_icon_point"></a>
+
+
+
+
+
+    <section class="level2"><h2 id="what-is-geom_icon_point">What is <code>geom_icon_point()</code>?<a class="anchor" aria-label="anchor" href="#what-is-geom_icon_point"></a>
 </h2>
-<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> is the scatter plot cousin of
-<code><a href="../reference/geom_pop.html">geom_pop()</a></code>. It works exactly like
-<code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">ggplot2::geom_point()</a></code> — but replaces dots with Font Awesome
-icons. No data preprocessing is required: just supply any data frame
-with <code>x</code> and <code>y</code> variables and let the icons do
-the talking.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> is the scatter plot cousin of <code><a href="../reference/geom_pop.html">geom_pop()</a></code>. It works exactly like <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">ggplot2::geom_point()</a></code> — but replaces dots with Font Awesome icons. No data preprocessing is required: just supply any data frame with <code>x</code> and <code>y</code> variables and let the icons do the talking.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
-<hr>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+</details>
 </div>
-<div class="section level2">
-<h2 id="basic-usage-a-fixed-icon">1. Basic Usage — A Fixed Icon<a class="anchor" aria-label="anchor" href="#basic-usage-a-fixed-icon"></a>
+<hr></section><section class="level2"><h2 id="basic-usage-a-fixed-icon">1. Basic Usage — A Fixed Icon<a class="anchor" aria-label="anchor" href="#basic-usage-a-fixed-icon"></a>
 </h2>
-<p>The simplest use case: a single icon for all points, with
-<code>color</code> carrying the grouping information. Use the
-<code>icon</code> parameter (not <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code>) to fix one icon
-across all observations.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>The simplest use case: a single icon for all points, with <code>color</code> carrying the grouping information. Use the <code>icon</code> parameter (not <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code>) to fix one icon across all observations.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">iris</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Sepal.Length</span>, y <span class="op">=</span> <span class="va">Petal.Length</span>, color <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"seedling"</span>, size <span class="op">=</span> <span class="fl">1.5</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -116,16 +104,18 @@ across all observations.</p>
 <span>    y        <span class="op">=</span> <span class="st">"Petal Length (cm)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Species"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="geom-icon-point_files/figure-html/basic-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="geom-icon-point_files/figure-html/basic-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="mapping-icons-to-categories">2. Mapping Icons to Categories<a class="anchor" aria-label="anchor" href="#mapping-icons-to-categories"></a>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="mapping-icons-to-categories">2. Mapping Icons to Categories<a class="anchor" aria-label="anchor" href="#mapping-icons-to-categories"></a>
 </h2>
-<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> shines when each category gets its own
-icon. Map <code>icon</code> inside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> to a column in
-your data — each group then carries its own visual identity.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> shines when each category gets its own icon. Map <code>icon</code> inside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> to a column in your data — each group then carries its own visual identity.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_food</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  food     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Carrot"</span>, <span class="st">"Orange"</span>, <span class="st">"Chicken"</span>, <span class="st">"Beef"</span>, <span class="st">"Salmon"</span>,</span>
 <span>               <span class="st">"Milk"</span>, <span class="st">"Cheese"</span>, <span class="st">"Yogurt"</span><span class="op">)</span>,</span>
@@ -154,47 +144,50 @@ your data — each group then carries its own visual identity.</p>
 <span>    x        <span class="op">=</span> <span class="st">"Calories (per 100g)"</span>,</span>
 <span>    y        <span class="op">=</span> <span class="st">"Protein (g per 100g)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Group"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Multiple icons per color/group detected.</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Why you are seeing this warning:</span></span>
-<span><span class="co">#&gt;   The legend can only display ONE icon per group, but some groups have</span></span>
-<span><span class="co">#&gt;   multiple:</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; - Fruit &amp; Veg: 3 icons (apple-whole, carrot, lemon)</span></span>
-<span><span class="co">#&gt; - Dairy: 3 icons (bottle-water, cheese, jar)</span></span>
-<span><span class="co">#&gt; - Meat &amp; Fish: 3 icons (drumstick-bite, bacon, fish)</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> What happens:</span></span>
-<span><span class="co">#&gt;   - The most frequent icon for each group will be shown in the legend</span></span>
-<span><span class="co">#&gt;   - Other icons in that group will still appear in the plot</span></span>
-<span><span class="co">#&gt;   - This may confuse viewers if icons have different meanings</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Recommended fixes:</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;   Option 1: Use consistent icons per group</span></span>
-<span><span class="co">#&gt;   `df &lt;- df %&gt;% mutate(icon = case_when(`</span></span>
-<span><span class="co">#&gt;   `sex == 'A' ~ 'male',`</span></span>
-<span><span class="co">#&gt;   `sex == 'B' ~ 'female'`</span></span>
-<span><span class="co">#&gt;   `))`</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;   Option 2: Create a separate grouping variable</span></span>
-<span><span class="co">#&gt;   `df &lt;- df %&gt;% mutate(group = paste(sex, icon, sep = '_'))`</span></span>
-<span><span class="co">#&gt;   `ggplot() + geom_pop(aes(icon = icon, color = group))`</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;   Option 3: Set legend_icons = FALSE to use point markers</span></span>
-<span><span class="co">#&gt;   `geom_pop(..., legend_icons = FALSE)`</span></span></code></pre></div>
-<p><img src="geom-icon-point_files/figure-html/mapped-icons-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stderr">
+<pre><code>Warning: Multiple icons per color/group detected.
+
+! Why you are seeing this warning:
+  The legend can only display ONE icon per group, but some groups have
+  multiple:
+
+- Fruit &amp; Veg: 3 icons (apple-whole, carrot, lemon)
+- Dairy: 3 icons (bottle-water, cheese, jar)
+- Meat &amp; Fish: 3 icons (drumstick-bite, bacon, fish)
+
+ℹ What happens:
+  - The most frequent icon for each group will be shown in the legend
+  - Other icons in that group will still appear in the plot
+  - This may confuse viewers if icons have different meanings
+
+ℹ Recommended fixes:
+
+  Option 1: Use consistent icons per group
+  `df &lt;- df %&gt;% mutate(icon = case_when(`
+  `sex == 'A' ~ 'male',`
+  `sex == 'B' ~ 'female'`
+  `))`
+
+  Option 2: Create a separate grouping variable
+  `df &lt;- df %&gt;% mutate(group = paste(sex, icon, sep = '_'))`
+  `ggplot() + geom_pop(aes(icon = icon, color = group))`
+
+  Option 3: Set legend_icons = FALSE to use point markers
+  `geom_pop(..., legend_icons = FALSE)`</code></pre>
 </div>
-<div class="section level2">
-<h2 id="size-mapping">3. Size Mapping<a class="anchor" aria-label="anchor" href="#size-mapping"></a>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="geom-icon-point_files/figure-html/mapped-icons-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="size-mapping">3. Size Mapping<a class="anchor" aria-label="anchor" href="#size-mapping"></a>
 </h2>
-<p>Map a continuous variable to <code>size</code> inside
-<code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> to add a third dimension of information. Use
-<code><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">scales::rescale()</a></code> to keep icon sizes in a readable range —
-raw values that are too large or too small make icons unreadable.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>Map a continuous variable to <code>size</code> inside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> to add a third dimension of information. Use <code><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">scales::rescale()</a></code> to keep icon sizes in a readable range — raw values that are too large or too small make icons unreadable.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_brand</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  brand      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Google"</span>, <span class="st">"Microsoft"</span>, <span class="st">"Meta"</span>, <span class="st">"Amazon"</span>,</span>
 <span>                 <span class="st">"Netflix"</span>, <span class="st">"Spotify"</span>, <span class="st">"Uber"</span>, <span class="st">"Airbnb"</span><span class="op">)</span>,</span>
@@ -229,21 +222,23 @@ raw values that are too large or too small make icons unreadable.</p>
 <span>    y        <span class="op">=</span> <span class="st">"Market Cap (log scale)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Brand"</span>,</span>
 <span>    size     <span class="op">=</span> <span class="st">"Employees"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">size</span> : <span style="color: #0000BB;">"Employees"</span></span></span></code></pre></div>
-<p><img src="geom-icon-point_files/figure-html/size-mapping-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stderr">
+<pre><code>Ignoring unknown labels:
+• size : "Employees"</code></pre>
 </div>
-<div class="section level2">
-<h2 id="factor-ordering">4. Factor Ordering<a class="anchor" aria-label="anchor" href="#factor-ordering"></a>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="geom-icon-point_files/figure-html/size-mapping-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="factor-ordering">4. Factor Ordering<a class="anchor" aria-label="anchor" href="#factor-ordering"></a>
 </h2>
-<p>When <code>color</code> is mapped to a factor, the legend follows
-<strong>factor level order</strong>. <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>
-automatically assigns icons to legend entries in the same order — so
-setting factor levels is all you need for a correctly ordered
-legend.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>When <code>color</code> is mapped to a factor, the legend follows <strong>factor level order</strong>. <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> automatically assigns icons to legend entries in the same order — so setting factor levels is all you need for a correctly ordered legend.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  country    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chad"</span>, <span class="st">"Mali"</span>, <span class="st">"Niger"</span>, <span class="st">"Bolivia"</span>, <span class="st">"Egypt"</span>, <span class="st">"Morocco"</span>,</span>
 <span>                 <span class="st">"Germany"</span>, <span class="st">"France"</span>, <span class="st">"Japan"</span><span class="op">)</span>,</span>
@@ -275,24 +270,21 @@ legend.</p>
 <span>    y        <span class="op">=</span> <span class="st">"Life Expectancy (years)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Income Group"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="geom-icon-point_files/figure-html/factor-ordering-1.png" class="r-plt" alt="" width="100%"></p>
-<blockquote>
-<p><strong>Tip:</strong> Always set factor levels explicitly with
-<code>factor(..., levels = ...)</code> before plotting. This guarantees
-that the icon in the legend matches the correct group, regardless of
-data row order.</p>
-</blockquote>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="geom-icon-point_files/figure-html/factor-ordering-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="combining-with-other-geoms">5. Combining with Other Geoms<a class="anchor" aria-label="anchor" href="#combining-with-other-geoms"></a>
+</div>
+</div>
+<blockquote>
+<p><strong>Tip:</strong> Always set factor levels explicitly with <code>factor(..., levels = ...)</code> before plotting. This guarantees that the icon in the legend matches the correct group, regardless of data row order.</p>
+</blockquote>
+<hr></section><section class="level2"><h2 id="combining-with-other-geoms">5. Combining with Other Geoms<a class="anchor" aria-label="anchor" href="#combining-with-other-geoms"></a>
 </h2>
-<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> is fully compatible with all standard
-ggplot2 geoms. Here we combine it with <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth()</a></code>,
-<code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline()</a></code>,
-<code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_label()</a></code>, and <code><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate()</a></code> to build a fully
-annotated analytical chart.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> is fully compatible with all standard ggplot2 geoms. Here we combine it with <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_label()</a></code>, and <code><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate()</a></code> to build a fully annotated analytical chart.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_health</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">spend</span>, y <span class="op">=</span> <span class="va">life_exp</span>,</span>
 <span>                      icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">income</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Reference lines: world averages</span></span>
@@ -331,76 +323,157 @@ annotated analytical chart.</p>
 <span>    x        <span class="op">=</span> <span class="st">"Health Spending per Capita (log scale)"</span>,</span>
 <span>    y        <span class="op">=</span> <span class="st">"Life Expectancy (years)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Income Group"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span>
-<span><span class="co">#&gt; Warning: The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">icon</span>.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span></span>
-<span><span class="co">#&gt;   the data.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span></span>
-<span><span class="co">#&gt;   variable into a factor?</span></span>
-<span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span>
-<span><span class="co">#&gt; Warning: The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">icon</span>.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span></span>
-<span><span class="co">#&gt;   the data.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span></span>
-<span><span class="co">#&gt;   variable into a factor?</span></span>
-<span><span class="co">#&gt; Warning: The `label.size` argument of `geom_label()` is deprecated as of ggplot2 3.5.0.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `linewidth` argument instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
-<span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span>
-<span><span class="co">#&gt; Warning: The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">icon</span>.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span></span>
-<span><span class="co">#&gt;   the data.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span></span>
-<span><span class="co">#&gt;   variable into a factor?</span></span></code></pre></div>
-<p><img src="geom-icon-point_files/figure-html/combined-geoms-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stderr">
+<pre><code>Warning: The following aesthetics were dropped during statistical transformation: icon.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor?
+The following aesthetics were dropped during statistical transformation: icon.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor?</code></pre>
 </div>
-<div class="section level2">
-<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The `label.size` argument of `geom_label()` is deprecated as of ggplot2 3.5.0.
+ℹ Please use the `linewidth` argument instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The following aesthetics were dropped during statistical transformation: icon.
+ℹ This can happen when ggplot fails to infer the correct grouping structure in
+  the data.
+ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+  variable into a factor?</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="geom-icon-point_files/figure-html/combined-geoms-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<table class="table">
+<table class="table caption-top">
 <thead><tr class="header">
-<th align="left">Feature</th>
-<th align="left">How</th>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">How</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Fixed icon</td>
-<td align="left"><code>geom_icon_point(icon = "circle")</code></td>
+<td style="text-align: left;">Fixed icon</td>
+<td style="text-align: left;"><code>geom_icon_point(icon = "circle")</code></td>
 </tr>
 <tr class="even">
-<td align="left">Mapped icons</td>
-<td align="left"><code>aes(icon = icon_column)</code></td>
+<td style="text-align: left;">Mapped icons</td>
+<td style="text-align: left;"><code>aes(icon = icon_column)</code></td>
 </tr>
 <tr class="odd">
-<td align="left">Size mapping</td>
-<td align="left">
-<code>aes(size = var)</code> +
-<code><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">scales::rescale()</a></code>
+<td style="text-align: left;">Size mapping</td>
+<td style="text-align: left;">
+<code>aes(size = var)</code> + <code><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">scales::rescale()</a></code>
 </td>
 </tr>
 <tr class="even">
-<td align="left">Factor ordering</td>
-<td align="left">
-<code>factor(..., levels = ...)</code> before
-plotting</td>
+<td style="text-align: left;">Factor ordering</td>
+<td style="text-align: left;">
+<code>factor(..., levels = ...)</code> before plotting</td>
 </tr>
 <tr class="odd">
-<td align="left">Combine geoms</td>
-<td align="left">Add any ggplot2 geom before or after</td>
+<td style="text-align: left;">Combine geoms</td>
+<td style="text-align: left;">Add any ggplot2 geom before or after</td>
 </tr>
 </tbody>
 </table>
-<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop
-website</a> for the full function reference and more examples.</p>
-</div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop website</a> for the full function reference and more examples.</p>
+</section><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
     <footer><div class="pkgdown-footer-left">

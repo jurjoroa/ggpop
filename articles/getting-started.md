@@ -14,6 +14,8 @@ the main function for building proportional population grids.
 
 ## Installation
 
+Show the code
+
 ``` r
 # From CRAN
 install.packages("ggpop")
@@ -46,18 +48,12 @@ We start with a simple data frame containing population counts by sex.
 This mirrors the kind of data you’d typically bring to
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
 
+Show the code
+
 ``` r
 library(ggpop)
 library(ggplot2)
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 
 df_pop_mx <- data.frame(
   sex     = c("male", "female"),
@@ -66,10 +62,11 @@ df_pop_mx <- data.frame(
 )
 
 df_pop_mx
-#>      sex        n country
-#> 1   male 63459580  Mexico
-#> 2 female 67401427  Mexico
 ```
+
+         sex        n country
+    1   male 63459580  Mexico
+    2 female 67401427  Mexico
 
 ------------------------------------------------------------------------
 
@@ -80,6 +77,8 @@ converts raw population counts into a sampled data frame where each row
 represents one icon. It calculates group proportions and allocates icons
 accordingly.
 
+Show the code
+
 ``` r
 df_processed <- process_data(
   data        = df_pop_mx,
@@ -89,14 +88,15 @@ df_processed <- process_data(
 )
 
 head(df_processed)
-#>     type        n      prop
-#> 1 female 67401427 0.5150612
-#> 2   male 63459580 0.4849388
-#> 3 female 67401427 0.5150612
-#> 4 female 67401427 0.5150612
-#> 5 female 67401427 0.5150612
-#> 6 female 67401427 0.5150612
 ```
+
+        type        n      prop
+    1   male 63459580 0.4849388
+    2   male 63459580 0.4849388
+    3 female 67401427 0.5150612
+    4 female 67401427 0.5150612
+    5 female 67401427 0.5150612
+    6 female 67401427 0.5150612
 
 > **Note:**
 > [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
@@ -110,6 +110,8 @@ head(df_processed)
 
 Add an `icon` column to your processed data. Icon names come from Font
 Awesome — use any of the 2,000+ free icons.
+
+Show the code
 
 ``` r
 df_processed <- df_processed %>%
@@ -128,6 +130,8 @@ Pass the data to
 add
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
 Map `icon` and `color` to your grouping variable.
+
+Show the code
 
 ``` r
 ggplot() +
@@ -158,6 +162,8 @@ and use
 [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md)
 to control the legend icon size.
 
+Show the code
+
 ``` r
 ggplot() +
   geom_pop(
@@ -187,6 +193,8 @@ You don’t need
 [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md).
 Any data frame with one row per icon works directly:
 
+Show the code
+
 ``` r
 df_simple <- data.frame(
   group = c(rep("Healthy", 70), rep("At Risk", 20), rep("Ill", 10)),
@@ -215,23 +223,24 @@ ggplot() +
     subtitle = "Each icon represents one patient",
     color    = "Status"
   )
-#> Warning: Facet / grouping caution.
-#>   
-#> ! Why you are seeing this warning:
-#>   - The data contains multiple groups in data$group
-#>   (often created by `process_data(high_group_var = ...)`)
-#>   - If the plot is not faceted, icons from different groups may overlap
-#>   
-#> ℹ Recommended patterns:
-#>   - Facet in ggplot2:
-#>   `ggplot() + geom_pop(..., facet = group) + facet_wrap(~ group)`
-#>   
-#>   - Alternative layout:
-#>   Create one plot per subgroup and combine with cowplot or patchwork
-#>   
-#> ℹ If you want one pooled circle:
-#>   - Re-run `process_data()` without `high_group_var`
 ```
+
+    Warning: Facet / grouping caution.
+
+    ! Why you are seeing this warning:
+      - The data contains multiple groups in data$group
+      (often created by `process_data(high_group_var = ...)`)
+      - If the plot is not faceted, icons from different groups may overlap
+
+    ℹ Recommended patterns:
+      - Facet in ggplot2:
+      `ggplot() + geom_pop(..., facet = group) + facet_wrap(~ group)`
+
+      - Alternative layout:
+      Create one plot per subgroup and combine with cowplot or patchwork
+
+    ℹ If you want one pooled circle:
+      - Re-run `process_data()` without `high_group_var`
 
 ![](getting-started_files/figure-html/own-data-1.png)
 

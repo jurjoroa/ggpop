@@ -1,19 +1,5 @@
 # geom_pop() Examples
 
-``` r
-library(ggpop)
-library(ggplot2)
-library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
-```
-
 ------------------------------------------------------------------------
 
 ## Example 1: World Population by Continent
@@ -22,7 +8,13 @@ Out of every 100 people on Earth, how many come from each continent?
 Each icon uses a distinct symbol and color per continent, and the legend
 shows the exact count.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
 df_world <- data.frame(
   continent = c("Asia", "Africa", "Europe", "Latin America", "North America", "Oceania"),
   n         = c(4753079000, 1441090000, 748000000, 662000000, 376000000, 45000000)
@@ -44,7 +36,7 @@ df_world_proc <- process_data(
   ))
 
 df_world_proc$type <- factor(df_world_proc$type,
-  levels = c("Asia", "Africa", "Europe", 
+  levels = c("Asia", "Africa", "Europe",
              "Latin America", "North America", "Oceania"))
 
 # Build legend labels showing exact icon count per continent
@@ -72,23 +64,24 @@ ggplot(data = df_world_proc,
     ),
     labels = v_labels
   ) +
-  scale_legend_icon(size = 5)+
   theme_pop(base_size = 25) +
-  theme(legend.position = "bottom",plot.title = element_text(color = "white"), 
+  scale_legend_icon(size = 8) +
+  theme(plot.background   = element_blank(),
+        panel.background  = element_blank(),
+        legend.background = element_blank(),
+        legend.key        = element_blank(),
+        legend.position = "bottom", plot.title = element_text(color = "white"),
         plot.subtitle = element_text(color = "white"),
         legend.text = element_text(color = "white"),
-        legend.title = element_text(color = "white"),
-        plot.background = element_rect(fill = "transparent", color = NA),
-        legend.background = element_rect(fill = "transparent", color = NA)) +
-        
+        legend.title = element_text(color = "white")) +
   labs(
     title    = "World Population by Continent (2024)",
-    subtitle = "Each icon represents ~1% of the global 
-                population  \u00b7  Sample of 500",
+    subtitle = "Each icon represents ~1% of the global population  \u00b7  Sample of 500",
     color    = "Continent"
   )
-#> Downloading dataset...
 ```
+
+    Downloading dataset...
 
 ![](examples-geom-pop_files/figure-html/world-population-1.png)
 
@@ -98,7 +91,13 @@ ggplot(data = df_world_proc,
 
 A simple two-group population chart using Mexico’s 2024 population data.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
 df_sex <- data.frame(
   sex = c("male", "female"),
   n   = c(63459580, 67401427)
@@ -142,7 +141,13 @@ ggplot() +
 A three-group chart showing a simulated patient population broken down
 by health status.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
 df_health <- data.frame(
   status = c(rep("Healthy", 70), rep("At Risk", 20), rep("Ill", 10)),
   icon   = c(rep("person", 70), rep("person-half-dress", 20), rep("bed-pulse", 10))
@@ -181,7 +186,14 @@ ggplot() +
 
 Population chart showing education attainment across four levels.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+library(ggtext)
+
 df_edu <- data.frame(
   level = c("No Schooling", "Primary", "Secondary", "University"),
   n     = c(8, 22, 42, 28)
@@ -191,34 +203,88 @@ df_edu_proc <- process_data(
   data        = df_edu,
   group_var   = level,
   sum_var     = n,
-  sample_size = 100
+  sample_size = 50
 ) %>%
-  mutate(icon = "user")
+  mutate(icon = case_when(
+    type == "No Schooling" ~ "person",
+    type == "Primary"      ~ "child",
+    type == "Secondary"    ~ "person-chalkboard",
+    type == "University"   ~ "user-graduate",
+    TRUE ~ "user"
+  ))
 
 df_edu_proc$type <- factor(df_edu_proc$type,
   levels = c("No Schooling", "Primary", "Secondary", "University"))
+
+pal <- c(
+  "No Schooling" = "#EF5350",
+  "Primary"      = "#FFB74D",
+  "Secondary"    = "#42A5F5",
+  "University"   = "#66BB6A"
+)
+
+# Annotation data for % labels below the grid
+df_labels <- data.frame(
+  type    = factor(c("No Schooling", "Primary", "Secondary", "University"),
+                   levels = c("No Schooling", "Primary", "Secondary", "University")),
+  pct     = c("8%", "22%", "42%", "28%"),
+  color   = unname(pal)
+)
 
 ggplot() +
   geom_pop(
     data         = df_edu_proc,
     aes(icon = icon, color = type),
-    size         = 2,
+    size         = 2.2,
     dpi          = 100,
-    legend_icons = TRUE
+    legend_icons = TRUE,
+    arrange      = TRUE
   ) +
-  scale_color_manual(values = c(
-    "No Schooling" = "#EF5350",
-    "Primary"      = "#FFB74D",
-    "Secondary"    = "#42A5F5",
-    "University"   = "#66BB6A"
+  scale_color_manual(values = pal,
+    labels = c(
+      "No Schooling" = "<span style='color:#EF5350'>**No Schooling** — 8%</span>",
+      "Primary"      = "<span style='color:#FFB74D'>**Primary** — 22%</span>",
+      "Secondary"    = "<span style='color:#42A5F5'>**Secondary** — 42%</span>",
+      "University"   = "<span style='color:#66BB6A'>**University** — 28%</span>"
+    )
+  ) +
+  guides(color = guide_legend(
+    ncol           = 2,
+    byrow          = TRUE,
+    title.position = "top",
+    title.hjust    = 0.5,
+    label.theme    = element_markdown(size = 11)
   )) +
-  scale_legend_icon(size = 5) +
-  theme_pop() +
-  labs(
-    title    = "Education Attainment",
-    subtitle = "Each icon represents 1% of the population",
-    color    = "Level"
-  )
+    theme_pop() +
+  theme(
+    plot.title       = element_markdown(
+      size   = 22, face = "bold", hjust = 0.5,
+      color  = "white", margin = margin(b = 6)
+    ),
+    plot.subtitle    = element_markdown(
+      size      = 12, hjust = 0.5, color = "#B0BEC5",
+      lineheight = 1.4, margin = margin(b = 18)
+    ),
+    plot.caption     = element_markdown(
+      size  = 9, color = "#78909C", hjust = 0.5,
+      margin = margin(t = 14)
+    ),
+    legend.position  = "bottom",
+    legend.title     = element_text(color = "#B0BEC5", size = 11,
+                                    face = "bold"),
+    legend.margin    = margin(t = 12),
+    legend.spacing.x = unit(8, "pt")
+  ) +
+    theme_transp +
+scale_legend_icon(size = 7) +
+labs(
+  title    = "Educational Attainment",
+  subtitle = "Each icon = 2% of the population &nbsp;·&nbsp;
+              <span style='color:#42A5F5'>**42%**</span> reached secondary,
+              only <span style='color:#66BB6A'>**28%**</span> completed university",
+  caption  = "Hypothetical survey data · Visualization: ggpop",
+  color    = "Education Level"
+)
 ```
 
 ![](examples-geom-pop_files/figure-html/education-1.png)
@@ -230,7 +296,13 @@ ggplot() +
 A dark-themed chart showing disease categories in a simulated
 population.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
 df_disease <- data.frame(
   condition = c(rep("Cardiovascular", 32), rep("Cancer", 18),
                 rep("Respiratory", 14), rep("Diabetes", 12),
@@ -258,12 +330,21 @@ ggplot() +
     "Diabetes"       = "#FFB74D",
     "Other"          = "#78909C"
   )) +
-  scale_legend_icon(size = 5) +
   theme_pop_dark(bg_color = "#0D1B2A", text_color = "white") +
   labs(
     title    = "Disease Burden by Condition",
     subtitle = "Simulated population of 100 individuals",
     color    = "Condition"
+  ) +
+  scale_legend_icon(size = 8) +
+  theme(
+    plot.title       = element_markdown(size = 22, face = "bold", hjust = 0.5),
+    plot.subtitle    = element_markdown(size = 12, hjust = 0.5, lineheight = 1.4),
+    legend.position  = "bottom",
+    legend.title     = element_text(size = 11, face = "bold"),
+    legend.text      = element_text(size = 12),
+    legend.margin    = margin(t = 12),
+    legend.spacing.x = unit(8, "pt")
   )
 ```
 
@@ -276,9 +357,16 @@ ggplot() +
 Using `stroke_width` to outline icons for better visibility and
 `arrange = TRUE` to group icons by type.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
+
 df_disability <- data.frame(
-  sex      = c("male", "female", "disabled males", "disabled females"),
+  sex      = c("Male", "Female", "Disabled Males", "Disabled Females"),
   n        = c(46, 44, 5, 5)
 )
 
@@ -289,32 +377,36 @@ df_disability_proc <- process_data(
   sample_size = 100
 ) %>%
   mutate(icon = case_when(
-    type == "male"             ~ "male",
-    type == "female"           ~ "female",
-    type == "disabled males"   ~ "person-cane",
-    type == "disabled females" ~ "person-cane"
+    type == "Male"             ~ "male",
+    type == "Female"           ~ "female",
+    type == "Disabled Males"   ~ "person-cane",
+    type == "Disabled Females" ~ "person-cane"
   ))
 
-ggplot() +
-  geom_pop(
-    data         = df_disability_proc,
-    aes(icon = icon, color = type),
-    size         = 2,
-    dpi          = 100,
-    arrange      = TRUE,
-    legend_icons = TRUE,
-    stroke_width = 6
-  ) +
+
+#Add levels to show first Male, Female, then Disabled
+
+df_disability_proc$type <- factor(df_disability_proc$type, 
+  levels = c("Male", "Female", "Disabled Males", "Disabled Females"))
+
+ggplot(data = df_disability_proc,
+    aes(icon = icon, color = type)) +
+  geom_pop(size         = 2,
+           dpi          = 100,
+           arrange      = TRUE,
+           legend_icons = TRUE,
+           stroke_width = 6) +
   scale_color_manual(
     values = c(
-      "male"             = "#1565C0",
-      "female"           = "#AD1457",
-      "disabled males"   = "#0288D1",
-      "disabled females" = "#F48FB1"
+      "Male"             = "#1565C0",
+      "Female"           = "#AD1457",
+      "Disabled Males"   = "#0288D1",
+      "Disabled Females" = "#F48FB1"
     )
   ) +
-  scale_legend_icon(size = 5) +
-  theme_pop() +
+  theme_pop(legend_position = "bottom") +
+  theme(legend.text = element_text(size = 20)) +
+  scale_legend_icon(size = 10) +
   labs(
     title    = "Population by Sex and Disability Status",
     subtitle = "Icons outlined with stroke_width = 6",
@@ -323,6 +415,8 @@ ggplot() +
 ```
 
 ![](examples-geom-pop_files/figure-html/disability-1.png)
+
+------------------------------------------------------------------------
 
 ## `facet_wrap()` — Transportation Methods Across US Cities
 
@@ -333,17 +427,18 @@ motorcycle, walking, and ride-share — with each icon representing
 approximately 400 commuters. The dark background and per-mode color
 coding make it easy to compare cities at a glance.
 
-``` r
+Show the code
 
+``` r
 # Example: Transportation Methods Across Cities with 7 Icon Groups
 library(ggplot2)
 library(dplyr)
 
 # 1. Create sample data for transportation methods across different countries
 df_transport <- data.frame(
-  country = rep(c("🇺🇸 United States", "🇩🇪 Germany", "🇳🇱 Netherlands", 
+  country = rep(c("🇺🇸 United States", "🇩🇪 Germany", "🇳🇱 Netherlands",
                   "🇯🇵 Japan", "🇲🇽 Mexico"), each = 7),
-  method  = rep(c("car", "bus", "train", "bicycle", 
+  method  = rep(c("car", "bus", "train", "bicycle",
                   "motorcycle", "walking", "taxi"), 5),
             # United States (car-dominant, low walking)
   value = c(70000, 15000, 12000,  6000,  8000,  5000,  9000,
@@ -358,10 +453,10 @@ df_transport <- data.frame(
 
 # 2. Process the data for each country
 df_transport_prop <- process_data(
-  data          = df_transport,
-  group_var     = method,
-  sum_var       = value,
-  sample_size   = 150,
+  data           = df_transport,
+  group_var      = method,
+  sum_var        = value,
+  sample_size    = 150,
   high_group_var = "country"
 )
 
@@ -387,34 +482,32 @@ ggplot(data = df_transport_prop,
        subtitle = "\nDistribution of daily commuters by transportation type",
        caption = paste(
       strwrap(
-        "Each panel displays a proportional sample (150 icons). 
+        "Each panel displays a proportional sample (150 icons).
         Each icon represents roughly 750–840 commuters, varying by country.",
         width = 35), collapse = "\n")) +
   theme(
-    # Put legend INSIDE plot area (bottom-right)
     legend.position = c(0.9, 0.05),
     legend.justification = c(1, 0),
     legend.direction = "horizontal",
     legend.box = "horizontal",
     strip.text = element_text(size = 30, color = "#D4AF38"),
     legend.text = element_text(color = "#D4AF38", size = 15),
-    
     plot.title    = element_text(hjust = 0.5, face = "bold", color = "#D4AF38"),
     plot.subtitle = element_text(hjust = 0.5, color = "#D4AF38", size = 18,
                                  margin = margin(b = 50)),
     plot.caption = element_text(
-      hjust = .85, # Centers the caption horizontally
-      vjust = 10,   # Aligns the caption to the top of its available vertical space
+      hjust = .85,
+      vjust = 10,
       size = 18,
       color = "#D4AF38"
-    ),    
+    ),
     legend.title = element_text(
       color = "#D4AF38",
       size  = 18,
       face  = "bold",
-      margin = margin(b = 10)  # pushes title downward
+      margin = margin(b = 10)
     ),
-    legend.box.spacing = unit(4, "pt")  # pulls title under icons
+    legend.box.spacing = unit(4, "pt")
   ) +
   scale_color_manual(
     name = "Transportation mode",
@@ -439,12 +532,16 @@ ggplot(data = df_transport_prop,
     color = guide_legend(
       ncol = 2,
       byrow = TRUE,
-      title.position = "top",   # required internally
+      title.position = "top",
       title.hjust = 0.5)) +
   scale_legend_icon(size = 10)
 ```
 
-![](examples-geom-pop_files/figure-html/transportation_play-1.png)
+![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/transportation_methods_countries.png)
+
+Example Plot facet
+
+------------------------------------------------------------------------
 
 ## `facet_geo()` — Gun Violence Across US States
 
@@ -465,14 +562,14 @@ can work. Note that this is the case for all grids, not the US states
 grid alone (so if possible, please update the issue title).”.
 
 ``` r
-devtools::install_version(package = "ggplot2", 
-                          version = "3.5.2", 
+devtools::install_version(package = "ggplot2",
+                          version = "3.5.2",
                           repos = "http://cran.us.r-project.org")
 ```
 
+Show the code
+
 ``` r
-
-
 library(sf); library(dplyr); library(geofacet)
 
 url <- "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/7a5e5e1b1009312506ebd873d7858fa424c14b68/DATA/us_states_hexgrid.geojson.json"
@@ -547,7 +644,6 @@ ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
   )
 ```
 
-![Example Plot
-geofacet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)
+![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)
 
 Example Plot geofacet

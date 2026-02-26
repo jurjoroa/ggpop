@@ -15,8 +15,11 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="getting-started_files/libs/quarto-html/popper.min.js"></script><script src="getting-started_files/libs/quarto-html/tippy.umd.min.js"></script><link href="getting-started_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="getting-started_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Getting Started with ggpop">
+<meta property="og:image" content="https://jurjoroa.github.io/ggpop/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -54,82 +57,58 @@
 
 
   </div>
-</nav><div class="container template-article">
-
-
-
-
+</nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Getting Started with ggpop</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
-      <div class="d-none name"><code>getting-started.Rmd</code></div>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/getting-started.qmd" class="external-link"><code>vignettes/getting-started.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<div class="section level2">
-<h2 id="what-is-ggpop">What is ggpop?<a class="anchor" aria-label="anchor" href="#what-is-ggpop"></a>
+
+
+
+
+
+    <section class="level2"><h2 id="what-is-ggpop">What is ggpop?<a class="anchor" aria-label="anchor" href="#what-is-ggpop"></a>
 </h2>
-<p><code>ggpop</code> is a <code>ggplot2</code> extension for creating
-<strong>icon-based population charts</strong>. Instead of bars or dots,
-each observation is represented by a Font Awesome icon — making your
-data immediately human and intuitive.</p>
-<p>This vignette walks you through the core workflow using
-<code><a href="../reference/geom_pop.html">geom_pop()</a></code>, the main function for building proportional
-population grids.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<p><code>ggpop</code> is a <code>ggplot2</code> extension for creating <strong>icon-based population charts</strong>. Instead of bars or dots, each observation is represented by a Font Awesome icon — making your data immediately human and intuitive.</p>
+<p>This vignette walks you through the core workflow using <code><a href="../reference/geom_pop.html">geom_pop()</a></code>, the main function for building proportional population grids.</p>
+<hr></section><section class="level2"><h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># From CRAN</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggpop"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Development version from GitHub</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jurjoroa/ggpop"</span><span class="op">)</span></span></code></pre></div>
-<hr>
+</details>
 </div>
-<div class="section level2">
-<h2 id="the-geom_pop-workflow">The <code>geom_pop()</code> Workflow<a class="anchor" aria-label="anchor" href="#the-geom_pop-workflow"></a>
+<hr></section><section class="level2"><h2 id="the-geom_pop-workflow">The <code>geom_pop()</code> Workflow<a class="anchor" aria-label="anchor" href="#the-geom_pop-workflow"></a>
 </h2>
 <p><code><a href="../reference/geom_pop.html">geom_pop()</a></code> follows a simple three-step workflow:</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>
-<strong>Prepare your data</strong> — either use
-<code><a href="../reference/process_data.html">process_data()</a></code> or bring your own data frame (one row per
-icon, max 1,000)</li>
+<strong>Prepare your data</strong> — either use <code><a href="../reference/process_data.html">process_data()</a></code> or bring your own data frame (one row per icon, max 1,000)</li>
 <li>
-<strong>Assign icons</strong> — map a Font Awesome icon name to each
-group</li>
+<strong>Assign icons</strong> — map a Font Awesome icon name to each group</li>
 <li>
-<strong>Plot</strong> — pass the data to <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot()</a></code> and
-add <code><a href="../reference/geom_pop.html">geom_pop()</a></code>
+<strong>Plot</strong> — pass the data to <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot()</a></code> and add <code><a href="../reference/geom_pop.html">geom_pop()</a></code>
 </li>
 </ol>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="step-1-your-data">Step 1: Your Data<a class="anchor" aria-label="anchor" href="#step-1-your-data"></a>
+<hr></section><section class="level2"><h2 id="step-1-your-data">Step 1: Your Data<a class="anchor" aria-label="anchor" href="#step-1-your-data"></a>
 </h2>
-<p>We start with a simple data frame containing population counts by
-sex. This mirrors the kind of data you’d typically bring to
-<code><a href="../reference/geom_pop.html">geom_pop()</a></code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>We start with a simple data frame containing population counts by sex. This mirrors the kind of data you’d typically bring to <code><a href="../reference/geom_pop.html">geom_pop()</a></code>.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
 <span></span>
 <span><span class="va">df_pop_mx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  sex     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span>,</span>
@@ -137,19 +116,18 @@ sex. This mirrors the kind of data you’d typically bring to
 <span>  country <span class="op">=</span> <span class="st">"Mexico"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">df_pop_mx</span></span>
-<span><span class="co">#&gt;      sex        n country</span></span>
-<span><span class="co">#&gt; 1   male 63459580  Mexico</span></span>
-<span><span class="co">#&gt; 2 female 67401427  Mexico</span></span></code></pre></div>
-<hr>
+<span><span class="va">df_pop_mx</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>     sex        n country
+1   male 63459580  Mexico
+2 female 67401427  Mexico</code></pre>
 </div>
-<div class="section level2">
-<h2 id="step-2-process-the-data">Step 2: Process the Data<a class="anchor" aria-label="anchor" href="#step-2-process-the-data"></a>
+</div>
+<hr></section><section class="level2"><h2 id="step-2-process-the-data">Step 2: Process the Data<a class="anchor" aria-label="anchor" href="#step-2-process-the-data"></a>
 </h2>
-<p><code><a href="../reference/process_data.html">process_data()</a></code> converts raw population counts into a
-sampled data frame where each row represents one icon. It calculates
-group proportions and allocates icons accordingly.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/process_data.html">process_data()</a></code> converts raw population counts into a sampled data frame where each row represents one icon. It calculates group proportions and allocates icons accordingly.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_processed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_data.html">process_data</a></span><span class="op">(</span></span>
 <span>  data        <span class="op">=</span> <span class="va">df_pop_mx</span>,</span>
 <span>  group_var   <span class="op">=</span> <span class="va">sex</span>,</span>
@@ -157,41 +135,37 @@ group proportions and allocates icons accordingly.</p>
 <span>  sample_size <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_processed</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     type        n      prop</span></span>
-<span><span class="co">#&gt; 1 female 67401427 0.5150612</span></span>
-<span><span class="co">#&gt; 2   male 63459580 0.4849388</span></span>
-<span><span class="co">#&gt; 3 female 67401427 0.5150612</span></span>
-<span><span class="co">#&gt; 4 female 67401427 0.5150612</span></span>
-<span><span class="co">#&gt; 5 female 67401427 0.5150612</span></span>
-<span><span class="co">#&gt; 6 female 67401427 0.5150612</span></span></code></pre></div>
-<blockquote>
-<p><strong>Note:</strong> <code><a href="../reference/process_data.html">process_data()</a></code> is optional. If
-your data already has one row per icon (up to 1,000 rows), you can pass
-it directly to <code><a href="../reference/geom_pop.html">geom_pop()</a></code>.</p>
-</blockquote>
-<hr>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_processed</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>    type        n      prop
+1   male 63459580 0.4849388
+2   male 63459580 0.4849388
+3 female 67401427 0.5150612
+4 female 67401427 0.5150612
+5 female 67401427 0.5150612
+6 female 67401427 0.5150612</code></pre>
 </div>
-<div class="section level2">
-<h2 id="step-3-assign-icons">Step 3: Assign Icons<a class="anchor" aria-label="anchor" href="#step-3-assign-icons"></a>
+</div>
+<blockquote>
+<p><strong>Note:</strong> <code><a href="../reference/process_data.html">process_data()</a></code> is optional. If your data already has one row per icon (up to 1,000 rows), you can pass it directly to <code><a href="../reference/geom_pop.html">geom_pop()</a></code>.</p>
+</blockquote>
+<hr></section><section class="level2"><h2 id="step-3-assign-icons">Step 3: Assign Icons<a class="anchor" aria-label="anchor" href="#step-3-assign-icons"></a>
 </h2>
-<p>Add an <code>icon</code> column to your processed data. Icon names
-come from Font Awesome — use any of the 2,000+ free icons.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>Add an <code>icon</code> column to your processed data. Icon names come from Font Awesome — use any of the 2,000+ free icons.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_processed</span> <span class="op">&lt;-</span> <span class="va">df_processed</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
 <span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"male"</span>   <span class="op">~</span> <span class="st">"male"</span>,</span>
 <span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"female"</span> <span class="op">~</span> <span class="st">"female"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<hr>
+</details>
 </div>
-<div class="section level2">
-<h2 id="step-4-plot">Step 4: Plot<a class="anchor" aria-label="anchor" href="#step-4-plot"></a>
+<hr></section><section class="level2"><h2 id="step-4-plot">Step 4: Plot<a class="anchor" aria-label="anchor" href="#step-4-plot"></a>
 </h2>
-<p>Pass the data to <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot()</a></code> and add
-<code><a href="../reference/geom_pop.html">geom_pop()</a></code>. Map <code>icon</code> and <code>color</code> to
-your grouping variable.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>Pass the data to <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot()</a></code> and add <code><a href="../reference/geom_pop.html">geom_pop()</a></code>. Map <code>icon</code> and <code>color</code> to your grouping variable.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">df_processed</span>,</span>
@@ -206,16 +180,18 @@ your grouping variable.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the total population"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/basic-plot-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="getting-started_files/figure-html/basic-plot-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="adding-a-legend-with-icons">Adding a Legend with Icons<a class="anchor" aria-label="anchor" href="#adding-a-legend-with-icons"></a>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="adding-a-legend-with-icons">Adding a Legend with Icons<a class="anchor" aria-label="anchor" href="#adding-a-legend-with-icons"></a>
 </h2>
-<p>Set <code>legend_icons = TRUE</code> inside <code><a href="../reference/geom_pop.html">geom_pop()</a></code>
-and use <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> to control the legend icon
-size.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>Set <code>legend_icons = TRUE</code> inside <code><a href="../reference/geom_pop.html">geom_pop()</a></code> and use <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> to control the legend icon size.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data         <span class="op">=</span> <span class="va">df_processed</span>,</span>
@@ -232,15 +208,18 @@ size.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the total population"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/legend-plot-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="getting-started_files/figure-html/legend-plot-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="using-your-own-data">Using Your Own Data<a class="anchor" aria-label="anchor" href="#using-your-own-data"></a>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="using-your-own-data">Using Your Own Data<a class="anchor" aria-label="anchor" href="#using-your-own-data"></a>
 </h2>
-<p>You don’t need <code><a href="../reference/process_data.html">process_data()</a></code>. Any data frame with one
-row per icon works directly:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>You don’t need <code><a href="../reference/process_data.html">process_data()</a></code>. Any data frame with one row per icon works directly:</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_simple</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Healthy"</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"At Risk"</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Ill"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  icon  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person-half-dress"</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"bed-pulse"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
@@ -267,48 +246,130 @@ row per icon works directly:</p>
 <span>    title    <span class="op">=</span> <span class="st">"Simulated Patient Population (n = 100)"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents one patient"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Status"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Facet / grouping caution.</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Why you are seeing this warning:</span></span>
-<span><span class="co">#&gt;   - The data contains multiple groups in <span style="color: #00BB00;">data$group</span></span></span>
-<span><span class="co">#&gt;   (often created by `process_data(high_group_var = ...)`)</span></span>
-<span><span class="co">#&gt;   - If the plot is not faceted, icons from different groups may overlap</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Recommended patterns:</span></span>
-<span><span class="co">#&gt;   - Facet in ggplot2:</span></span>
-<span><span class="co">#&gt;   `ggplot() + geom_pop(..., facet = group) + facet_wrap(~ group)`</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt;   - Alternative layout:</span></span>
-<span><span class="co">#&gt;   Create one plot per subgroup and combine with cowplot or patchwork</span></span>
-<span><span class="co">#&gt;   </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> If you want one pooled circle:</span></span>
-<span><span class="co">#&gt;   - Re-run `process_data()` without `high_group_var`</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/own-data-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stderr">
+<pre><code>Warning: Facet / grouping caution.
+
+! Why you are seeing this warning:
+  - The data contains multiple groups in data$group
+  (often created by `process_data(high_group_var = ...)`)
+  - If the plot is not faceted, icons from different groups may overlap
+
+ℹ Recommended patterns:
+  - Facet in ggplot2:
+  `ggplot() + geom_pop(..., facet = group) + facet_wrap(~ group)`
+
+  - Alternative layout:
+  Create one plot per subgroup and combine with cowplot or patchwork
+
+ℹ If you want one pooled circle:
+  - Re-run `process_data()` without `high_group_var`</code></pre>
 </div>
-<div class="section level2">
-<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="getting-started_files/figure-html/own-data-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
 <ul>
 <li>
-<strong><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code></strong> — use icons as
-scatter plot points on any x/y data</li>
+<strong><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code></strong> — use icons as scatter plot points on any x/y data</li>
 <li>
-<strong>Faceting</strong> — split your population chart by group
-using <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap()</a></code> or <code>geofacet</code>
+<strong>Faceting</strong> — split your population chart by group using <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap()</a></code> or <code>geofacet</code>
 </li>
 <li>
-<strong>Themes</strong> — explore <code><a href="../reference/theme_pop.html">theme_pop()</a></code> and
-customize with standard ggplot2 theme options</li>
+<strong>Themes</strong> — explore <code><a href="../reference/theme_pop.html">theme_pop()</a></code> and customize with standard ggplot2 theme options</li>
 </ul>
-<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop
-website</a> for the full function reference and more examples.</p>
-</div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop website</a> for the full function reference and more examples.</p>
+</section><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
     <footer><div class="pkgdown-footer-left">

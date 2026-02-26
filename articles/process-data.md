@@ -14,18 +14,12 @@ It handles:
 - Proportionally allocating a fixed sample size across groups
 - Supporting hierarchical grouping via `high_group_var`
 
+Show the code
+
 ``` r
 library(ggpop)
 library(ggplot2)
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 ```
 
 ------------------------------------------------------------------------
@@ -35,6 +29,8 @@ library(dplyr)
 The minimum inputs are `data`, `group_var` (the grouping column), and
 `sum_var` (the count column). `sample_size` controls how many icons
 appear in the final chart (max 1,000).
+
+Show the code
 
 ``` r
 df_sex <- data.frame(
@@ -50,14 +46,15 @@ df_sex_proc <- process_data(
 )
 
 head(df_sex_proc)
-#>     type        n      prop
-#> 1 female 67401427 0.5150612
-#> 2   male 63459580 0.4849388
-#> 3 female 67401427 0.5150612
-#> 4 female 67401427 0.5150612
-#> 5 female 67401427 0.5150612
-#> 6 female 67401427 0.5150612
 ```
+
+        type        n      prop
+    1 female 67401427 0.5150612
+    2 female 67401427 0.5150612
+    3   male 63459580 0.4849388
+    4 female 67401427 0.5150612
+    5 female 67401427 0.5150612
+    6 female 67401427 0.5150612
 
 The output contains:
 
@@ -75,6 +72,8 @@ calculates each group’s share of the total and allocates icons
 proportionally. With `sample_size = 100`, a group with 48% of the
 population gets ~48 icons.
 
+Show the code
+
 ``` r
 df_sex_proc %>%
   group_by(type) %>%
@@ -82,18 +81,21 @@ df_sex_proc %>%
     icons      = n(),
     proportion = round(mean(prop) * 100, 1)
   )
-#> # A tibble: 2 × 3
-#>   type   icons proportion
-#>   <chr>  <int>      <dbl>
-#> 1 female    53       51.5
-#> 2 male      47       48.5
 ```
+
+    # A tibble: 2 × 3
+      type   icons proportion
+      <chr>  <int>      <dbl>
+    1 female    58       51.5
+    2 male      42       48.5
 
 ------------------------------------------------------------------------
 
 ## Multiple Groups
 
 Works with any number of groups — not just two.
+
+Show the code
 
 ``` r
 df_regions <- data.frame(
@@ -111,14 +113,15 @@ df_regions_processed <- process_data(
 df_regions_processed %>%
   group_by(type) %>%
   summarise(icons = n())
-#> # A tibble: 4 × 2
-#>   type  icons
-#>   <chr> <int>
-#> 1 East     32
-#> 2 North    35
-#> 3 South    20
-#> 4 West     13
 ```
+
+    # A tibble: 4 × 2
+      type  icons
+      <chr> <int>
+    1 East     28
+    2 North    38
+    3 South    18
+    4 West     16
 
 ------------------------------------------------------------------------
 
@@ -127,6 +130,8 @@ df_regions_processed %>%
 Use `high_group_var` to nest groups under a higher-level category. This
 is useful when you want to facet by a parent group while preserving
 sub-group icon assignments.
+
+Show the code
 
 ``` r
 df_health <- data.frame(
@@ -148,18 +153,19 @@ df_health_processed <- process_data(
 df_health_processed %>%
   group_by(group, type) %>%
   summarise(icons = n(), .groups = "drop")
-#> # A tibble: 8 × 3
-#>   group type    icons
-#>   <chr> <chr>   <int>
-#> 1 East  At Risk    40
-#> 2 East  Healthy    60
-#> 3 North At Risk    32
-#> 4 North Healthy    68
-#> 5 South At Risk    23
-#> 6 South Healthy    77
-#> 7 West  At Risk    16
-#> 8 West  Healthy    84
 ```
+
+    # A tibble: 8 × 3
+      group type    icons
+      <chr> <chr>   <int>
+    1 East  At Risk    44
+    2 East  Healthy    56
+    3 North At Risk    33
+    4 North Healthy    67
+    5 South At Risk    30
+    6 South Healthy    70
+    7 West  At Risk    21
+    8 West  Healthy    79
 
 ------------------------------------------------------------------------
 
@@ -171,6 +177,8 @@ to
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
 The only requirement is a maximum of 1,000 rows per plot (or per facet
 group).
+
+Show the code
 
 ``` r
 df_direct <- data.frame(

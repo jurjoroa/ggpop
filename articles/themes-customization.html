@@ -15,8 +15,11 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="themes-customization_files/libs/quarto-html/popper.min.js"></script><script src="themes-customization_files/libs/quarto-html/tippy.umd.min.js"></script><link href="themes-customization_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="themes-customization_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Themes &amp; Customization">
+<meta property="og:image" content="https://jurjoroa.github.io/ggpop/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -54,69 +57,59 @@
 
 
   </div>
-</nav><div class="container template-article">
-
-
-
-
+</nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Themes &amp; Customization</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/themes-customization.Rmd" class="external-link"><code>vignettes/themes-customization.Rmd</code></a></small>
-      <div class="d-none name"><code>themes-customization.Rmd</code></div>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/themes-customization.qmd" class="external-link"><code>vignettes/themes-customization.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+
+
+
+
+
+    <div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="themes-overview">Themes Overview<a class="anchor" aria-label="anchor" href="#themes-overview"></a>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<section class="level2"><h2 id="themes-overview">Themes Overview<a class="anchor" aria-label="anchor" href="#themes-overview"></a>
 </h2>
-<p><code>ggpop</code> ships with three built-in themes, all optimized
-for icon-based charts:</p>
-<table class="table">
+<p><code>ggpop</code> ships with three built-in themes, all optimized for icon-based charts:</p>
+<table class="table caption-top">
 <thead><tr class="header">
-<th align="left">Theme</th>
-<th align="left">Description</th>
+<th style="text-align: left;">Theme</th>
+<th style="text-align: left;">Description</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left"><code><a href="../reference/theme_pop.html">theme_pop()</a></code></td>
-<td align="left">Default — clean, minimal, no axes</td>
+<td style="text-align: left;"><code><a href="../reference/theme_pop.html">theme_pop()</a></code></td>
+<td style="text-align: left;">Default — clean, minimal, no axes</td>
 </tr>
 <tr class="even">
-<td align="left"><code><a href="../reference/theme_pop_dark.html">theme_pop_dark()</a></code></td>
-<td align="left">Dark background variant</td>
+<td style="text-align: left;"><code><a href="../reference/theme_pop_dark.html">theme_pop_dark()</a></code></td>
+<td style="text-align: left;">Dark background variant</td>
 </tr>
 <tr class="odd">
-<td align="left"><code><a href="../reference/theme_pop_minimal.html">theme_pop_minimal()</a></code></td>
-<td align="left">Ultra-minimal, no legend or titles</td>
+<td style="text-align: left;"><code><a href="../reference/theme_pop_minimal.html">theme_pop_minimal()</a></code></td>
+<td style="text-align: left;">Ultra-minimal, no legend or titles</td>
 </tr>
 </tbody>
 </table>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="theme_pop">
+<hr></section><section class="level2"><h2 id="theme_pop">
 <code>theme_pop()</code><a class="anchor" aria-label="anchor" href="#theme_pop"></a>
 </h2>
-<p>The default theme. Removes axes and gridlines, keeping the focus on
-the icons. All standard ggplot2 <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme()</a></code> arguments can be
-added on top.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>The default theme. Removes axes and gridlines, keeping the focus on the icons. All standard ggplot2 <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme()</a></code> arguments can be added on top.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data         <span class="op">=</span> <span class="va">df_sex_proc</span>,</span>
@@ -133,24 +126,26 @@ added on top.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the total population"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="themes-customization_files/figure-html/theme-pop-1.png" class="r-plt" alt="" width="100%"></p>
-<div class="section level3">
-<h3 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="themes-customization_files/figure-html/theme-pop-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section class="level3"><h3 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
 </h3>
 <ul>
 <li>
-<strong><code>base_size</code></strong>: controls font size
-throughout (default: <code>11</code>)</li>
+<strong><code>base_size</code></strong>: controls font size throughout (default: <code>11</code>)</li>
 <li>
-<strong><code>legend_position</code></strong>: <code>"right"</code>,
-<code>"bottom"</code>, <code>"left"</code>, <code>"top"</code>, or
-<code>"none"</code>
+<strong><code>legend_position</code></strong>: <code>"right"</code>, <code>"bottom"</code>, <code>"left"</code>, <code>"top"</code>, or <code>"none"</code>
 </li>
 <li>
-<strong><code>plot_margin</code></strong>: single number or
-<code><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin()</a></code> object</li>
+<strong><code>plot_margin</code></strong>: single number or <code><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin()</a></code> object</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data         <span class="op">=</span> <span class="va">df_sex_proc</span>,</span>
@@ -166,17 +161,19 @@ throughout (default: <code>11</code>)</li>
 <span>    title <span class="op">=</span> <span class="st">"Larger text, legend at bottom"</span>,</span>
 <span>    color <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="themes-customization_files/figure-html/theme-pop-params-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="themes-customization_files/figure-html/theme-pop-params-1.png" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="section level2">
-<h2 id="theme_pop_dark">
+</div>
+<hr></section></section><section class="level2"><h2 id="theme_pop_dark">
 <code>theme_pop_dark()</code><a class="anchor" aria-label="anchor" href="#theme_pop_dark"></a>
 </h2>
-<p>A dark variant built on top of <code><a href="../reference/theme_pop.html">theme_pop()</a></code>. Accepts
-<code>bg_color</code> and <code>text_color</code> for full control.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>A dark variant built on top of <code><a href="../reference/theme_pop.html">theme_pop()</a></code>. Accepts <code>bg_color</code> and <code>text_color</code> for full control.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data         <span class="op">=</span> <span class="va">df_sex_proc</span>,</span>
@@ -193,9 +190,16 @@ throughout (default: <code>11</code>)</li>
 <span>    subtitle <span class="op">=</span> <span class="st">"Dark theme — ideal for presentations"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="themes-customization_files/figure-html/theme-pop-dark-1.png" class="r-plt" alt="" width="100%"></p>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="themes-customization_files/figure-html/theme-pop-dark-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <p>Custom background and text colors:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data         <span class="op">=</span> <span class="va">df_sex_proc</span>,</span>
@@ -212,16 +216,19 @@ throughout (default: <code>11</code>)</li>
 <span>    subtitle <span class="op">=</span> <span class="st">"Custom dark background"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="themes-customization_files/figure-html/theme-pop-dark-custom-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="themes-customization_files/figure-html/theme-pop-dark-custom-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="theme_pop_minimal">
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="theme_pop_minimal">
 <code>theme_pop_minimal()</code><a class="anchor" aria-label="anchor" href="#theme_pop_minimal"></a>
 </h2>
-<p>Strips everything — no title, no legend, no margins. Best for
-embedding icon arrays inside dashboards or documents.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>Strips everything — no title, no legend, no margins. Best for embedding icon arrays inside dashboards or documents.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">df_sex_proc</span>,</span>
@@ -231,17 +238,19 @@ embedding icon arrays inside dashboards or documents.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>, <span class="st">"female"</span> <span class="op">=</span> <span class="st">"#D81B60"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_pop_minimal.html">theme_pop_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="themes-customization_files/figure-html/theme-pop-minimal-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="themes-customization_files/figure-html/theme-pop-minimal-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="scale_legend_icon">
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="scale_legend_icon">
 <code>scale_legend_icon()</code><a class="anchor" aria-label="anchor" href="#scale_legend_icon"></a>
 </h2>
-<p>Controls the size of icons in the legend. Use it alongside
-<code>legend_icons = TRUE</code> in <code><a href="../reference/geom_pop.html">geom_pop()</a></code> or
-<code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>Controls the size of icons in the legend. Use it alongside <code>legend_icons = TRUE</code> in <code><a href="../reference/geom_pop.html">geom_pop()</a></code> or <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data         <span class="op">=</span> <span class="va">df_sex_proc</span>,</span>
@@ -254,17 +263,19 @@ embedding icon arrays inside dashboards or documents.</p>
 <span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Larger legend icons with scale_legend_icon(size = 8)"</span>, color <span class="op">=</span> <span class="st">"Sex"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="themes-customization_files/figure-html/scale-legend-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="themes-customization_files/figure-html/scale-legend-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="stroke_width-icon-outlines">
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="stroke_width-icon-outlines">
 <code>stroke_width</code> — Icon Outlines<a class="anchor" aria-label="anchor" href="#stroke_width-icon-outlines"></a>
 </h2>
-<p>Add an outline to icons with <code>stroke_width</code>. Higher values
-produce a thicker border, useful for light icons on light
-backgrounds.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Add an outline to icons with <code>stroke_width</code>. Higher values produce a thicker border, useful for light icons on light backgrounds.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data         <span class="op">=</span> <span class="va">df_sex_proc</span>,</span>
@@ -278,15 +289,19 @@ backgrounds.</p>
 <span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Icons with stroke_width = 8"</span>, color <span class="op">=</span> <span class="st">"Sex"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="themes-customization_files/figure-html/stroke-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="themes-customization_files/figure-html/stroke-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="combining-with-ggplot2-theme">Combining with ggplot2 <code>theme()</code><a class="anchor" aria-label="anchor" href="#combining-with-ggplot2-theme"></a>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="combining-with-ggplot2-theme">Combining with ggplot2 <code>theme()</code>
+<a class="anchor" aria-label="anchor" href="#combining-with-ggplot2-theme"></a>
 </h2>
-<p><code><a href="../reference/theme_pop.html">theme_pop()</a></code> is a standard ggplot2 theme — add any
-<code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme()</a></code> call on top to override specific elements.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/theme_pop.html">theme_pop()</a></code> is a standard ggplot2 theme — add any <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme()</a></code> call on top to override specific elements.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data         <span class="op">=</span> <span class="va">df_sex_proc</span>,</span>
@@ -310,53 +325,135 @@ backgrounds.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"theme_pop() + additional theme() overrides"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="themes-customization_files/figure-html/custom-theme-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="themes-customization_files/figure-html/custom-theme-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<table class="table">
+<table class="table caption-top">
 <colgroup>
-<col width="50%">
-<col width="50%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead><tr class="header">
-<th align="left">Function</th>
-<th align="left">Purpose</th>
+<th style="text-align: left;">Function</th>
+<th style="text-align: left;">Purpose</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left"><code><a href="../reference/theme_pop.html">theme_pop()</a></code></td>
-<td align="left">Default clean theme for icon charts</td>
+<td style="text-align: left;"><code><a href="../reference/theme_pop.html">theme_pop()</a></code></td>
+<td style="text-align: left;">Default clean theme for icon charts</td>
 </tr>
 <tr class="even">
-<td align="left"><code><a href="../reference/theme_pop_dark.html">theme_pop_dark()</a></code></td>
-<td align="left">Dark background variant</td>
+<td style="text-align: left;"><code><a href="../reference/theme_pop_dark.html">theme_pop_dark()</a></code></td>
+<td style="text-align: left;">Dark background variant</td>
 </tr>
 <tr class="odd">
-<td align="left"><code><a href="../reference/theme_pop_minimal.html">theme_pop_minimal()</a></code></td>
-<td align="left">No legend, no titles, no margins</td>
+<td style="text-align: left;"><code><a href="../reference/theme_pop_minimal.html">theme_pop_minimal()</a></code></td>
+<td style="text-align: left;">No legend, no titles, no margins</td>
 </tr>
 <tr class="even">
-<td align="left"><code>scale_legend_icon(size)</code></td>
-<td align="left">Control legend icon size</td>
+<td style="text-align: left;"><code>scale_legend_icon(size)</code></td>
+<td style="text-align: left;">Control legend icon size</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>stroke_width</code></td>
-<td align="left">Add outline to icons in <code><a href="../reference/geom_pop.html">geom_pop()</a></code> /
-<code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>
+<td style="text-align: left;"><code>stroke_width</code></td>
+<td style="text-align: left;">Add outline to icons in <code><a href="../reference/geom_pop.html">geom_pop()</a></code> / <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>
 </td>
 </tr>
 </tbody>
 </table>
-<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop
-website</a> for the full function reference.</p>
-</div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop website</a> for the full function reference.</p>
+</section><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
     <footer><div class="pkgdown-footer-left">

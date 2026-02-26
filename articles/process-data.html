@@ -15,8 +15,11 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="process-data_files/libs/quarto-html/popper.min.js"></script><script src="process-data_files/libs/quarto-html/tippy.umd.min.js"></script><link href="process-data_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="process-data_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Preparing Data with process_data()">
+<meta property="og:image" content="https://jurjoroa.github.io/ggpop/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -54,59 +57,45 @@
 
 
   </div>
-</nav><div class="container template-article">
-
-
-
-
+</nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Preparing Data with process_data()</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/process-data.Rmd" class="external-link"><code>vignettes/process-data.Rmd</code></a></small>
-      <div class="d-none name"><code>process-data.Rmd</code></div>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/process-data.qmd" class="external-link"><code>vignettes/process-data.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<div class="section level2">
-<h2 id="what-is-process_data">What is <code>process_data()</code>?<a class="anchor" aria-label="anchor" href="#what-is-process_data"></a>
+
+
+
+
+
+    <section class="level2"><h2 id="what-is-process_data">What is <code>process_data()</code>?<a class="anchor" aria-label="anchor" href="#what-is-process_data"></a>
 </h2>
-<p><code><a href="../reference/process_data.html">process_data()</a></code> is a helper function that converts raw
-population counts into a sampled data frame ready for
-<code><a href="../reference/geom_pop.html">geom_pop()</a></code>. Each row in the output represents one icon in
-the final chart.</p>
+<p><code><a href="../reference/process_data.html">process_data()</a></code> is a helper function that converts raw population counts into a sampled data frame ready for <code><a href="../reference/geom_pop.html">geom_pop()</a></code>. Each row in the output represents one icon in the final chart.</p>
 <p>It handles:</p>
 <ul>
 <li>Calculating group proportions from raw counts</li>
 <li>Proportionally allocating a fixed sample size across groups</li>
-<li>Supporting hierarchical grouping via
-<code>high_group_var</code>
+<li>Supporting hierarchical grouping via <code>high_group_var</code>
 </li>
 </ul>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter, lag</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
-<hr>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+</details>
 </div>
-<div class="section level2">
-<h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
+<hr></section><section class="level2"><h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
 </h2>
-<p>The minimum inputs are <code>data</code>, <code>group_var</code> (the
-grouping column), and <code>sum_var</code> (the count column).
-<code>sample_size</code> controls how many icons appear in the final
-chart (max 1,000).</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>The minimum inputs are <code>data</code>, <code>group_var</code> (the grouping column), and <code>sum_var</code> (the count column). <code>sample_size</code> controls how many icons appear in the final chart (max 1,000).</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span>,</span>
 <span>  n   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">63459580</span>, <span class="fl">67401427</span><span class="op">)</span></span>
@@ -119,53 +108,51 @@ chart (max 1,000).</p>
 <span>  sample_size <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_sex_proc</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     type        n      prop</span></span>
-<span><span class="co">#&gt; 1 female 67401427 0.5150612</span></span>
-<span><span class="co">#&gt; 2   male 63459580 0.4849388</span></span>
-<span><span class="co">#&gt; 3 female 67401427 0.5150612</span></span>
-<span><span class="co">#&gt; 4 female 67401427 0.5150612</span></span>
-<span><span class="co">#&gt; 5 female 67401427 0.5150612</span></span>
-<span><span class="co">#&gt; 6 female 67401427 0.5150612</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_sex_proc</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>    type        n      prop
+1 female 67401427 0.5150612
+2 female 67401427 0.5150612
+3   male 63459580 0.4849388
+4 female 67401427 0.5150612
+5 female 67401427 0.5150612
+6 female 67401427 0.5150612</code></pre>
+</div>
+</div>
 <p>The output contains:</p>
 <ul>
 <li>
-<strong>type</strong>: group label (from
-<code>group_var</code>)</li>
+<strong>type</strong>: group label (from <code>group_var</code>)</li>
 <li>
 <strong>n</strong>: total count for that group</li>
 <li>
 <strong>prop</strong>: proportion of the total</li>
 <li>One row per sampled icon</li>
 </ul>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="understanding-proportions">Understanding Proportions<a class="anchor" aria-label="anchor" href="#understanding-proportions"></a>
+<hr></section><section class="level2"><h2 id="understanding-proportions">Understanding Proportions<a class="anchor" aria-label="anchor" href="#understanding-proportions"></a>
 </h2>
-<p><code><a href="../reference/process_data.html">process_data()</a></code> calculates each group’s share of the
-total and allocates icons proportionally. With
-<code>sample_size = 100</code>, a group with 48% of the population gets
-~48 icons.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/process_data.html">process_data()</a></code> calculates each group’s share of the total and allocates icons proportionally. With <code>sample_size = 100</code>, a group with 48% of the population gets ~48 icons.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_sex_proc</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">type</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    icons      <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    proportion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">prop</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 3</span></span></span>
-<span><span class="co">#&gt;   type   icons proportion</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> female    53       51.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> male      47       48.5</span></span></code></pre></div>
-<hr>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  type   icons proportion
+  &lt;chr&gt;  &lt;int&gt;      &lt;dbl&gt;
+1 female    58       51.5
+2 male      42       48.5</code></pre>
 </div>
-<div class="section level2">
-<h2 id="multiple-groups">Multiple Groups<a class="anchor" aria-label="anchor" href="#multiple-groups"></a>
+</div>
+<hr></section><section class="level2"><h2 id="multiple-groups">Multiple Groups<a class="anchor" aria-label="anchor" href="#multiple-groups"></a>
 </h2>
 <p>Works with any number of groups — not just two.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  region <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"North"</span>, <span class="st">"South"</span>, <span class="st">"East"</span>, <span class="st">"West"</span><span class="op">)</span>,</span>
 <span>  n      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12000</span>, <span class="fl">8000</span>, <span class="fl">15000</span>, <span class="fl">5000</span><span class="op">)</span></span>
@@ -180,23 +167,23 @@ total and allocates icons proportionally. With
 <span></span>
 <span><span class="va">df_regions_processed</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">type</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>icons <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span></span>
-<span><span class="co">#&gt;   type  icons</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> East     32</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> North    35</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> South    20</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> West     13</span></span></code></pre></div>
-<hr>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>icons <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  type  icons
+  &lt;chr&gt; &lt;int&gt;
+1 East     28
+2 North    38
+3 South    18
+4 West     16</code></pre>
 </div>
-<div class="section level2">
-<h2 id="hierarchical-grouping-with-high_group_var">Hierarchical Grouping with <code>high_group_var</code><a class="anchor" aria-label="anchor" href="#hierarchical-grouping-with-high_group_var"></a>
+</div>
+<hr></section><section class="level2"><h2 id="hierarchical-grouping-with-high_group_var">Hierarchical Grouping with <code>high_group_var</code>
+<a class="anchor" aria-label="anchor" href="#hierarchical-grouping-with-high_group_var"></a>
 </h2>
-<p>Use <code>high_group_var</code> to nest groups under a higher-level
-category. This is useful when you want to facet by a parent group while
-preserving sub-group icon assignments.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>Use <code>high_group_var</code> to nest groups under a higher-level category. This is useful when you want to facet by a parent group while preserving sub-group icon assignments.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  region    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"North"</span>, <span class="st">"South"</span>, <span class="st">"East"</span>, <span class="st">"West"</span>,</span>
 <span>                <span class="st">"North"</span>, <span class="st">"South"</span>, <span class="st">"East"</span>, <span class="st">"West"</span><span class="op">)</span>,</span>
@@ -215,28 +202,27 @@ preserving sub-group icon assignments.</p>
 <span></span>
 <span><span class="va">df_health_processed</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">group</span>, <span class="va">type</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>icons <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 3</span></span></span>
-<span><span class="co">#&gt;   group type    icons</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> East  At Risk    40</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> East  Healthy    60</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> North At Risk    32</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> North Healthy    68</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> South At Risk    23</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> South Healthy    77</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> West  At Risk    16</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> West  Healthy    84</span></span></code></pre></div>
-<hr>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>icons <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 3
+  group type    icons
+  &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
+1 East  At Risk    44
+2 East  Healthy    56
+3 North At Risk    33
+4 North Healthy    67
+5 South At Risk    30
+6 South Healthy    70
+7 West  At Risk    21
+8 West  Healthy    79</code></pre>
 </div>
-<div class="section level2">
-<h2 id="skipping-process_data">Skipping <code>process_data()</code><a class="anchor" aria-label="anchor" href="#skipping-process_data"></a>
+</div>
+<hr></section><section class="level2"><h2 id="skipping-process_data">Skipping <code>process_data()</code>
+<a class="anchor" aria-label="anchor" href="#skipping-process_data"></a>
 </h2>
-<p><code><a href="../reference/process_data.html">process_data()</a></code> is optional. If your data already has one
-row per icon, pass it directly to <code><a href="../reference/geom_pop.html">geom_pop()</a></code>. The only
-requirement is a maximum of 1,000 rows per plot (or per facet
-group).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/process_data.html">process_data()</a></code> is optional. If your data already has one row per icon, pass it directly to <code><a href="../reference/geom_pop.html">geom_pop()</a></code>. The only requirement is a maximum of 1,000 rows per plot (or per facet group).</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_direct</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Healthy"</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"At Risk"</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Ill"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  icon   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person-half-dress"</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"bed-pulse"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
@@ -261,47 +247,130 @@ group).</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents one patient"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Status"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="process-data_files/figure-html/skip-1.png" class="r-plt" alt="" width="100%"></p>
-<hr>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="process-data_files/figure-html/skip-1.png" width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<table class="table">
+<table class="table caption-top">
 <thead><tr class="header">
-<th align="left">Parameter</th>
-<th align="left">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left"><code>data</code></td>
-<td align="left">Input data frame with group counts</td>
+<td style="text-align: left;"><code>data</code></td>
+<td style="text-align: left;">Input data frame with group counts</td>
 </tr>
 <tr class="even">
-<td align="left"><code>group_var</code></td>
-<td align="left">Column to group by (unquoted)</td>
+<td style="text-align: left;"><code>group_var</code></td>
+<td style="text-align: left;">Column to group by (unquoted)</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>sum_var</code></td>
-<td align="left">Column with population counts</td>
+<td style="text-align: left;"><code>sum_var</code></td>
+<td style="text-align: left;">Column with population counts</td>
 </tr>
 <tr class="even">
-<td align="left"><code>sample_size</code></td>
-<td align="left">Number of icons to generate (max 1,000)</td>
+<td style="text-align: left;"><code>sample_size</code></td>
+<td style="text-align: left;">Number of icons to generate (max 1,000)</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>high_group_var</code></td>
-<td align="left">Optional parent grouping for faceting</td>
+<td style="text-align: left;"><code>high_group_var</code></td>
+<td style="text-align: left;">Optional parent grouping for faceting</td>
 </tr>
 </tbody>
 </table>
-<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop
-website</a> for the full function reference.</p>
-</div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop website</a> for the full function reference.</p>
+</section><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
     <footer><div class="pkgdown-footer-left">

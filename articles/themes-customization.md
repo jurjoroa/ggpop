@@ -1,17 +1,11 @@
 # Themes & Customization
 
+Show the code
+
 ``` r
 library(ggpop)
 library(ggplot2)
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 ```
 
 ## Themes Overview
@@ -33,6 +27,8 @@ The default theme. Removes axes and gridlines, keeping the focus on the
 icons. All standard ggplot2
 [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html)
 arguments can be added on top.
+
+Show the code
 
 ``` r
 ggplot() +
@@ -64,6 +60,8 @@ ggplot() +
   [`margin()`](https://ggplot2.tidyverse.org/reference/element.html)
   object
 
+Show the code
+
 ``` r
 ggplot() +
   geom_pop(
@@ -92,6 +90,8 @@ A dark variant built on top of
 [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md).
 Accepts `bg_color` and `text_color` for full control.
 
+Show the code
+
 ``` r
 ggplot() +
   geom_pop(
@@ -114,6 +114,8 @@ ggplot() +
 ![](themes-customization_files/figure-html/theme-pop-dark-1.png)
 
 Custom background and text colors:
+
+Show the code
 
 ``` r
 ggplot() +
@@ -143,6 +145,8 @@ ggplot() +
 Strips everything — no title, no legend, no margins. Best for embedding
 icon arrays inside dashboards or documents.
 
+Show the code
+
 ``` r
 ggplot() +
   geom_pop(
@@ -167,6 +171,8 @@ Controls the size of icons in the legend. Use it alongside
 or
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md).
 
+Show the code
+
 ``` r
 ggplot() +
   geom_pop(
@@ -190,6 +196,8 @@ ggplot() +
 
 Add an outline to icons with `stroke_width`. Higher values produce a
 thicker border, useful for light icons on light backgrounds.
+
+Show the code
 
 ``` r
 ggplot() +
@@ -217,6 +225,8 @@ ggplot() +
 is a standard ggplot2 theme — add any
 [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html) call on
 top to override specific elements.
+
+Show the code
 
 ``` r
 ggplot() +

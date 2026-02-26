@@ -11,18 +11,12 @@ It works exactly like
 required: just supply any data frame with `x` and `y` variables and let
 the icons do the talking.
 
+Show the code
+
 ``` r
 library(ggpop)
 library(ggplot2)
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 ```
 
 ------------------------------------------------------------------------
@@ -33,6 +27,8 @@ The simplest use case: a single icon for all points, with `color`
 carrying the grouping information. Use the `icon` parameter (not
 [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html)) to fix one
 icon across all observations.
+
+Show the code
 
 ``` r
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
@@ -62,6 +58,8 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 shines when each category gets its own icon. Map `icon` inside
 [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) to a column
 in your data — each group then carries its own visual identity.
+
+Show the code
 
 ``` r
 df_food <- data.frame(
@@ -93,36 +91,37 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
     y        = "Protein (g per 100g)",
     color    = "Group"
   )
-#> Warning: Multiple icons per color/group detected.
-#>   
-#> ! Why you are seeing this warning:
-#>   The legend can only display ONE icon per group, but some groups have
-#>   multiple:
-#>   
-#> - Fruit & Veg: 3 icons (apple-whole, carrot, lemon)
-#> - Dairy: 3 icons (bottle-water, cheese, jar)
-#> - Meat & Fish: 3 icons (drumstick-bite, bacon, fish)
-#>   
-#> ℹ What happens:
-#>   - The most frequent icon for each group will be shown in the legend
-#>   - Other icons in that group will still appear in the plot
-#>   - This may confuse viewers if icons have different meanings
-#>   
-#> ℹ Recommended fixes:
-#>   
-#>   Option 1: Use consistent icons per group
-#>   `df <- df %>% mutate(icon = case_when(`
-#>   `sex == 'A' ~ 'male',`
-#>   `sex == 'B' ~ 'female'`
-#>   `))`
-#>   
-#>   Option 2: Create a separate grouping variable
-#>   `df <- df %>% mutate(group = paste(sex, icon, sep = '_'))`
-#>   `ggplot() + geom_pop(aes(icon = icon, color = group))`
-#>   
-#>   Option 3: Set legend_icons = FALSE to use point markers
-#>   `geom_pop(..., legend_icons = FALSE)`
 ```
+
+    Warning: Multiple icons per color/group detected.
+
+    ! Why you are seeing this warning:
+      The legend can only display ONE icon per group, but some groups have
+      multiple:
+
+    - Fruit & Veg: 3 icons (apple-whole, carrot, lemon)
+    - Dairy: 3 icons (bottle-water, cheese, jar)
+    - Meat & Fish: 3 icons (drumstick-bite, bacon, fish)
+
+    ℹ What happens:
+      - The most frequent icon for each group will be shown in the legend
+      - Other icons in that group will still appear in the plot
+      - This may confuse viewers if icons have different meanings
+
+    ℹ Recommended fixes:
+
+      Option 1: Use consistent icons per group
+      `df <- df %>% mutate(icon = case_when(`
+      `sex == 'A' ~ 'male',`
+      `sex == 'B' ~ 'female'`
+      `))`
+
+      Option 2: Create a separate grouping variable
+      `df <- df %>% mutate(group = paste(sex, icon, sep = '_'))`
+      `ggplot() + geom_pop(aes(icon = icon, color = group))`
+
+      Option 3: Set legend_icons = FALSE to use point markers
+      `geom_pop(..., legend_icons = FALSE)`
 
 ![](geom-icon-point_files/figure-html/mapped-icons-1.png)
 
@@ -136,6 +135,8 @@ third dimension of information. Use
 [`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html)
 to keep icon sizes in a readable range — raw values that are too large
 or too small make icons unreadable.
+
+Show the code
 
 ``` r
 df_brand <- data.frame(
@@ -173,9 +174,10 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
     color    = "Brand",
     size     = "Employees"
   )
-#> Ignoring unknown labels:
-#> • size : "Employees"
 ```
+
+    Ignoring unknown labels:
+    • size : "Employees"
 
 ![](geom-icon-point_files/figure-html/size-mapping-1.png)
 
@@ -188,6 +190,8 @@ order**.
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
 automatically assigns icons to legend entries in the same order — so
 setting factor levels is all you need for a correctly ordered legend.
+
+Show the code
 
 ``` r
 df_health <- data.frame(
@@ -245,6 +249,8 @@ and
 [`annotate()`](https://ggplot2.tidyverse.org/reference/annotate.html) to
 build a fully annotated analytical chart.
 
+Show the code
+
 ``` r
 ggplot(df_health, aes(x = spend, y = life_exp,
                       icon = icon, color = income)) +
@@ -285,30 +291,27 @@ ggplot(df_health, aes(x = spend, y = life_exp,
     y        = "Life Expectancy (years)",
     color    = "Income Group"
   )
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: The following aesthetics were dropped during statistical transformation: icon.
-#> ℹ This can happen when ggplot fails to infer the correct grouping structure in
-#>   the data.
-#> ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-#>   variable into a factor?
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: The following aesthetics were dropped during statistical transformation: icon.
-#> ℹ This can happen when ggplot fails to infer the correct grouping structure in
-#>   the data.
-#> ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-#>   variable into a factor?
-#> Warning: The `label.size` argument of `geom_label()` is deprecated as of ggplot2 3.5.0.
-#> ℹ Please use the `linewidth` argument instead.
-#> This warning is displayed once per session.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: The following aesthetics were dropped during statistical transformation: icon.
-#> ℹ This can happen when ggplot fails to infer the correct grouping structure in
-#>   the data.
-#> ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-#>   variable into a factor?
 ```
+
+    Warning: The following aesthetics were dropped during statistical transformation: icon.
+    ℹ This can happen when ggplot fails to infer the correct grouping structure in
+      the data.
+    ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+      variable into a factor?
+    The following aesthetics were dropped during statistical transformation: icon.
+    ℹ This can happen when ggplot fails to infer the correct grouping structure in
+      the data.
+    ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+      variable into a factor?
+
+    Warning: The `label.size` argument of `geom_label()` is deprecated as of ggplot2 3.5.0.
+    ℹ Please use the `linewidth` argument instead.
+
+    Warning: The following aesthetics were dropped during statistical transformation: icon.
+    ℹ This can happen when ggplot fails to infer the correct grouping structure in
+      the data.
+    ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+      variable into a factor?
 
 ![](geom-icon-point_files/figure-html/combined-geoms-1.png)
 

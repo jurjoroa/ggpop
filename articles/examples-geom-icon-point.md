@@ -1,26 +1,11 @@
 # geom_icon_point() Examples
 
-``` r
-library(ggpop)
-library(ggplot2)
-library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
-library(ggtext)
-```
-
-------------------------------------------------------------------------
-
 ## Example 1: Single Icon Scatter Plot
 
 The simplest use: a fixed icon for all points, color encodes the
 grouping variable.
+
+Show the code
 
 ``` r
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
@@ -49,7 +34,13 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 Each food item gets its own icon. The icon is the identity — no legend
 needed to understand what each point represents.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
 df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
                "Milk", "Cheese", "Yogurt"),
@@ -91,7 +82,14 @@ Map a continuous variable to icon size. Use
 [`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html)
 to keep sizes readable.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
+
 df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
                  "Netflix", "Spotify", "Uber", "Airbnb"),
@@ -102,10 +100,9 @@ df_brand <- data.frame(
                  "tv", "spotify", "uber", "airbnb")
 )
 
-df_brand$size_scaled <- scales::rescale(df_brand$employees, to = c(0.8, 2.5))
 
 ggplot(df_brand, aes(x = revenue, y = market_cap,
-                       icon = icon, color = brand, size = size_scaled)) +
+                       icon = icon, color = brand)) +
   geom_icon_point(dpi = 100) +
   scale_x_log10(labels = scales::dollar_format(suffix = "B")) +
   scale_y_log10(labels = scales::dollar_format(suffix = "B")) +
@@ -128,8 +125,8 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
   )
 ```
 
-    #> Ignoring unknown labels:
-    #> • size : "Employees"
+    Ignoring unknown labels:
+    • size : "Employees"
 
 ![](examples-geom-icon-point_files/figure-html/size-mapping-1.png)
 
@@ -140,7 +137,14 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 Factor levels control both legend order and icon assignment. Always set
 levels explicitly.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
+
 df_health <- data.frame(
   country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
                "Morocco", "Germany", "France", "Japan"),
@@ -186,31 +190,27 @@ own icon. The 4 sports making their Olympic debut are highlighted in
 cyan; all existing disciplines are in gold. Annotations use `ggtext` for
 inline HTML styling.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+library(ggtext)
+
 df_paris_disciplines <- data.frame(
   sport = c(
-    # Aquatics (5)
     "Swimming", "Diving", "Water Polo", "Artistic Swim", "Open Water",
-    # Racket (3)
     "Badminton", "Tennis", "Table Tennis",
-    # Court / team (6)
     "Volleyball", "Beach Volley", "Basketball", "3x3 Basketball",
     "Handball", "Hockey",
-    # Combat (5)
     "Boxing", "Judo", "Taekwondo", "Wrestling", "Fencing",
-    # Athletics (5)
     "Athletics", "Triathlon", "Pentathlon", "Rowing", "Sailing",
-    # Ball (3)
     "Football", "Rugby", "Golf",
-    # Precision (2)
     "Archery", "Shooting",
-    # Cycling (5)
     "Road Cycling", "Track Cycling", "MTB", "BMX Racing", "BMX Freestyle",
-    # Other (5)
     "Equestrian", "Gymnastics", "Rhythmic Gym", "Trampoline", "Weightlifting",
-    # Canoe (2)
     "Canoe Sprint", "Canoe Slalom",
-    # New (4)
     "Breaking", "Skateboarding", "Sport Climbing", "Surfing"
   ),
   icon = c(
@@ -248,7 +248,8 @@ df_grid <- expand.grid(x = 1:9, y = 5:1) %>%
 ggplot(df_grid, aes(x = x, y = y)) +
   geom_icon_point(
     aes(icon = icon, color = I(color)),
-    size = 1.55, dpi = 100) +
+    size = 1.55, dpi = 100
+  ) +
   geom_text(
     aes(y = y - 0.38, label = sport, color = I(color)),
     size = 1.5, lineheight = 0.85, fontface = "bold"
@@ -292,7 +293,7 @@ ggplot(df_grid, aes(x = x, y = y)) +
   )
 ```
 
-![](examples-geom-icon-point_files/figure-html/paris-1.png)
+![](examples-geom-icon-point_files/figure-html/paris-display-1.png)
 
 ------------------------------------------------------------------------
 
@@ -302,6 +303,8 @@ ggplot(df_grid, aes(x = x, y = y)) +
 works alongside any ggplot2 geom. Here combined with
 [`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html),
 reference lines, labels, and quadrant annotations.
+
+Show the code
 
 ``` r
 ggplot(df_health, aes(x = spend, y = life_exp,
@@ -342,29 +345,6 @@ ggplot(df_health, aes(x = spend, y = life_exp,
     y        = "Life Expectancy (years)",
     color    = "Income Group"
   )
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: The following aesthetics were dropped during statistical transformation: icon.
-#> ℹ This can happen when ggplot fails to infer the correct grouping structure in
-#>   the data.
-#> ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-#>   variable into a factor?
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: The following aesthetics were dropped during statistical transformation: icon.
-#> ℹ This can happen when ggplot fails to infer the correct grouping structure in
-#>   the data.
-#> ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-#>   variable into a factor?
-#> Warning: The `label.size` argument of `geom_label()` is deprecated as of ggplot2 3.5.0.
-#> ℹ Please use the `linewidth` argument instead.
-#> This warning is displayed once per session.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: The following aesthetics were dropped during statistical transformation: icon.
-#> ℹ This can happen when ggplot fails to infer the correct grouping structure in
-#>   the data.
-#> ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-#>   variable into a factor?
 ```
 
 ![](examples-geom-icon-point_files/figure-html/combined-1.png)
@@ -378,7 +358,13 @@ with
 [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md)
 for a presentation-ready chart.
 
+Show the code
+
 ``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
 df_academic <- data.frame(
   name        = c("Alice", "Bob", "Carol", "Dan", "Eve",
                   "Prof. A", "Prof. B", "Prof. C",
@@ -416,7 +402,3 @@ ggplot(df_academic, aes(x = study_hours, y = score,
 ```
 
 ![](examples-geom-icon-point_files/figure-html/dark-theme-1.png)
-
-------------------------------------------------------------------------
-
-## Example 8: Dark Theme Scatter
