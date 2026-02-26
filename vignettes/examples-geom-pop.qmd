@@ -641,6 +641,8 @@ Combining multiple `geom_pop()` panels into a single plot with the `cowplot` pac
 ```{r}
 #| label: cowplot-display
 #| eval: false
+#| eval: !expr requireNamespace("cowplot", quietly = TRUE)
+
 
 library(ggpop)
 library(ggplot2)
@@ -761,6 +763,7 @@ top_row    <- plot_grid(p1, p2, ncol = 2)
 bottom_row <- plot_grid(NULL, p3, NULL, ncol = 3, rel_widths = c(0.5, 1, 0.5))
 plot_grid(top_row, bottom_row, nrow = 2)
 ```
+
 
 ```{r}
 #| label: cowplot
