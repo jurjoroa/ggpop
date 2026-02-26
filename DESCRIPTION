@@ -33,7 +33,8 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    cowplot
+    cowplot,
+    ggforce
 Config/Needs/website: sf, geofacet, ggtext, quarto
 VignetteBuilder: knitr
 Config/testthat/edition: 3
