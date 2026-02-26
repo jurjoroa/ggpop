@@ -1,30 +1,22 @@
 ---
 title: "Themes & Customization"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Themes & Customization}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment  = "#>",
-  fig.width  = 7,
-  fig.height = 5,
-  dpi = 100,
-  out.width = "100%"
-)
-```
-
-```{r load}
+```{r}
+#| label: load
+#| message: false
 library(ggpop)
 library(ggplot2)
 library(dplyr)
 ```
 
-```{r shared-data, include = FALSE}
+```{r}
+#| label: shared-data
+#| include: false
 df_sex <- data.frame(
   sex = c("male", "female"),
   n   = c(63459580, 67401427)
@@ -58,7 +50,8 @@ df_sex_proc <- process_data(
 
 The default theme. Removes axes and gridlines, keeping the focus on the icons. All standard ggplot2 `theme()` arguments can be added on top.
 
-```{r theme-pop}
+```{r}
+#| label: theme-pop
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -83,7 +76,8 @@ ggplot() +
 - **`legend_position`**: `"right"`, `"bottom"`, `"left"`, `"top"`, or `"none"`
 - **`plot_margin`**: single number or `margin()` object
 
-```{r theme-pop-params}
+```{r}
+#| label: theme-pop-params
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -107,7 +101,8 @@ ggplot() +
 
 A dark variant built on top of `theme_pop()`. Accepts `bg_color` and `text_color` for full control.
 
-```{r theme-pop-dark}
+```{r}
+#| label: theme-pop-dark
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -128,7 +123,8 @@ ggplot() +
 
 Custom background and text colors:
 
-```{r theme-pop-dark-custom}
+```{r}
+#| label: theme-pop-dark-custom
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -153,7 +149,8 @@ ggplot() +
 
 Strips everything — no title, no legend, no margins. Best for embedding icon arrays inside dashboards or documents.
 
-```{r theme-pop-minimal}
+```{r}
+#| label: theme-pop-minimal
 ggplot() +
   geom_pop(
     data = df_sex_proc,
@@ -171,7 +168,8 @@ ggplot() +
 
 Controls the size of icons in the legend. Use it alongside `legend_icons = TRUE` in `geom_pop()` or `geom_icon_point()`.
 
-```{r scale-legend}
+```{r}
+#| label: scale-legend
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -192,7 +190,8 @@ ggplot() +
 
 Add an outline to icons with `stroke_width`. Higher values produce a thicker border, useful for light icons on light backgrounds.
 
-```{r stroke}
+```{r}
+#| label: stroke
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -214,7 +213,8 @@ ggplot() +
 
 `theme_pop()` is a standard ggplot2 theme — add any `theme()` call on top to override specific elements.
 
-```{r custom-theme}
+```{r}
+#| label: custom-theme
 ggplot() +
   geom_pop(
     data         = df_sex_proc,

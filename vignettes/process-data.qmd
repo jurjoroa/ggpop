@@ -1,22 +1,10 @@
 ---
 title: "Preparing Data with process_data()"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Preparing Data with process_data()}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment  = "#>",
-  fig.width  = 7,
-  fig.height = 5,
-  dpi = 100,
-  out.width = "100%"
-)
-```
 
 ## What is `process_data()`?
 
@@ -28,7 +16,9 @@ It handles:
 - Proportionally allocating a fixed sample size across groups
 - Supporting hierarchical grouping via `high_group_var`
 
-```{r load}
+```{r}
+#| label: load
+#| message: false
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -40,7 +30,8 @@ library(dplyr)
 
 The minimum inputs are `data`, `group_var` (the grouping column), and `sum_var` (the count column). `sample_size` controls how many icons appear in the final chart (max 1,000).
 
-```{r basic}
+```{r}
+#| label: basic
 df_sex <- data.frame(
   sex = c("male", "female"),
   n   = c(63459580, 67401427)
@@ -69,7 +60,8 @@ The output contains:
 
 `process_data()` calculates each group's share of the total and allocates icons proportionally. With `sample_size = 100`, a group with 48% of the population gets ~48 icons.
 
-```{r proportions}
+```{r}
+#| label: proportions
 df_sex_proc %>%
   group_by(type) %>%
   summarise(
@@ -84,7 +76,8 @@ df_sex_proc %>%
 
 Works with any number of groups — not just two.
 
-```{r multi-group}
+```{r}
+#| label: multi-group
 df_regions <- data.frame(
   region = c("North", "South", "East", "West"),
   n      = c(12000, 8000, 15000, 5000)
@@ -108,7 +101,8 @@ df_regions_processed %>%
 
 Use `high_group_var` to nest groups under a higher-level category. This is useful when you want to facet by a parent group while preserving sub-group icon assignments.
 
-```{r hierarchical}
+```{r}
+#| label: hierarchical
 df_health <- data.frame(
   region    = c("North", "South", "East", "West",
                 "North", "South", "East", "West"),
@@ -136,7 +130,8 @@ df_health_processed %>%
 
 `process_data()` is optional. If your data already has one row per icon, pass it directly to `geom_pop()`. The only requirement is a maximum of 1,000 rows per plot (or per facet group).
 
-```{r skip}
+```{r}
+#| label: skip
 df_direct <- data.frame(
   status = c(rep("Healthy", 70), rep("At Risk", 20), rep("Ill", 10)),
   icon   = c(rep("person", 70), rep("person-half-dress", 20), rep("bed-pulse", 10))
