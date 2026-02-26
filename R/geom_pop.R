@@ -267,6 +267,10 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 18 Return layer + facet metadata ----
 
+  # ggimage::geom_image() does not honour show.legend, so we set it directly
+  # on the layer object — ggplot2 reads this field during legend construction.
+  layer_out$show.legend <- show.legend
+
   layer_out$params$.ggpop_facet <- if (.facet_explicit) facet_col else NULL
 
   structure(

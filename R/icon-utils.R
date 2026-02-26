@@ -198,6 +198,7 @@ normalize_icon_png <- function(png_path,
 #' @param output_format Output format used when writing the image.
 #'
 #' @return A file path to the cached PNG, or \code{NA_character_} if icon is missing.
+#' @importFrom rsvg rsvg
 #' @keywords internal
 #' @noRd
 generate_icon_png <- function(icon,
