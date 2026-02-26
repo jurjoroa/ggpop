@@ -13,6 +13,7 @@ geom_icon_point(
   stat = "identity",
   position = "identity",
   na.rm = FALSE,
+  show.legend = NA,
   inherit.aes = TRUE,
   icon = NULL,
   size = 1,
@@ -94,6 +95,12 @@ geom_icon_point(
 - na.rm:
 
   logical, whether remove NA values
+
+- show.legend:
+
+  Logical. Should this layer be included in the legends? `NA` (default)
+  includes the layer if any aesthetics are mapped. `FALSE` suppresses
+  the layer's legend entries entirely.
 
 - inherit.aes:
 

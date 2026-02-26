@@ -1,4 +1,4 @@
-# ggpop: Visualizing Population Data (ggpop)
+# ggpop: ggpop - R package to visualize population data
 
 Create in R visually engaging and informative population charts. ggpop
 allows users to represent population data proportionally using

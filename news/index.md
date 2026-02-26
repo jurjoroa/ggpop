@@ -49,6 +49,16 @@ been removed and the package has been finalized.
 - Introduced personalized ggpop themes (e.g., `theme_pop`) for
   consistent, opinionated plot styling out of the box
   ([\#291](https://github.com/jurjoroa/ggpop/issues/291)).
+- Added `show.legend` support to
+  [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+  and
+  [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
+  Passing `show.legend = FALSE` now correctly suppresses the layer’s
+  legend entries, matching standard ggplot2 behaviour. The fix sets the
+  argument directly on the layer object after construction, bypassing
+  [`ggimage::geom_image()`](https://rdrr.io/pkg/ggimage/man/geom_image.html)
+  which does not honour this parameter
+  ([\#337](https://github.com/jurjoroa/ggpop/issues/337)).
 
 ### Breaking Changes
 
@@ -76,6 +86,7 @@ Issues are listed in chronological merge order.
 - \#289
 - \#291
 - \#294
+- \#337
 
 ### Version
 

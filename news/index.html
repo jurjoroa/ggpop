@@ -57,6 +57,7 @@
 <h3 id="new-features-1-7-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-7-0"></a></h3>
 <ul><li>Added <code>stroke_width</code> parameter to <code>geom_icon_point</code>, allowing users to control icon outline thickness for improved visual contrast (<a href="https://github.com/jurjoroa/ggpop/issues/268" class="external-link">#268</a>).</li>
 <li>Introduced personalized ggpop themes (e.g., <code>theme_pop</code>) for consistent, opinionated plot styling out of the box (<a href="https://github.com/jurjoroa/ggpop/issues/291" class="external-link">#291</a>).</li>
+<li>Added <code>show.legend</code> support to <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> and <code><a href="../reference/geom_pop.html">geom_pop()</a></code>. Passing <code>show.legend = FALSE</code> now correctly suppresses the layer’s legend entries, matching standard ggplot2 behaviour. The fix sets the argument directly on the layer object after construction, bypassing <code><a href="https://rdrr.io/pkg/ggimage/man/geom_image.html" class="external-link">ggimage::geom_image()</a></code> which does not honour this parameter (<a href="https://github.com/jurjoroa/ggpop/issues/337" class="external-link">#337</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-changes-1-7-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-7-0"></a></h3>
@@ -78,6 +79,7 @@
 <li>#289</li>
 <li>#291</li>
 <li>#294</li>
+<li>#337</li>
 </ul></div>
 <div class="section level3">
 <h3 id="version-1-7-0">Version<a class="anchor" aria-label="anchor" href="#version-1-7-0"></a></h3>
