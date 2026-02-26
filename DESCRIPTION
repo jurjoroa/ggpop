@@ -33,10 +33,14 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
+    quarto,
     cowplot,
-    ggforce
+    ggforce,
+    ggrepel,
+    ggtext,
+    scales
 Config/Needs/website: sf, geofacet, ggtext, quarto
-VignetteBuilder: knitr
+VignetteBuilder: quarto
 Config/testthat/edition: 3
 Depends:
     R (>= 4.0.5)
@@ -49,6 +53,7 @@ Imports:
     tidyr,
     purrr,
     fontawesome,
+    rsvg,
     cli
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
