@@ -1298,8 +1298,8 @@ v_png_paths <- vapply(v_years, function(yr) {
 # ── Stitch into GIF ──────────────────────────────────────────────────────
 v_delays <- ifelse(as.integer(v_years) >= 2024, 1.5, 0.6)
 
-gifski(v_png_paths, gif_file = "age_structure_nations.gif",
-       width = 1200, height = 1400, delay = v_delays)
+#gifski(v_png_paths, gif_file = "age_structure_nations.gif",
+#       width = 1200, height = 1400, delay = v_delays)
 ```
 
 ![Example patchwork animation](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/age_structure_nations.gif)
