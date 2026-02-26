@@ -66,6 +66,8 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 ```{r}
 #| label: single-icon
 #| echo: false
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -74,7 +76,12 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
     "virginica"  = "#E53935"
   )) +
   theme_pop() +
-  theme_transp +
+  theme(
+    plot.background   = element_blank(),
+    panel.background  = element_blank(),
+    legend.background = element_blank(),
+    legend.key        = element_blank()
+  ) +
   labs(
     title    = "Iris: Sepal vs. Petal Length",
     subtitle = "Fixed icon — color encodes species",
@@ -135,6 +142,8 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
 #| echo: false
 #| message: false
 #| warning: false
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
 df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
                "Milk", "Cheese", "Yogurt"),
@@ -159,7 +168,12 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
     "Chicken" = "#E53935", "Beef" = "#E53935", "Salmon" = "#E53935"
   )) +
   theme_pop() +
-  theme_transp +
+  theme(
+    plot.background   = element_blank(),
+    panel.background  = element_blank(),
+    legend.background = element_blank(),
+    legend.key        = element_blank()
+  ) +
   labs(
     title    = "Calories vs. Protein by Food",
     subtitle = "Each icon represents a specific food; color reflects the group",
@@ -225,6 +239,8 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 ```{r}
 #| label: size-mapping
 #| echo: false
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
 df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
                  "Netflix", "Spotify", "Uber", "Airbnb"),
@@ -251,7 +267,12 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
   )) +
   scale_size_continuous(range = c(1, 3), labels = scales::comma) +
   theme_pop() +
-  theme_transp +
+  theme(
+    plot.background   = element_blank(),
+    panel.background  = element_blank(),
+    legend.background = element_blank(),
+    legend.key        = element_blank()
+  ) +
   labs(
     title    = "Tech Giants: Revenue vs. Market Cap",
     subtitle = "Icon = brand  ·  Size = employees (rescaled)  ·  Log scales",
@@ -313,6 +334,8 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 ```{r}
 #| label: factor-ordering
 #| echo: false
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
 df_health <- data.frame(
   country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
                "Morocco", "Germany", "France", "Japan"),
@@ -336,7 +359,12 @@ ggplot(df_health, aes(x = spend, y = life_exp,
   )) +
   scale_legend_icon(size = 6) +
   theme_pop() +
-  theme_transp +
+  theme(
+    plot.background   = element_blank(),
+    panel.background  = element_blank(),
+    legend.background = element_blank(),
+    legend.key        = element_blank()
+  ) +
   labs(
     title    = "Health Spending vs. Life Expectancy",
     subtitle = "Factor levels control legend order and icon assignment",
@@ -587,6 +615,8 @@ theme(
 #| fig-height: 6
 #| message: false
 #| warning: false
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
 
 
 ggplot(df_health, aes(x = spend, y = life_exp,
@@ -617,8 +647,12 @@ ggplot(df_health, aes(x = spend, y = life_exp,
   scale_legend_icon(size = 6) +
   theme_pop() +
   theme(
-    axis.text  = element_text(color = "#546E7A", size = 9),
-    axis.title = element_text(color = "#37474F", size = 10)
+    plot.background   = element_blank(),
+    panel.background  = element_blank(),
+    legend.background = element_blank(),
+    legend.key        = element_blank(),
+    axis.text         = element_text(color = "#546E7A", size = 9),
+    axis.title        = element_text(color = "#37474F", size = 10)
   ) +
   labs(
     title    = "More Spending \u2260 Longer Lives",
@@ -676,4 +710,348 @@ ggplot(df_academic, aes(x = study_hours, y = score,
     y        = "Performance Score",
     color    = "Role"
   )
+```
+
+---
+
+## `ggrepel` — The Green Energy Divide
+
+`geom_label_repel()` prevents country labels from overlapping, letting every data point speak for itself even in dense clusters. Here 22 countries are plotted by electricity consumption per capita versus renewable share. Without label repulsion the European cluster — high renewables, moderate consumption — would be illegible. Icon encodes the dominant energy source; color encodes the continent.
+
+```{r}
+#| label: ggrepel-display
+#| eval: false
+
+library(ggrepel)
+library(ggtext)
+
+df_energy <- data.frame(
+  country     = c("Iceland", "Norway", "Costa Rica", "New Zealand", "Brazil",
+                  "Sweden", "Denmark", "Austria", "Canada", "Switzerland",
+                  "Germany", "United Kingdom", "Spain", "France", "Australia",
+                  "Japan", "United States", "Mexico", "China", "India",
+                  "South Africa", "Egypt"),
+  mwh_per_cap = c(52, 23,  2,  9,  3, 13,  6,  8, 15,  7,
+                  6,  5,  6,  7, 10,  7, 13,  2,  5,  1,
+                  4,  2),
+  renewable   = c(99, 98, 99, 84, 83, 67, 80, 75, 67, 62,
+                  46, 42, 54, 24, 29, 22, 20, 25, 28, 20,
+                  8, 12),
+  continent   = c("Europe", "Europe", "Americas", "Oceania", "Americas",
+                  "Europe", "Europe", "Europe", "Americas", "Europe",
+                  "Europe", "Europe", "Europe", "Europe", "Oceania",
+                  "Asia", "Americas", "Americas", "Asia", "Asia",
+                  "Africa", "Africa"),
+  icon        = c("droplet", "droplet", "droplet", "droplet", "droplet",
+                  "droplet", "wind", "droplet", "droplet", "droplet",
+                  "wind", "wind", "wind", "atom", "sun",
+                  "atom", "bolt", "bolt", "bolt", "sun",
+                  "smog", "sun"),
+  source_label = c("Hydro", "Hydro", "Hydro", "Hydro", "Hydro",
+                   "Hydro", "Wind", "Hydro", "Hydro", "Hydro",
+                   "Wind", "Wind", "Wind", "Nuclear", "Solar",
+                   "Nuclear", "Mixed", "Mixed", "Mixed", "Solar",
+                   "Coal", "Solar")
+)
+
+df_energy$continent    <- factor(df_energy$continent,
+                                 levels = c("Europe", "Americas", "Asia", "Oceania", "Africa"))
+df_energy$source_label <- factor(df_energy$source_label,
+                                 levels = c("Hydro", "Wind", "Solar", "Nuclear", "Mixed", "Coal"))
+
+pal_continent <- c(
+  "Europe"   = "#5E8BFF",
+  "Americas" = "#3ECF8E",
+  "Asia"     = "#FF9F43",
+  "Oceania"  = "#00D4C8",
+  "Africa"   = "#FF6B9D"
+)
+
+pal_source <- c(
+  "Hydro"   = "#5E8BFF",
+  "Wind"    = "#00D4C8",
+  "Solar"   = "#FFD93D",
+  "Nuclear" = "#A78BFA",
+  "Mixed"   = "#FF9F43",
+  "Coal"    = "#FF6B6B"
+)
+
+bg <- "#0A0F1E"
+
+set.seed(42)
+ggplot(df_energy, aes(x = mwh_per_cap, y = renewable)) +
+  # ── Quadrant shading ─────────────────────────────────────────────────────
+  annotate("rect", xmin = -Inf, xmax = 13, ymin = 50,   ymax = Inf,
+           fill = "#1A2F1A", alpha = 0.4) +
+  annotate("rect", xmin = 13,  xmax = Inf, ymin = 50,   ymax = Inf,
+           fill = "#2F2A10", alpha = 0.4) +
+  annotate("rect", xmin = -Inf, xmax = 13, ymin = -Inf, ymax = 50,
+           fill = "#1A1A2F", alpha = 0.3) +
+  annotate("rect", xmin = 13,  xmax = Inf, ymin = -Inf, ymax = 50,
+           fill = "#2F1010", alpha = 0.3) +
+  # ── Quadrant labels ───────────────────────────────────────────────────────
+  annotate("text", x = 0.5, y = 103, hjust = 0, size = 3, fontface = "bold",
+           color = "#3ECF8E", label = "\u2600 GREEN & EFFICIENT") +
+  annotate("text", x = 55,  y = 103, hjust = 1, size = 3, fontface = "bold",
+           color = "#FF9F43", label = "HIGH USE, CLEAN \u26a1") +
+  annotate("text", x = 0.5, y = 2,   hjust = 0, size = 3, fontface = "bold",
+           color = "#78909C", label = "LOW USE, FOSSIL-HEAVY") +
+  annotate("text", x = 55,  y = 2,   hjust = 1, size = 3, fontface = "bold",
+           color = "#FF6B6B", label = "HIGH USE, FOSSIL-HEAVY \u26a0") +
+  # ── Reference lines ───────────────────────────────────────────────────────
+  geom_hline(yintercept = 50, linetype = "dashed", color = "#37474F", linewidth = 0.5) +
+  geom_vline(xintercept = 13, linetype = "dashed", color = "#37474F", linewidth = 0.5) +
+  # ── Continent fill circle (background) ───────────────────────────────────
+  # ── Energy source icon (foreground) ──────────────────────────────────────
+  geom_icon_point(aes(icon = icon, color = source_label), size = 1.8, dpi = 100) +
+  # ── Country labels ────────────────────────────────────────────────────────
+  geom_label_repel(
+    aes(label = country, color = source_label),
+    fill          = alpha(bg, 0.85),
+    label.size    = 0,
+    size          = 2.8,
+    fontface      = "bold",
+    label.padding = unit(0.22, "lines"),
+    box.padding   = unit(0.5,  "lines"),
+    point.padding = unit(0.4,  "lines"),
+    max.overlaps  = Inf,
+    segment.color = "#546E7A",
+    segment.size  = 0.3,
+    segment.alpha = 0.7,
+    seed          = 42,
+    show.legend   = FALSE
+  ) +
+  # ── Scales ────────────────────────────────────────────────────────────────
+  scale_color_manual(
+    name   = "Energy Source",
+    values = pal_source
+  ) +
+  scale_fill_manual(
+    name   = "Continent",
+    values = pal_continent
+  ) +
+  scale_x_continuous(
+    labels = function(x) paste0(x, " MWh"),
+    expand = expansion(mult = c(0.02, 0.04))
+  ) +
+  scale_y_continuous(
+    labels = function(y) paste0(y, "%"),
+    limits = c(0, 106),
+    expand = expansion(mult = c(0.01, 0))
+  ) +
+  scale_legend_icon(size = 6) +
+  guides(
+    color = guide_legend(
+      nrow = 1, title.position = "top", title.hjust = 0.5,
+      override.aes = list(size = 4)
+    ),
+    fill = guide_legend(
+      nrow = 1, title.position = "top", title.hjust = 0.5,
+      override.aes = list(alpha = 0.6, size = 5, color = NA)
+    )
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.background   = element_rect(fill = bg, color = NA),
+    panel.background  = element_rect(fill = bg, color = NA),
+    panel.grid.major  = element_line(color = "#1C2A3A", linewidth = 0.4),
+    panel.grid.minor  = element_blank(),
+    legend.background = element_blank(),
+    legend.key        = element_blank(),
+    axis.text         = element_text(color = "#78909C", size = 10),
+    axis.title        = element_text(color = "#90A4AE", size = 11),
+    plot.title        = element_markdown(size = 22, face = "bold", hjust = 0.5,
+                                         color = "white", margin = margin(b = 6)),
+    plot.subtitle     = element_markdown(size = 11, hjust = 0.5, color = "#78909C",
+                                         lineheight = 1.5, margin = margin(b = 16)),
+    plot.caption      = element_text(size = 8.5, hjust = 0.5, color = "#546E7A",
+                                     lineheight = 1.4, margin = margin(t = 14)),
+    legend.position   = "bottom",
+    legend.box        = "vertical",
+    legend.title      = element_text(color = "#90A4AE", size = 10, face = "bold"),
+    legend.text       = element_text(color = "#B0BEC5", size = 10),
+    legend.margin     = margin(t = 4),
+    legend.spacing.y  = unit(4, "pt"),
+    plot.margin       = margin(20, 24, 16, 20)
+  ) +
+  labs(
+    title    = "The Green Energy Divide",
+    subtitle = "Renewable share (%) vs. electricity use per capita &nbsp;\u00b7&nbsp; <b style='color:#B0BEC5'>Icon = energy source</b> &nbsp;\u00b7&nbsp; <b style='color:#B0BEC5'>Glow = continent</b>",
+    caption  = "Source: IEA / Our World in Data (2022)  \u00b7  Visualization: ggpop",
+    x        = "Electricity Consumption per Capita (MWh)",
+    y        = "Share of Renewables (%)"
+  )
+
+```
+
+```{r}
+#| label: ggrepel
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-width: 12
+#| fig-height: 15
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+
+library(ggrepel)
+library(ggtext)
+
+df_energy <- data.frame(
+  country     = c("Iceland", "Norway", "Costa Rica", "New Zealand", "Brazil",
+                  "Sweden", "Denmark", "Austria", "Canada", "Switzerland",
+                  "Germany", "United Kingdom", "Spain", "France", "Australia",
+                  "Japan", "United States", "Mexico", "China", "India",
+                  "South Africa", "Egypt"),
+  mwh_per_cap = c(52, 23,  2,  9,  3, 13,  6,  8, 15,  7,
+                  6,  5,  6,  7, 10,  7, 13,  2,  5,  1,
+                  4,  2),
+  renewable   = c(99, 98, 99, 84, 83, 67, 80, 75, 67, 62,
+                  46, 42, 54, 24, 29, 22, 20, 25, 28, 20,
+                  8, 12),
+  continent   = c("Europe", "Europe", "Americas", "Oceania", "Americas",
+                  "Europe", "Europe", "Europe", "Americas", "Europe",
+                  "Europe", "Europe", "Europe", "Europe", "Oceania",
+                  "Asia", "Americas", "Americas", "Asia", "Asia",
+                  "Africa", "Africa"),
+  icon        = c("droplet", "droplet", "droplet", "droplet", "droplet",
+                  "droplet", "wind", "droplet", "droplet", "droplet",
+                  "wind", "wind", "wind", "atom", "sun",
+                  "atom", "bolt", "bolt", "bolt", "sun",
+                  "smog", "sun"),
+  source_label = c("Hydro", "Hydro", "Hydro", "Hydro", "Hydro",
+                   "Hydro", "Wind", "Hydro", "Hydro", "Hydro",
+                   "Wind", "Wind", "Wind", "Nuclear", "Solar",
+                   "Nuclear", "Mixed", "Mixed", "Mixed", "Solar",
+                   "Coal", "Solar")
+)
+
+df_energy$continent    <- factor(df_energy$continent,
+                                 levels = c("Europe", "Americas", "Asia", "Oceania", "Africa"))
+df_energy$source_label <- factor(df_energy$source_label,
+                                 levels = c("Hydro", "Wind", "Solar", "Nuclear", "Mixed", "Coal"))
+
+pal_continent <- c(
+  "Europe"   = "#5E8BFF",
+  "Americas" = "#3ECF8E",
+  "Asia"     = "#FF9F43",
+  "Oceania"  = "#00D4C8",
+  "Africa"   = "#FF6B9D"
+)
+
+pal_source <- c(
+  "Hydro"   = "#5E8BFF",
+  "Wind"    = "#00D4C8",
+  "Solar"   = "#FFD93D",
+  "Nuclear" = "#A78BFA",
+  "Mixed"   = "#FF9F43",
+  "Coal"    = "#FF6B6B"
+)
+
+bg <- "#0A0F1E"
+
+set.seed(42)
+ggplot(df_energy, aes(x = mwh_per_cap, y = renewable)) +
+  # ── Quadrant shading ─────────────────────────────────────────────────────
+  annotate("rect", xmin = -Inf, xmax = 13, ymin = 50,   ymax = Inf,
+           fill = "#1A2F1A", alpha = 0.4) +
+  annotate("rect", xmin = 13,  xmax = Inf, ymin = 50,   ymax = Inf,
+           fill = "#2F2A10", alpha = 0.4) +
+  annotate("rect", xmin = -Inf, xmax = 13, ymin = -Inf, ymax = 50,
+           fill = "#1A1A2F", alpha = 0.3) +
+  annotate("rect", xmin = 13,  xmax = Inf, ymin = -Inf, ymax = 50,
+           fill = "#2F1010", alpha = 0.3) +
+  # ── Quadrant labels ───────────────────────────────────────────────────────
+  annotate("text", x = 0.5, y = 103, hjust = 0, size = 3, fontface = "bold",
+           color = "#3ECF8E", label = "\u2600 GREEN & EFFICIENT") +
+  annotate("text", x = 55,  y = 103, hjust = 1, size = 3, fontface = "bold",
+           color = "#FF9F43", label = "HIGH USE, CLEAN \u26a1") +
+  annotate("text", x = 0.5, y = 2,   hjust = 0, size = 3, fontface = "bold",
+           color = "#78909C", label = "LOW USE, FOSSIL-HEAVY") +
+  annotate("text", x = 55,  y = 2,   hjust = 1, size = 3, fontface = "bold",
+           color = "#FF6B6B", label = "HIGH USE, FOSSIL-HEAVY \u26a0") +
+  # ── Reference lines ───────────────────────────────────────────────────────
+  geom_hline(yintercept = 50, linetype = "dashed", color = "#37474F", linewidth = 0.5) +
+  geom_vline(xintercept = 13, linetype = "dashed", color = "#37474F", linewidth = 0.5) +
+  # ── Continent fill circle (background) ───────────────────────────────────
+  # ── Energy source icon (foreground) ──────────────────────────────────────
+  geom_icon_point(aes(icon = icon, color = source_label), size = 1.8, dpi = 100) +
+  # ── Country labels ────────────────────────────────────────────────────────
+  geom_label_repel(
+    aes(label = country, color = source_label),
+    fill          = alpha(bg, 0.85),
+    label.size    = 0,
+    size          = 2.8,
+    fontface      = "bold",
+    label.padding = unit(0.22, "lines"),
+    box.padding   = unit(0.5,  "lines"),
+    point.padding = unit(0.4,  "lines"),
+    max.overlaps  = Inf,
+    segment.color = "#546E7A",
+    segment.size  = 0.3,
+    segment.alpha = 0.7,
+    seed          = 42,
+    show.legend   = FALSE
+  ) +
+  # ── Scales ────────────────────────────────────────────────────────────────
+  scale_color_manual(
+    name   = "Energy Source",
+    values = pal_source
+  ) +
+  scale_fill_manual(
+    name   = "Continent",
+    values = pal_continent
+  ) +
+  scale_x_continuous(
+    labels = function(x) paste0(x, " MWh"),
+    expand = expansion(mult = c(0.02, 0.04))
+  ) +
+  scale_y_continuous(
+    labels = function(y) paste0(y, "%"),
+    limits = c(0, 106),
+    expand = expansion(mult = c(0.01, 0))
+  ) +
+  scale_legend_icon(size = 6) +
+  guides(
+    color = guide_legend(
+      nrow = 1, title.position = "top", title.hjust = 0.5,
+      override.aes = list(size = 4)
+    ),
+    fill = guide_legend(
+      nrow = 1, title.position = "top", title.hjust = 0.5,
+      override.aes = list(alpha = 0.6, size = 5, color = NA)
+    )
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.background   = element_rect(fill = bg, color = NA),
+    panel.background  = element_rect(fill = bg, color = NA),
+    panel.grid.major  = element_line(color = "#1C2A3A", linewidth = 0.4),
+    panel.grid.minor  = element_blank(),
+    legend.background = element_blank(),
+    legend.key        = element_blank(),
+    axis.text         = element_text(color = "#78909C", size = 10),
+    axis.title        = element_text(color = "#90A4AE", size = 11),
+    plot.title        = element_markdown(size = 22, face = "bold", hjust = 0.5,
+                                         color = "white", margin = margin(b = 6)),
+    plot.subtitle     = element_markdown(size = 11, hjust = 0.5, color = "#78909C",
+                                         lineheight = 1.5, margin = margin(b = 16)),
+    plot.caption      = element_text(size = 8.5, hjust = 0.5, color = "#546E7A",
+                                     lineheight = 1.4, margin = margin(t = 14)),
+    legend.position   = "bottom",
+    legend.box        = "vertical",
+    legend.title      = element_text(color = "#90A4AE", size = 10, face = "bold"),
+    legend.text       = element_text(color = "#B0BEC5", size = 10),
+    legend.margin     = margin(t = 4),
+    legend.spacing.y  = unit(4, "pt"),
+    plot.margin       = margin(20, 24, 16, 20)
+  ) +
+  labs(
+    title    = "The Green Energy Divide",
+    subtitle = "Renewable share (%) vs. electricity use per capita &nbsp;\u00b7&nbsp; <b style='color:#B0BEC5'>Icon = energy source</b> &nbsp;\u00b7&nbsp; <b style='color:#B0BEC5'>Glow = continent</b>",
+    caption  = "Source: IEA / Our World in Data (2022)  \u00b7  Visualization: ggpop",
+    x        = "Electricity Consumption per Capita (MWh)",
+    y        = "Share of Renewables (%)"
+  )
+
 ```
