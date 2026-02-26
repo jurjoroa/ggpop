@@ -35,6 +35,63 @@ theme_transp <- theme(
 )
 ```
 
+```{=html}
+<style>
+/* ── Smooth code-fold animation ──────────────────────────────────────────── */
+details > div.sourceCode {
+  overflow: hidden;
+}
+
+@keyframes fold-open {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fold-close {
+  from { opacity: 1; transform: translateY(0);    }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+details.fold-opening > div.sourceCode {
+  animation: fold-open 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+details.fold-closing > div.sourceCode {
+  animation: fold-close 0.22s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('details').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (!e.target.closest('summary')) return;
+      e.preventDefault();
+
+      var content = el.querySelector('div.sourceCode');
+      if (!content) return;
+
+      if (el.open) {
+        el.classList.remove('fold-opening');
+        el.classList.add('fold-closing');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-closing');
+          el.removeAttribute('open');
+        }, { once: true });
+      } else {
+        el.setAttribute('open', '');
+        el.classList.remove('fold-closing');
+        el.classList.add('fold-opening');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-opening');
+        }, { once: true });
+      }
+    });
+  });
+});
+</script>
+```
+
 ---
 
 ## Example 1: World Population by Continent
