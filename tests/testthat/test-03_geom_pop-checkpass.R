@@ -1495,5 +1495,31 @@ testthat::test_that("geom_pop factor levels", {
 })
 
 # ******************************************************************************
+## show.legend = FALSE ---------------------------------------------------------
+# ******************************************************************************
+
+testthat::test_that("geom_pop show.legend = FALSE hides icon legend", {
+  df_show <- data.frame(
+    type = c("A", "B", "C"),
+    icon = c("circle", "circle", "circle")
+  )
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data        = df_show,
+      aes(icon = icon, group = type, color = type),
+      size        = 1,
+      dpi         = 50,
+      show.legend = FALSE
+    ) +
+    ggplot2::scale_color_manual(values = c("A" = "#E53935", "B" = "#1E88E5", "C" = "#43A047"))
+
+  expect_doppelganger(
+    title = "geom_pop show.legend FALSE",
+    fig   = p
+  )
+})
+
+# ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************

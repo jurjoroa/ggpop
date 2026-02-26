@@ -10,6 +10,7 @@ geom_icon_point(
   stat = "identity",
   position = "identity",
   na.rm = FALSE,
+  show.legend = NA,
   inherit.aes = TRUE,
   icon = NULL,
   size = 1,
@@ -67,6 +68,10 @@ to use \code{position_jitter()}, give the position as \code{"jitter"}.
 }}
 
 \item{na.rm}{logical, whether remove NA values}
+
+\item{show.legend}{Logical. Should this layer be included in the legends?
+\code{NA} (default) includes the layer if any aesthetics are mapped.
+\code{FALSE} suppresses the layer's legend entries entirely.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
 rather than combining with them. This is most useful for helper functions
