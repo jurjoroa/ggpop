@@ -38,6 +38,63 @@ theme_transp <- theme(
 )
 ```
 
+```{=html}
+<style>
+/* ── Smooth code-fold animation ──────────────────────────────────────────── */
+details > div.sourceCode {
+  overflow: hidden;
+}
+
+@keyframes fold-open {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fold-close {
+  from { opacity: 1; transform: translateY(0);    }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+details.fold-opening > div.sourceCode {
+  animation: fold-open 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+details.fold-closing > div.sourceCode {
+  animation: fold-close 0.22s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('details').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (!e.target.closest('summary')) return;
+      e.preventDefault();
+
+      var content = el.querySelector('div.sourceCode');
+      if (!content) return;
+
+      if (el.open) {
+        el.classList.remove('fold-opening');
+        el.classList.add('fold-closing');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-closing');
+          el.removeAttribute('open');
+        }, { once: true });
+      } else {
+        el.setAttribute('open', '');
+        el.classList.remove('fold-closing');
+        el.classList.add('fold-opening');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-opening');
+        }, { once: true });
+      }
+    });
+  });
+});
+</script>
+```
+
 
 ## Example 1: Single Icon Scatter Plot
 
@@ -46,6 +103,7 @@ The simplest use: a fixed icon for all points, color encodes the grouping variab
 ```{r}
 #| label: single-icon-display
 #| eval: false
+
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -53,7 +111,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
     "versicolor" = "#1E88E5",
     "virginica"  = "#E53935"
   )) +
-  theme_pop() +
+  theme(plot.title = element_text(size = 16, face = "bold")) +
   labs(
     title    = "Iris: Sepal vs. Petal Length",
     subtitle = "Fixed icon — color encodes species",
@@ -66,8 +124,12 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 ```{r}
 #| label: single-icon
 #| echo: false
+#| fig-width: 10
+#| fig-height: 6
 #| dev: png
 #| dev-args: !expr list(bg = "transparent")
+
+
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -75,13 +137,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
     "versicolor" = "#1E88E5",
     "virginica"  = "#E53935"
   )) +
-  theme_pop() +
-  theme(
-    plot.background   = element_blank(),
-    panel.background  = element_blank(),
-    legend.background = element_blank(),
-    legend.key        = element_blank()
-  ) +
+  theme(plot.title = element_text(size = 16, face = "bold")) +
   labs(
     title    = "Iris: Sepal vs. Petal Length",
     subtitle = "Fixed icon — color encodes species",
@@ -100,50 +156,14 @@ Each food item gets its own icon. The icon is the identity — no legend needed 
 ```{r}
 #| label: mapped-icons-display
 #| eval: false
-
+#| fig-width: 10
+#| fig-height: 6
 
 library(ggpop)
 library(ggplot2)
 library(dplyr)
 
-df_food <- data.frame(
-  food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
-               "Milk", "Cheese", "Yogurt"),
-  calories = c(52, 41, 47, 165, 250, 208, 61, 402, 59),
-  protein  = c(0.3, 1.1, 0.9, 31, 26, 20, 3.2, 25, 10),
-  group    = c(rep("Fruit & Veg", 3), rep("Meat & Fish", 3), rep("Dairy", 3)),
-  icon     = c("apple-whole", "carrot", "lemon",
-               "drumstick-bite", "bacon", "fish",
-               "bottle-water", "cheese", "jar")
-)
 
-df_food$group <- factor(df_food$group,
-  levels = c("Fruit & Veg", "Dairy", "Meat & Fish"))
-
-ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
-  geom_icon_point(size = 2, dpi = 100) +
-  scale_color_manual(values = c(
-    "Fruit & Veg"  = "#43A047",
-    "Dairy"        = "#1E88E5",
-    "Meat & Fish"  = "#E53935"
-  )) +
-  theme_pop() +
-  labs(
-    title    = "Calories vs. Protein by Food",
-    subtitle = "Each icon represents a specific food; color reflects the group",
-    x        = "Calories (per 100g)",
-    y        = "Protein (g per 100g)",
-    color    = "Group"
-  )
-```
-
-```{r}
-#| label: mapped-icons
-#| echo: false
-#| message: false
-#| warning: false
-#| dev: png
-#| dev-args: !expr list(bg = "transparent")
 df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
                "Milk", "Cheese", "Yogurt"),
@@ -167,13 +187,55 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
     "Meat & Fish"  = "#E53935",
     "Chicken" = "#E53935", "Beef" = "#E53935", "Salmon" = "#E53935"
   )) +
-  theme_pop() +
-  theme(
-    plot.background   = element_blank(),
-    panel.background  = element_blank(),
-    legend.background = element_blank(),
-    legend.key        = element_blank()
-  ) +
+  theme(plot.title = element_text(size = 16, face = "bold")) +
+  labs(
+    title    = "Calories vs. Protein by Food",
+    subtitle = "Each icon represents a specific food; color reflects the group",
+    x        = "Calories (per 100g)",
+    y        = "Protein (g per 100g)",
+    color    = "Group"
+  )
+```
+
+```{r}
+#| label: mapped-icons
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| message: false
+#| warning: false
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+
+
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
+df_food <- data.frame(
+  food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
+               "Milk", "Cheese", "Yogurt"),
+  calories = c(52, 41, 47, 165, 250, 208, 61, 402, 59),
+  protein  = c(0.3, 1.1, 0.9, 31, 26, 20, 3.2, 25, 10),
+  group    = c(rep("Fruit & Veg", 3), rep("Meat & Fish", 3), rep("Dairy", 3)),
+  icon     = c("apple-whole", "carrot", "lemon",
+               "drumstick-bite", "bacon", "fish",
+               "bottle-water", "cheese", "jar")
+)
+
+df_food$group <- factor(df_food$group,
+  levels = c("Fruit & Veg", "Dairy", "Meat & Fish"))
+
+ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
+  geom_icon_point(size = 2, dpi = 100) +
+  scale_color_manual(values = c(
+    "Apple" = "#43A047", "Carrot" = "#43A047", "Orange" = "#43A047",
+    "Dairy"        = "#1E88E5",
+    "Milk" = "#1E88E5", "Cheese" = "#1E88E5", "Yogurt" = "#1E88E5",
+    "Meat & Fish"  = "#E53935",
+    "Chicken" = "#E53935", "Beef" = "#E53935", "Salmon" = "#E53935"
+  )) +
+  theme(plot.title = element_text(size = 16, face = "bold")) +
   labs(
     title    = "Calories vs. Protein by Food",
     subtitle = "Each icon represents a specific food; color reflects the group",
@@ -197,194 +259,350 @@ Map a continuous variable to icon size. Use `scales::rescale()` to keep sizes re
 
 
 library(ggpop)
-library(ggplot2)
-library(dplyr)
+library(ggrepel)
+library(ggtext)
 
-
+# --- DATA (keeps your original 9 icons exactly; adds more; removes SAP/Intel/Qualcomm) ---
 df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
-                 "Netflix", "Spotify", "Uber", "Airbnb"),
-  revenue    = c(394, 283, 212, 117, 514, 32, 13, 37, 9),
-  market_cap = c(2950, 1750, 2800, 1200, 1750, 190, 55, 140, 75),
-  employees  = c(160, 180, 220, 86, 1540, 13, 9, 32, 6),
+                 "Netflix", "Spotify", "Uber", "Airbnb",
+                 "Nvidia", "Tesla", "TSMC", "Samsung", "AMD",
+                 "Broadcom", "ASML", "Oracle", "Salesforce", "Adobe",
+                 "IBM", "Cisco", "Tencent", "Alibaba", "Visa", "Mastercard"),
+  revenue    = c(394, 283, 212, 117, 514,
+                 32, 13, 37, 9,
+                 61, 96, 69, 200, 23,
+                 36, 28, 53, 35, 19,
+                 62, 57, 87, 126, 33, 25),
+  market_cap = c(2950, 1750, 2800, 1200, 1750,
+                 190, 55, 140, 75,
+                 2200, 600, 600, 400, 250,
+                 900, 350, 320, 280, 260,
+                 170, 220, 400, 200, 520, 430),
+  employees  = c(160, 180, 220, 86, 1540,
+                 13, 9, 32, 6,
+                 26, 140, 73, 270, 26,
+                 34, 42, 164, 80, 29,
+                 288, 85, 105, 235, 28, 30),
   icon       = c("apple", "google", "windows", "meta", "amazon",
-                 "tv", "spotify", "uber", "airbnb")
+                 "tv", "spotify", "uber", "airbnb",
+                 "microchip", "car", "memory", "mobile", "spinner",
+                 "server", "cogs", "database", "cloud", "pen",
+                 "terminal", "wifi", "message", "sim-card", "credit-card", "wallet")
 )
 
+pal <- c(
+  "Apple"      = "#F2F2F2",
+  "Google"     = "#7BA7FF",  # soft blue
+  "Microsoft"  = "#6FD3FF",  # airy cyan
+  "Meta"       = "#6FAEFF",  # cornflower-ish
+  "Amazon"     = "#FFB86B",  # softer orange
+  "Netflix"    = "#FF5A6A",  # softer red
+  "Spotify"    = "#4FE38A",  # softer green
+  "Uber"       = "#A9F2EE",  # pale aqua
+  "Airbnb"     = "#FF7D86",  # soft coral-pink
+  "Nvidia"     = "#9BE56D",  # softer lime
+  "Tesla"      = "#FF6B6B",  # soft red
+  "TSMC"       = "#FF8A80",  # soft salmon
+  "Samsung"    = "#8FB3FF",  # soft periwinkle (no dark blue)
+  "AMD"        = "#FF7A7A",  # soft red
+  "Broadcom"   = "#FF8FB1",  # soft rose
+  "ASML"       = "#93C9FF",  # soft sky blue
+  "Oracle"     = "#FF7C7C",  # soft red
+  "Salesforce" = "#79D7FF",  # light azure
+  "Adobe"      = "#FF6F6F",  # soft red
+  "IBM"        = "#8EC5FF",  # soft blue
+  "Cisco"      = "#73E3FF",  # light cyan-blue
+  "Tencent"    = "#86D0FF",  # soft blue
+  "Alibaba"    = "#FFC07A",  # soft orange
+  "Visa"       = "#9AB6FF",  # soft blue (replaces dark navy)
+  "Mastercard" = "#FF8A5C"   # soft orange-red
+)
+
+bg          <- "#080C18"
+col_title   <- "white"
+col_accent  <- "#FF7F6E"
+col_axis    <- "#C17B6F"
+col_grid    <- "white"
+col_caption <- "#6B3F38"
+col_segment <- "#3D2420"
+
+df_brand$size_scaled <- scales::rescale(df_brand$employees, to = c(1.2, 3.2))
 
 ggplot(df_brand, aes(x = revenue, y = market_cap,
-                       icon = icon, color = brand)) +
-  geom_icon_point(dpi = 100) +
-  scale_x_log10(labels = scales::dollar_format(suffix = "B")) +
-  scale_y_log10(labels = scales::dollar_format(suffix = "B")) +
-  scale_color_manual(values = c(
-    "Apple"     = "#FF5252", "Google"    = "#42A5F5",
-    "Microsoft" = "#4DB6AC", "Meta"      = "#8E24AA",
-    "Amazon"    = "#FFB300", "Netflix"   = "#E53935",
-    "Spotify"   = "#1DB954", "Uber"      = "#546E7A",
-    "Airbnb"    = "#FF4081"
-  )) +
-  scale_size_continuous(range = c(1, 3), labels = scales::comma) +
-  theme_pop() +
+                     icon = icon, color = brand, size = size_scaled)) +
+  # ── P/S ratio reference lines ──────────────────────────────────────────
+  geom_abline(slope = 1, intercept = log10(5),  linetype = "dashed",
+              color = alpha("white", 0.25), linewidth = 0.5) +
+  geom_abline(slope = 1, intercept = log10(10), linetype = "dashed",
+              color = alpha("white", 0.25), linewidth = 0.5) +
+  annotate("text", x = 500, y = 3200, label = "P/S ratio = 10×",
+           color = col_accent, size = 2.8, hjust = 1,
+           fontface = "italic", alpha = 0.6) +
+  annotate("text", x = 500, y = 1600, label = "P/S ratio = 5×",
+           color = col_accent, size = 2.8, hjust = 1,
+           fontface = "italic", alpha = 0.6) +
+  # ── Icons ──────────────────────────────────────────────────────────────
+  geom_icon_point(dpi = 150) +
+  # ── Labels ─────────────────────────────────────────────────────────────
+  ggrepel::geom_label_repel(
+    aes(label = paste0(brand, "\n$", market_cap, "B"), color = brand),
+    fill          = alpha(bg, 0.88),
+    label.size    = 0,
+    size          = 2.6,
+    fontface      = "bold",
+    lineheight    = 1.2,
+    label.padding = unit(0.25, "lines"),
+    box.padding   = unit(0.5,  "lines"),
+    point.padding = unit(0.4,  "lines"),
+    max.overlaps  = Inf,
+    segment.color = col_segment,
+    segment.size  = 0.35,
+    segment.alpha = 0.9,
+    seed          = 42,
+    show.legend   = FALSE
+  ) +
+  scale_x_log10(
+    labels = scales::dollar_format(suffix = "B"),
+    breaks = c(10, 50, 100, 500),
+    expand = expansion(mult = c(0.05, 0.1))
+  ) +
+  scale_y_log10(
+    labels = scales::dollar_format(suffix = "B"),
+    breaks = c(50, 100, 500, 1000, 3000),
+    expand = expansion(mult = c(0.05, 0.1))
+  ) +
+  scale_color_manual(values = pal, guide = "none") +
+  scale_size_continuous(
+    range  = c(1.2, 3.2),
+    labels = function(x) paste0(
+      round(scales::rescale(x, from = c(1.2, 3.2),
+                            to = range(df_brand$employees))), "K"),
+    breaks = scales::rescale(c(50, 100, 250, 500, 1000, 1540),
+                             from = range(df_brand$employees), to = c(1.2, 3.2))
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.background   = element_blank(),
+    panel.background  = element_blank(),
+    panel.grid.major  = element_line(color = alpha(col_grid, 0.22), linewidth = 0.5),
+    panel.grid.minor  = element_blank(),
+    legend.background = element_blank(),
+    legend.key        = element_blank(),
+    axis.text         = element_text(color = col_axis,   size = 10),
+    axis.title        = element_text(color = col_accent, size = 11),
+    plot.title        = ggtext::element_markdown(
+      size = 22, face = "bold", hjust = 0.5,
+      color = col_title, margin = margin(b = 6)
+    ),
+    plot.subtitle     = ggtext::element_markdown(
+      size = 11, hjust = 0.5,
+      color = col_accent, lineheight = 1.5,
+      margin = margin(b = 16)
+    ),
+    plot.caption      = element_text(
+      size = 8.5, hjust = 0.5, color = col_caption,
+      lineheight = 1.4, margin = margin(t = 14)
+    ),
+    legend.position   = "bottom",
+    legend.title      = element_text(color = col_accent, size = 10, face = "bold"),
+    legend.text       = element_text(color = col_axis,   size = 9),
+    legend.margin     = margin(t = 8),
+    plot.margin       = margin(24, 28, 18, 24)
+  ) +
   labs(
     title    = "Tech Giants: Revenue vs. Market Cap",
-    subtitle = "Icon = brand  ·  Size = employees (rescaled)  ·  Log scales",
-    x        = "Annual Revenue (log scale)",
-    y        = "Market Cap (log scale)",
-    color    = "Brand",
+    subtitle = "Each icon = brand &nbsp;\u00b7&nbsp; Size = employee count &nbsp;\u00b7&nbsp; Both axes log-scaled &nbsp;\u00b7&nbsp; Dashed lines = P/S ratio",
+    caption  = "Source: Public filings & estimates (2023)  \u00b7  Visualization: ggpop",
+    x        = "Annual Revenue (USD, log scale)",
+    y        = "Market Capitalisation (USD, log scale)",
     size     = "Employees"
   )
+
+
 ```
 
 ```{r}
 #| label: size-mapping
+#| fig-width: 10
+#| fig-height: 14
 #| echo: false
 #| dev: png
 #| dev-args: !expr list(bg = "transparent")
+library(ggrepel)
+library(ggtext)
+
+# --- DATA (keeps your original 9 icons exactly; adds more; removes SAP/Intel/Qualcomm) ---
 df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
-                 "Netflix", "Spotify", "Uber", "Airbnb"),
-  revenue    = c(394, 283, 212, 117, 514, 32, 13, 37, 9),
-  market_cap = c(2950, 1750, 2800, 1200, 1750, 190, 55, 140, 75),
-  employees  = c(160, 180, 220, 86, 1540, 13, 9, 32, 6),
+                 "Netflix", "Spotify", "Uber", "Airbnb",
+                 "Nvidia", "Tesla", "TSMC", "Samsung", "AMD",
+                 "Broadcom", "ASML", "Oracle", "Salesforce", "Adobe",
+                 "IBM", "Cisco", "Tencent", "Alibaba", "Visa", "Mastercard"),
+  revenue    = c(394, 283, 212, 117, 514,
+                 32, 13, 37, 9,
+                 61, 96, 69, 200, 23,
+                 36, 28, 53, 35, 19,
+                 62, 57, 87, 126, 33, 25),
+  market_cap = c(2950, 1750, 2800, 1200, 1750,
+                 190, 55, 140, 75,
+                 2200, 600, 600, 400, 250,
+                 900, 350, 320, 280, 260,
+                 170, 220, 400, 200, 520, 430),
+  employees  = c(160, 180, 220, 86, 1540,
+                 13, 9, 32, 6,
+                 26, 140, 73, 270, 26,
+                 34, 42, 164, 80, 29,
+                 288, 85, 105, 235, 28, 30),
   icon       = c("apple", "google", "windows", "meta", "amazon",
-                 "tv", "spotify", "uber", "airbnb")
+                 "tv", "spotify", "uber", "airbnb",
+                 "microchip", "car", "memory", "mobile", "spinner",
+                 "server", "cogs", "database", "cloud", "pen",
+                 "terminal", "wifi", "message", "sim-card", "credit-card", "wallet")
 )
 
-df_brand$size_scaled <- scales::rescale(df_brand$employees, to = c(0.8, 2.5))
+pal <- c(
+  "Apple"      = "#F2F2F2",
+  "Google"     = "#7BA7FF",  # soft blue
+  "Microsoft"  = "#6FD3FF",  # airy cyan
+  "Meta"       = "#6FAEFF",  # cornflower-ish
+  "Amazon"     = "#FFB86B",  # softer orange
+  "Netflix"    = "#FF5A6A",  # softer red
+  "Spotify"    = "#4FE38A",  # softer green
+  "Uber"       = "#A9F2EE",  # pale aqua
+  "Airbnb"     = "#FF7D86",  # soft coral-pink
+  "Nvidia"     = "#9BE56D",  # softer lime
+  "Tesla"      = "#FF6B6B",  # soft red
+  "TSMC"       = "#FF8A80",  # soft salmon
+  "Samsung"    = "#8FB3FF",  # soft periwinkle (no dark blue)
+  "AMD"        = "#FF7A7A",  # soft red
+  "Broadcom"   = "#FF8FB1",  # soft rose
+  "ASML"       = "#93C9FF",  # soft sky blue
+  "Oracle"     = "#FF7C7C",  # soft red
+  "Salesforce" = "#79D7FF",  # light azure
+  "Adobe"      = "#FF6F6F",  # soft red
+  "IBM"        = "#8EC5FF",  # soft blue
+  "Cisco"      = "#73E3FF",  # light cyan-blue
+  "Tencent"    = "#86D0FF",  # soft blue
+  "Alibaba"    = "#FFC07A",  # soft orange
+  "Visa"       = "#9AB6FF",  # soft blue (replaces dark navy)
+  "Mastercard" = "#FF8A5C"   # soft orange-red
+)
+
+bg          <- "#080C18"
+col_title   <- "white"
+col_accent  <- "#FF7F6E"
+col_axis    <- "#C17B6F"
+col_grid    <- "white"
+col_caption <- "#6B3F38"
+col_segment <- "#3D2420"
+
+df_brand$size_scaled <- scales::rescale(df_brand$employees, to = c(1.2, 3.2))
 
 ggplot(df_brand, aes(x = revenue, y = market_cap,
-                       icon = icon, color = brand, size = size_scaled)) +
-  geom_icon_point(dpi = 100) +
-  scale_x_log10(labels = scales::dollar_format(suffix = "B")) +
-  scale_y_log10(labels = scales::dollar_format(suffix = "B")) +
-  scale_color_manual(values = c(
-    "Apple"     = "#FF5252", "Google"    = "#42A5F5",
-    "Microsoft" = "#4DB6AC", "Meta"      = "#8E24AA",
-    "Amazon"    = "#FFB300", "Netflix"   = "#E53935",
-    "Spotify"   = "#1DB954", "Uber"      = "#546E7A",
-    "Airbnb"    = "#FF4081"
-  )) +
-  scale_size_continuous(range = c(1, 3), labels = scales::comma) +
-  theme_pop() +
+                     icon = icon, color = brand, size = size_scaled)) +
+  # ── P/S ratio reference lines ──────────────────────────────────────────
+  geom_abline(slope = 1, intercept = log10(5),  linetype = "dashed",
+              color = alpha("white", 0.25), linewidth = 0.5) +
+  geom_abline(slope = 1, intercept = log10(10), linetype = "dashed",
+              color = alpha("white", 0.25), linewidth = 0.5) +
+  annotate("text", x = 500, y = 3200, label = "P/S ratio = 10×",
+           color = col_accent, size = 2.8, hjust = 1,
+           fontface = "italic", alpha = 0.6) +
+  annotate("text", x = 500, y = 1600, label = "P/S ratio = 5×",
+           color = col_accent, size = 2.8, hjust = 1,
+           fontface = "italic", alpha = 0.6) +
+  # ── Icons ──────────────────────────────────────────────────────────────
+  geom_icon_point(dpi = 150) +
+  # ── Labels ─────────────────────────────────────────────────────────────
+  ggrepel::geom_label_repel(
+    aes(label = paste0(brand, "\n$", market_cap, "B"), color = brand),
+    fill          = alpha(bg, 0.88),
+    label.size    = 0,
+    size          = 2.6,
+    fontface      = "bold",
+    lineheight    = 1.2,
+    label.padding = unit(0.25, "lines"),
+    box.padding   = unit(0.5,  "lines"),
+    point.padding = unit(0.4,  "lines"),
+    max.overlaps  = Inf,
+    segment.color = col_segment,
+    segment.size  = 0.35,
+    segment.alpha = 0.9,
+    seed          = 42,
+    show.legend   = FALSE
+  ) +
+  scale_x_log10(
+    labels = scales::dollar_format(suffix = "B"),
+    breaks = c(10, 50, 100, 500),
+    expand = expansion(mult = c(0.05, 0.1))
+  ) +
+  scale_y_log10(
+    labels = scales::dollar_format(suffix = "B"),
+    breaks = c(50, 100, 500, 1000, 3000),
+    expand = expansion(mult = c(0.05, 0.1))
+  ) +
+  scale_color_manual(values = pal, guide = "none") +
+  scale_size_continuous(
+    range  = c(1.2, 3.2),
+    labels = function(x) paste0(
+      round(scales::rescale(x, from = c(1.2, 3.2),
+                            to = range(df_brand$employees))), "K"),
+    breaks = scales::rescale(c(50, 100, 250, 500, 1000, 1540),
+                             from = range(df_brand$employees), to = c(1.2, 3.2))
+  ) +
+  theme_minimal(base_size = 13) +
   theme(
     plot.background   = element_blank(),
     panel.background  = element_blank(),
+    panel.grid.major  = element_line(color = alpha(col_grid, 0.22), linewidth = 0.5),
+    panel.grid.minor  = element_blank(),
     legend.background = element_blank(),
-    legend.key        = element_blank()
+    legend.key        = element_blank(),
+    axis.text         = element_text(color = col_axis,   size = 10),
+    axis.title        = element_text(color = col_accent, size = 11),
+    plot.title        = ggtext::element_markdown(
+      size = 22, face = "bold", hjust = 0.5,
+      color = col_title, margin = margin(b = 6)
+    ),
+    plot.subtitle     = ggtext::element_markdown(
+      size = 11, hjust = 0.5,
+      color = col_accent, lineheight = 1.5,
+      margin = margin(b = 16)
+    ),
+    plot.caption      = element_text(
+      size = 8.5, hjust = 0.5, color = col_caption,
+      lineheight = 1.4, margin = margin(t = 14)
+    ),
+    legend.position   = "bottom",
+    legend.title      = element_text(color = col_accent, size = 10, face = "bold"),
+    legend.text       = element_text(color = col_axis,   size = 9),
+    legend.margin     = margin(t = 8),
+    plot.margin       = margin(24, 28, 18, 24)
   ) +
   labs(
     title    = "Tech Giants: Revenue vs. Market Cap",
-    subtitle = "Icon = brand  ·  Size = employees (rescaled)  ·  Log scales",
-    x        = "Annual Revenue (log scale)",
-    y        = "Market Cap (log scale)",
-    color    = "Brand",
+    subtitle = "Each icon = brand &nbsp;\u00b7&nbsp; Size = employee count &nbsp;\u00b7&nbsp; Both axes log-scaled &nbsp;\u00b7&nbsp; Dashed lines = P/S ratio",
+    caption  = "Source: Public filings & estimates (2023)  \u00b7  Visualization: ggpop",
+    x        = "Annual Revenue (USD, log scale)",
+    y        = "Market Capitalisation (USD, log scale)",
     size     = "Employees"
   )
+
+
 ```
 
 ---
 
-## Example 4: Factor Ordering
-
-Factor levels control both legend order and icon assignment. Always set levels explicitly.
-
-```{r}
-#| label: factor-ordering-display
-#| eval: false
-
-
-library(ggpop)
-library(ggplot2)
-library(dplyr)
-
-
-df_health <- data.frame(
-  country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
-               "Morocco", "Germany", "France", "Japan"),
-  spend    = c(27, 30, 22, 215, 185, 190, 5986, 4902, 4717),
-  life_exp = c(54, 58, 62, 71, 72, 74, 81, 83, 84),
-  income   = c(rep("Low", 3), rep("Middle", 3), rep("High", 3)),
-  icon     = c(rep("pills", 3), rep("stethoscope", 3), rep("hospital", 3))
-)
-
-df_health$income <- factor(df_health$income,
-  levels = c("Low", "Middle", "High"))
-
-ggplot(df_health, aes(x = spend, y = life_exp,
-                        icon = icon, color = income)) +
-  geom_icon_point(size = 2, dpi = 100) +
-  scale_x_log10(labels = scales::dollar_format()) +
-  scale_color_manual(values = c(
-    "Low"    = "#E53935",
-    "Middle" = "#FFB300",
-    "High"   = "#43A047"
-  )) +
-  scale_legend_icon(size = 6) +
-  theme_pop() +
-  labs(
-    title    = "Health Spending vs. Life Expectancy",
-    subtitle = "Factor levels control legend order and icon assignment",
-    x        = "Health Spending per Capita (log scale)",
-    y        = "Life Expectancy (years)",
-    color    = "Income Group"
-  )
-```
-
-```{r}
-#| label: factor-ordering
-#| echo: false
-#| dev: png
-#| dev-args: !expr list(bg = "transparent")
-df_health <- data.frame(
-  country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
-               "Morocco", "Germany", "France", "Japan"),
-  spend    = c(27, 30, 22, 215, 185, 190, 5986, 4902, 4717),
-  life_exp = c(54, 58, 62, 71, 72, 74, 81, 83, 84),
-  income   = c(rep("Low", 3), rep("Middle", 3), rep("High", 3)),
-  icon     = c(rep("pills", 3), rep("stethoscope", 3), rep("hospital", 3))
-)
-
-df_health$income <- factor(df_health$income,
-  levels = c("Low", "Middle", "High"))
-
-ggplot(df_health, aes(x = spend, y = life_exp,
-                        icon = icon, color = income)) +
-  geom_icon_point(size = 2, dpi = 100) +
-  scale_x_log10(labels = scales::dollar_format()) +
-  scale_color_manual(values = c(
-    "Low"    = "#E53935",
-    "Middle" = "#FFB300",
-    "High"   = "#43A047"
-  )) +
-  scale_legend_icon(size = 6) +
-  theme_pop() +
-  theme(
-    plot.background   = element_blank(),
-    panel.background  = element_blank(),
-    legend.background = element_blank(),
-    legend.key        = element_blank()
-  ) +
-  labs(
-    title    = "Health Spending vs. Life Expectancy",
-    subtitle = "Factor levels control legend order and icon assignment",
-    x        = "Health Spending per Capita (log scale)",
-    y        = "Life Expectancy (years)",
-    color    = "Income Group"
-  )
-```
-
----
-
-## Example 5: Paris 2024 Olympics — New Sports
+## Example 4: Paris 2024 Olympics — New Sports
 
 `geom_icon_point()` in a fixed-position grid with no traditional axes. All 45 Olympic disciplines at Paris 2024 are arranged in a 9×5 layout, each with its own icon. The 4 sports making their Olympic debut are highlighted in cyan; all existing disciplines are in gold. Annotations use `ggtext` for inline HTML styling.
 
 ```{r}
 #| label: paris
 #| eval: false
-#| fig-width: 7
-#| fig-height: 9
+#| fig-width: 14
+#| fig-height: 12
 
 library(ggpop)
 library(ggplot2)
@@ -606,18 +824,32 @@ theme(
 
 ---
 
-## Example 6: Combined Geoms
+## Example 5: Combined Geoms
 
 `geom_icon_point()` works alongside any ggplot2 geom. Here combined with `geom_smooth()`, reference lines, labels, and quadrant annotations.
 
 ```{r}
 #| label: combined
-#| fig-height: 6
+#| fig-width: 10
+#| fig-height: 7
 #| message: false
 #| warning: false
 #| dev: png
 #| dev-args: !expr list(bg = "transparent")
 
+
+
+df_health <- data.frame(
+  country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
+               "Morocco", "Germany", "France", "Japan"),
+  spend    = c(27, 30, 22, 215, 185, 190, 5986, 4902, 4717),
+  life_exp = c(54, 58, 62, 71, 72, 74, 81, 83, 84),
+  income   = c(rep("Low", 3), rep("Middle", 3), rep("High", 3)),
+  icon     = c(rep("pills", 3), rep("stethoscope", 3), rep("hospital", 3))
+)
+
+df_health$income <- factor(df_health$income,
+  levels = c("Low", "Middle", "High"))
 
 ggplot(df_health, aes(x = spend, y = life_exp,
                         icon = icon, color = income)) +
@@ -644,16 +876,19 @@ ggplot(df_health, aes(x = spend, y = life_exp,
     "Middle" = "#FFB300",
     "High"   = "#43A047"
   )) +
-  scale_legend_icon(size = 6) +
   theme_pop() +
   theme(
     plot.background   = element_blank(),
     panel.background  = element_blank(),
     legend.background = element_blank(),
     legend.key        = element_blank(),
-    axis.text         = element_text(color = "#546E7A", size = 9),
-    axis.title        = element_text(color = "#37474F", size = 10)
+    legend.text = element_text(color = "white", size = 9),
+    axis.text         = element_text(color = "white", size = 9),
+    axis.title        = element_text(color = "white", size = 10),
+    plot.title = element_text(color = "white", size = 14, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(color = "white", size = 10)
   ) +
+  scale_legend_icon(size = 6) +
   labs(
     title    = "More Spending \u2260 Longer Lives",
     subtitle = "Health expenditure per capita vs. life expectancy  \u00b7  X-axis is log-scaled",
@@ -665,12 +900,14 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 ---
 
-## Example 7: Dark Theme Scatter
+## Example 6: Dark Theme Scatter
 
 `geom_icon_point()` with `theme_pop_dark()` for a presentation-ready chart.
 
 ```{r}
 #| label: dark-theme
+#| fig-width: 10
+#| fig-height: 7
 
 library(ggpop)
 library(ggplot2)
@@ -697,12 +934,12 @@ ggplot(df_academic, aes(x = study_hours, y = score,
     "Teacher"    = "#80DEEA",
     "Researcher" = "#FFCC80"
   )) +
-  scale_legend_icon(size = 6) +
   theme_pop_dark(bg_color = "#0D1B2A", text_color = "white") +
   theme(
     axis.text  = element_text(color = "#90A4AE"),
     axis.title = element_text(color = "#B0BEC5")
   ) +
+  scale_legend_icon(size = 6) +
   labs(
     title    = "Study Hours vs. Performance Score",
     subtitle = "Icon reflects academic role",
