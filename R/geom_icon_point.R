@@ -17,6 +17,9 @@
 #' @param icon Default Font Awesome icon (default: NULL).
 #' @param size Default icon size (default: 1).
 #' @param dpi Icon resolution (default: 50).
+#' @param show.legend Logical. Should this layer be included in the legends?
+#'   `NA` (default) includes the layer if any aesthetics are mapped.
+#'   `FALSE` suppresses the layer's legend entries entirely.
 #' @param legend_icons Show icons in legend (default: TRUE).
 #' @param stroke_width Numeric. Width of the icon outline/stroke.
 #'
@@ -45,7 +48,7 @@
 #' @export
 geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             position = "identity", na.rm = FALSE,
-                            inherit.aes = TRUE, icon = NULL,
+                            show.legend = NA, inherit.aes = TRUE, icon = NULL,
                             size = 1, dpi = 50, legend_icons = TRUE,
                             stroke_width = NULL,
                             ...) {
@@ -150,6 +153,10 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
 
   # 11 Attach metadata + return layer  ----
+
+  # ggimage::geom_image() does not honour show.legend, so we set it directly
+  # on the layer object — ggplot2 reads this field during legend construction.
+  ggpop_layer$show.legend <- show.legend
 
   ggpop_layer$geom_params$icon_by_legend <- icon_by_legend
   ggpop_layer$geom_params$plot_obj <- plot_obj
