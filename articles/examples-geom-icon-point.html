@@ -74,7 +74,59 @@
 
 
 
-    <section class="level2"><h2 id="example-1-single-icon-scatter-plot">Example 1: Single Icon Scatter Plot<a class="anchor" aria-label="anchor" href="#example-1-single-icon-scatter-plot"></a>
+    <style>
+/* ── Smooth code-fold animation ──────────────────────────────────────────── */
+details > div.sourceCode {
+  overflow: hidden;
+}
+
+@keyframes fold-open {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fold-close {
+  from { opacity: 1; transform: translateY(0);    }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+details.fold-opening > div.sourceCode {
+  animation: fold-open 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+details.fold-closing > div.sourceCode {
+  animation: fold-close 0.22s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('details').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (!e.target.closest('summary')) return;
+      e.preventDefault();
+
+      var content = el.querySelector('div.sourceCode');
+      if (!content) return;
+
+      if (el.open) {
+        el.classList.remove('fold-opening');
+        el.classList.add('fold-closing');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-closing');
+          el.removeAttribute('open');
+        }, { once: true });
+      } else {
+        el.setAttribute('open', '');
+        el.classList.remove('fold-closing');
+        el.classList.add('fold-opening');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-opening');
+        }, { once: true });
+      }
+    });
+  });
+});
+</script><section class="level2"><h2 id="example-1-single-icon-scatter-plot">Example 1: Single Icon Scatter Plot<a class="anchor" aria-label="anchor" href="#example-1-single-icon-scatter-plot"></a>
 </h2>
 <p>The simplest use: a fixed icon for all points, color encodes the grouping variable.</p>
 <div class="cell">
@@ -86,7 +138,7 @@
 <span>    <span class="st">"versicolor"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>,</span>
 <span>    <span class="st">"virginica"</span>  <span class="op">=</span> <span class="st">"#E53935"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">16</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Iris: Sepal vs. Petal Length"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Fixed icon — color encodes species"</span>,</span>
@@ -99,7 +151,7 @@
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img src="examples-geom-icon-point_files/figure-html/single-icon-1.png" width="672"></p>
+<figure><p><img src="examples-geom-icon-point_files/figure-html/single-icon-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -112,6 +164,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="va">df_food</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  food     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Carrot"</span>, <span class="st">"Orange"</span>, <span class="st">"Chicken"</span>, <span class="st">"Beef"</span>, <span class="st">"Salmon"</span>,</span>
@@ -127,14 +180,16 @@
 <span><span class="va">df_food</span><span class="op">$</span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_food</span><span class="op">$</span><span class="va">group</span>,</span>
 <span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Fruit &amp; Veg"</span>, <span class="st">"Dairy"</span>, <span class="st">"Meat &amp; Fish"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_food</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">calories</span>, y <span class="op">=</span> <span class="va">protein</span>, icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_food</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">calories</span>, y <span class="op">=</span> <span class="va">protein</span>, icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">food</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Fruit &amp; Veg"</span>  <span class="op">=</span> <span class="st">"#43A047"</span>,</span>
+<span>    <span class="st">"Apple"</span> <span class="op">=</span> <span class="st">"#43A047"</span>, <span class="st">"Carrot"</span> <span class="op">=</span> <span class="st">"#43A047"</span>, <span class="st">"Orange"</span> <span class="op">=</span> <span class="st">"#43A047"</span>,</span>
 <span>    <span class="st">"Dairy"</span>        <span class="op">=</span> <span class="st">"#1E88E5"</span>,</span>
-<span>    <span class="st">"Meat &amp; Fish"</span>  <span class="op">=</span> <span class="st">"#E53935"</span></span>
+<span>    <span class="st">"Milk"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>, <span class="st">"Cheese"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>, <span class="st">"Yogurt"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>,</span>
+<span>    <span class="st">"Meat &amp; Fish"</span>  <span class="op">=</span> <span class="st">"#E53935"</span>,</span>
+<span>    <span class="st">"Chicken"</span> <span class="op">=</span> <span class="st">"#E53935"</span>, <span class="st">"Beef"</span> <span class="op">=</span> <span class="st">"#E53935"</span>, <span class="st">"Salmon"</span> <span class="op">=</span> <span class="st">"#E53935"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">16</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Calories vs. Protein by Food"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents a specific food; color reflects the group"</span>,</span>
@@ -147,7 +202,7 @@
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img src="examples-geom-icon-point_files/figure-html/mapped-icons-1.png" width="672"></p>
+<figure><p><img src="examples-geom-icon-point_files/figure-html/mapped-icons-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -158,41 +213,163 @@
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
 <span></span>
-<span></span>
+<span><span class="co"># --- DATA (keeps your original 9 icons exactly; adds more; removes SAP/Intel/Qualcomm) ---</span></span>
 <span><span class="va">df_brand</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  brand      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Google"</span>, <span class="st">"Microsoft"</span>, <span class="st">"Meta"</span>, <span class="st">"Amazon"</span>,</span>
-<span>                 <span class="st">"Netflix"</span>, <span class="st">"Spotify"</span>, <span class="st">"Uber"</span>, <span class="st">"Airbnb"</span><span class="op">)</span>,</span>
-<span>  revenue    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">394</span>, <span class="fl">283</span>, <span class="fl">212</span>, <span class="fl">117</span>, <span class="fl">514</span>, <span class="fl">32</span>, <span class="fl">13</span>, <span class="fl">37</span>, <span class="fl">9</span><span class="op">)</span>,</span>
-<span>  market_cap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2950</span>, <span class="fl">1750</span>, <span class="fl">2800</span>, <span class="fl">1200</span>, <span class="fl">1750</span>, <span class="fl">190</span>, <span class="fl">55</span>, <span class="fl">140</span>, <span class="fl">75</span><span class="op">)</span>,</span>
-<span>  employees  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">160</span>, <span class="fl">180</span>, <span class="fl">220</span>, <span class="fl">86</span>, <span class="fl">1540</span>, <span class="fl">13</span>, <span class="fl">9</span>, <span class="fl">32</span>, <span class="fl">6</span><span class="op">)</span>,</span>
+<span>                 <span class="st">"Netflix"</span>, <span class="st">"Spotify"</span>, <span class="st">"Uber"</span>, <span class="st">"Airbnb"</span>,</span>
+<span>                 <span class="st">"Nvidia"</span>, <span class="st">"Tesla"</span>, <span class="st">"TSMC"</span>, <span class="st">"Samsung"</span>, <span class="st">"AMD"</span>,</span>
+<span>                 <span class="st">"Broadcom"</span>, <span class="st">"ASML"</span>, <span class="st">"Oracle"</span>, <span class="st">"Salesforce"</span>, <span class="st">"Adobe"</span>,</span>
+<span>                 <span class="st">"IBM"</span>, <span class="st">"Cisco"</span>, <span class="st">"Tencent"</span>, <span class="st">"Alibaba"</span>, <span class="st">"Visa"</span>, <span class="st">"Mastercard"</span><span class="op">)</span>,</span>
+<span>  revenue    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">394</span>, <span class="fl">283</span>, <span class="fl">212</span>, <span class="fl">117</span>, <span class="fl">514</span>,</span>
+<span>                 <span class="fl">32</span>, <span class="fl">13</span>, <span class="fl">37</span>, <span class="fl">9</span>,</span>
+<span>                 <span class="fl">61</span>, <span class="fl">96</span>, <span class="fl">69</span>, <span class="fl">200</span>, <span class="fl">23</span>,</span>
+<span>                 <span class="fl">36</span>, <span class="fl">28</span>, <span class="fl">53</span>, <span class="fl">35</span>, <span class="fl">19</span>,</span>
+<span>                 <span class="fl">62</span>, <span class="fl">57</span>, <span class="fl">87</span>, <span class="fl">126</span>, <span class="fl">33</span>, <span class="fl">25</span><span class="op">)</span>,</span>
+<span>  market_cap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2950</span>, <span class="fl">1750</span>, <span class="fl">2800</span>, <span class="fl">1200</span>, <span class="fl">1750</span>,</span>
+<span>                 <span class="fl">190</span>, <span class="fl">55</span>, <span class="fl">140</span>, <span class="fl">75</span>,</span>
+<span>                 <span class="fl">2200</span>, <span class="fl">600</span>, <span class="fl">600</span>, <span class="fl">400</span>, <span class="fl">250</span>,</span>
+<span>                 <span class="fl">900</span>, <span class="fl">350</span>, <span class="fl">320</span>, <span class="fl">280</span>, <span class="fl">260</span>,</span>
+<span>                 <span class="fl">170</span>, <span class="fl">220</span>, <span class="fl">400</span>, <span class="fl">200</span>, <span class="fl">520</span>, <span class="fl">430</span><span class="op">)</span>,</span>
+<span>  employees  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">160</span>, <span class="fl">180</span>, <span class="fl">220</span>, <span class="fl">86</span>, <span class="fl">1540</span>,</span>
+<span>                 <span class="fl">13</span>, <span class="fl">9</span>, <span class="fl">32</span>, <span class="fl">6</span>,</span>
+<span>                 <span class="fl">26</span>, <span class="fl">140</span>, <span class="fl">73</span>, <span class="fl">270</span>, <span class="fl">26</span>,</span>
+<span>                 <span class="fl">34</span>, <span class="fl">42</span>, <span class="fl">164</span>, <span class="fl">80</span>, <span class="fl">29</span>,</span>
+<span>                 <span class="fl">288</span>, <span class="fl">85</span>, <span class="fl">105</span>, <span class="fl">235</span>, <span class="fl">28</span>, <span class="fl">30</span><span class="op">)</span>,</span>
 <span>  icon       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"apple"</span>, <span class="st">"google"</span>, <span class="st">"windows"</span>, <span class="st">"meta"</span>, <span class="st">"amazon"</span>,</span>
-<span>                 <span class="st">"tv"</span>, <span class="st">"spotify"</span>, <span class="st">"uber"</span>, <span class="st">"airbnb"</span><span class="op">)</span></span>
+<span>                 <span class="st">"tv"</span>, <span class="st">"spotify"</span>, <span class="st">"uber"</span>, <span class="st">"airbnb"</span>,</span>
+<span>                 <span class="st">"microchip"</span>, <span class="st">"car"</span>, <span class="st">"memory"</span>, <span class="st">"mobile"</span>, <span class="st">"spinner"</span>,</span>
+<span>                 <span class="st">"server"</span>, <span class="st">"cogs"</span>, <span class="st">"database"</span>, <span class="st">"cloud"</span>, <span class="st">"pen"</span>,</span>
+<span>                 <span class="st">"terminal"</span>, <span class="st">"wifi"</span>, <span class="st">"message"</span>, <span class="st">"sim-card"</span>, <span class="st">"credit-card"</span>, <span class="st">"wallet"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Apple"</span>      <span class="op">=</span> <span class="st">"#F2F2F2"</span>,</span>
+<span>  <span class="st">"Google"</span>     <span class="op">=</span> <span class="st">"#7BA7FF"</span>,  <span class="co"># soft blue</span></span>
+<span>  <span class="st">"Microsoft"</span>  <span class="op">=</span> <span class="st">"#6FD3FF"</span>,  <span class="co"># airy cyan</span></span>
+<span>  <span class="st">"Meta"</span>       <span class="op">=</span> <span class="st">"#6FAEFF"</span>,  <span class="co"># cornflower-ish</span></span>
+<span>  <span class="st">"Amazon"</span>     <span class="op">=</span> <span class="st">"#FFB86B"</span>,  <span class="co"># softer orange</span></span>
+<span>  <span class="st">"Netflix"</span>    <span class="op">=</span> <span class="st">"#FF5A6A"</span>,  <span class="co"># softer red</span></span>
+<span>  <span class="st">"Spotify"</span>    <span class="op">=</span> <span class="st">"#4FE38A"</span>,  <span class="co"># softer green</span></span>
+<span>  <span class="st">"Uber"</span>       <span class="op">=</span> <span class="st">"#A9F2EE"</span>,  <span class="co"># pale aqua</span></span>
+<span>  <span class="st">"Airbnb"</span>     <span class="op">=</span> <span class="st">"#FF7D86"</span>,  <span class="co"># soft coral-pink</span></span>
+<span>  <span class="st">"Nvidia"</span>     <span class="op">=</span> <span class="st">"#9BE56D"</span>,  <span class="co"># softer lime</span></span>
+<span>  <span class="st">"Tesla"</span>      <span class="op">=</span> <span class="st">"#FF6B6B"</span>,  <span class="co"># soft red</span></span>
+<span>  <span class="st">"TSMC"</span>       <span class="op">=</span> <span class="st">"#FF8A80"</span>,  <span class="co"># soft salmon</span></span>
+<span>  <span class="st">"Samsung"</span>    <span class="op">=</span> <span class="st">"#8FB3FF"</span>,  <span class="co"># soft periwinkle (no dark blue)</span></span>
+<span>  <span class="st">"AMD"</span>        <span class="op">=</span> <span class="st">"#FF7A7A"</span>,  <span class="co"># soft red</span></span>
+<span>  <span class="st">"Broadcom"</span>   <span class="op">=</span> <span class="st">"#FF8FB1"</span>,  <span class="co"># soft rose</span></span>
+<span>  <span class="st">"ASML"</span>       <span class="op">=</span> <span class="st">"#93C9FF"</span>,  <span class="co"># soft sky blue</span></span>
+<span>  <span class="st">"Oracle"</span>     <span class="op">=</span> <span class="st">"#FF7C7C"</span>,  <span class="co"># soft red</span></span>
+<span>  <span class="st">"Salesforce"</span> <span class="op">=</span> <span class="st">"#79D7FF"</span>,  <span class="co"># light azure</span></span>
+<span>  <span class="st">"Adobe"</span>      <span class="op">=</span> <span class="st">"#FF6F6F"</span>,  <span class="co"># soft red</span></span>
+<span>  <span class="st">"IBM"</span>        <span class="op">=</span> <span class="st">"#8EC5FF"</span>,  <span class="co"># soft blue</span></span>
+<span>  <span class="st">"Cisco"</span>      <span class="op">=</span> <span class="st">"#73E3FF"</span>,  <span class="co"># light cyan-blue</span></span>
+<span>  <span class="st">"Tencent"</span>    <span class="op">=</span> <span class="st">"#86D0FF"</span>,  <span class="co"># soft blue</span></span>
+<span>  <span class="st">"Alibaba"</span>    <span class="op">=</span> <span class="st">"#FFC07A"</span>,  <span class="co"># soft orange</span></span>
+<span>  <span class="st">"Visa"</span>       <span class="op">=</span> <span class="st">"#9AB6FF"</span>,  <span class="co"># soft blue (replaces dark navy)</span></span>
+<span>  <span class="st">"Mastercard"</span> <span class="op">=</span> <span class="st">"#FF8A5C"</span>   <span class="co"># soft orange-red</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bg</span>          <span class="op">&lt;-</span> <span class="st">"#080C18"</span></span>
+<span><span class="va">col_title</span>   <span class="op">&lt;-</span> <span class="st">"white"</span></span>
+<span><span class="va">col_accent</span>  <span class="op">&lt;-</span> <span class="st">"#FF7F6E"</span></span>
+<span><span class="va">col_axis</span>    <span class="op">&lt;-</span> <span class="st">"#C17B6F"</span></span>
+<span><span class="va">col_grid</span>    <span class="op">&lt;-</span> <span class="st">"white"</span></span>
+<span><span class="va">col_caption</span> <span class="op">&lt;-</span> <span class="st">"#6B3F38"</span></span>
+<span><span class="va">col_segment</span> <span class="op">&lt;-</span> <span class="st">"#3D2420"</span></span>
+<span></span>
+<span><span class="va">df_brand</span><span class="op">$</span><span class="va">size_scaled</span> <span class="op">&lt;-</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="va">df_brand</span><span class="op">$</span><span class="va">employees</span>, to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="fl">3.2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_brand</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">revenue</span>, y <span class="op">=</span> <span class="va">market_cap</span>,</span>
-<span>                       icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">brand</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/dollar_format.html" class="external-link">dollar_format</a></span><span class="op">(</span>suffix <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/dollar_format.html" class="external-link">dollar_format</a></span><span class="op">(</span>suffix <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Apple"</span>     <span class="op">=</span> <span class="st">"#FF5252"</span>, <span class="st">"Google"</span>    <span class="op">=</span> <span class="st">"#42A5F5"</span>,</span>
-<span>    <span class="st">"Microsoft"</span> <span class="op">=</span> <span class="st">"#4DB6AC"</span>, <span class="st">"Meta"</span>      <span class="op">=</span> <span class="st">"#8E24AA"</span>,</span>
-<span>    <span class="st">"Amazon"</span>    <span class="op">=</span> <span class="st">"#FFB300"</span>, <span class="st">"Netflix"</span>   <span class="op">=</span> <span class="st">"#E53935"</span>,</span>
-<span>    <span class="st">"Spotify"</span>   <span class="op">=</span> <span class="st">"#1DB954"</span>, <span class="st">"Uber"</span>      <span class="op">=</span> <span class="st">"#546E7A"</span>,</span>
-<span>    <span class="st">"Airbnb"</span>    <span class="op">=</span> <span class="st">"#FF4081"</span></span>
-<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html" class="external-link">scale_size_continuous</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>                     icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">brand</span>, size <span class="op">=</span> <span class="va">size_scaled</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ── P/S ratio reference lines ──────────────────────────────────────────</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, intercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>,  linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
+<span>              color <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">alpha</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="fl">0.25</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, intercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
+<span>              color <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">alpha</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="fl">0.25</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">500</span>, y <span class="op">=</span> <span class="fl">3200</span>, label <span class="op">=</span> <span class="st">"P/S ratio = 10×"</span>,</span>
+<span>           color <span class="op">=</span> <span class="va">col_accent</span>, size <span class="op">=</span> <span class="fl">2.8</span>, hjust <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>           fontface <span class="op">=</span> <span class="st">"italic"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">500</span>, y <span class="op">=</span> <span class="fl">1600</span>, label <span class="op">=</span> <span class="st">"P/S ratio = 5×"</span>,</span>
+<span>           color <span class="op">=</span> <span class="va">col_accent</span>, size <span class="op">=</span> <span class="fl">2.8</span>, hjust <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>           fontface <span class="op">=</span> <span class="st">"italic"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ── Icons ──────────────────────────────────────────────────────────────</span></span>
+<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ── Labels ─────────────────────────────────────────────────────────────</span></span>
+<span>  <span class="fu">ggrepel</span><span class="fu">::</span><span class="fu"><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_label_repel</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">brand</span>, <span class="st">"\n$"</span>, <span class="va">market_cap</span>, <span class="st">"B"</span><span class="op">)</span>, color <span class="op">=</span> <span class="va">brand</span><span class="op">)</span>,</span>
+<span>    fill          <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">alpha</a></span><span class="op">(</span><span class="va">bg</span>, <span class="fl">0.88</span><span class="op">)</span>,</span>
+<span>    label.size    <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    size          <span class="op">=</span> <span class="fl">2.6</span>,</span>
+<span>    fontface      <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>    lineheight    <span class="op">=</span> <span class="fl">1.2</span>,</span>
+<span>    label.padding <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="st">"lines"</span><span class="op">)</span>,</span>
+<span>    box.padding   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.5</span>,  <span class="st">"lines"</span><span class="op">)</span>,</span>
+<span>    point.padding <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.4</span>,  <span class="st">"lines"</span><span class="op">)</span>,</span>
+<span>    max.overlaps  <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>    segment.color <span class="op">=</span> <span class="va">col_segment</span>,</span>
+<span>    segment.size  <span class="op">=</span> <span class="fl">0.35</span>,</span>
+<span>    segment.alpha <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>    seed          <span class="op">=</span> <span class="fl">42</span>,</span>
+<span>    show.legend   <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span></span>
+<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/dollar_format.html" class="external-link">dollar_format</a></span><span class="op">(</span>suffix <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span>,</span>
+<span>    breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">500</span><span class="op">)</span>,</span>
+<span>    expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span></span>
+<span>    labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/dollar_format.html" class="external-link">dollar_format</a></span><span class="op">(</span>suffix <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span>,</span>
+<span>    breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">3000</span><span class="op">)</span>,</span>
+<span>    expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html" class="external-link">scale_size_continuous</a></span><span class="op">(</span></span>
+<span>    range  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="fl">3.2</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="va">x</span>, from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="fl">3.2</span><span class="op">)</span>,</span>
+<span>                            to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">df_brand</span><span class="op">$</span><span class="va">employees</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">"K"</span><span class="op">)</span>,</span>
+<span>    breaks <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">100</span>, <span class="fl">250</span>, <span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">1540</span><span class="op">)</span>,</span>
+<span>                             from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">df_brand</span><span class="op">$</span><span class="va">employees</span><span class="op">)</span>, to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="fl">3.2</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    plot.background   <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    panel.background  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    panel.grid.major  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">alpha</a></span><span class="op">(</span><span class="va">col_grid</span>, <span class="fl">0.22</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>    panel.grid.minor  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.key        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    axis.text         <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">col_axis</span>,   size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    axis.title        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">col_accent</span>, size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span>,</span>
+<span>    plot.title        <span class="op">=</span> <span class="fu">ggtext</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span></span>
+<span>      size <span class="op">=</span> <span class="fl">22</span>, face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>      color <span class="op">=</span> <span class="va">col_title</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    plot.subtitle     <span class="op">=</span> <span class="fu">ggtext</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span></span>
+<span>      size <span class="op">=</span> <span class="fl">11</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>      color <span class="op">=</span> <span class="va">col_accent</span>, lineheight <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>      margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    plot.caption      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span></span>
+<span>      size <span class="op">=</span> <span class="fl">8.5</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="va">col_caption</span>,</span>
+<span>      lineheight <span class="op">=</span> <span class="fl">1.4</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    legend.position   <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    legend.title      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">col_accent</span>, size <span class="op">=</span> <span class="fl">10</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.text       <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">col_axis</span>,   size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
+<span>    legend.margin     <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>,</span>
+<span>    plot.margin       <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span><span class="fl">24</span>, <span class="fl">28</span>, <span class="fl">18</span>, <span class="fl">24</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Tech Giants: Revenue vs. Market Cap"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Icon = brand  ·  Size = employees (rescaled)  ·  Log scales"</span>,</span>
-<span>    x        <span class="op">=</span> <span class="st">"Annual Revenue (log scale)"</span>,</span>
-<span>    y        <span class="op">=</span> <span class="st">"Market Cap (log scale)"</span>,</span>
-<span>    color    <span class="op">=</span> <span class="st">"Brand"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Each icon = brand &amp;nbsp;\u00b7&amp;nbsp; Size = employee count &amp;nbsp;\u00b7&amp;nbsp; Both axes log-scaled &amp;nbsp;\u00b7&amp;nbsp; Dashed lines = P/S ratio"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Source: Public filings &amp; estimates (2023)  \u00b7  Visualization: ggpop"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="st">"Annual Revenue (USD, log scale)"</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Market Capitalisation (USD, log scale)"</span>,</span>
 <span>    size     <span class="op">=</span> <span class="st">"Employees"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 </details>
@@ -204,66 +381,16 @@
 </div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="examples-geom-icon-point_files/figure-html/size-mapping-1.png" width="672"></p>
+<figure><p><img src="examples-geom-icon-point_files/figure-html/size-mapping-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
-<hr></section><section class="level2"><h2 id="example-4-factor-ordering">Example 4: Factor Ordering<a class="anchor" aria-label="anchor" href="#example-4-factor-ordering"></a>
-</h2>
-<p>Factor levels control both legend order and icon assignment. Always set levels explicitly.</p>
-<div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  country  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chad"</span>, <span class="st">"Mali"</span>, <span class="st">"Niger"</span>, <span class="st">"Bolivia"</span>, <span class="st">"Egypt"</span>,</span>
-<span>               <span class="st">"Morocco"</span>, <span class="st">"Germany"</span>, <span class="st">"France"</span>, <span class="st">"Japan"</span><span class="op">)</span>,</span>
-<span>  spend    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">27</span>, <span class="fl">30</span>, <span class="fl">22</span>, <span class="fl">215</span>, <span class="fl">185</span>, <span class="fl">190</span>, <span class="fl">5986</span>, <span class="fl">4902</span>, <span class="fl">4717</span><span class="op">)</span>,</span>
-<span>  life_exp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">54</span>, <span class="fl">58</span>, <span class="fl">62</span>, <span class="fl">71</span>, <span class="fl">72</span>, <span class="fl">74</span>, <span class="fl">81</span>, <span class="fl">83</span>, <span class="fl">84</span><span class="op">)</span>,</span>
-<span>  income   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Low"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Middle"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"High"</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  icon     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"pills"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"stethoscope"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"hospital"</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">df_health</span><span class="op">$</span><span class="va">income</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_health</span><span class="op">$</span><span class="va">income</span>,</span>
-<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Low"</span>, <span class="st">"Middle"</span>, <span class="st">"High"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_health</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">spend</span>, y <span class="op">=</span> <span class="va">life_exp</span>,</span>
-<span>                        icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">income</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/dollar_format.html" class="external-link">dollar_format</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Low"</span>    <span class="op">=</span> <span class="st">"#E53935"</span>,</span>
-<span>    <span class="st">"Middle"</span> <span class="op">=</span> <span class="st">"#FFB300"</span>,</span>
-<span>    <span class="st">"High"</span>   <span class="op">=</span> <span class="st">"#43A047"</span></span>
-<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Health Spending vs. Life Expectancy"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Factor levels control legend order and icon assignment"</span>,</span>
-<span>    x        <span class="op">=</span> <span class="st">"Health Spending per Capita (log scale)"</span>,</span>
-<span>    y        <span class="op">=</span> <span class="st">"Life Expectancy (years)"</span>,</span>
-<span>    color    <span class="op">=</span> <span class="st">"Income Group"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
-</details>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure><p><img src="examples-geom-icon-point_files/figure-html/factor-ordering-1.png" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<hr></section><section class="level2"><h2 id="example-5-paris-2024-olympics-new-sports">Example 5: Paris 2024 Olympics — New Sports<a class="anchor" aria-label="anchor" href="#example-5-paris-2024-olympics-new-sports"></a>
+<hr></section><section class="level2"><h2 id="example-4-paris-2024-olympics-new-sports">Example 4: Paris 2024 Olympics — New Sports<a class="anchor" aria-label="anchor" href="#example-4-paris-2024-olympics-new-sports"></a>
 </h2>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> in a fixed-position grid with no traditional axes. All 45 Olympic disciplines at Paris 2024 are arranged in a 9×5 layout, each with its own icon. The 4 sports making their Olympic debut are highlighted in cyan; all existing disciplines are in gold. Annotations use <code>ggtext</code> for inline HTML styling.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -372,12 +499,24 @@
 </div>
 </div>
 </div>
-<hr></section><section class="level2"><h2 id="example-6-combined-geoms">Example 6: Combined Geoms<a class="anchor" aria-label="anchor" href="#example-6-combined-geoms"></a>
+<hr></section><section class="level2"><h2 id="example-5-combined-geoms">Example 5: Combined Geoms<a class="anchor" aria-label="anchor" href="#example-5-combined-geoms"></a>
 </h2>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> works alongside any ggplot2 geom. Here combined with <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth()</a></code>, reference lines, labels, and quadrant annotations.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_health</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">spend</span>, y <span class="op">=</span> <span class="va">life_exp</span>,</span>
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  country  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chad"</span>, <span class="st">"Mali"</span>, <span class="st">"Niger"</span>, <span class="st">"Bolivia"</span>, <span class="st">"Egypt"</span>,</span>
+<span>               <span class="st">"Morocco"</span>, <span class="st">"Germany"</span>, <span class="st">"France"</span>, <span class="st">"Japan"</span><span class="op">)</span>,</span>
+<span>  spend    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">27</span>, <span class="fl">30</span>, <span class="fl">22</span>, <span class="fl">215</span>, <span class="fl">185</span>, <span class="fl">190</span>, <span class="fl">5986</span>, <span class="fl">4902</span>, <span class="fl">4717</span><span class="op">)</span>,</span>
+<span>  life_exp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">54</span>, <span class="fl">58</span>, <span class="fl">62</span>, <span class="fl">71</span>, <span class="fl">72</span>, <span class="fl">74</span>, <span class="fl">81</span>, <span class="fl">83</span>, <span class="fl">84</span><span class="op">)</span>,</span>
+<span>  income   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Low"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Middle"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"High"</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  icon     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"pills"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"stethoscope"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"hospital"</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_health</span><span class="op">$</span><span class="va">income</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_health</span><span class="op">$</span><span class="va">income</span>,</span>
+<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Low"</span>, <span class="st">"Middle"</span>, <span class="st">"High"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_health</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">spend</span>, y <span class="op">=</span> <span class="va">life_exp</span>,</span>
 <span>                        icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">income</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">500</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
 <span>             color <span class="op">=</span> <span class="st">"#546E7A"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
@@ -402,16 +541,19 @@
 <span>    <span class="st">"Middle"</span> <span class="op">=</span> <span class="st">"#FFB300"</span>,</span>
 <span>    <span class="st">"High"</span>   <span class="op">=</span> <span class="st">"#43A047"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>    plot.background   <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    panel.background  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    legend.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    legend.key        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    axis.text         <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#546E7A"</span>, size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
-<span>    axis.title        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#37474F"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>    legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
+<span>    axis.text         <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
+<span>    axis.title        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">14</span>, face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"More Spending \u2260 Longer Lives"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Health expenditure per capita vs. life expectancy  \u00b7  X-axis is log-scaled"</span>,</span>
@@ -421,16 +563,16 @@
 <span>  <span class="op">)</span></span></code></pre></div>
 </details><div class="cell-output-display">
 <div>
-<figure><p><img src="examples-geom-icon-point_files/figure-html/combined-1.png" width="672"></p>
+<figure><p><img src="examples-geom-icon-point_files/figure-html/combined-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
-<hr></section><section class="level2"><h2 id="example-7-dark-theme-scatter">Example 7: Dark Theme Scatter<a class="anchor" aria-label="anchor" href="#example-7-dark-theme-scatter"></a>
+<hr></section><section class="level2"><h2 id="example-6-dark-theme-scatter">Example 6: Dark Theme Scatter<a class="anchor" aria-label="anchor" href="#example-6-dark-theme-scatter"></a>
 </h2>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> with <code><a href="../reference/theme_pop_dark.html">theme_pop_dark()</a></code> for a presentation-ready chart.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -456,12 +598,12 @@
 <span>    <span class="st">"Teacher"</span>    <span class="op">=</span> <span class="st">"#80DEEA"</span>,</span>
 <span>    <span class="st">"Researcher"</span> <span class="op">=</span> <span class="st">"#FFCC80"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_pop_dark.html">theme_pop_dark</a></span><span class="op">(</span>bg_color <span class="op">=</span> <span class="st">"#0D1B2A"</span>, text_color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>    axis.text  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#90A4AE"</span><span class="op">)</span>,</span>
 <span>    axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#B0BEC5"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Study Hours vs. Performance Score"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Icon reflects academic role"</span>,</span>
@@ -471,7 +613,7 @@
 <span>  <span class="op">)</span></span></code></pre></div>
 </details><div class="cell-output-display">
 <div>
-<figure><p><img src="examples-geom-icon-point_files/figure-html/dark-theme-1.png" width="672"></p>
+<figure><p><img src="examples-geom-icon-point_files/figure-html/dark-theme-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -481,7 +623,7 @@
 </h2>
 <p><code><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_label_repel()</a></code> prevents country labels from overlapping, letting every data point speak for itself even in dense clusters. Here 22 countries are plotted by electricity consumption per capita versus renewable share. Without label repulsion the European cluster — high renewables, moderate consumption — would be illegible. Icon encodes the dominant energy source; color encodes the continent.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
 <span></span>
@@ -656,7 +798,7 @@
 </h2>
 <p><code><a href="https://ggforce.data-imaginist.com/reference/geom_mark_ellipse.html" class="external-link">geom_mark_ellipse()</a></code> draws annotated convex-hull ellipses around groups of points, making cluster structure immediately legible. Here 17 consumer electronics devices are compared on battery life (log scale) versus performance score. The ellipses label each category’s cluster with a short description, while <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> encodes device type through icons — revealing how wearables dominate the far right (days of uptime) at the cost of raw performance.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com" class="external-link">ggforce</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
 <span></span>
@@ -783,7 +925,7 @@
 </h2>
 <p><code>transition_time()</code> animates the Gapminder classic — life expectancy versus GDP per capita — across five decades. <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> encodes each region with a matching earth icon, so the continent story is legible at a glance even as points race across the frame.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gganimate.com" class="external-link">gganimate</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
