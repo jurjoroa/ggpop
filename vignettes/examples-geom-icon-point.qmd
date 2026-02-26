@@ -103,6 +103,7 @@ The simplest use: a fixed icon for all points, color encodes the grouping variab
 ```{r}
 #| label: single-icon-display
 #| eval: false
+
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -110,7 +111,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
     "versicolor" = "#1E88E5",
     "virginica"  = "#E53935"
   )) +
-  theme_pop() +
+  theme(plot.title = element_text(size = 16, face = "bold")) +
   labs(
     title    = "Iris: Sepal vs. Petal Length",
     subtitle = "Fixed icon — color encodes species",
@@ -124,9 +125,11 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 #| label: single-icon
 #| echo: false
 #| fig-width: 10
-#| fig-height: 10
+#| fig-height: 6
 #| dev: png
 #| dev-args: !expr list(bg = "transparent")
+
+
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -134,7 +137,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
     "versicolor" = "#1E88E5",
     "virginica"  = "#E53935"
   )) +
-  theme(plot.title = element_text(color = "white")) +
+  theme(plot.title = element_text(size = 16, face = "bold")) +
   labs(
     title    = "Iris: Sepal vs. Petal Length",
     subtitle = "Fixed icon — color encodes species",
@@ -154,52 +157,13 @@ Each food item gets its own icon. The icon is the identity — no legend needed 
 #| label: mapped-icons-display
 #| eval: false
 #| fig-width: 10
-#| fig-height: 10
+#| fig-height: 6
 
 library(ggpop)
 library(ggplot2)
 library(dplyr)
 
-df_food <- data.frame(
-  food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
-               "Milk", "Cheese", "Yogurt"),
-  calories = c(52, 41, 47, 165, 250, 208, 61, 402, 59),
-  protein  = c(0.3, 1.1, 0.9, 31, 26, 20, 3.2, 25, 10),
-  group    = c(rep("Fruit & Veg", 3), rep("Meat & Fish", 3), rep("Dairy", 3)),
-  icon     = c("apple-whole", "carrot", "lemon",
-               "drumstick-bite", "bacon", "fish",
-               "bottle-water", "cheese", "jar")
-)
 
-df_food$group <- factor(df_food$group,
-  levels = c("Fruit & Veg", "Dairy", "Meat & Fish"))
-
-ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
-  geom_icon_point(size = 2, dpi = 100) +
-  scale_color_manual(values = c(
-    "Fruit & Veg"  = "#43A047",
-    "Dairy"        = "#1E88E5",
-    "Meat & Fish"  = "#E53935"
-  )) +
-  theme_pop() +
-  labs(
-    title    = "Calories vs. Protein by Food",
-    subtitle = "Each icon represents a specific food; color reflects the group",
-    x        = "Calories (per 100g)",
-    y        = "Protein (g per 100g)",
-    color    = "Group"
-  )
-```
-
-```{r}
-#| label: mapped-icons
-#| echo: false
-#| fig-width: 10
-#| fig-height: 10
-#| message: false
-#| warning: false
-#| dev: png
-#| dev-args: !expr list(bg = "transparent")
 df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
                "Milk", "Cheese", "Yogurt"),
@@ -223,7 +187,55 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
     "Meat & Fish"  = "#E53935",
     "Chicken" = "#E53935", "Beef" = "#E53935", "Salmon" = "#E53935"
   )) +
-  theme(plot.title = element_text(color="white")) +
+  theme(plot.title = element_text(size = 16, face = "bold")) +
+  labs(
+    title    = "Calories vs. Protein by Food",
+    subtitle = "Each icon represents a specific food; color reflects the group",
+    x        = "Calories (per 100g)",
+    y        = "Protein (g per 100g)",
+    color    = "Group"
+  )
+```
+
+```{r}
+#| label: mapped-icons
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| message: false
+#| warning: false
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+
+
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
+df_food <- data.frame(
+  food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
+               "Milk", "Cheese", "Yogurt"),
+  calories = c(52, 41, 47, 165, 250, 208, 61, 402, 59),
+  protein  = c(0.3, 1.1, 0.9, 31, 26, 20, 3.2, 25, 10),
+  group    = c(rep("Fruit & Veg", 3), rep("Meat & Fish", 3), rep("Dairy", 3)),
+  icon     = c("apple-whole", "carrot", "lemon",
+               "drumstick-bite", "bacon", "fish",
+               "bottle-water", "cheese", "jar")
+)
+
+df_food$group <- factor(df_food$group,
+  levels = c("Fruit & Veg", "Dairy", "Meat & Fish"))
+
+ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
+  geom_icon_point(size = 2, dpi = 100) +
+  scale_color_manual(values = c(
+    "Apple" = "#43A047", "Carrot" = "#43A047", "Orange" = "#43A047",
+    "Dairy"        = "#1E88E5",
+    "Milk" = "#1E88E5", "Cheese" = "#1E88E5", "Yogurt" = "#1E88E5",
+    "Meat & Fish"  = "#E53935",
+    "Chicken" = "#E53935", "Beef" = "#E53935", "Salmon" = "#E53935"
+  )) +
+  theme(plot.title = element_text(size = 16, face = "bold")) +
   labs(
     title    = "Calories vs. Protein by Food",
     subtitle = "Each icon represents a specific food; color reflects the group",
@@ -589,7 +601,7 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 ```{r}
 #| label: paris
 #| eval: false
-#| fig-width: 10
+#| fig-width: 14
 #| fig-height: 12
 
 library(ggpop)
@@ -818,7 +830,8 @@ theme(
 
 ```{r}
 #| label: combined
-#| fig-height: 6
+#| fig-width: 10
+#| fig-height: 7
 #| message: false
 #| warning: false
 #| dev: png
@@ -863,16 +876,19 @@ ggplot(df_health, aes(x = spend, y = life_exp,
     "Middle" = "#FFB300",
     "High"   = "#43A047"
   )) +
-  scale_legend_icon(size = 6) +
   theme_pop() +
   theme(
     plot.background   = element_blank(),
     panel.background  = element_blank(),
     legend.background = element_blank(),
     legend.key        = element_blank(),
-    axis.text         = element_text(color = "#546E7A", size = 9),
-    axis.title        = element_text(color = "#37474F", size = 10)
+    legend.text = element_text(color = "white", size = 9),
+    axis.text         = element_text(color = "white", size = 9),
+    axis.title        = element_text(color = "white", size = 10),
+    plot.title = element_text(color = "white", size = 14, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(color = "white", size = 10)
   ) +
+  scale_legend_icon(size = 6) +
   labs(
     title    = "More Spending \u2260 Longer Lives",
     subtitle = "Health expenditure per capita vs. life expectancy  \u00b7  X-axis is log-scaled",
@@ -890,6 +906,8 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 ```{r}
 #| label: dark-theme
+#| fig-width: 10
+#| fig-height: 7
 
 library(ggpop)
 library(ggplot2)
@@ -916,12 +934,12 @@ ggplot(df_academic, aes(x = study_hours, y = score,
     "Teacher"    = "#80DEEA",
     "Researcher" = "#FFCC80"
   )) +
-  scale_legend_icon(size = 6) +
   theme_pop_dark(bg_color = "#0D1B2A", text_color = "white") +
   theme(
     axis.text  = element_text(color = "#90A4AE"),
     axis.title = element_text(color = "#B0BEC5")
   ) +
+  scale_legend_icon(size = 6) +
   labs(
     title    = "Study Hours vs. Performance Score",
     subtitle = "Icon reflects academic role",
