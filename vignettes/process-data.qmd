@@ -4,6 +4,10 @@ format:
   html:
     code-fold: true
     code-summary: "Show the code"
+vignette: >
+  %\VignetteIndexEntry{Preparing Data with process_data()}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ## What is `process_data()`?
