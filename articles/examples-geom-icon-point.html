@@ -405,8 +405,12 @@
 <span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
-<span>    axis.text  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#546E7A"</span>, size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
-<span>    axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#37474F"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>    plot.background   <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    panel.background  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.key        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    axis.text         <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#546E7A"</span>, size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
+<span>    axis.title        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#37474F"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"More Spending \u2260 Longer Lives"</span>,</span>
@@ -471,6 +475,478 @@
 </figure>
 </div>
 </div>
+</div>
+<hr></section><section class="level2"><h2 id="ggrepel-the-green-energy-divide">
+<code>ggrepel</code> — The Green Energy Divide<a class="anchor" aria-label="anchor" href="#ggrepel-the-green-energy-divide"></a>
+</h2>
+<p><code><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_label_repel()</a></code> prevents country labels from overlapping, letting every data point speak for itself even in dense clusters. Here 22 countries are plotted by electricity consumption per capita versus renewable share. Without label repulsion the European cluster — high renewables, moderate consumption — would be illegible. Icon encodes the dominant energy source; color encodes the continent.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_energy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  country     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Iceland"</span>, <span class="st">"Norway"</span>, <span class="st">"Costa Rica"</span>, <span class="st">"New Zealand"</span>, <span class="st">"Brazil"</span>,</span>
+<span>                  <span class="st">"Sweden"</span>, <span class="st">"Denmark"</span>, <span class="st">"Austria"</span>, <span class="st">"Canada"</span>, <span class="st">"Switzerland"</span>,</span>
+<span>                  <span class="st">"Germany"</span>, <span class="st">"United Kingdom"</span>, <span class="st">"Spain"</span>, <span class="st">"France"</span>, <span class="st">"Australia"</span>,</span>
+<span>                  <span class="st">"Japan"</span>, <span class="st">"United States"</span>, <span class="st">"Mexico"</span>, <span class="st">"China"</span>, <span class="st">"India"</span>,</span>
+<span>                  <span class="st">"South Africa"</span>, <span class="st">"Egypt"</span><span class="op">)</span>,</span>
+<span>  mwh_per_cap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">23</span>,  <span class="fl">2</span>,  <span class="fl">9</span>,  <span class="fl">3</span>, <span class="fl">13</span>,  <span class="fl">6</span>,  <span class="fl">8</span>, <span class="fl">15</span>,  <span class="fl">7</span>,</span>
+<span>                  <span class="fl">6</span>,  <span class="fl">5</span>,  <span class="fl">6</span>,  <span class="fl">7</span>, <span class="fl">10</span>,  <span class="fl">7</span>, <span class="fl">13</span>,  <span class="fl">2</span>,  <span class="fl">5</span>,  <span class="fl">1</span>,</span>
+<span>                  <span class="fl">4</span>,  <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  renewable   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">99</span>, <span class="fl">98</span>, <span class="fl">99</span>, <span class="fl">84</span>, <span class="fl">83</span>, <span class="fl">67</span>, <span class="fl">80</span>, <span class="fl">75</span>, <span class="fl">67</span>, <span class="fl">62</span>,</span>
+<span>                  <span class="fl">46</span>, <span class="fl">42</span>, <span class="fl">54</span>, <span class="fl">24</span>, <span class="fl">29</span>, <span class="fl">22</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">28</span>, <span class="fl">20</span>,</span>
+<span>                  <span class="fl">8</span>, <span class="fl">12</span><span class="op">)</span>,</span>
+<span>  continent   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Europe"</span>, <span class="st">"Europe"</span>, <span class="st">"Americas"</span>, <span class="st">"Oceania"</span>, <span class="st">"Americas"</span>,</span>
+<span>                  <span class="st">"Europe"</span>, <span class="st">"Europe"</span>, <span class="st">"Europe"</span>, <span class="st">"Americas"</span>, <span class="st">"Europe"</span>,</span>
+<span>                  <span class="st">"Europe"</span>, <span class="st">"Europe"</span>, <span class="st">"Europe"</span>, <span class="st">"Europe"</span>, <span class="st">"Oceania"</span>,</span>
+<span>                  <span class="st">"Asia"</span>, <span class="st">"Americas"</span>, <span class="st">"Americas"</span>, <span class="st">"Asia"</span>, <span class="st">"Asia"</span>,</span>
+<span>                  <span class="st">"Africa"</span>, <span class="st">"Africa"</span><span class="op">)</span>,</span>
+<span>  icon        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"droplet"</span>, <span class="st">"droplet"</span>, <span class="st">"droplet"</span>, <span class="st">"droplet"</span>, <span class="st">"droplet"</span>,</span>
+<span>                  <span class="st">"droplet"</span>, <span class="st">"wind"</span>, <span class="st">"droplet"</span>, <span class="st">"droplet"</span>, <span class="st">"droplet"</span>,</span>
+<span>                  <span class="st">"wind"</span>, <span class="st">"wind"</span>, <span class="st">"wind"</span>, <span class="st">"atom"</span>, <span class="st">"sun"</span>,</span>
+<span>                  <span class="st">"atom"</span>, <span class="st">"bolt"</span>, <span class="st">"bolt"</span>, <span class="st">"bolt"</span>, <span class="st">"sun"</span>,</span>
+<span>                  <span class="st">"smog"</span>, <span class="st">"sun"</span><span class="op">)</span>,</span>
+<span>  source_label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Hydro"</span>, <span class="st">"Hydro"</span>, <span class="st">"Hydro"</span>, <span class="st">"Hydro"</span>, <span class="st">"Hydro"</span>,</span>
+<span>                   <span class="st">"Hydro"</span>, <span class="st">"Wind"</span>, <span class="st">"Hydro"</span>, <span class="st">"Hydro"</span>, <span class="st">"Hydro"</span>,</span>
+<span>                   <span class="st">"Wind"</span>, <span class="st">"Wind"</span>, <span class="st">"Wind"</span>, <span class="st">"Nuclear"</span>, <span class="st">"Solar"</span>,</span>
+<span>                   <span class="st">"Nuclear"</span>, <span class="st">"Mixed"</span>, <span class="st">"Mixed"</span>, <span class="st">"Mixed"</span>, <span class="st">"Solar"</span>,</span>
+<span>                   <span class="st">"Coal"</span>, <span class="st">"Solar"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_energy</span><span class="op">$</span><span class="va">continent</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_energy</span><span class="op">$</span><span class="va">continent</span>,</span>
+<span>                                 levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Europe"</span>, <span class="st">"Americas"</span>, <span class="st">"Asia"</span>, <span class="st">"Oceania"</span>, <span class="st">"Africa"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_energy</span><span class="op">$</span><span class="va">source_label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_energy</span><span class="op">$</span><span class="va">source_label</span>,</span>
+<span>                                 levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Hydro"</span>, <span class="st">"Wind"</span>, <span class="st">"Solar"</span>, <span class="st">"Nuclear"</span>, <span class="st">"Mixed"</span>, <span class="st">"Coal"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pal_continent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Europe"</span>   <span class="op">=</span> <span class="st">"#5E8BFF"</span>,</span>
+<span>  <span class="st">"Americas"</span> <span class="op">=</span> <span class="st">"#3ECF8E"</span>,</span>
+<span>  <span class="st">"Asia"</span>     <span class="op">=</span> <span class="st">"#FF9F43"</span>,</span>
+<span>  <span class="st">"Oceania"</span>  <span class="op">=</span> <span class="st">"#00D4C8"</span>,</span>
+<span>  <span class="st">"Africa"</span>   <span class="op">=</span> <span class="st">"#FF6B9D"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pal_source</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Hydro"</span>   <span class="op">=</span> <span class="st">"#5E8BFF"</span>,</span>
+<span>  <span class="st">"Wind"</span>    <span class="op">=</span> <span class="st">"#00D4C8"</span>,</span>
+<span>  <span class="st">"Solar"</span>   <span class="op">=</span> <span class="st">"#FFD93D"</span>,</span>
+<span>  <span class="st">"Nuclear"</span> <span class="op">=</span> <span class="st">"#A78BFA"</span>,</span>
+<span>  <span class="st">"Mixed"</span>   <span class="op">=</span> <span class="st">"#FF9F43"</span>,</span>
+<span>  <span class="st">"Coal"</span>    <span class="op">=</span> <span class="st">"#FF6B6B"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bg</span> <span class="op">&lt;-</span> <span class="st">"#0A0F1E"</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_energy</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">mwh_per_cap</span>, y <span class="op">=</span> <span class="va">renewable</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ── Quadrant shading ─────────────────────────────────────────────────────</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"rect"</span>, xmin <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>, xmax <span class="op">=</span> <span class="fl">13</span>, ymin <span class="op">=</span> <span class="fl">50</span>,   ymax <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>           fill <span class="op">=</span> <span class="st">"#1A2F1A"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"rect"</span>, xmin <span class="op">=</span> <span class="fl">13</span>,  xmax <span class="op">=</span> <span class="cn">Inf</span>, ymin <span class="op">=</span> <span class="fl">50</span>,   ymax <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>           fill <span class="op">=</span> <span class="st">"#2F2A10"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"rect"</span>, xmin <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>, xmax <span class="op">=</span> <span class="fl">13</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>, ymax <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>           fill <span class="op">=</span> <span class="st">"#1A1A2F"</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"rect"</span>, xmin <span class="op">=</span> <span class="fl">13</span>,  xmax <span class="op">=</span> <span class="cn">Inf</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>, ymax <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>           fill <span class="op">=</span> <span class="st">"#2F1010"</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ── Quadrant labels ───────────────────────────────────────────────────────</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">0.5</span>, y <span class="op">=</span> <span class="fl">103</span>, hjust <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">3</span>, fontface <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>           color <span class="op">=</span> <span class="st">"#3ECF8E"</span>, label <span class="op">=</span> <span class="st">"\u2600 GREEN &amp; EFFICIENT"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">55</span>,  y <span class="op">=</span> <span class="fl">103</span>, hjust <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">3</span>, fontface <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>           color <span class="op">=</span> <span class="st">"#FF9F43"</span>, label <span class="op">=</span> <span class="st">"HIGH USE, CLEAN \u26a1"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">0.5</span>, y <span class="op">=</span> <span class="fl">2</span>,   hjust <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">3</span>, fontface <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>           color <span class="op">=</span> <span class="st">"#78909C"</span>, label <span class="op">=</span> <span class="st">"LOW USE, FOSSIL-HEAVY"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">55</span>,  y <span class="op">=</span> <span class="fl">2</span>,   hjust <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">3</span>, fontface <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>           color <span class="op">=</span> <span class="st">"#FF6B6B"</span>, label <span class="op">=</span> <span class="st">"HIGH USE, FOSSIL-HEAVY \u26a0"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ── Reference lines ───────────────────────────────────────────────────────</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">50</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"#37474F"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">13</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"#37474F"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ── Continent fill circle (background) ───────────────────────────────────</span></span>
+<span>  <span class="co"># ── Energy source icon (foreground) ──────────────────────────────────────</span></span>
+<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">source_label</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1.8</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ── Country labels ────────────────────────────────────────────────────────</span></span>
+<span>  <span class="fu"><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_label_repel</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">country</span>, color <span class="op">=</span> <span class="va">source_label</span><span class="op">)</span>,</span>
+<span>    fill          <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">alpha</a></span><span class="op">(</span><span class="va">bg</span>, <span class="fl">0.85</span><span class="op">)</span>,</span>
+<span>    label.size    <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    size          <span class="op">=</span> <span class="fl">2.8</span>,</span>
+<span>    fontface      <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>    label.padding <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.22</span>, <span class="st">"lines"</span><span class="op">)</span>,</span>
+<span>    box.padding   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.5</span>,  <span class="st">"lines"</span><span class="op">)</span>,</span>
+<span>    point.padding <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.4</span>,  <span class="st">"lines"</span><span class="op">)</span>,</span>
+<span>    max.overlaps  <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>    segment.color <span class="op">=</span> <span class="st">"#546E7A"</span>,</span>
+<span>    segment.size  <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>    segment.alpha <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>    seed          <span class="op">=</span> <span class="fl">42</span>,</span>
+<span>    show.legend   <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ── Scales ────────────────────────────────────────────────────────────────</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span></span>
+<span>    name   <span class="op">=</span> <span class="st">"Energy Source"</span>,</span>
+<span>    values <span class="op">=</span> <span class="va">pal_source</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span></span>
+<span>    name   <span class="op">=</span> <span class="st">"Continent"</span>,</span>
+<span>    values <span class="op">=</span> <span class="va">pal_continent</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span></span>
+<span>    labels <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">" MWh"</span><span class="op">)</span>,</span>
+<span>    expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.02</span>, <span class="fl">0.04</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
+<span>    labels <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">y</span>, <span class="st">"%"</span><span class="op">)</span>,</span>
+<span>    limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">106</span><span class="op">)</span>,</span>
+<span>    expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span></span>
+<span>    color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span></span>
+<span>      nrow <span class="op">=</span> <span class="fl">1</span>, title.position <span class="op">=</span> <span class="st">"top"</span>, title.hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>      override.aes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    fill <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span></span>
+<span>      nrow <span class="op">=</span> <span class="fl">1</span>, title.position <span class="op">=</span> <span class="st">"top"</span>, title.hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>      override.aes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.6</span>, size <span class="op">=</span> <span class="fl">5</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    plot.background   <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">bg</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    panel.background  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">bg</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    panel.grid.major  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#1C2A3A"</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span>,</span>
+<span>    panel.grid.minor  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.key        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    axis.text         <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#78909C"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    axis.title        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#90A4AE"</span>, size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span>,</span>
+<span>    plot.title        <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">22</span>, face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>                                         color <span class="op">=</span> <span class="st">"white"</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    plot.subtitle     <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">11</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">"#78909C"</span>,</span>
+<span>                                         lineheight <span class="op">=</span> <span class="fl">1.5</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">16</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    plot.caption      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8.5</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">"#546E7A"</span>,</span>
+<span>                                     lineheight <span class="op">=</span> <span class="fl">1.4</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">14</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    legend.position   <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    legend.box        <span class="op">=</span> <span class="st">"vertical"</span>,</span>
+<span>    legend.title      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#90A4AE"</span>, size <span class="op">=</span> <span class="fl">10</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.text       <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#B0BEC5"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    legend.margin     <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span>
+<span>    legend.spacing.y  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"pt"</span><span class="op">)</span>,</span>
+<span>    plot.margin       <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">24</span>, <span class="fl">16</span>, <span class="fl">20</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"The Green Energy Divide"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Renewable share (%) vs. electricity use per capita &amp;nbsp;\u00b7&amp;nbsp; &lt;b style='color:#B0BEC5'&gt;Icon = energy source&lt;/b&gt; &amp;nbsp;\u00b7&amp;nbsp; &lt;b style='color:#B0BEC5'&gt;Glow = continent&lt;/b&gt;"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Source: IEA / Our World in Data (2022)  \u00b7  Visualization: ggpop"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="st">"Electricity Consumption per Capita (MWh)"</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Share of Renewables (%)"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-icon-point_files/figure-html/ggrepel-1.png" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="ggforce-the-power-trade-off">
+<code>ggforce</code> — The Power Trade-Off<a class="anchor" aria-label="anchor" href="#ggforce-the-power-trade-off"></a>
+</h2>
+<p><code><a href="https://ggforce.data-imaginist.com/reference/geom_mark_ellipse.html" class="external-link">geom_mark_ellipse()</a></code> draws annotated convex-hull ellipses around groups of points, making cluster structure immediately legible. Here 17 consumer electronics devices are compared on battery life (log scale) versus performance score. The ellipses label each category’s cluster with a short description, while <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> encodes device type through icons — revealing how wearables dominate the far right (days of uptime) at the cost of raw performance.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com" class="external-link">ggforce</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">v_bg</span> <span class="op">&lt;-</span> <span class="st">"#0A0E1A"</span></span>
+<span><span class="va">v_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Smartphone"</span> <span class="op">=</span> <span class="st">"#4FC3F7"</span>,</span>
+<span>  <span class="st">"Laptop"</span>     <span class="op">=</span> <span class="st">"#69F0AE"</span>,</span>
+<span>  <span class="st">"Tablet"</span>     <span class="op">=</span> <span class="st">"#FFD740"</span>,</span>
+<span>  <span class="st">"Wearable"</span>   <span class="op">=</span> <span class="st">"#FF80AB"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_devices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  device   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"iPhone 15 Pro"</span>, <span class="st">"Galaxy S24"</span>, <span class="st">"Pixel 8"</span>, <span class="st">"OnePlus 12"</span>, <span class="st">"Xiaomi 14"</span>,</span>
+<span>    <span class="st">"MacBook Pro M3"</span>, <span class="st">"Dell XPS 15"</span>, <span class="st">"ThinkPad X1"</span>, <span class="st">"Surface Pro 9"</span>,</span>
+<span>    <span class="st">"iPad Pro M4"</span>, <span class="st">"Samsung Tab S9"</span>, <span class="st">"Surface Go"</span>, <span class="st">"Amazon Fire"</span>,</span>
+<span>    <span class="st">"Apple Watch Ultra"</span>, <span class="st">"Garmin Fenix 7"</span>, <span class="st">"Galaxy Watch 6"</span>, <span class="st">"Fitbit Sense 2"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Smartphone"</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Laptop"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Tablet"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Wearable"</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  battery  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">28</span>, <span class="fl">30</span>, <span class="fl">26</span>, <span class="fl">32</span>, <span class="fl">35</span>,</span>
+<span>    <span class="fl">18</span>, <span class="fl">8</span>, <span class="fl">14</span>, <span class="fl">12</span>,</span>
+<span>    <span class="fl">20</span>, <span class="fl">18</span>, <span class="fl">12</span>, <span class="fl">14</span>,</span>
+<span>    <span class="fl">60</span>, <span class="fl">336</span>, <span class="fl">48</span>, <span class="fl">144</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  perf     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">92</span>, <span class="fl">88</span>, <span class="fl">82</span>, <span class="fl">85</span>, <span class="fl">80</span>,</span>
+<span>    <span class="fl">95</span>, <span class="fl">88</span>, <span class="fl">80</span>, <span class="fl">72</span>,</span>
+<span>    <span class="fl">85</span>, <span class="fl">78</span>, <span class="fl">65</span>, <span class="fl">52</span>,</span>
+<span>    <span class="fl">68</span>, <span class="fl">50</span>, <span class="fl">62</span>, <span class="fl">42</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  icon     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"mobile"</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"laptop"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"tablet"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"clock"</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_devices</span><span class="op">$</span><span class="va">category</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
+<span>  <span class="va">df_devices</span><span class="op">$</span><span class="va">category</span>,</span>
+<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Smartphone"</span>, <span class="st">"Laptop"</span>, <span class="st">"Tablet"</span>, <span class="st">"Wearable"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_devices</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">battery</span>, y <span class="op">=</span> <span class="va">perf</span>, color <span class="op">=</span> <span class="va">category</span>, icon <span class="op">=</span> <span class="va">icon</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggforce.data-imaginist.com/reference/geom_mark_ellipse.html" class="external-link">geom_mark_ellipse</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span></span>
+<span>      label       <span class="op">=</span> <span class="va">category</span>,</span>
+<span>      description <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>        <span class="va">category</span> <span class="op">==</span> <span class="st">"Smartphone"</span> <span class="op">~</span> <span class="st">"High power, moderate stamina"</span>,</span>
+<span>        <span class="va">category</span> <span class="op">==</span> <span class="st">"Laptop"</span>     <span class="op">~</span> <span class="st">"Peak performance, short runtime"</span>,</span>
+<span>        <span class="va">category</span> <span class="op">==</span> <span class="st">"Tablet"</span>     <span class="op">~</span> <span class="st">"Balanced versatility"</span>,</span>
+<span>        <span class="cn">TRUE</span>                     <span class="op">~</span> <span class="st">"Efficiency first — days of uptime"</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      fill <span class="op">=</span> <span class="va">category</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    color          <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>    alpha          <span class="op">=</span> <span class="fl">0.08</span>,</span>
+<span>    label.fill     <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">alpha</a></span><span class="op">(</span><span class="va">v_bg</span>, <span class="fl">0.85</span><span class="op">)</span>,</span>
+<span>    label.colour   <span class="op">=</span> <span class="st">"#B0BEC5"</span>,</span>
+<span>    label.fontsize <span class="op">=</span> <span class="fl">9</span>,</span>
+<span>    con.colour     <span class="op">=</span> <span class="st">"#546E7A"</span>,</span>
+<span>    con.type       <span class="op">=</span> <span class="st">"elbow"</span>,</span>
+<span>    expand         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">6</span>, <span class="st">"mm"</span><span class="op">)</span>,</span>
+<span>    show.legend    <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span></span>
+<span>    breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">12</span>, <span class="fl">24</span>, <span class="fl">48</span>, <span class="fl">96</span>, <span class="fl">168</span>, <span class="fl">336</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"8 h"</span>, <span class="st">"12 h"</span>, <span class="st">"1 day"</span>, <span class="st">"2 days"</span>, <span class="st">"4 days"</span>, <span class="st">"1 week"</span>, <span class="st">"2 weeks"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">v_colors</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values  <span class="op">=</span> <span class="va">v_colors</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>clip <span class="op">=</span> <span class="st">"off"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"The Power Trade-Off"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Battery life vs. performance across consumer electronics categories"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Battery: manufacturer-rated hours \u00b7 Performance: composite benchmark score (0\u2013100)"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="st">"Battery Life (hours, log scale)"</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Performance Score"</span>,</span>
+<span>    color    <span class="op">=</span> <span class="st">"Category"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    plot.background   <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">v_bg</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    panel.background  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">v_bg</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    panel.grid.major  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#1C2A3A"</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span>,</span>
+<span>    panel.grid.minor  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.key        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    axis.text         <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#78909C"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    axis.title        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#90A4AE"</span>, size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span>,</span>
+<span>    plot.title        <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">22</span>, face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>                                         color <span class="op">=</span> <span class="st">"white"</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    plot.subtitle     <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">11</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">"#78909C"</span>,</span>
+<span>                                     margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">16</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    plot.caption      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8.5</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">"#546E7A"</span>,</span>
+<span>                                     lineheight <span class="op">=</span> <span class="fl">1.4</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">14</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    legend.position   <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    legend.title      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#90A4AE"</span>, size <span class="op">=</span> <span class="fl">10</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.text       <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#B0BEC5"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    plot.margin       <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">90</span>, <span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-icon-point_files/figure-html/ggforce-1.png" width="1056"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr></section><section class="level2"><h2 id="gganimate-a-world-transformed">
+<code>gganimate</code> — A World Transformed<a class="anchor" aria-label="anchor" href="#gganimate-a-world-transformed"></a>
+</h2>
+<p><code>transition_time()</code> animates the Gapminder classic — life expectancy versus GDP per capita — across five decades. <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> encodes each region with a matching earth icon, so the continent story is legible at a glance even as points race across the frame.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gganimate.com" class="external-link">gganimate</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ── Expand to yearly frames via interpolation ─────────────────────────────</span></span>
+<span><span class="va">v_years_key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1970</span>, <span class="fl">1980</span>, <span class="fl">1990</span>, <span class="fl">2000</span>, <span class="fl">2010</span>, <span class="fl">2020</span><span class="op">)</span></span>
+<span><span class="va">v_years_fine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1970</span>, <span class="fl">2020</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">v_countries</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Nigeria"</span>, <span class="st">"Ethiopia"</span>, <span class="st">"South Africa"</span>, <span class="st">"Kenya"</span>,</span>
+<span>  <span class="st">"USA"</span>, <span class="st">"Brazil"</span>, <span class="st">"Mexico"</span>, <span class="st">"Chile"</span>,</span>
+<span>  <span class="st">"Germany"</span>, <span class="st">"Spain"</span>, <span class="st">"Poland"</span>, <span class="st">"UK"</span>,</span>
+<span>  <span class="st">"Japan"</span>, <span class="st">"China"</span>, <span class="st">"India"</span>, <span class="st">"South Korea"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">v_continents</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Africa"</span>,   <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Americas"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Europe"</span>,   <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Asia"</span>,     <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">v_icons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"earth-africa"</span>,   <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"earth-americas"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"earth-europe"</span>,   <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"earth-asia"</span>,     <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">v_life_exp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">45</span>, <span class="fl">46</span>, <span class="fl">45</span>, <span class="fl">46</span>, <span class="fl">52</span>, <span class="fl">55</span>,</span>
+<span>  <span class="fl">42</span>, <span class="fl">43</span>, <span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">62</span>, <span class="fl">67</span>,</span>
+<span>  <span class="fl">53</span>, <span class="fl">58</span>, <span class="fl">61</span>, <span class="fl">55</span>, <span class="fl">56</span>, <span class="fl">64</span>,</span>
+<span>  <span class="fl">50</span>, <span class="fl">56</span>, <span class="fl">58</span>, <span class="fl">52</span>, <span class="fl">60</span>, <span class="fl">66</span>,</span>
+<span>  <span class="fl">71</span>, <span class="fl">74</span>, <span class="fl">75</span>, <span class="fl">77</span>, <span class="fl">79</span>, <span class="fl">79</span>,</span>
+<span>  <span class="fl">59</span>, <span class="fl">63</span>, <span class="fl">66</span>, <span class="fl">70</span>, <span class="fl">73</span>, <span class="fl">76</span>,</span>
+<span>  <span class="fl">62</span>, <span class="fl">67</span>, <span class="fl">70</span>, <span class="fl">74</span>, <span class="fl">75</span>, <span class="fl">76</span>,</span>
+<span>  <span class="fl">63</span>, <span class="fl">68</span>, <span class="fl">73</span>, <span class="fl">77</span>, <span class="fl">79</span>, <span class="fl">80</span>,</span>
+<span>  <span class="fl">71</span>, <span class="fl">73</span>, <span class="fl">75</span>, <span class="fl">78</span>, <span class="fl">80</span>, <span class="fl">81</span>,</span>
+<span>  <span class="fl">72</span>, <span class="fl">76</span>, <span class="fl">77</span>, <span class="fl">79</span>, <span class="fl">82</span>, <span class="fl">83</span>,</span>
+<span>  <span class="fl">70</span>, <span class="fl">71</span>, <span class="fl">71</span>, <span class="fl">74</span>, <span class="fl">76</span>, <span class="fl">78</span>,</span>
+<span>  <span class="fl">72</span>, <span class="fl">74</span>, <span class="fl">76</span>, <span class="fl">78</span>, <span class="fl">81</span>, <span class="fl">81</span>,</span>
+<span>  <span class="fl">72</span>, <span class="fl">76</span>, <span class="fl">79</span>, <span class="fl">81</span>, <span class="fl">83</span>, <span class="fl">84</span>,</span>
+<span>  <span class="fl">61</span>, <span class="fl">67</span>, <span class="fl">69</span>, <span class="fl">71</span>, <span class="fl">75</span>, <span class="fl">77</span>,</span>
+<span>  <span class="fl">49</span>, <span class="fl">54</span>, <span class="fl">59</span>, <span class="fl">63</span>, <span class="fl">67</span>, <span class="fl">70</span>,</span>
+<span>  <span class="fl">62</span>, <span class="fl">66</span>, <span class="fl">71</span>, <span class="fl">76</span>, <span class="fl">80</span>, <span class="fl">83</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">v_gdp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fl">1100</span>, <span class="fl">1500</span>, <span class="fl">1300</span>, <span class="fl">1100</span>,  <span class="fl">2100</span>,  <span class="fl">2000</span>,</span>
+<span>  <span class="fl">200</span>,  <span class="fl">150</span>,  <span class="fl">180</span>,  <span class="fl">600</span>,  <span class="fl">1400</span>,  <span class="fl">2200</span>,</span>
+<span>  <span class="fl">3500</span>, <span class="fl">5000</span>, <span class="fl">5200</span>, <span class="fl">5000</span>,  <span class="fl">8000</span>,  <span class="fl">6000</span>,</span>
+<span>  <span class="fl">1000</span>, <span class="fl">1400</span>, <span class="fl">1600</span>, <span class="fl">1500</span>,  <span class="fl">1800</span>,  <span class="fl">4500</span>,</span>
+<span>  <span class="fl">23000</span>, <span class="fl">28000</span>, <span class="fl">36000</span>, <span class="fl">45000</span>, <span class="fl">48000</span>, <span class="fl">55000</span>,</span>
+<span>  <span class="fl">4000</span>,  <span class="fl">8000</span>,  <span class="fl">8000</span>,  <span class="fl">9000</span>, <span class="fl">14000</span>, <span class="fl">14000</span>,</span>
+<span>  <span class="fl">6000</span>,  <span class="fl">9000</span>,  <span class="fl">9000</span>, <span class="fl">10000</span>, <span class="fl">13000</span>, <span class="fl">10000</span>,</span>
+<span>  <span class="fl">4000</span>,  <span class="fl">5000</span>,  <span class="fl">8000</span>, <span class="fl">12000</span>, <span class="fl">15000</span>, <span class="fl">13000</span>,</span>
+<span>  <span class="fl">18000</span>, <span class="fl">24000</span>, <span class="fl">30000</span>, <span class="fl">36000</span>, <span class="fl">40000</span>, <span class="fl">45000</span>,</span>
+<span>  <span class="fl">9000</span>, <span class="fl">15000</span>, <span class="fl">20000</span>, <span class="fl">26000</span>, <span class="fl">30000</span>, <span class="fl">28000</span>,</span>
+<span>  <span class="fl">5000</span>,  <span class="fl">7000</span>,  <span class="fl">6000</span>, <span class="fl">11000</span>, <span class="fl">20000</span>, <span class="fl">32000</span>,</span>
+<span>  <span class="fl">15000</span>, <span class="fl">19000</span>, <span class="fl">24000</span>, <span class="fl">32000</span>, <span class="fl">36000</span>, <span class="fl">40000</span>,</span>
+<span>  <span class="fl">10000</span>, <span class="fl">18000</span>, <span class="fl">28000</span>, <span class="fl">35000</span>, <span class="fl">38000</span>, <span class="fl">40000</span>,</span>
+<span>  <span class="fl">400</span>,   <span class="fl">700</span>,  <span class="fl">1000</span>,  <span class="fl">3000</span>,  <span class="fl">9000</span>, <span class="fl">17000</span>,</span>
+<span>  <span class="fl">600</span>,   <span class="fl">800</span>,  <span class="fl">1200</span>,  <span class="fl">1700</span>,  <span class="fl">3500</span>,  <span class="fl">6000</span>,</span>
+<span>  <span class="fl">2000</span>,  <span class="fl">5000</span>, <span class="fl">10000</span>, <span class="fl">17000</span>, <span class="fl">24000</span>, <span class="fl">31000</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ── Build keyframe df ─────────────────────────────────────────────────────</span></span>
+<span><span class="va">df_key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  country   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">v_countries</span>, each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">v_years_key</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  year      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">v_years_key</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">v_countries</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  continent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">v_continents</span>, each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">v_years_key</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  icon      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">v_icons</span>, each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">v_years_key</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  life_exp  <span class="op">=</span> <span class="va">v_life_exp</span>,</span>
+<span>  gdp_pc    <span class="op">=</span> <span class="va">v_gdp</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ── Interpolate each country to yearly resolution ─────────────────────────</span></span>
+<span><span class="va">df_world</span> <span class="op">&lt;-</span> <span class="va">df_key</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">country</span>, <span class="va">continent</span>, <span class="va">icon</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe</a></span><span class="op">(</span></span>
+<span>    year     <span class="op">=</span> <span class="va">v_years_fine</span>,</span>
+<span>    life_exp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/approxfun.html" class="external-link">approx</a></span><span class="op">(</span><span class="va">v_years_key</span>, <span class="va">life_exp</span>, xout <span class="op">=</span> <span class="va">v_years_fine</span><span class="op">)</span><span class="op">$</span><span class="va">y</span>,</span>
+<span>    gdp_pc   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/approxfun.html" class="external-link">approx</a></span><span class="op">(</span><span class="va">v_years_key</span>, <span class="va">gdp_pc</span>,   xout <span class="op">=</span> <span class="va">v_years_fine</span><span class="op">)</span><span class="op">$</span><span class="va">y</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">v_bg</span> <span class="op">&lt;-</span> <span class="st">"#0A0E1A"</span></span>
+<span><span class="va">v_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Africa"</span>   <span class="op">=</span> <span class="st">"#FF80AB"</span>,</span>
+<span>  <span class="st">"Americas"</span> <span class="op">=</span> <span class="st">"#69F0AE"</span>,</span>
+<span>  <span class="st">"Europe"</span>   <span class="op">=</span> <span class="st">"#4FC3F7"</span>,</span>
+<span>  <span class="st">"Asia"</span>     <span class="op">=</span> <span class="st">"#FFD740"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p_anim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_world</span>,</span>
+<span>                 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gdp_pc</span>, y <span class="op">=</span> <span class="va">life_exp</span>,</span>
+<span>                     color <span class="op">=</span> <span class="va">continent</span>, icon <span class="op">=</span> <span class="va">icon</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_text_repel</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">country</span>, color <span class="op">=</span> <span class="va">continent</span><span class="op">)</span>,</span>
+<span>    size          <span class="op">=</span> <span class="fl">2.8</span>,</span>
+<span>    fontface      <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>    box.padding   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.4</span>, <span class="st">"lines"</span><span class="op">)</span>,</span>
+<span>    point.padding <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="st">"lines"</span><span class="op">)</span>,</span>
+<span>    max.overlaps  <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>    segment.color <span class="op">=</span> <span class="st">"#546E7A"</span>,</span>
+<span>    segment.size  <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>    segment.alpha <span class="op">=</span> <span class="fl">0.6</span>,</span>
+<span>    seed          <span class="op">=</span> <span class="fl">42</span>,</span>
+<span>    show.legend   <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span></span>
+<span>    breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">1000</span>, <span class="fl">5000</span>, <span class="fl">10000</span>, <span class="fl">50000</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"$500"</span>, <span class="st">"$1K"</span>, <span class="st">"$5K"</span>, <span class="st">"$10K"</span>, <span class="st">"$50K"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">v_colors</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"A World Transformed"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Life expectancy vs. GDP per capita  \u00b7  Year: {round(frame_time)}"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Source: World Bank / Gapminder  \u00b7  Visualization: ggpop"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="st">"GDP per Capita (USD, log scale)"</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Life Expectancy (years)"</span>,</span>
+<span>    color    <span class="op">=</span> <span class="st">"Region"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    plot.background   <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">v_bg</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    panel.background  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">v_bg</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>    panel.grid.major  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#1C2A3A"</span>, linewidth <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span>,</span>
+<span>    panel.grid.minor  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    legend.key        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    axis.text         <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#78909C"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    axis.title        <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#90A4AE"</span>, size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span>,</span>
+<span>    plot.title        <span class="op">=</span> <span class="fu"><a href="https://wilkelab.org/ggtext/reference/element_markdown.html" class="external-link">element_markdown</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">22</span>, face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>                                         color <span class="op">=</span> <span class="st">"white"</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    plot.subtitle     <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">11</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">"#78909C"</span>,</span>
+<span>                                     margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fl">16</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    plot.caption      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8.5</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, color <span class="op">=</span> <span class="st">"#546E7A"</span>,</span>
+<span>                                     lineheight <span class="op">=</span> <span class="fl">1.4</span>, margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">14</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    legend.position   <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    legend.title      <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#90A4AE"</span>, size <span class="op">=</span> <span class="fl">10</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.text       <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#B0BEC5"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    plot.margin       <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">24</span>, <span class="fl">16</span>, <span class="fl">20</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">transition_time</span><span class="op">(</span><span class="va">year</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ease_aes</span><span class="op">(</span><span class="st">"cubic-in-out"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">animate</span><span class="op">(</span></span>
+<span>  <span class="va">p_anim</span>,</span>
+<span>  nframes   <span class="op">=</span> <span class="fl">150</span>,   <span class="co"># ~3 frames per year across 51 years</span></span>
+<span>  fps       <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  width     <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  height    <span class="op">=</span> <span class="fl">650</span>,</span>
+<span>  res       <span class="op">=</span> <span class="fl">120</span>,</span>
+<span>  renderer  <span class="op">=</span> <span class="fu">gifski_renderer</span><span class="op">(</span><span class="st">"world_transformed.gif"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/world_transformed.gif"></p>
+<figcaption>Example gganimate animation</figcaption></figure>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
