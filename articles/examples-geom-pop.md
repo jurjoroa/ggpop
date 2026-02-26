@@ -49,7 +49,7 @@ v_labels <- setNames(df_counts$label, as.character(df_counts$type))
 
 ggplot(data = df_world_proc,
     aes(icon = icon, color = type)) +
-  geom_pop(size         = 1,
+  geom_pop(size         = .8,
             dpi          = 100,
             legend_icons = TRUE,
             arrange      = TRUE) +
@@ -99,7 +99,7 @@ library(ggplot2)
 library(dplyr)
 
 df_sex <- data.frame(
-  sex = c("male", "female"),
+  sex = c("Male", "Female"),
   n   = c(63459580, 67401427)
 )
 
@@ -110,21 +110,26 @@ df_sex_proc <- process_data(
   sample_size = 100
 ) %>%
   mutate(icon = case_when(
-    type == "male"   ~ "male",
-    type == "female" ~ "female"
+    type == "Male"   ~ "male",
+    type == "Female" ~ "female"
   ))
 
-ggplot() +
-  geom_pop(
-    data         = df_sex_proc,
-    aes(icon = icon, color = type),
-    size         = 2,
-    dpi          = 100,
-    legend_icons = TRUE
-  ) +
-  scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
-  scale_legend_icon(size = 5) +
+ggplot(data = df_sex_proc, aes(icon = icon, color = type)) +
+  geom_pop(size = 2, 
+           dpi = 100,
+           legend_icons = TRUE) +
+  scale_color_manual(values = c("Male" = "#1E88E5", 
+                                "Female" = "#D81B60")) +
   theme_pop() +
+  scale_legend_icon(size = 10) +
+  theme(plot.title = element_text(color = "white", 
+                                  size = 22, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(color = "white", 
+                                     size = 12, hjust = 0.5, lineheight = 1.4),
+        legend.text = element_text(color = "white",
+                                   size = 20),
+        legend.title = element_blank(),
+        legend.position = "bottom") +
   labs(
     title    = "Mexico Population by Sex (2024)",
     subtitle = "Each icon represents ~1% of the total population",
@@ -136,53 +141,7 @@ ggplot() +
 
 ------------------------------------------------------------------------
 
-## Example 3: Health Status
-
-A three-group chart showing a simulated patient population broken down
-by health status.
-
-Show the code
-
-``` r
-library(ggpop)
-library(ggplot2)
-library(dplyr)
-
-df_health <- data.frame(
-  status = c(rep("Healthy", 70), rep("At Risk", 20), rep("Ill", 10)),
-  icon   = c(rep("person", 70), rep("person-half-dress", 20), rep("bed-pulse", 10))
-)
-
-df_health$status <- factor(df_health$status,
-  levels = c("Healthy", "At Risk", "Ill"))
-
-ggplot() +
-  geom_pop(
-    data         = df_health,
-    aes(icon = icon, color = status),
-    size         = 2,
-    dpi          = 100,
-    legend_icons = TRUE
-  ) +
-  scale_color_manual(values = c(
-    "Healthy"  = "#43A047",
-    "At Risk"  = "#FFB300",
-    "Ill"      = "#E53935"
-  )) +
-  scale_legend_icon(size = 5) +
-  theme_pop() +
-  labs(
-    title    = "Simulated Patient Population (n = 100)",
-    subtitle = "Each icon represents one patient",
-    color    = "Status"
-  )
-```
-
-![](examples-geom-pop_files/figure-html/health-1.png)
-
-------------------------------------------------------------------------
-
-## Example 4: Education Levels
+## Example 3: Education Levels
 
 Population chart showing education attainment across four levels.
 
@@ -291,7 +250,7 @@ labs(
 
 ------------------------------------------------------------------------
 
-## Example 5: Disease Burden with Dark Theme
+## Example 4: Disease Burden with Dark Theme
 
 A dark-themed chart showing disease categories in a simulated
 population.
@@ -352,7 +311,7 @@ ggplot() +
 
 ------------------------------------------------------------------------
 
-## Example 6: Disability Status with Stroke
+## Example 5: Disability Status with Stroke
 
 Using `stroke_width` to outline icons for better visibility and
 `arrange = TRUE` to group icons by type.
@@ -418,7 +377,143 @@ ggplot(data = df_disability_proc,
 
 ------------------------------------------------------------------------
 
-## `facet_wrap()` — Transportation Methods Across US Cities
+## `cowplot` — Health Survey Dashboard
+
+Combining multiple
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+panels into a single plot with the `cowplot` package. Three independent
+population charts — sex distribution, age groups, and vaccination
+coverage — are built as separate `ggplot` objects and then arranged: two
+panels in the top row and one centered below.
+
+Show the code
+
+``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+library(cowplot)
+
+# --- Plot 1: Sex distribution ---
+df_sex_cw <- data.frame(
+  sex = c("Male", "Female"),
+  n   = c(48, 52)
+)
+
+df_sex_cw_proc <- process_data(
+  data        = df_sex_cw,
+  group_var   = sex,
+  sum_var     = n,
+  sample_size = 100
+) %>%
+  mutate(icon = case_when(
+    type == "Male"   ~ "male",
+    type == "Female" ~ "female"
+  ))
+
+p1 <- ggplot(data = df_sex_cw_proc, aes(icon = icon, color = type)) +
+  geom_pop(size = 1.8, dpi = 100, legend_icons = TRUE) +
+  scale_color_manual(values = c("Male" = "#1E88E5", "Female" = "#D81B60")) +
+  theme_pop() +
+  scale_legend_icon(size = 6) +
+  theme(
+    legend.position = "bottom",
+    legend.title    = element_blank(),
+    legend.text     = element_text(size = 11, color = "white"),
+    plot.title      = element_text(size = 13, face = "bold", hjust = 0.5, color = "white"),
+    plot.subtitle   = element_text(size = 9,  hjust = 0.5, color = "#B0BEC5")
+  ) +
+  labs(title = "Sex Distribution", subtitle = "Each icon = 1%")
+
+# --- Plot 2: Age groups ---
+df_age <- data.frame(
+  group = c("Child", "Adult", "Senior"),
+  n     = c(22, 63, 15)
+)
+
+df_age_proc <- process_data(
+  data        = df_age,
+  group_var   = group,
+  sum_var     = n,
+  sample_size = 100
+) %>%
+  mutate(icon = case_when(
+    type == "Child"  ~ "child",
+    type == "Adult"  ~ "person",
+    type == "Senior" ~ "person-cane"
+  ))
+
+df_age_proc$type <- factor(df_age_proc$type,
+  levels = c("Child", "Adult", "Senior"))
+
+p2 <- ggplot(data = df_age_proc, aes(icon = icon, color = type)) +
+  geom_pop(size = 1.8, dpi = 100, legend_icons = TRUE, arrange = TRUE) +
+  scale_color_manual(values = c(
+    "Child"  = "#AB47BC",
+    "Adult"  = "#00ACC1",
+    "Senior" = "#FB8C00"
+  )) +
+  theme_pop() +
+  scale_legend_icon(size = 6) +
+  theme(
+    legend.position = "bottom",
+    legend.title    = element_blank(),
+    legend.text     = element_text(size = 11, color = "white"),
+    plot.title      = element_text(size = 13, face = "bold", hjust = 0.5, color = "white"),
+    plot.subtitle   = element_text(size = 9,  hjust = 0.5, color = "#B0BEC5")
+  ) +
+  labs(title = "Age Groups", subtitle = "Each icon = 1%")
+
+# --- Plot 3: Vaccination coverage (centered below) ---
+df_vaccine <- data.frame(
+  status = c("Vaccinated", "Partial", "Unvaccinated"),
+  n      = c(70, 15, 15)
+)
+
+df_vaccine_proc <- process_data(
+  data        = df_vaccine,
+  group_var   = status,
+  sum_var     = n,
+  sample_size = 100
+) %>%
+  mutate(icon = case_when(
+    type == "Vaccinated"   ~ "syringe",
+    type == "Partial"      ~ "person-half-dress",
+    type == "Unvaccinated" ~ "person"
+  ))
+
+df_vaccine_proc$type <- factor(df_vaccine_proc$type,
+  levels = c("Vaccinated", "Partial", "Unvaccinated"))
+
+p3 <- ggplot(data = df_vaccine_proc, aes(icon = icon, color = type)) +
+  geom_pop(size = 1.8, dpi = 100, legend_icons = TRUE, arrange = TRUE) +
+  scale_color_manual(values = c(
+    "Vaccinated"   = "#43A047",
+    "Partial"      = "#FFB300",
+    "Unvaccinated" = "#E53935"
+  )) +
+  theme_pop() +
+  scale_legend_icon(size = 6) +
+  theme(
+    legend.position = "bottom",
+    legend.title    = element_blank(),
+    legend.text     = element_text(size = 11, color = "white"),
+    plot.title      = element_text(size = 13, face = "bold", hjust = 0.5, color = "white"),
+    plot.subtitle   = element_text(size = 9,  hjust = 0.5, color = "#B0BEC5")
+  ) +
+  labs(title = "Vaccination Coverage", subtitle = "Each icon = 1%")
+
+# Arrange: 2 on top, 1 centered below
+top_row    <- plot_grid(p1, p2, ncol = 2)
+bottom_row <- plot_grid(NULL, p3, NULL, ncol = 3, rel_widths = c(0.5, 1, 0.5))
+plot_grid(top_row, bottom_row, nrow = 2)
+```
+
+![](examples-geom-pop_files/figure-html/cowplot-1.png)
+
+------------------------------------------------------------------------
+
+## `facet_wrap` — Transportation Methods Across US Cities
 
 Using `facet_wrap(~ group)`, this chart breaks down the daily commute
 mix across major US cities. Each panel shows one city’s full
@@ -543,7 +638,7 @@ Example Plot facet
 
 ------------------------------------------------------------------------
 
-## `facet_geo()` — Gun Violence Across US States
+## `facet_geo` — Gun Violence Across US States
 
 Combining
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
@@ -647,3 +742,194 @@ ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
 ![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)
 
 Example Plot geofacet
+
+------------------------------------------------------------------------
+
+## `gifski` — A World Grown Older (png animation)
+
+Three countries placed side by side with `patchwork`’s `|` operator —
+Japan (rapidly ageing), the United States (moderate pace), and Nigeria
+(still young) — each showing its own age distribution for a given
+decade. A loop builds one patchwork frame per time point and `gifski`
+stitches the frames into a GIF, making it immediately clear how
+differently the ageing transition unfolds across the world.
+
+Show the code
+
+``` r
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+library(gifski)
+
+set.seed(42)
+
+v_years <- as.character(seq(1990, 2030, by = 1))
+
+interp <- function(years_key, vals_key, years_out) {
+  round(approx(years_key, vals_key, xout = years_out)$y)
+}
+
+make_country_df <- function(years_key, youth_key, adult_key, senior_key) {
+  yrs    <- seq(1990, 2030)
+  youth  <- interp(years_key, youth_key,  yrs)
+  senior <- interp(years_key, senior_key, yrs)
+  adult  <- 100 - youth - senior
+  data.frame(
+    year      = rep(as.character(yrs), each = 3),
+    age_group = rep(c("Youth (0-24)", "Adults (25-64)", "Seniors (65+)"), length(yrs)),
+    n         = as.vector(rbind(youth, adult, senior))
+  )
+}
+
+ky <- c(1990, 1995, 2000, 2005, 2010, 2015, 2020, 2025, 2030)
+
+df_japan <- make_country_df(ky,
+                            youth_key  = c(27, 24, 20, 19, 18, 18, 17, 17, 16),
+                            adult_key  = c(61, 63, 64, 63, 62, 59, 56, 54, 52),
+                            senior_key = c(12, 13, 16, 18, 20, 23, 27, 29, 32)
+)
+df_usa <- make_country_df(ky,
+                          youth_key  = c(36, 36, 35, 34, 33, 32, 30, 29, 28),
+                          adult_key  = c(52, 52, 52, 53, 53, 53, 54, 53, 52),
+                          senior_key = c(12, 12, 13, 13, 14, 15, 16, 18, 20)
+)
+df_nigeria <- make_country_df(ky,
+                              youth_key  = c(65, 63, 61, 60, 58, 57, 56, 55, 53),
+                              adult_key  = c(32, 33, 35, 36, 38, 39, 40, 41, 42),
+                              senior_key = c( 3,  4,  4,  4,  4,  4,  4,  4,  5)
+)
+
+v_age_groups <- c("Youth (0-24)", "Adults (25-64)", "Seniors (65+)")
+v_colors <- c(
+  "Youth (0-24)"   = "#42A5F5",
+  "Adults (25-64)" = "#26A69A",
+  "Seniors (65+)"  = "#FFA726"
+)
+v_bg <- "#1B1B2F"
+
+proc_country <- function(df) {
+  set.seed(42)
+  process_data(
+    data           = df,
+    group_var      = age_group,
+    sum_var        = n,
+    sample_size    = 100,
+    high_group_var = "year"
+  ) %>%
+    rename(year_label = group) %>%
+    mutate(
+      icon = case_when(
+        type == "Youth (0-24)"   ~ "child",
+        type == "Adults (25-64)" ~ "person",
+        type == "Seniors (65+)"  ~ "person-cane"
+      ),
+      type = factor(type, levels = v_age_groups)
+    )
+}
+
+df_japan_proc   <- proc_country(df_japan)
+df_usa_proc     <- proc_country(df_usa)
+df_nigeria_proc <- proc_country(df_nigeria)
+
+make_pop_plot <- function(df_proc, yr, country_label) {
+  df_proc %>%
+    filter(year_label == yr) %>%
+    ggplot(aes(icon = icon, color = type)) +
+    geom_pop(size = 2, dpi = 100, arrange = TRUE) +
+    scale_color_manual(values = v_colors) +
+    theme_pop() +
+    theme(
+      plot.background   = element_blank(),
+      panel.background  = element_blank(),
+      legend.background = element_blank(),
+      legend.key        = element_blank(),
+      legend.position   = "none",
+      plot.title        = element_text(size = 17, face = "bold", hjust = 0.5,
+                                       color = "white", margin = margin(b = 6))
+    ) +
+    labs(title = country_label)
+}
+
+# ── Shared legend panel (built once, reused every frame) ─────────────────
+p_legend <- ggplot() +
+  geom_pop(
+    data = data.frame(
+      icon  = c("child", "person", "person-cane"),
+      type  = factor(v_age_groups, levels = v_age_groups),
+      x     = 1:3, y = rep(1, 3)
+    ),
+    aes(icon = icon, color = type),
+    size = 2, dpi = 100, legend_icons = TRUE
+  ) +
+  scale_color_manual(values = v_colors,
+                     labels = c(
+                       "Youth (0-24)"   = "Youth (0\u201324)",
+                       "Adults (25-64)" = "Adults (25\u201364)",
+                       "Seniors (65+)"  = "Seniors (65+)"
+                     )
+  ) +
+  scale_legend_icon(size = 7) +
+  guides(color = guide_legend(nrow = 1, title = NULL)) +
+  theme_void() +
+  theme(
+    plot.background   = element_blank(),
+    panel.background  = element_blank(),
+    legend.background = element_blank(),
+    legend.key        = element_blank(),
+    legend.position   = "bottom",
+    legend.text       = element_text(color = "#B0BEC5", size = 13, face = "bold"),
+    legend.spacing.x  = unit(12, "pt"),
+    legend.margin     = margin(t = 4, b = 4)
+  )
+
+# ── Render one frame per year ────────────────────────────────────────────
+v_png_paths <- vapply(v_years, function(yr) {
+  
+  is_proj   <- as.integer(yr) > 2024
+  proj_tag  <- if (is_proj) "  \u00b7  \u26a0 projected" else ""
+  title_col <- if (is_proj) "#FFA726" else "white"
+  
+  p1 <- make_pop_plot(df_japan_proc,   yr, "\U0001F1EF\U0001F1F5  Japan")
+  p2 <- make_pop_plot(df_usa_proc,     yr, "\U0001F1FA\U0001F1F8  United States")
+  p3 <- make_pop_plot(df_nigeria_proc, yr, "\U0001F1F3\U0001F1EC  Nigeria")
+  
+  # Row 1: Japan | USA — Row 2: empty | Nigeria | empty (centred)
+  row1 <- p1 | p2
+  blank <- ggplot() + theme_void() + theme(plot.background = element_blank())
+  row2  <- (blank | p3 | blank) + plot_layout(widths = c(0.25, 0.5, 0.25))  
+  combined <- (row1 / row2 / p_legend) +
+    plot_layout(heights = c(5, 5, 1)) +
+    plot_annotation(
+      title    = paste0("A World Grown Older \u2014 ", yr, proj_tag),
+      subtitle = "Each icon = 1% of the population  \u00b7  Post-2024 figures are UN projections",
+      caption  = "Source: UN World Population Prospects 2024  \u00b7  Visualization: ggpop",
+      theme    = theme(
+        plot.background = element_rect(fill = v_bg, color = NA),
+        plot.title      = element_text(size = 22, face = "bold", hjust = 0.5,
+                                       color = title_col, margin = margin(b = 4)),
+        plot.subtitle   = element_text(size = 12, hjust = 0.5, color = "#B0BEC5",
+                                       lineheight = 1.5, margin = margin(b = 14)),
+        plot.caption    = element_text(size = 9,  hjust = 0.5, color = "#78909C",
+                                       margin = margin(t = 10)),
+        plot.margin     = margin(18, 18, 18, 18)
+      )
+    )
+  
+  f <- tempfile(fileext = ".png")
+  ggsave(f, combined, width = 12, height = 14, dpi = 100, bg = v_bg)
+  f
+  
+}, character(1))
+
+# ── Stitch into GIF ──────────────────────────────────────────────────────
+v_delays <- ifelse(as.integer(v_years) >= 2024, 1.5, 0.6)
+
+#gifski(v_png_paths, gif_file = "age_structure_nations.gif",
+#       width = 1200, height = 1400, delay = v_delays)
+```
+
+![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/age_structure_nations.gif)
+
+Example patchwork animation
