@@ -1,28 +1,18 @@
 ---
 title: "Icon Scatter Plots with geom_icon_point()"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Icon Scatter Plots with geom_icon_point()}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment  = "#>",
-  fig.width  = 7,
-  fig.height = 5,
-  dpi = 100,
-  out.width = "100%"
-)
-```
 
 ## What is `geom_icon_point()`?
 
 `geom_icon_point()` is the scatter plot cousin of `geom_pop()`. It works exactly like `ggplot2::geom_point()` — but replaces dots with Font Awesome icons. No data preprocessing is required: just supply any data frame with `x` and `y` variables and let the icons do the talking.
 
-```{r load}
+```{r}
+#| label: load
+#| message: false
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -34,7 +24,8 @@ library(dplyr)
 
 The simplest use case: a single icon for all points, with `color` carrying the grouping information. Use the `icon` parameter (not `aes()`) to fix one icon across all observations.
 
-```{r basic}
+```{r}
+#| label: basic
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -58,7 +49,8 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 
 `geom_icon_point()` shines when each category gets its own icon. Map `icon` inside `aes()` to a column in your data — each group then carries its own visual identity.
 
-```{r mapped-icons}
+```{r}
+#| label: mapped-icons
 df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
                "Milk", "Cheese", "Yogurt"),
@@ -96,7 +88,8 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
 
 Map a continuous variable to `size` inside `aes()` to add a third dimension of information. Use `scales::rescale()` to keep icon sizes in a readable range — raw values that are too large or too small make icons unreadable.
 
-```{r size-mapping}
+```{r}
+#| label: size-mapping
 df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
                  "Netflix", "Spotify", "Uber", "Airbnb"),
@@ -140,7 +133,8 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 
 When `color` is mapped to a factor, the legend follows **factor level order**. `geom_icon_point()` automatically assigns icons to legend entries in the same order — so setting factor levels is all you need for a correctly ordered legend.
 
-```{r factor-ordering}
+```{r}
+#| label: factor-ordering
 df_health <- data.frame(
   country    = c("Chad", "Mali", "Niger", "Bolivia", "Egypt", "Morocco",
                  "Germany", "France", "Japan"),
@@ -182,7 +176,10 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 `geom_icon_point()` is fully compatible with all standard ggplot2 geoms. Here we combine it with `geom_smooth()`, `geom_vline()`, `geom_hline()`, `geom_label()`, and `annotate()` to build a fully annotated analytical chart.
 
-```{r combined-geoms, fig.height = 6}
+```{r}
+#| label: combined-geoms
+#| fig-height: 6
+#| message: false
 ggplot(df_health, aes(x = spend, y = life_exp,
                       icon = icon, color = income)) +
   # Reference lines: world averages
