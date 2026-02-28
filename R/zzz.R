@@ -23,12 +23,15 @@ if (getRversion() >= "2.15.1") {
   # Initialize legend settings registry.
   # Tracks legend_icons settings across multiple geom_icon_point() layers.
   .ggpop_env$legend_settings <- list()
+
+  # Session-level cache for Font Awesome icon names.
+  # Populated on first call to .get_fa_icons(); reused for the rest of the session.
+  .ggpop_env$fa_icon_names <- NULL
 }
 
 # Optional: reset state when package is unloaded (good practice).
 .onUnload <- function(libpath) {
   # Clean up package environment to avoid stale state.
-  if (exists("legend_settings", envir = .ggpop_env)) {
-    rm(list = "legend_settings", envir = .ggpop_env)
-  }
+  rm(list = intersect(c("legend_settings", "fa_icon_names"), ls(.ggpop_env)),
+     envir = .ggpop_env)
 }
