@@ -1521,5 +1521,31 @@ testthat::test_that("geom_pop show.legend = FALSE hides icon legend", {
 })
 
 # ******************************************************************************
+## Coordinate inheritance (geom_text, geom_label) ------------------------------
+# ******************************************************************************
+
+testthat::test_that("geom_text inherits x and y from geom_pop without error", {
+  df_label <- data.frame(
+    type = rep(c("A", "B"), each = 2),
+    icon = rep(c("circle", "star"), each = 2),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot(data = df_label, ggplot2::aes(icon = icon, color = type)) +
+    geom_pop(size = 1, dpi = 50, legend_icons = FALSE, seed=1) +
+    ggplot2::geom_text(ggplot2::aes(label = type), nudge_y = 0.03, size = 10, show.legend = F) +
+    ggplot2::scale_color_manual(values = c("A" = "#E53935", "B" = "#1E88E5")) +
+    ggplot2::theme_void() +
+    ggplot2::theme(legend.position = "none")
+
+  testthat::expect_no_error(ggplot2::ggplot_build(p))
+
+  expect_doppelganger(
+    title = "geom_pop geom_text coordinate inheritance",
+    fig   = p
+  )
+})
+
+# ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************
