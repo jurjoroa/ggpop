@@ -73,7 +73,7 @@ fa_icons(as_vector = TRUE)
 fa_icons(query = "heart")
 
 # Filter by category
-fa_icons(category = "people")
+fa_icons(category = "animals")
 
 # Regex search — all icons starting with "arrow"
 fa_icons(query = "^arrow", regex = TRUE)
