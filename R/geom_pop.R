@@ -174,7 +174,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
     data = data,
     facet_explicit = .facet_explicit,
     facet_col = facet_col,
-    dots = dots
+    dots = dots,
+    processed_mode = processed_mode
   )
 
   # 08 Size handling ----
@@ -187,7 +188,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 09 Faceting finalization ----
 
-  if (!has_facet && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1) {
+  if (!has_facet && processed_mode && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1) {
     has_facet <- TRUE
     facet_col <- "group"
   }
