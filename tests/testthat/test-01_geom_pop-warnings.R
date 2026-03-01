@@ -81,19 +81,18 @@ testthat::test_that("Warning: size inside aes() overrides geom_pop(size = ...)",
 ## 03.02 Warnings: facet/grouping cautions -------------------------------------
 # ******************************************************************************
 
-### 03.02.01 facet/group caution when multiple groups exist --------------------
+### 03.02.01 no facet/group warning for raw data with a group column -----------
 
-testthat::test_that("Warning: facet/group caution (data has group column)", {
+testthat::test_that("No warning: raw data with group column does not warn", {
   df_grp <- df_raw
   df_grp$group <- df_grp$sex
 
-  testthat::expect_warning(
+  testthat::expect_no_warning(
     ggplot2::ggplot() +
       geom_pop(
         data = df_grp,
         ggplot2::aes(icon = icon, group = group)
-      ),
-    regexp = NULL
+      )
   )
 })
 
@@ -308,13 +307,13 @@ testthat::test_that("Warning: stroke_width > 30", {
 ## 03.08 Smoke: warnings should still allow build ------------------------------
 # ******************************************************************************
 
-### 03.08.01 build succeeds even if a warning is emitted -----------------------
+### 03.08.01 build succeeds for raw data with group column ---------------------
 
-testthat::test_that("Build: plot still builds when warning occurs", {
+testthat::test_that("Build: plot builds cleanly from raw data with group column", {
   df_grp <- df_raw
   df_grp$group <- df_grp$sex
 
-  testthat::expect_warning(
+  testthat::expect_no_warning(
     p <- ggplot2::ggplot() +
       geom_pop(
         data = df_grp,
@@ -323,7 +322,6 @@ testthat::test_that("Build: plot still builds when warning occurs", {
       )
   )
 
-  # Verify the plot object was created despite warning
   testthat::expect_s3_class(p, "ggplot")
 })
 
