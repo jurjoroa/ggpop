@@ -48,11 +48,12 @@
 #' fa_icons(query = "heart")
 #'
 #' # Filter by category
-#' fa_icons(category = "people")
+#' fa_icons(category = "animals")
 #'
 #' # Regex search — all icons starting with "arrow"
 #' fa_icons(query = "^arrow", regex = TRUE)
 #'
+#' @importFrom tibble tibble
 #' @export
 fa_icons <- function(query                = NULL,
                      category             = NULL,
@@ -213,6 +214,24 @@ fa_icons <- function(query                = NULL,
   if (as_vector) return(out$icon)
 
   out
+}
+
+#' List available Font Awesome icon categories
+#'
+#' Returns the names of all built-in category groups used by \code{\link{fa_icons}}.
+#'
+#' @param class_map A named list mapping category names to regex patterns.
+#'   Defaults to the internal \code{.fa_default_class_map()}.
+#'
+#' @return A sorted character vector of category names.
+#'
+#' @examples
+#' fa_categories()
+#'
+#' @noRd
+fa_categories <- function(class_map = NULL) {
+  if (is.null(class_map)) class_map <- .fa_default_class_map()
+  sort(names(class_map))
 }
 
 # ── Internal helpers ──────────────────────────────────────────────────────────
