@@ -22,6 +22,7 @@ This release of `ggpop` delivers new theming support, expanded icon customizatio
 - Introduced personalized ggpop themes (e.g., `theme_pop`) for consistent, opinionated plot styling out of the box (#291).
 - Added `show.legend` support to `geom_icon_point()` and `geom_pop()`. Passing `show.legend = FALSE` now correctly suppresses the layer's legend entries, matching standard ggplot2 behaviour. The fix sets the argument directly on the layer object after construction, bypassing `ggimage::geom_image()` which does not honour this parameter (#337).
 - Added `fa_icons()` to allow users to search and list available Font Awesome icons by name, category, or regex pattern. Results can be returned as a classified tibble or a plain character vector. Icon names are cached session-wide to avoid repeated metadata calls (#340).
+- `geom_pop()` now exposes its internally computed coordinates to downstream layers. Geoms such as `geom_text()` and `geom_label()` can be added after `geom_pop()` without specifying `x` and `y` explicitly — they are inherited automatically from the icon grid (#341).
 
 ## Breaking Changes
 
@@ -46,6 +47,7 @@ Issues are listed in chronological merge order.
 - #294
 - #337
 - #340
+- #341
 
 ## Version
 
