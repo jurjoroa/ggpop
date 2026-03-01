@@ -1,6 +1,8 @@
 url: https://jurjoroa.github.io/ggpop/
 title: "ggpop"
 template:
+  params:
+      ganalytics: G-CX1ZY99J1P
   bootstrap: 5
   bslib:
     bg: "#01394f"
