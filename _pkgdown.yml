@@ -1,6 +1,8 @@
 url: https://jurjoroa.github.io/ggpop/
 title: "ggpop"
 template:
+  params:
+      ganalytics: G-CX1ZY99J1P
   bootstrap: 5
   bslib:
     bg: "#01394f"
@@ -110,6 +112,10 @@ footer:
     package_logo: "<a href='https://jurjoroa.github.io/ggpop/'><img src='https://jurjoroa.github.io/ggpop/inst/figures/shp.png' height='40' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
 
 articles:
+  - title: "Finding Icons"
+    desc: "Search and browse Font Awesome icons available for use in ggpop."
+    contents:
+      - fa-icons
   - title: "Data Preparation"
     desc: "Prepare your data for ggpop."
     contents:
