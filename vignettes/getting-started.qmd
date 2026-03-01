@@ -2,7 +2,7 @@
 title: "Getting Started with ggpop"
 format:
   html:
-    code-fold: true
+    code-fold: false
     code-summary: "Show the code"
 vignette: >
   %\VignetteIndexEntry{Getting Started with ggpop}
@@ -88,8 +88,40 @@ head(df_processed)
 
 Add an `icon` column to your processed data. Icon names come from Font Awesome — use any of the 2,000+ free icons.
 
+
 ```{r}
-#| label: icons
+#| label: icons-querry
+#| eval: false
+
+fa_icons(query = "person")
+
+```
+
+```{r}
+#| label: icons-querry-1
+#| echo: false
+#| message: false
+#| warning: false
+
+library(reactable)
+library(reactablefmtr)
+
+fa_icons(query = "person") %>% 
+  reactable(
+    searchable = TRUE,
+    filterable = TRUE,
+    defaultPageSize = 10
+  )
+
+```
+
+
+
+We selected the `male` and `female` icons for our population chart. You can choose any icons that fit your data and story!
+
+```{r}
+#| label: icons-choose
+
 df_processed <- df_processed %>%
   mutate(icon = case_when(
     type == "male"   ~ "male",
@@ -105,6 +137,11 @@ Pass the data to `ggplot()` and add `geom_pop()`. Map `icon` and `color` to your
 
 ```{r}
 #| label: basic-plot
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+
 ggplot() +
   geom_pop(
     data = df_processed,
@@ -113,7 +150,12 @@ ggplot() +
     dpi  = 100
   ) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
-  theme_pop() +
+  theme_pop(base_size=15) +
+  theme(plot.title = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text = element_text(color = "white"),
+        legend.title = element_text(color = "white"),
+        legend.position = "bottom") +
   labs(
     title    = "Mexico Population by Sex (2024)",
     subtitle = "Each icon represents ~1% of the total population",
@@ -123,65 +165,101 @@ ggplot() +
 
 ---
 
-## Adding a Legend with Icons
+## Scaling legend icons
 
-Set `legend_icons = TRUE` inside `geom_pop()` and use `scale_legend_icon()` to control the legend icon size.
+Use `scale_legend_icon()` to control the legend icon size. You can also turn off legend icons with `legend_icons = FALSE` in `geom_pop()` if you prefer a text-only legend with dots
 
 ```{r}
 #| label: legend-plot
-ggplot() +
-  geom_pop(
-    data         = df_processed,
-    aes(icon = icon, color = type),
-    size         = 2,
-    dpi          = 100,
-    legend_icons = TRUE
-  ) +
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+ggplot(data = df_processed, aes(icon = icon, color = type)) +
+  geom_pop(size = 2, dpi = 100, legend_icons = TRUE) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
-  scale_legend_icon(size = 5) +
-  theme_pop() +
-  labs(
-    title    = "Mexico Population by Sex (2024)",
-    subtitle = "Each icon represents ~1% of the total population",
-    color    = "Sex"
-  )
+  theme_pop(base_size=15) +
+  theme(plot.title = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text = element_text(color = "white"),
+        legend.title = element_text(color = "white"),
+        legend.position = "bottom") +
+  scale_legend_icon(size = 10) +
+  labs(title    = "Mexico Population by Sex (2024)",
+       subtitle = "Each icon represents ~1% of the total population",
+       color    = "Sex")
 ```
 
 ---
 
 ## Using Your Own Data
 
-You don't need `process_data()`. Any data frame with one row per icon works directly:
+You don't need `process_data()`. As long as the dataframe doesn't have more than 1,000 rows, it works. You can also do a facet or use `cowplot` so you can have more panes. Any data frame with one row per icon works directly:
+
+```{r}
+#| label: own-data-querry
+#| eval: false
+fa_icons(query = "bed")
+
+```
+
+```{r}
+#| label: own-data-querry-1
+#| echo: false
+#| message: false
+#| warning: false
+
+library(reactable)
+library(reactablefmtr)
+
+fa_icons(query = "bed") %>% 
+  reactable(
+    searchable = TRUE,
+    filterable = TRUE,
+    defaultPageSize = 10
+  )
+
+```
+
+
+We created a simple data frame with 100 rows, representing a population of patients with three health statuses: "Healthy", "At Risk", and "Ill". Each status is mapped to a different icon.
+
 
 ```{r}
 #| label: own-data
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+
+
+# Our own data frame with one row per icon
 df_simple <- data.frame(
   group = c(rep("Healthy", 70), rep("At Risk", 20), rep("Ill", 10)),
   icon  = c(rep("person", 70), rep("person-half-dress", 20), rep("bed-pulse", 10))
 )
 
+# Set factor levels to control legend order
 df_simple$group <- factor(df_simple$group, levels = c("Healthy", "At Risk", "Ill"))
 
-ggplot() +
-  geom_pop(
-    data         = df_simple,
-    aes(icon = icon, color = group),
-    size         = 2,
-    dpi          = 100,
-    legend_icons = TRUE
-  ) +
+ggplot(data = df_simple, aes(icon = icon, color = group)) +
+  geom_pop(size = 2, dpi = 100, legend_icons = TRUE) +
   scale_color_manual(values = c(
     "Healthy"  = "#43A047",
     "At Risk"  = "#FFB300",
     "Ill"      = "#E53935"
   )) +
-  scale_legend_icon(size = 5) +
-  theme_pop() +
-  labs(
-    title    = "Simulated Patient Population (n = 100)",
-    subtitle = "Each icon represents one patient",
-    color    = "Status"
-  )
+  theme_pop(base_size = 15) +
+  theme(plot.title = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text = element_text(color = "white"),
+        legend.title = element_text(color = "white"),
+        legend.position = "bottom") +
+  scale_legend_icon(size = 8) +
+  labs( title    = "Simulated Patient Population (n = 100)",
+        subtitle = "Each icon represents one patient",
+        color    = "Status")
+
 ```
 
 ---
@@ -191,5 +269,3 @@ ggplot() +
 - **`geom_icon_point()`** — use icons as scatter plot points on any x/y data
 - **Faceting** — split your population chart by group using `facet_wrap()` or `geofacet`
 - **Themes** — explore `theme_pop()` and customize with standard ggplot2 theme options
-
-Visit the [ggpop website](https://jurjoroa.github.io/ggpop/) for the full function reference and more examples.
