@@ -1,0 +1,2189 @@
+---
+title: "Finding Icons with fa_icons()"
+format:
+  html:
+    code-fold: false
+    code-summary: "Show the code"
+vignette: >
+  %\VignetteIndexEntry{Finding Icons with fa_icons()}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+## What is `fa_icons()`?
+
+`fa_icons()` is a wrapper functions from fontawesome that lets you search and browse the Font Awesome icons available for use in `geom_pop()` and `geom_icon_point()`. Instead of looking for the icon, you can filter by keyword, category, or regular expression and get back a tidy tibble — or a plain character vector — ready to use in your plot code.
+
+```{r}
+#| label: load
+#| message: false
+#| warning: false
+#| echo: false
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+```
+
+---
+
+## Listing All Icons
+
+Called with no arguments, `fa_icons()` returns every available Font Awesome icon with its primary semantic category.
+
+```{r}
+#| label: all-icons
+fa_icons()
+```
+
+Each row contains:
+
+| Column | Description |
+|:---|:---|
+| `icon` | Icon name to pass to `geom_pop()` / `geom_icon_point()` |
+| `primary_class` | The first matching semantic category, or `NA` if unclassified |
+
+---
+
+## Searching by Name
+
+Pass a string to `query` to filter icons whose names contain that substring.
+
+```{r}
+#| label: query-fixed
+fa_icons(query = "person")
+```
+
+```{r}
+#| label: query-heart
+fa_icons(query = "heart")
+```
+
+---
+
+## Regex Search
+
+Set `regex = TRUE` to use a Perl-compatible regular expression instead of a fixed string.
+
+```{r}
+#| label: regex-arrow
+# All icons whose name starts with "arrow"
+fa_icons(query = "^arrow", regex = TRUE)
+```
+
+```{r}
+#| label: regex-alternation
+# Exact match for two specific icons
+fa_icons(query = "^(star|circle)$", regex = TRUE)
+```
+
+---
+
+## Filtering by Category
+
+Use `category` to return only icons that belong to a semantic group.
+
+```{r}
+#| label: category
+fa_icons(category = "people_users")
+```
+
+Combine `query` and `category` to narrow results further.
+
+```{r}
+#| label: query-and-category
+fa_icons(query = "person", category = "people_users")
+```
+
+---
+
+## Quick Vector Lookup
+
+Set `as_vector = TRUE` to skip the tibble and get a plain sorted character vector. This is the fastest way to browse names or pipe them into other code.
+
+```{r}
+#| label: as-vector
+fa_icons(query = "house", as_vector = TRUE)
+```
+
+```{r}
+#| label: as-vector-category
+fa_icons(category = "animals", as_vector = TRUE)
+```
+
+---
+
+## Showing All Classes
+
+By default only `primary_class` is returned. Set `primary_only = FALSE` to also get the `all_classes` list-column, showing every category each icon matches.
+
+```{r}
+#| label: all-classes
+fa_icons(query = "heart", primary_only = FALSE)
+```
+
+---
+
+## Hiding Unclassified Icons
+
+Some icons do not match any category. Set `include_unclassified = FALSE` to drop them.
+
+```{r}
+#| label: classified-only
+fa_icons(query = "user", include_unclassified = FALSE)
+```
+
+---
+
+## Using a Custom Class Map
+
+Supply your own named list of `category = regex` pairs to `class_map` for domain-specific classification.
+
+```{r}
+#| label: custom-map
+my_map <- list(
+  health   = "^(heart|lungs|brain|virus|syringe|stethoscope|bandage|dna)(-|$)",
+  mobility = "^(wheelchair|person-walking|bicycle|car|bus)(-|$)"
+)
+
+fa_icons(class_map = my_map, include_unclassified = FALSE)
+```
+
+---
+
+## From Discovery to Plot
+
+A common workflow: search for icons, pick ones you like, then put them directly into a geom.
+
+```{r}
+#| label: workflow-search
+# 1. Find candidate icons
+fa_icons(query = "person", category = "people_users", as_vector = TRUE)
+```
+
+```{r}
+#| label: workflow-plot
+#| message: false
+#| fig-width: 10
+#| fig-height: 10
+#| code-fold: true
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+
+# 2. Use the chosen icons in a population chart
+df_pop <- data.frame(
+  status = c(rep("Healthy", 70), rep("At Risk", 30)),
+  icon   = c(rep("person", 70), rep("person-half-dress", 30))
+)
+
+ggplot() +
+  geom_pop(
+    data = df_pop,
+    aes(icon = icon, color = status),
+    size = 2.5, dpi = 100, legend_icons = TRUE
+  ) +
+  scale_color_manual(values = c(
+    "Healthy"  = "#43A047",
+    "At Risk"  = "#FFB300"
+  )) +
+  theme_pop() +
+  scale_legend_icon(size = 8) +
+  labs(
+    title    = "Simulated Patient Population (n = 100)",
+    subtitle = "Each icon represents one person",
+    color    = "Status"
+  ) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", color="white"),
+    plot.subtitle = element_text(size = 12, color="white"),
+    legend.position = "bottom",
+    legend.text = element_text(size = 12, color="white"),
+    legend.title = element_text(size = 14, face = "bold", color="white"))
+```
+
+---
+
+## Parameter Reference
+
+| Parameter | Default | Description |
+|:---|:---|:---|
+| `query` | `NULL` | Fixed string or regex to filter icon names |
+| `category` | `NULL` | One or more category names to filter by |
+| `regex` | `FALSE` | Treat `query` as a Perl-compatible regular expression |
+| `classify` | `TRUE` | Add a `primary_class` column to the output |
+| `include_unclassified` | `TRUE` | Keep icons with no matching category (`NA`) |
+| `class_map` | internal | Named list mapping category labels to regex patterns |
+| `primary_only` | `TRUE` | Return only `primary_class`; set `FALSE` to add `all_classes` |
+| `as_vector` | `FALSE` | Return a plain sorted character vector instead of a tibble |
+
+
+---
+
+## Icon Gallery by Category
+
+The gallery below lets you identify every available icon in fontawesome package. Each category is drawn as a `geom_pop()` chart — one icon per type — with the legend showing the actual icon image alongside its name. All icons within a category share a single colour. Pick the ones you like the most for your analysis.
+
+```{r}
+#| label: gallery-setup
+#| message: false
+#| warning: false
+#| echo: FALSE
+
+# All classified icons
+df_all <- fa_icons(include_unclassified = FALSE)
+
+# One colour per category — semantically grouped
+# Optimized for background: #01394f (deep teal/navy)
+category_colours <- c(
+  # People & Accessibility
+  people_users        = "#4FC3F7",  # Light cyan blue
+  faces_emotions      = "#FFD54F",  # Warm yellow
+  hands_arms          = "#81D4FA",  # Sky blue
+  accessibility       = "#64B5F6",  # Medium blue
+  gender_identity     = "#B39DDB",  # Soft purple
+  people_social       = "#9FA8DA",  # Periwinkle
+  
+  # UI & Navigation
+  ui_navigation       = "#CE93D8",  # Light purple
+  ui_actions          = "#E1BEE7",  # Pale purple
+  ui_controls         = "#BA68C8",  # Medium purple
+  text_formatting     = "#AB47BC",  # Deep purple
+  arrows_directional  = "#EA80FC",  # Bright purple
+  arrows_extra        = "#F48FB1",  # Pink
+  location_navigation = "#FF6090",  # Coral pink
+  
+  # Files & Data
+  files_folders       = "#90A4AE",  # Blue grey
+  office_docs         = "#B0BEC5",  # Light blue grey
+  charts_analytics    = "#78909C",  # Medium grey blue
+  
+  # Communication & Technology
+  communication       = "#4DD0E1",  # Cyan
+  media_controls      = "#26C6DA",  # Dark cyan
+  devices_hardware    = "#00ACC1",  # Deep cyan
+  tech_science        = "#80DEEA",  # Pale cyan
+  
+  # Security
+  security_privacy    = "#A7FFEB",  # Mint green
+  
+  # Money & Shopping
+  money_currency      = "#66BB6A",  # Green
+  shopping_commerce   = "#81C784",  # Light green
+  
+  # Medical & Emergency
+  medical_health      = "#EF5350",  # Red
+  medical_extra       = "#E57373",  # Light red
+  emergency_hazards   = "#FF7043",  # Orange red
+  
+  # Transport & Travel
+  transport_ground    = "#9575CD",  # Medium purple
+  transport_air_sea   = "#B39DDB",  # Light purple
+  travel_places       = "#D1C4E9",  # Pale lavender
+  transport_extra     = "#7E57C2",  # Deep purple
+  
+  # Buildings & Places
+  buildings_places    = "#A1887F",  # Warm grey
+  government_law      = "#BCAAA4",  # Light brown
+  buildings_extra     = "#D7CCC8",  # Pale brown
+  
+  # Religion
+  religion_symbols    = "#FFB74D",  # Orange
+  religion_extra      = "#FFCC80",  # Light orange
+  
+  # Food, Home & Household
+  food_drink          = "#FF9800",  # Orange
+  household           = "#FFB74D",  # Light orange
+  food_extra          = "#FFCC80",  # Pale orange
+  
+  # Nature & Environment
+  nature              = "#66BB6A",  # Green
+  weather             = "#4FC3F7",  # Sky blue
+  nature_extra        = "#AED581",  # Light lime
+  
+  # Animals
+  animals             = "#A1887F",  # Tan
+  
+  # Sports, Games & Hobbies
+  sports              = "#26A69A",  # Teal
+  games_hobbies       = "#4DB6AC",  # Light teal
+  
+  # Tools & Industry
+  tools_construction  = "#A1887F",  # Brown grey
+  industry_energy     = "#8D6E63",  # Deep brown
+  
+  # Time & Symbols
+  time                = "#7986CB",  # Indigo
+  shapes_symbols      = "#9FA8DA",  # Light indigo
+  
+  # Clothing
+  clothing            = "#F06292",  # Pink
+  
+  # Entertainment
+  entertainment       = "#EC407A",  # Hot pink
+  
+  # Packaging & Objects
+  packaging           = "#DCE775",  # Lime yellow
+  objects_misc        = "#D4E157",  # Chartreuse
+  
+  # Alphanumeric
+  alphanumeric        = "#CFD8DC",  # Light grey
+  
+  # Brands
+  brands_social       = "#42A5F5",  # Blue
+  brands_dev_cloud    = "#26A69A",  # Teal
+  brands_commerce     = "#FF7043",  # Coral
+  brands_misc         = "#AB47BC"   # Purple
+)
+
+```
+
+
+### People & Accessibility
+
+```{r}
+#| label: gallery-people-users
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "people_users")  %>% 
+  dplyr::mutate(type = icon)%>% 
+  #Get last 42 icons
+  dplyr::slice_tail(n = 42)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["people_users"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["people_users"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: people users", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),         
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### People Users
+
+```{r}
+#| label: gallery-people-users-2
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "people_users")  %>% 
+  dplyr::mutate(type = icon) %>% 
+  #Get first 42 icons
+  dplyr::slice_head(n = 42)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["people_users"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["people_users"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: people users", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10), 
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### Faces & Emotions
+
+```{r}
+#| label: gallery-faces-emotions
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "faces_emotions") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["faces_emotions"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["faces_emotions"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: faces emotions", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10), 
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### Hands & Arms
+
+```{r}
+#| label: gallery-hands-arms
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "hands_arms") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["hands_arms"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["hands_arms"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: hands arms", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+
+```
+
+#### Accessibility
+
+```{r}
+#| label: gallery-accessibility
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "accessibility") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["accessibility"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["accessibility"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: accessibility", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10), 
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+
+
+```
+
+
+
+#### Gender
+
+```{r}
+#| label: gallery-gender-identity
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "gender_identity") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["gender_identity"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["gender_identity"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: gender identity", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10), 
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+#### People Social
+
+```{r}
+#| label: gallery-people-social
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "people_social") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["people_social"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["people_social"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: people social", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10), 
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+### UI & Navigation
+
+
+```{r}
+#| label: gallery-ui-navigation
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "ui_navigation") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["ui_navigation"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["ui_navigation"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: ui navigation", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10), 
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### UI Actions
+
+```{r}
+#| label: gallery-ui-actions
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "ui_actions") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["ui_actions"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["ui_actions"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: ui actions", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10), 
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### UI Controls
+
+```{r}
+#| label: gallery-ui-controls-1
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "ui_controls") %>% 
+  dplyr::mutate(type = icon)
+
+# First half
+df_cat_1 <- df_cat %>% 
+  dplyr::slice(1:ceiling(nrow(df_cat)/2))
+
+ggplot(df_cat_1) +
+  geom_pop(aes(icon = icon), color = category_colours[["ui_controls"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["ui_controls"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: ui controls (1/2)", subtitle = paste(nrow(df_cat_1), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10), 
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### UI Controls (continued)
+
+```{r}
+#| label: gallery-ui-controls-2
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "ui_controls") %>% 
+  dplyr::mutate(type = icon)
+
+# Second half
+df_cat_2 <- df_cat %>% 
+  dplyr::slice((ceiling(nrow(df_cat)/2) + 1):nrow(df_cat))
+
+ggplot(df_cat_2) +
+  geom_pop(aes(icon = icon), color = category_colours[["ui_controls"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["ui_controls"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: ui controls (2/2)", subtitle = paste(nrow(df_cat_2), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10), 
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### Text Formatting
+
+```{r}
+#| label: gallery-text-formatting
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "text_formatting") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["text_formatting"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["text_formatting"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: text formatting", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+
+```
+
+
+#### Directional Arrows
+
+```{r}
+#| label: gallery-arrows-directional-1
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "arrows_directional") %>% 
+  dplyr::mutate(type = icon)
+
+# First half
+df_cat_1 <- df_cat %>% 
+  dplyr::slice(1:ceiling(nrow(df_cat)/2))
+
+ggplot(df_cat_1) +
+  geom_pop(aes(icon = icon), color = category_colours[["arrows_directional"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["arrows_directional"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: arrows directional (1/2)", subtitle = paste(nrow(df_cat_1), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Directional Arrows (continued)
+
+```{r}
+#| label: gallery-arrows-directional-2
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "arrows_directional") %>% 
+  dplyr::mutate(type = icon)
+
+# Second half
+df_cat_2 <- df_cat %>% 
+  dplyr::slice((ceiling(nrow(df_cat)/2) + 1):nrow(df_cat))
+
+ggplot(df_cat_2) +
+  geom_pop(aes(icon = icon), color = category_colours[["arrows_directional"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["arrows_directional"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: arrows directional (2/2)", subtitle = paste(nrow(df_cat_2), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### Extra Arrows
+
+```{r}
+#| label: gallery-arrows-extra
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "arrows_extra") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["arrows_extra"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["arrows_extra"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: arrows extra", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### Location & Navigation
+
+```{r}
+#| label: gallery-location-navigation
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "location_navigation") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["location_navigation"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+    geom_text(aes(label = type), color = category_colours[["location_navigation"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: location navigation", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+### Files & Data
+
+```{r}
+#| label: gallery-files-folders
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "files_folders") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["files_folders"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["files_folders"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: files folders", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title =   element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+#### Office & Documents
+
+```{r}
+#| label: gallery-office-docs
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "office_docs") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["office_docs"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["office_docs"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: office docs", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+#### Charts & Analytics
+
+```{r}
+#| label: gallery-charts-analytics
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "charts_analytics") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["charts_analytics"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["charts_analytics"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: charts analytics", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+### Communication & Technology
+
+```{r}
+#| label: gallery-communication
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "communication") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["communication"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["communication"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: communication", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+
+
+```
+
+
+#### Media Controls
+
+```{r}
+#| label: gallery-media-controls
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "media_controls") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["media_controls"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["media_controls"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: media controls", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+
+
+```
+
+
+
+#### Devices & Hardware
+
+```{r}
+#| label: gallery-devices-hardware
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "devices_hardware") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["devices_hardware"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["devices_hardware"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: devices hardware", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### Tech & Science
+
+```{r}
+#| label: gallery-tech-science
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "tech_science") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["tech_science"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["tech_science"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: tech science", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Charts & Analytics
+
+```{r}
+#| label: gallery-security-privacy
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "security_privacy")  %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["security_privacy"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["security_privacy"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: security privacy", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### Money & Currency
+
+```{r}
+#| label: gallery-money-currency
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "money_currency") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["money_currency"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["money_currency"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: money currency", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+```
+
+
+#### Media Controls
+
+```{r}
+#| label: gallery-shopping-commerce
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "shopping_commerce") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["shopping_commerce"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["shopping_commerce"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: shopping commerce", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+### Medical & Emergency
+
+```{r}
+#| label: gallery-medical-health
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "medical_health") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["medical_health"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["medical_health"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: medical health", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### Medical Extra
+
+```{r}
+#| label: gallery-medical-extra
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "medical_extra") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["medical_extra"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["medical_extra"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: medical extra", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+#### Emergency Hazards
+
+```{r}
+#| label: gallery-emergency-hazards
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "emergency_hazards") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["emergency_hazards"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["emergency_hazards"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: emergency hazards", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+### Transport & Travel
+
+```{r}
+#| label: gallery-transport-ground
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "transport_ground") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["transport_ground"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["transport_ground"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: transport ground", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Air & Sea Transport
+
+```{r}
+#| label: gallery-transport-air-sea
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "transport_air_sea") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["transport_air_sea"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["transport_air_sea"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: transport air sea", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Travel Places
+
+```{r}
+#| label: gallery-travel-places
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "travel_places") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["travel_places"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["travel_places"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: travel places", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Transport Extra
+
+```{r}
+#| label: gallery-transport-extra
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "transport_extra") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["transport_extra"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["transport_extra"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: transport extra", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+
+### Buildings & Places
+
+```{r}
+#| label: gallery-buildings-places-1
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "buildings_places") %>% 
+  dplyr::mutate(type = icon)
+
+# First half
+df_cat_1 <- df_cat %>% 
+  dplyr::slice(1:ceiling(nrow(df_cat)/2))
+
+ggplot(df_cat_1) +
+  geom_pop(aes(icon = icon), color = category_colours[["buildings_places"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["buildings_places"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: buildings places (1/2)", subtitle = paste(nrow(df_cat_1), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+```
+
+#### Buildings & Places (continued)
+
+```{r}
+#| label: gallery-buildings-places-2
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "buildings_places") %>% 
+  dplyr::mutate(type = icon)
+
+# Second half
+df_cat_2 <- df_cat %>% 
+  dplyr::slice((ceiling(nrow(df_cat)/2) + 1):nrow(df_cat))
+
+ggplot(df_cat_2) +
+  geom_pop(aes(icon = icon), color = category_colours[["buildings_places"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["buildings_places"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: buildings places (2/2)", subtitle = paste(nrow(df_cat_2), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+```
+
+#### Government & Law
+
+```{r}
+#| label: gallery-government-law
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "government_law") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["government_law"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["government_law"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: government law", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+#### Buildings Extra
+
+```{r}
+#| label: gallery-buildings-extra
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "buildings_extra") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["buildings_extra"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["buildings_extra"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: buildings extra", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+### Religion
+
+```{r}
+#| label: gallery-religion-symbols
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "religion_symbols") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["religion_symbols"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["religion_symbols"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: religion symbols", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Religion Extra
+
+```{r}
+#| label: gallery-religion-extra
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "religion_extra") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["religion_extra"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["religion_extra"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: religion extra", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+### Food, Home & Household
+
+```{r}
+#| label: gallery-food-drink
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "food_drink") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["food_drink"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["food_drink"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: food drink", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Household
+
+```{r}
+#| label: gallery-household
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "household") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["household"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["household"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: household", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+#### Food Extra
+
+```{r}
+#| label: gallery-food-extra
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "food_extra") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["food_extra"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["food_extra"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: food extra", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+### Nature & Environment
+
+```{r}
+#| label: gallery-nature
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "nature") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["nature"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["nature"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: nature", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),  
+        plot.title = element_text(color="white"),          
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Weather
+
+```{r}
+#| label: gallery-weather
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "weather") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["weather"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["weather"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: weather", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Nature Extra
+
+```{r}
+#| label: gallery-nature-extra
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "nature_extra") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["nature_extra"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["nature_extra"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: nature extra", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+### Animals
+
+```{r}
+#| label: gallery-animals
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "animals") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["animals"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["animals"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: animals", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+### Sports, Games & Hobbies
+
+```{r}
+#| label: gallery-sports
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "sports") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["sports"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["sports"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: sports", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+
+#### Games & Hobbies
+
+```{r}
+#| label: gallery-games-hobbies
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "games_hobbies") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["games_hobbies"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["games_hobbies"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: games hobbies", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+### Tools & Industry
+
+
+```{r}
+#| label: gallery-tools-construction
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "tools_construction") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["tools_construction"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["tools_construction"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: tools construction", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+
+
+#### Energy & Industry
+
+```{r}
+#| label: gallery-industry-energy
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "industry_energy") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["industry_energy"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["industry_energy"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: industry energy", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+### Time & Symbols
+
+```{r}
+#| label: gallery-time
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "time") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["time"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["time"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: time", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+#### Shapes
+
+```{r}
+#| label: gallery-shapes-symbols-1
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "shapes_symbols") %>% 
+  dplyr::mutate(type = icon)
+
+# First half
+df_cat_1 <- df_cat %>% 
+  dplyr::slice(1:ceiling(nrow(df_cat)/2))
+
+ggplot(df_cat_1) +
+  geom_pop(aes(icon = icon), color = category_colours[["shapes_symbols"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["shapes_symbols"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: shapes symbols (1/2)", subtitle = paste(nrow(df_cat_1), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+```
+
+#### Shapes (continued)
+
+```{r}
+#| label: gallery-shapes-symbols-2
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "shapes_symbols") %>% 
+  dplyr::mutate(type = icon)
+
+# Second half
+df_cat_2 <- df_cat %>% 
+  dplyr::slice((ceiling(nrow(df_cat)/2) + 1):nrow(df_cat))
+
+ggplot(df_cat_2) +
+  geom_pop(aes(icon = icon), color = category_colours[["shapes_symbols"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["shapes_symbols"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: shapes symbols (2/2)", subtitle = paste(nrow(df_cat_2), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+```
+
+### Clothing
+
+```{r}
+#| label: gallery-clothing
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "clothing") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["clothing"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["clothing"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: clothing", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+### Entertainment
+
+```{r}
+#| label: gallery-entertainment
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "entertainment") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["entertainment"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["entertainment"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: entertainment", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+### Packaging & Objects
+
+```{r}
+#| label: gallery-packaging
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "packaging") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["packaging"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["packaging"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: packaging", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+#### Objects Miscellaneous
+
+```{r}
+#| label: gallery-objects-misc
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "objects_misc") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["objects_misc"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["objects_misc"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: objects misc", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+### Alphanumeric
+
+```{r}
+#| label: gallery-alphanumeric
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "alphanumeric") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["alphanumeric"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["alphanumeric"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: alphanumeric", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+### Brands
+
+```{r}
+#| label: gallery-brands-social
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "brands_social") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_social"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_social"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands social", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+#### Brands - Development & Cloud
+
+```{r}
+#| label: gallery-brands-dev-cloud
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "brands_dev_cloud") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_dev_cloud"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_dev_cloud"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands dev cloud", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+#### Brands Commerce
+
+```{r}
+#| label: gallery-brands-commerce
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "brands_commerce") %>% 
+  dplyr::mutate(type = icon)
+
+ggplot(df_cat) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_commerce"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_commerce"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands commerce", subtitle = paste(nrow(df_cat), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+
+```
+
+
+
+#### Brands - Miscellaneous
+
+```{r}
+#| label: gallery-brands-misc-1
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat <- dplyr::filter(df_all, primary_class == "brands_misc") %>% 
+  dplyr::mutate(type = icon)
+
+# First eighth
+df_cat_1 <- df_cat %>% 
+  dplyr::slice(1:ceiling(nrow(df_cat)/8))
+
+ggplot(df_cat_1) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_misc"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_misc"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands misc (1/8)", subtitle = paste(nrow(df_cat_1), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+
+```
+
+
+
+
+```{r}
+#| label: gallery-brands-misc-2
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat_2 <- df_cat %>% 
+  dplyr::slice((ceiling(nrow(df_cat)/8) + 1):(2 * ceiling(nrow(df_cat)/8)))
+
+ggplot(df_cat_2) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_misc"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_misc"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands misc (2/8)", subtitle = paste(nrow(df_cat_2), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+```
+
+
+```{r}
+#| label: gallery-brands-misc-3
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat_3 <- df_cat %>% 
+  dplyr::slice((2 * ceiling(nrow(df_cat)/8) + 1):(3 * ceiling(nrow(df_cat)/8)))
+
+ggplot(df_cat_3) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_misc"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_misc"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands misc (3/8)", subtitle = paste(nrow(df_cat_3), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+```
+
+
+
+
+```{r}
+#| label: gallery-brands-misc-4
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat_4 <- df_cat %>% 
+  dplyr::slice((3 * ceiling(nrow(df_cat)/8) + 1):(4 * ceiling(nrow(df_cat)/8)))
+
+ggplot(df_cat_4) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_misc"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_misc"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands misc (4/8)", subtitle = paste(nrow(df_cat_4), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+```
+
+
+```{r}
+#| label: gallery-brands-misc-5
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat_5 <- df_cat %>% 
+  dplyr::slice((4 * ceiling(nrow(df_cat)/8) + 1):(5 * ceiling(nrow(df_cat)/8)))
+
+ggplot(df_cat_5) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_misc"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_misc"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands misc (5/8)", subtitle = paste(nrow(df_cat_5), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+```
+
+
+
+```{r}
+#| label: gallery-brands-misc-6
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat_6 <- df_cat %>% 
+  dplyr::slice((5 * ceiling(nrow(df_cat)/8) + 1):(6 * ceiling(nrow(df_cat)/8)))
+
+ggplot(df_cat_6) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_misc"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_misc"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands misc (6/8)", subtitle = paste(nrow(df_cat_6), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+```
+
+
+
+```{r}
+#| label: gallery-brands-misc-7
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat_7 <- df_cat %>% 
+  dplyr::slice((6 * ceiling(nrow(df_cat)/8) + 1):(7 * ceiling(nrow(df_cat)/8)))
+
+ggplot(df_cat_7) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_misc"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_misc"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands misc (7/8)", subtitle = paste(nrow(df_cat_7), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+```
+
+
+
+```{r}
+#| label: gallery-brands-misc-8
+#| echo: FALSE
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+df_cat_8 <- df_cat %>% 
+  dplyr::slice((7 * ceiling(nrow(df_cat)/8) + 1):nrow(df_cat))
+
+ggplot(df_cat_8) +
+  geom_pop(aes(icon = icon), color = category_colours[["brands_misc"]], size = 2.5, dpi = 100, legend_icons = FALSE) +
+  geom_text(aes(label = type), color = category_colours[["brands_misc"]], nudge_y = 0.1, size = 4) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  scale_x_continuous(NULL, breaks = NULL) +
+  labs(title = "primary_class: brands misc (8/8)", subtitle = paste(nrow(df_cat_8), "icons")) +
+  theme_pop() +
+  theme(legend.position = "none", plot.margin = margin(10, 10, 25, 10),
+        plot.title = element_text(color="white"), 
+        plot.subtitle = element_text(color="white"))
+```
