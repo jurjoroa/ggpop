@@ -274,7 +274,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   layer_out$params$.ggpop_facet <- if (.facet_explicit) facet_col else NULL
 
   structure(
-    list(layer = layer_out, facet_col = if (.facet_explicit) facet_col else NULL),
+    list(layer = layer_out, facet_col = if (.facet_explicit) facet_col else NULL,
+         df_pop = df_final),
     class = "ggpop_geom_pop"
   )
 }

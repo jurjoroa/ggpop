@@ -74,6 +74,16 @@ ggplot_add.ggpop_geom_pop <- function(object, plot, object_name, ...) {
   # add the layer
   plot <- plot + object$layer
 
+  # Expose geom_pop's internally computed coordinates (x1, y1) so that
+  # downstream layers (geom_text, geom_label, etc.) can inherit x and y
+  # without the user specifying them explicitly.
+  if (!is.null(object$df_pop)) {
+    plot$data <- object$df_pop
+    plot$mapping[["icon"]] <- NULL                        # consumed by geom_pop
+    if (!"x" %in% names(plot$mapping)) plot$mapping[["x"]] <- as.name("x1")
+    if (!"y" %in% names(plot$mapping)) plot$mapping[["y"]] <- as.name("y1")
+  }
+
   # If geom_pop had an explicit facet=, automatically add facet_wrap(~facet_col)
   if (!is.null(object$facet_col) && nzchar(object$facet_col)) {
     # If plot already has a facet, do not override it
