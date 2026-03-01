@@ -53,15 +53,6 @@
 #' # Regex search — all icons starting with "arrow"
 #' fa_icons(query = "^arrow", regex = TRUE)
 #'
-# Returns the Font Awesome icon name list, fetching from fontawesome once per
-# session and caching the result in .ggpop_env for all subsequent calls.
-.get_fa_icons <- function() {
-  if (is.null(.ggpop_env$fa_icon_names)) {
-    .ggpop_env$fa_icon_names <- fontawesome::fa_metadata()$icon_names
-  }
-  .ggpop_env$fa_icon_names
-}
-
 #' @export
 fa_icons <- function(query                = NULL,
                      category             = NULL,
@@ -122,7 +113,7 @@ fa_icons <- function(query                = NULL,
     )
 
   # ── Build class map and validate categories ──────────────────────────────────
-  class_map <- class_map %||% .fa_default_class_map()
+  if (is.null(class_map)) class_map <- .fa_default_class_map()
 
   if (!is.null(category)) {
     bad <- setdiff(category, names(class_map))
@@ -222,6 +213,19 @@ fa_icons <- function(query                = NULL,
   if (as_vector) return(out$icon)
 
   out
+}
+
+# ── Internal helpers ──────────────────────────────────────────────────────────
+
+# Fetches Font Awesome icon names from fontawesome once per session and caches
+# the result in .ggpop_env. Subsequent calls return the cached vector instantly.
+#' @keywords internal
+#' @noRd
+.get_fa_icons <- function() {
+  if (is.null(.ggpop_env$fa_icon_names)) {
+    .ggpop_env$fa_icon_names <- fontawesome::fa_metadata()$icon_names
+  }
+  .ggpop_env$fa_icon_names
 }
 
 # ── Internal class map ────────────────────────────────────────────────────────
@@ -330,9 +334,8 @@ fa_icons <- function(query                = NULL,
       "^(bowl|bottle-water|bottle-droplet|candy-cane|carrot|champagne-glasses|cookie|egg|glass-water|jar|kitchen-set|mug|plate-wheat|spoon|whiskey-glass|wheat-awn)(-|$)",
     
     # ── Nature & environment ──────────────────────────────────────────────────
-    nature      = "^(leaf|seedling|tree|mountain|sun|moon|cloud|rainbow|snowflake|water|droplet|volcano|wind)(-|$)",
+    nature      = "^(leaf|seedling|recycle|tree|mountain|sun|moon|cloud|rainbow|snowflake|water|droplet|volcano|wind)(-|$)",
     weather     = "^(cloud|sun|snow|icicles|umbrella|temperature|hurricane|tornado)(-|$)",
-    environment = "^recycle(-|$)",
     
     nature_extra =
       "^(bore-hole|clover|hill-avalanche|hill-rockslide|locust|meteor|mound|plant-wilt|smog|snowman|snowplow|worm)(-|$)",
