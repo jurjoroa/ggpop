@@ -30,6 +30,8 @@ The simplest use case: a single icon for all points, with `color` carrying the g
 
 ```{r}
 #| label: basic
+fa_icons(query = "seedling")
+
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -55,6 +57,10 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 
 ```{r}
 #| label: mapped-icons
+fa_icons(query = "apple")
+fa_icons(query = "drumstick")
+fa_icons(query = "cheese")
+
 df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
                "Milk", "Cheese", "Yogurt"),
@@ -94,6 +100,9 @@ Map a continuous variable to `size` inside `aes()` to add a third dimension of i
 
 ```{r}
 #| label: size-mapping
+fa_icons(query = "apple")
+fa_icons(query = "spotify")
+
 df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
                  "Netflix", "Spotify", "Uber", "Airbnb"),
@@ -139,6 +148,10 @@ When `color` is mapped to a factor, the legend follows **factor level order**. `
 
 ```{r}
 #| label: factor-ordering
+fa_icons(query = "pills")
+fa_icons(query = "stethoscope")
+fa_icons(query = "hospital")
+
 df_health <- data.frame(
   country    = c("Chad", "Mali", "Niger", "Bolivia", "Egypt", "Morocco",
                  "Germany", "France", "Japan"),
