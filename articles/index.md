@@ -1,5 +1,12 @@
 # Articles
 
+### Finding Icons
+
+Search and browse Font Awesome icons available for use in ggpop.
+
+- [Finding Icons with
+  fa_icons()](https://jurjoroa.github.io/ggpop/articles/fa-icons.md):
+
 ### Data Preparation
 
 Prepare your data for ggpop.

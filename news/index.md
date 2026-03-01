@@ -59,6 +59,24 @@ been removed and the package has been finalized.
   [`ggimage::geom_image()`](https://rdrr.io/pkg/ggimage/man/geom_image.html)
   which does not honour this parameter
   ([\#337](https://github.com/jurjoroa/ggpop/issues/337)).
+- Added
+  [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
+  to allow users to search and list available Font Awesome icons by
+  name, category, or regex pattern. Results can be returned as a
+  classified tibble or a plain character vector. Icon names are cached
+  session-wide to avoid repeated metadata calls
+  ([\#340](https://github.com/jurjoroa/ggpop/issues/340)).
+- [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+  now exposes its internally computed coordinates to downstream layers.
+  Geoms such as
+  [`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html)
+  and
+  [`geom_label()`](https://ggplot2.tidyverse.org/reference/geom_text.html)
+  can be added after
+  [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+  without specifying `x` and `y` explicitly — they are inherited
+  automatically from the icon grid
+  ([\#341](https://github.com/jurjoroa/ggpop/issues/341)).
 
 ### Breaking Changes
 
@@ -66,8 +84,8 @@ been removed and the package has been finalized.
   standard ggplot2 annotation approaches
   ([\#279](https://github.com/jurjoroa/ggpop/issues/279)).
 - Finalized public function names and key glyph implementations for
-  `geom_pop` and `geom_icon_point`, standardizing the API. Existing code
-  relying on previous internal names may require updates
+  `geom_pop` and `geom_icon_point`, standardizing the package. Existing
+  code relying on previous internal names may require updates
   ([\#281](https://github.com/jurjoroa/ggpop/issues/281)).
 
 ### Issues Resolved in v1.7.0
@@ -87,6 +105,8 @@ Issues are listed in chronological merge order.
 - \#291
 - \#294
 - \#337
+- \#340
+- \#341
 
 ### Version
 

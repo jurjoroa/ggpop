@@ -2,6 +2,12 @@
 
 ## All functions
 
+- [`fa_categories()`](https://jurjoroa.github.io/ggpop/reference/fa_categories.md)
+  : List available Font Awesome icon categories
+
+- [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
+  : Search and list Font Awesome icons
+
 - [`fetch_df_coordinates()`](https://jurjoroa.github.io/ggpop/reference/fetch_df_coordinates.md)
   :
 

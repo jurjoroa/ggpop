@@ -20,6 +20,13 @@
 <!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Preparing Data with process_data()">
 <meta property="og:image" content="https://jurjoroa.github.io/ggpop/logo.png">
+<!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-CX1ZY99J1P"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-CX1ZY99J1P');
+</script>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -111,12 +118,12 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_sex_proc</span><span class="op">)</span></span></code></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>    type        n      prop
-1 female 67401427 0.5150612
+1   male 63459580 0.4849388
 2 female 67401427 0.5150612
 3 female 67401427 0.5150612
-4   male 63459580 0.4849388
+4 female 67401427 0.5150612
 5 female 67401427 0.5150612
-6   male 63459580 0.4849388</code></pre>
+6 female 67401427 0.5150612</code></pre>
 </div>
 </div>
 <p>The output contains:</p>
@@ -144,8 +151,8 @@
 <pre><code># A tibble: 2 × 3
   type   icons proportion
   &lt;chr&gt;  &lt;int&gt;      &lt;dbl&gt;
-1 female    56       51.5
-2 male      44       48.5</code></pre>
+1 female    53       51.5
+2 male      47       48.5</code></pre>
 </div>
 </div>
 <hr></section><section class="level2"><h2 id="multiple-groups">Multiple Groups<a class="anchor" aria-label="anchor" href="#multiple-groups"></a>
@@ -172,10 +179,10 @@
 <pre><code># A tibble: 4 × 2
   type  icons
   &lt;chr&gt; &lt;int&gt;
-1 East     33
-2 North    30
-3 South    22
-4 West     15</code></pre>
+1 East     42
+2 North    27
+3 South    19
+4 West     12</code></pre>
 </div>
 </div>
 <hr></section><section class="level2"><h2 id="hierarchical-grouping-with-high_group_var">Hierarchical Grouping with <code>high_group_var</code>
@@ -207,14 +214,14 @@
 <pre><code># A tibble: 8 × 3
   group type    icons
   &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-1 East  At Risk    48
-2 East  Healthy    52
-3 North At Risk    25
-4 North Healthy    75
+1 East  At Risk    47
+2 East  Healthy    53
+3 North At Risk    33
+4 North Healthy    67
 5 South At Risk    25
 6 South Healthy    75
-7 West  At Risk    21
-8 West  Healthy    79</code></pre>
+7 West  At Risk    22
+8 West  Healthy    78</code></pre>
 </div>
 </div>
 <hr></section><section class="level2"><h2 id="skipping-process_data">Skipping <code>process_data()</code>
