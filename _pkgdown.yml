@@ -92,11 +92,6 @@ navbar:
     - icon: fa-github
       href: https://github.com/jurjoroa/ggpop
 
-home:
-  links:
-    - text: Report a bug
-      href: https://github.com/jurjoroa/ggpop/issues
-
 authors:
   "Jorge A. Roa-Contreras":
     href: https://github.com/jurjoroa
