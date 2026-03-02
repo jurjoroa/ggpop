@@ -11,14 +11,18 @@ vignette: >
 ---
 
 ## What is ggpop?
+<div style="line-height: 0.6;"><br></div>
 
 `ggpop` is a `ggplot2` extension for creating **icon-based population charts**. Instead of bars or dots, each observation is represented by a Font Awesome icon — making your data immediately human and intuitive.
 
 This vignette walks you through the core workflow using `geom_pop()`, the main function for building proportional population grids.
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Installation
+<div style="line-height: 0.6;"><br></div>
 
 ```{r}
 #| label: install
@@ -30,9 +34,12 @@ install.packages("ggpop")
 remotes::install_github("jurjoroa/ggpop")
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## The `geom_pop()` Workflow
+<div style="line-height: 0.6;"><br></div>
 
 `geom_pop()` follows a simple three-step workflow:
 
@@ -40,9 +47,12 @@ remotes::install_github("jurjoroa/ggpop")
 2. **Assign icons** — map a Font Awesome icon name to each group
 3. **Plot** — pass the data to `ggplot()` and add `geom_pop()`
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Step 1: Your Data
+<div style="line-height: 0.6;"><br></div>
 
 We start with a simple data frame containing population counts by sex. This mirrors the kind of data you'd typically bring to `geom_pop()`.
 
@@ -62,9 +72,12 @@ df_pop_mx <- data.frame(
 df_pop_mx
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Step 2: Process the Data
+<div style="line-height: 0.6;"><br></div>
 
 `process_data()` converts raw population counts into a sampled data frame where each row represents one icon. It calculates group proportions and allocates icons accordingly.
 
@@ -82,9 +95,12 @@ head(df_processed)
 
 > **Note:** `process_data()` is optional. If your data already has one row per icon (up to 1,000 rows), you can pass it directly to `geom_pop()`.
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Step 3: Assign Icons
+<div style="line-height: 0.6;"><br></div>
 
 Add an `icon` column to your processed data. Icon names come from Font Awesome — use any of the 2,000+ free icons.
 
@@ -129,9 +145,12 @@ df_processed <- df_processed %>%
   ))
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Step 4: Plot
+<div style="line-height: 0.6;"><br></div>
 
 Pass the data to `ggplot()` and add `geom_pop()`. Map `icon` and `color` to your grouping variable.
 
@@ -163,9 +182,12 @@ ggplot() +
   )
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Scaling legend icons
+<div style="line-height: 0.6;"><br></div>
 
 Use `scale_legend_icon()` to control the legend icon size. You can also turn off legend icons with `legend_icons = FALSE` in `geom_pop()` if you prefer a text-only legend with dots
 
@@ -190,9 +212,12 @@ ggplot(data = df_processed, aes(icon = icon, color = type)) +
        color    = "Sex")
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Using Your Own Data
+<div style="line-height: 0.6;"><br></div>
 
 You don't need `process_data()`. As long as the dataframe doesn't have more than 1,000 rows, it works. You can also do a facet or use `cowplot` so you can have more panes. Any data frame with one row per icon works directly:
 
@@ -262,9 +287,91 @@ ggplot(data = df_simple, aes(icon = icon, color = group)) +
 
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
+---
+
+
+## Use geom_text() as a label
+<div style="line-height: 0.6;"><br></div>
+
+`geom_pop()` exposes its internally computed icon coordinates to downstream layers. This means you can add `geom_text()` — or any ggplot2 geom — **without specifying `x` or `y`**: they are inherited automatically from the icon grid.
+
+This is useful when you want labels to float over the icons instead of relying on a legend. Set `show.legend = FALSE` in `geom_pop()`.
+
+```{r}
+#| label: geom-text-label
+#| message: false
+#| warning: false
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+
+df_labeled <- data.frame(
+  name = c(
+    # Female names (50)
+    "María", "Guadalupe", "Juana", "Margarita", "Francisca",
+    "Teresa", "Rosa", "Antonia", "Ana", "Isabel",
+    "Carmen", "Josefina", "Laura", "Verónica", "Patricia",
+    "Leticia", "Silvia", "Elizabeth", "Adriana", "Martha",
+    "Elena", "Gabriela", "Alejandra", "Gloria", "Claudia",
+    "Lucía", "Beatriz", "Daniela", "Mónica", "Rocío",
+    "Alma", "Karla", "Yolanda", "Diana", "Sandra",
+    "Cecilia", "Paola", "Norma", "Angélica", "Irma",
+    "Liliana", "Brenda", "Jessica", "Susana", "Blanca",
+    "Marisol", "Carolina", "Luz", "Cristina", "Andrea",
+    # Male names (50)
+    "José", "Juan", "Luis", "Miguel", "Carlos",
+    "Francisco", "Antonio", "Jesús", "Pedro", "Manuel",
+    "Alejandro", "Jorge", "Rafael", "Roberto", "Fernando",
+    "Daniel", "Ricardo", "Javier", "Alberto", "Sergio",
+    "Raúl", "Enrique", "Guillermo", "Oscar", "Gerardo",
+    "Arturo", "Héctor", "Eduardo", "Armando", "David",
+    "Víctor", "Pablo", "Ángel", "Ramón", "Andrés",
+    "Mario", "Salvador", "Ignacio", "Gustavo", "Alfredo",
+    "Rubén", "Marco", "Rodrigo", "Joaquín", "Martín",
+    "Gabriel", "Felipe", "Ernesto", "Leonardo", "Sebastián"
+  ),
+  gender = c(rep("Female", 50), rep("Male", 50)),
+  icon = c(rep("person-dress", 50), rep("person", 50))
+)
+
+df_labeled$gender <- factor(df_labeled$gender,
+                            levels = c("Female", "Male"))
+
+ggplot(data = df_labeled, aes(icon = icon, color = gender)) +
+  geom_pop(size = 2, dpi = 100, show.legend = FALSE, ncol = 10) +
+  geom_text(
+    aes(label = name),
+    nudge_y       = 0.08,
+    size          = 4,
+    fontface      = "bold",
+    check_overlap = TRUE
+  ) +
+  scale_color_manual(values = c(
+    "Female" = "#E91E63",
+    "Male"   = "#2196F3"
+  )) +
+  theme_pop(base_size = 20) +
+  theme(
+    plot.title    = element_text(color = "white", hjust = .5),
+    plot.subtitle = element_text(color = "white", hjust = .5),
+    legend.position = "none"
+  ) +
+  labs(
+    title    = "100 Most Common Names in Mexico",
+    subtitle = "Pink icons represent female names, blue icons represent male names"
+  )
+
+```
+
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Next Steps
+<div style="line-height: 0.6;"><br></div>
 
 - **`geom_icon_point()`** — use icons as scatter plot points on any x/y data
 - **Faceting** — split your population chart by group using `facet_wrap()` or `geofacet`
