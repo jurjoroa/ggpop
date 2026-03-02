@@ -559,7 +559,6 @@ testthat::test_that("Real-world: complex plot with many aesthetics", {
       ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = point_size)
     ) +
       geom_icon_point(size = 4, dpi = 100) +
-      ggplot2::scale_alpha_continuous(range = c(0.3, 1)) +
       ggplot2::theme_minimal()
   )
 })

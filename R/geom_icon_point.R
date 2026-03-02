@@ -87,6 +87,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 05 Warnings for potential conflicts ----
 
+  validate_stroke_width_not_aesthetic(combined_mapping)
   warn_size_conflict(combined_mapping, .missing_size, size)
   warn_alpha_conflict(combined_mapping, extra_args)
 

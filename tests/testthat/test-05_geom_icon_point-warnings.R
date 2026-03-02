@@ -560,6 +560,43 @@ testthat::test_that("Warning: very large stroke_width (ggplot pattern)", {
   )
 })
 
+### 03.10.02 stroke_width inside aes() is ignored (ggplot pattern) -------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (ggplot pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, stroke_width = point_size)) +
+      geom_icon_point(dpi = 60),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
+### 03.10.03 stroke_width inside aes() is ignored (geom pattern) ---------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (geom pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_icon_point(
+        data = df_scatter,
+        ggplot2::aes(x = x, y = y, icon = icon, stroke_width = point_size),
+        dpi = 60
+      ),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
+### 03.10.04 stroke_width inside aes() is ignored (mixed pattern) --------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (mixed pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
+      geom_icon_point(
+        ggplot2::aes(icon = icon, stroke_width = point_size),
+        dpi = 60
+      ),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
 # ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************
