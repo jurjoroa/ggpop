@@ -45,17 +45,19 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item"><a class="nav-link" href="index.html"><span class="fa fa-home fa-lg"></span> Home</a></li>
-<li class="nav-item"><a class="nav-link" href="articles/index.html"><span class="fa fa-book"></span> Vignettes</a></li>
+<li class="active nav-item"><a class="nav-link" href="index.html"><span class="fa fa-home"></span> Home</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/index.html"><span class="fa fa-leanpub"></span> Vignettes</a></li>
 <li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-cubes"></span> Examples</button>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-rainbow"></span> Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="articles/examples-geom-pop.html">geom_pop()</a></li>
     <li><a class="dropdown-item" href="articles/examples-geom-icon-point.html">geom_icon_point()</a></li>
   </ul>
 </li>
-<li class="nav-item"><a class="nav-link" href="reference/index.html"><span class="fa fa-cogs"></span> Functions</a></li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html"><span class="fa fa-diagram-project"></span> Functions</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/tips.html"><span class="fa fa-lightbulb"></span> Tips</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html"><span class="fa fa-newspaper"></span> News</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/new-to-r.html"><span class="fa fa-brands fa-r-project"></span> New to R?</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/jurjoroa/ggpop"><span class="fa fa-github"></span></a></li>
@@ -156,6 +158,38 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jurjoroa/ggpop"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="key-functions">Key Functions<a class="anchor" aria-label="anchor" href="#key-functions"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Function</th>
+<th align="left">Purpose</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code><a href="reference/process_data.html">process_data()</a></code></td>
+<td align="left">Convert group counts → one row per icon</td>
+</tr>
+<tr class="even">
+<td align="left"><code><a href="reference/fa_icons.html">fa_icons()</a></code></td>
+<td align="left">Search 2,000+ Font Awesome icons from your R console</td>
+</tr>
+<tr class="odd">
+<td align="left"><code><a href="reference/theme_pop.html">theme_pop()</a></code></td>
+<td align="left">Built-in minimal theme (also <code><a href="reference/theme_pop_dark.html">theme_pop_dark()</a></code>, <code><a href="reference/theme_pop_minimal.html">theme_pop_minimal()</a></code>)</td>
+</tr>
+<tr class="even">
+<td align="left"><code><a href="reference/scale_legend_icon.html">scale_legend_icon()</a></code></td>
+<td align="left">Resize legend icons independently of the plot icons</td>
+</tr>
+</tbody>
+</table>
 <hr>
 </div>
 <div class="section level2">
@@ -264,13 +298,15 @@
 <p><code>home</code> · <code>user</code> · <code>envelope</code> · <code>bell</code> · <code>camera</code> · <code>cog</code> · <code>heart</code> · <code>calendar</code> · <code>cart-plus</code> · <code>check</code> · <code>cloud</code> · <code>comment</code> · <code>download</code> · <code>edit</code> · <code>file</code> · <code>filter</code> · <code>flag</code> · <code>folder</code> · <code>phone</code></p>
 <p align="center">
 <img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome_icons.png" width="70%" alt="fontawesome table preview"></p>
-<p>You can check the full list of icons at the <a href="https://fontawesome.com/icons?d=gallery&amp;p=2&amp;m=free" class="external-link">Font Awesome website</a>.</p>
+<p>You can check the full list of icons at the <a href="https://fontawesome.com/icons?d=gallery&amp;p=2&amp;m=free" class="external-link">Font Awesome website</a>, or search directly from R:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"person"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="id_5--plot-population-chart">5.- Plot population chart<a class="anchor" aria-label="anchor" href="#id_5--plot-population-chart"></a>
 </h3>
 <p>Now we can proceed to plot the population chart using the assigned icons.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -286,7 +322,7 @@
 <h4 id="id_51-improve-the-plot">5.1 Improve the plot<a class="anchor" aria-label="anchor" href="#id_51-improve-the-plot"></a>
 </h4>
 <p>Like any ggplot object, we can layer on themes, colors, titles, and a legend to make the chart presentation-ready.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_pop_mx_prop</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, group <span class="op">=</span> <span class="va">type</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1</span>, arrange <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">40</span><span class="op">)</span> <span class="op">+</span></span>
@@ -309,7 +345,7 @@
 <img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot2.png" alt="Example Plot"><div class="figcaption">Example Plot</div>
 </div>
 <p>We can also include more than two icons in the same plot. In this example, we will identify the people that are disabled, and we will change some parameters.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#1.- We load or create the data</span></span>
 <span><span class="va">df_pop_dis_mx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="st">"female"</span>, <span class="st">"disabled males"</span>, </span>
 <span>                                    <span class="st">"disabled females"</span><span class="op">)</span>,</span>
@@ -393,7 +429,7 @@
 <h3 id="example-1-diet--health-outcomes-by-food-group">Example 1: Diet &amp; Health Outcomes by Food Group<a class="anchor" aria-label="anchor" href="#example-1-diet--health-outcomes-by-food-group"></a>
 </h3>
 <p>Each point is a food item plotted by its calorie and protein content. Every food gets its own icon — apple, banana, orange, drumstick, bacon, fish, bottle-water, cheese, and jar — while color groups them by category.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span></span>
@@ -431,7 +467,7 @@
 <h3 id="example-2-tech-brand-revenue-vs-market-cap">Example 2: Tech Brand Revenue vs. Market Cap<a class="anchor" aria-label="anchor" href="#example-2-tech-brand-revenue-vs-market-cap"></a>
 </h3>
 <p>Each brand gets its own icon and color. Icon size is mapped to number of employees — bigger companies appear larger on the chart, adding a third dimension of information at a glance.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span></span>
@@ -487,7 +523,7 @@
 <h2 id="more-examples-facets--other-packages">More Examples: Facets &amp; Other Packages<a class="anchor" aria-label="anchor" href="#more-examples-facets--other-packages"></a>
 </h2>
 <p><code><a href="reference/geom_pop.html">geom_pop()</a></code> integrates natively with ggplot2’s faceting system, letting you compare populations across groups or geographies without any extra setup. Just add a <code>facet</code> parameter or a standard <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap()</a></code> / <code><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid()</a></code> call, and ggpop handles the rest.</p>
-<p>For even more examples, vignettes, and the full function reference, visit the <strong><a href="https://jurjoroa.github.io/ggpop/">ggpop package website</a></strong>.</p>
+<p>For even more examples, vignettes, tips, and the full function reference, visit the <strong><a href="https://jurjoroa.github.io/ggpop/">ggpop package website</a></strong>.</p>
 <div class="section level3">
 <h3 id="facet_wrap--transportation-methods-across-us-cities">
 <code>facet_wrap()</code> — Transportation Methods Across US Cities<a class="anchor" aria-label="anchor" href="#facet_wrap--transportation-methods-across-us-cities"></a>
@@ -524,24 +560,23 @@
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">ggpop2024</span>,</span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="dt">title</span>   = {ggpop: Visualizing Population Data},</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="dt">author</span>  = {Roa-Contreras, Jorge A. and </span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>             Soultanova, Ralitza and </span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>             Alarid-Escudero, Fernando and </span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>             Pineda-Antunez, Carlos},</span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="dt">year</span>    = {2024},</span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="dt">note</span>    = {R package version 1.7.0},</span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  <span class="dt">url</span>     = {https://github.com/jurjoroa/ggpop},</span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  <span class="dt">license</span> = {MIT}</span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">ggpop2024</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="dt">title</span>   = {ggpop: Visualizing Population Data},</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="dt">author</span>  = {Roa-Contreras, Jorge A. and </span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>             Soultanova, Ralitza and </span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>             Alarid-Escudero, Fernando and </span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>             Pineda-Antunez, Carlos},</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="dt">year</span>    = {2024},</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  <span class="dt">note</span>    = {R package version 1.7.0},</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="dt">url</span>     = {https://github.com/jurjoroa/ggpop},</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  <span class="dt">license</span> = {MIT}</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/jurjoroa/ggpop/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/jurjoroa/ggpop/issues" class="external-link">Report a bug</a></li>
 <li><a href="https://github.com/jurjoroa/ggpop/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
@@ -573,7 +608,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://orcid.org/0000-0002-3972-9793" class="external-link">Jorge A. Roa-Contreras</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-3972-9793" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<a href="https://github.com/jurjoroa" class="external-link">Jorge A. Roa-Contreras</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-3972-9793" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>
 <a href="https://orcid.org/0009-0000-9324-5653" class="external-link">Ralitza Soultanova</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0009-0000-9324-5653" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>
@@ -605,7 +640,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p><a href="https://jurjoroa.github.io/ggpop/"><img src="https://jurjoroa.github.io/ggpop/inst/figures/shp.png" height="40" alt="ggpop" style="vertical-align: middle; margin-right: 6px;"></a> Developed by <a href="https://orcid.org/0000-0002-3972-9793" class="external-link">Jorge A. Roa-Contreras</a>, <a href="https://orcid.org/0009-0000-9324-5653" class="external-link">Ralitza Soultanova</a>, <a href="https://orcid.org/0000-0001-5076-1172" class="external-link">Fernando Alarid-Escudero</a>, <a href="https://orcid.org/0000-0002-8352-7080" class="external-link">Carlos Pineda-Antunez</a>.</p>
+  <p><a href="https://jurjoroa.github.io/ggpop/"><img src="https://jurjoroa.github.io/ggpop/inst/figures/shp.png" height="40" alt="ggpop" style="vertical-align: middle; margin-right: 6px;"></a> Developed by <a href="https://github.com/jurjoroa" class="external-link">Jorge A. Roa-Contreras</a>, <a href="https://orcid.org/0009-0000-9324-5653" class="external-link">Ralitza Soultanova</a>, <a href="https://orcid.org/0000-0001-5076-1172" class="external-link">Fernando Alarid-Escudero</a>, <a href="https://orcid.org/0000-0002-8352-7080" class="external-link">Carlos Pineda-Antunez</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

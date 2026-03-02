@@ -1,5 +1,20 @@
 # Articles
 
+### New to R? Start Here
+
+A friendly crash course on R for complete beginners — from zero to your
+first icon chart.
+
+- [New to R? Start
+  Here](https://jurjoroa.github.io/ggpop/articles/new-to-r.md):
+
+### Tips & Best Practices
+
+Key rules and conventions to maximize your ggpop experience.
+
+- [Tips & Best
+  Practices](https://jurjoroa.github.io/ggpop/articles/tips.md):
+
 ### Finding Icons
 
 Search and browse Font Awesome icons available for use in ggpop.

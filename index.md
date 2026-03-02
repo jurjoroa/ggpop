@@ -69,6 +69,15 @@ install.packages("remotes")
 remotes::install_github("jurjoroa/ggpop")
 ```
 
+## Key Functions
+
+| Function                                                                                 | Purpose                                                                                                                                                                                                    |
+|:-----------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)           | Convert group counts → one row per icon                                                                                                                                                                    |
+| [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)                   | Search 2,000+ Font Awesome icons from your R console                                                                                                                                                       |
+| [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md)                 | Built-in minimal theme (also [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md), [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md)) |
+| [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md) | Resize legend icons independently of the plot icons                                                                                                                                                        |
+
 ------------------------------------------------------------------------
 
 ## `geom_pop()` — Population Charts
@@ -181,7 +190,12 @@ For example, here is a small sample of the 2,000+ free icons available:
 preview](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome_icons.png)
 
 You can check the full list of icons at the [Font Awesome
-website](https://fontawesome.com/icons?d=gallery&p=2&m=free).
+website](https://fontawesome.com/icons?d=gallery&p=2&m=free), or search
+directly from R:
+
+``` r
+fa_icons(query = "person")
+```
 
 ### 5.- Plot population chart
 
@@ -469,8 +483,8 @@ add a `facet` parameter or a standard
 [`facet_grid()`](https://ggplot2.tidyverse.org/reference/facet_grid.html)
 call, and ggpop handles the rest.
 
-For even more examples, vignettes, and the full function reference,
-visit the **[ggpop package
+For even more examples, vignettes, tips, and the full function
+reference, visit the **[ggpop package
 website](https://jurjoroa.github.io/ggpop/)**.
 
 ### `facet_wrap()` — Transportation Methods Across US Cities

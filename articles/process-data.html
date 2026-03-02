@@ -45,17 +45,19 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../index.html"><span class="fa fa-home fa-lg"></span> Home</a></li>
-<li class="active nav-item"><a class="nav-link" href="../articles/index.html"><span class="fa fa-book"></span> Vignettes</a></li>
+<li class="nav-item"><a class="nav-link" href="../index.html"><span class="fa fa-home"></span> Home</a></li>
+<li class="active nav-item"><a class="nav-link" href="../articles/index.html"><span class="fa fa-leanpub"></span> Vignettes</a></li>
 <li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-cubes"></span> Examples</button>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-rainbow"></span> Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="../articles/examples-geom-pop.html">geom_pop()</a></li>
     <li><a class="dropdown-item" href="../articles/examples-geom-icon-point.html">geom_icon_point()</a></li>
   </ul>
 </li>
-<li class="nav-item"><a class="nav-link" href="../reference/index.html"><span class="fa fa-cogs"></span> Functions</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html"><span class="fa fa-diagram-project"></span> Functions</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/tips.html"><span class="fa fa-lightbulb"></span> Tips</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html"><span class="fa fa-newspaper"></span> News</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/new-to-r.html"><span class="fa fa-brands fa-r-project"></span> New to R?</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/jurjoroa/ggpop"><span class="fa fa-github"></span></a></li>
@@ -129,8 +131,8 @@
 1 female 67401427 0.5150612
 2 female 67401427 0.5150612
 3 female 67401427 0.5150612
-4   male 63459580 0.4849388
-5   male 63459580 0.4849388
+4 female 67401427 0.5150612
+5 female 67401427 0.5150612
 6   male 63459580 0.4849388</code></pre>
 </div>
 </div>
@@ -165,8 +167,8 @@
 <pre><code># A tibble: 2 × 3
   type   icons proportion
   &lt;chr&gt;  &lt;int&gt;      &lt;dbl&gt;
-1 female    51       51.5
-2 male      49       48.5</code></pre>
+1 female    44       51.5
+2 male      56       48.5</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -199,10 +201,10 @@
 <pre><code># A tibble: 4 × 2
   type  icons
   &lt;chr&gt; &lt;int&gt;
-1 East     40
-2 North    28
+1 East     34
+2 North    32
 3 South    19
-4 West     13</code></pre>
+4 West     15</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -240,14 +242,14 @@
 <pre><code># A tibble: 8 × 3
   group type    icons
   &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-1 East  At Risk    44
-2 East  Healthy    56
-3 North At Risk    33
-4 North Healthy    67
-5 South At Risk    28
-6 South Healthy    72
-7 West  At Risk    21
-8 West  Healthy    79</code></pre>
+1 East  At Risk    37
+2 East  Healthy    63
+3 North At Risk    32
+4 North Healthy    68
+5 South At Risk    30
+6 South Healthy    70
+7 West  At Risk    20
+8 West  Healthy    80</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -436,7 +438,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p><a href="https://jurjoroa.github.io/ggpop/"><img src="https://jurjoroa.github.io/ggpop/inst/figures/shp.png" height="40" alt="ggpop" style="vertical-align: middle; margin-right: 6px;"></a> Developed by <a href="https://orcid.org/0000-0002-3972-9793" class="external-link">Jorge A. Roa-Contreras</a>, <a href="https://orcid.org/0009-0000-9324-5653" class="external-link">Ralitza Soultanova</a>, <a href="https://orcid.org/0000-0001-5076-1172" class="external-link">Fernando Alarid-Escudero</a>, <a href="https://orcid.org/0000-0002-8352-7080" class="external-link">Carlos Pineda-Antunez</a>.</p>
+  <p><a href="https://jurjoroa.github.io/ggpop/"><img src="https://jurjoroa.github.io/ggpop/inst/figures/shp.png" height="40" alt="ggpop" style="vertical-align: middle; margin-right: 6px;"></a> Developed by <a href="https://github.com/jurjoroa" class="external-link">Jorge A. Roa-Contreras</a>, <a href="https://orcid.org/0009-0000-9324-5653" class="external-link">Ralitza Soultanova</a>, <a href="https://orcid.org/0000-0001-5076-1172" class="external-link">Fernando Alarid-Escudero</a>, <a href="https://orcid.org/0000-0002-8352-7080" class="external-link">Carlos Pineda-Antunez</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -2,8 +2,8 @@
 
 ## Authors
 
-- **[Jorge A. Roa-Contreras](https://orcid.org/0000-0002-3972-9793)**.
-  Author, maintainer. [](https://orcid.org/0000-0002-3972-9793)
+- **[Jorge A. Roa-Contreras](https://github.com/jurjoroa)**. Author,
+  maintainer. [](https://orcid.org/0000-0002-3972-9793)
 
 - **[Ralitza Soultanova](https://orcid.org/0009-0000-9324-5653)**.
   Author. [](https://orcid.org/0009-0000-9324-5653)
