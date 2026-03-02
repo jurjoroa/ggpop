@@ -236,24 +236,14 @@ draw_key_pop_image <- function(
         error = function(e) "#000000"
       )
 
-      # Apply alpha to color
-      rgb_vals <- grDevices::col2rgb(this_col_hex) / 255
-      rgba_color <- grDevices::rgb(
-        rgb_vals[1],
-        rgb_vals[2],
-        rgb_vals[3],
-        alpha = this_alpha
-      )
-
-      # Build cache key
+      # Build cache key (no alpha baked in — transparency applied via gpar)
       color_hex <- gsub("#", "", this_col_hex)
-      alpha_str <- sprintf("%.2f", this_alpha)
       stroke_str <- sprintf("%.0f", stroke_width)
 
       png_path <- file.path(
         cache_dir,
         paste0(
-          this_icon, "_c", color_hex, "_a", alpha_str,
+          this_icon, "_c", color_hex,
           "_sw", stroke_str, "_", png_px, "px.png"
         )
       )
@@ -264,13 +254,22 @@ draw_key_pop_image <- function(
           this_icon,
           file = png_path,
           height = png_px,
-          fill = rgba_color,
-          stroke = rgba_color,
+          fill = this_col_hex,
+          stroke = this_col_hex,
           stroke_width = stroke_width
         )
       }
 
       img <- magick::image_read(png_path)
+
+      if (is.finite(this_alpha) && this_alpha < 1) {
+        img <- magick::image_fx(
+          img,
+          expression = paste0("a*", this_alpha),
+          channel = "Alpha"
+        )
+      }
+
       ras <- as.raster(img)
 
       # Render without stroke (uses magick for colorization)
@@ -286,7 +285,15 @@ draw_key_pop_image <- function(
 
       img <- magick::image_read(png_path)
       img <- magick::image_quantize(img, colorspace = "gray")
-      img <- magick::image_colorize(img, opacity = this_alpha * 100, color = this_col)
+      img <- magick::image_colorize(img, opacity = 100, color = this_col)
+
+      if (is.finite(this_alpha) && this_alpha < 1) {
+        img <- magick::image_fx(
+          img,
+          expression = paste0("a*", this_alpha),
+          channel = "Alpha"
+        )
+      }
 
       ras <- as.raster(img)
     }

@@ -113,14 +113,18 @@ assign_pop_positions <- function(data, has_facet, facet_col) {
 #' @param icon_by_legend Named character vector mapping legend labels to icons.
 #' @param plot_obj ggplot object (used to resolve scale breaks).
 #' @param stroke_width Numeric; outline width in pixels.
+#' @param alpha_by_legend Named numeric vector mapping legend labels to alpha values.
+#'   When provided, overrides the alpha from \code{key_data} for each matched label.
 #' @param fallback_icon Icon name to use when no legend icon is resolved.
 #'
 #' @return A function suitable for ggplot2's \code{key_glyph} argument.
 #' @keywords internal
 #' @noRd
 make_pop_key_glyph <- function(icon_by_legend, plot_obj, stroke_width,
+                               alpha_by_legend = NULL,
                                fallback_icon = "user") {
   local_stroke_width_for_legend <- stroke_width
+  local_alpha_by_legend <- alpha_by_legend
 
   function(key_data, params, size) {
     if (!("colour" %in% names(key_data)) && ("color" %in% names(key_data))) {
@@ -164,6 +168,20 @@ make_pop_key_glyph <- function(icon_by_legend, plot_obj, stroke_width,
 
       idx <- max(1L, min(length(icon_levels), idx))
       ic <- as.character(icon_levels[idx])
+    }
+
+    if (!is.null(local_alpha_by_legend)) {
+      if (!is.na(lbl) && lbl %in% names(local_alpha_by_legend)) {
+        key_data$alpha <- local_alpha_by_legend[[lbl]]
+      } else {
+        alpha_levels <- unname(local_alpha_by_legend)
+        idx <- NA_integer_
+        if (".id" %in% names(key_data)) idx <- as.integer(key_data$.id[1])
+        if (is.na(idx) && "group" %in% names(key_data)) idx <- as.integer(key_data$group[1])
+        if (is.na(idx)) idx <- 1L
+        idx <- max(1L, min(length(alpha_levels), idx))
+        key_data$alpha <- alpha_levels[idx]
+      }
     }
 
     if (is.na(ic) || !nzchar(ic)) ic <- fallback_icon

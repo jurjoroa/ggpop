@@ -232,9 +232,26 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
 
   warn_multiple_icons_per_group(df_final, legend_var, "icon")
 
+  alpha_var_name <- tryCatch(
+    rlang::as_name(combined_mapping[["alpha"]]),
+    error = function(e) NULL
+  )
+
+  alpha_by_legend <- NULL
+  if (!is.null(alpha_var_name) && alpha_var_name %in% names(df_final) &&
+      !is.null(legend_var) && legend_var %in% names(df_final)) {
+    df_alpha_summary <- df_final %>%
+      dplyr::group_by(.data[[legend_var]]) %>%
+      dplyr::summarise(av = dplyr::first(.data[[alpha_var_name]]), .groups = "drop")
+    alpha_by_legend <- setNames(
+      as.numeric(df_alpha_summary$av),
+      as.character(df_alpha_summary[[legend_var]])
+    )
+  }
+
   # 16 Legend key glyph: custom icon rendering ----
 
-  key_glyph_pop <- make_pop_key_glyph(icon_by_legend, plot_obj, stroke_width)
+  key_glyph_pop <- make_pop_key_glyph(icon_by_legend, plot_obj, stroke_width, alpha_by_legend)
 
   # 17 Final mapping + layer construction ----
 
