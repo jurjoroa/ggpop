@@ -1547,5 +1547,95 @@ testthat::test_that("geom_text inherits x and y from geom_pop without error", {
 })
 
 # ******************************************************************************
+## Alpha mapped via aes(alpha = opacity) ---------------------------------------
+# ******************************************************************************
+
+testthat::test_that("geom_pop alpha mapped", {
+  df <- data.frame(
+    status  = c(rep("Recovered", 1), rep("Improving", 1), rep("No change", 1)),
+    icon    = c(rep("circle-check", 1), rep("arrow-trend-up", 1), rep("circle-minus", 1)),
+    opacity = c(rep(1.0, 1), rep(0.6, 1), rep(0.3, 1)),
+    stringsAsFactors = FALSE
+  )
+
+  df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
+
+  p <- ggplot2::ggplot(
+    data = df,
+    ggplot2::aes(icon = icon, color = status, alpha = opacity)
+  ) +
+    geom_pop(size = 1, dpi = 50, legend_icons = TRUE, seed = 1) +
+    ggplot2::scale_color_manual(values = c(
+      "Recovered" = "#43A047",
+      "Improving" = "#FFB300",
+      "No change" = "#E53935"
+    )) +
+    ggplot2::guides(alpha = "none") +
+    ggplot2::theme_void()
+
+  expect_doppelganger(
+    title = "geom_pop alpha mapped",
+    fig   = p
+  )
+})
+
+# ******************************************************************************
+## arrange = TRUE groups icons by type -----------------------------------------
+# ******************************************************************************
+
+testthat::test_that("geom_pop arrange TRUE", {
+  df <- data.frame(
+    sex  = rep(c("M", "F"), each = 2),
+    icon = rep(c("male", "female"), each = 2),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data    = df,
+      ggplot2::aes(icon = icon, group = sex, color = sex),
+      arrange = TRUE,
+      size    = 3,
+      dpi     = 50
+    ) +
+    ggplot2::scale_color_manual(values = c("M" = "#1E88E5", "F" = "#D81B60")) +
+    ggplot2::theme_void()
+
+  expect_doppelganger(
+    title = "geom_pop arrange TRUE",
+    fig   = p
+  )
+})
+
+# ******************************************************************************
+## stroke_width renders icon outlines -----------------------------------------
+# ******************************************************************************
+
+testthat::test_that("geom_pop stroke width", {
+  df <- data.frame(
+    grp  = rep(c("A", "B"), each = 2),
+    icon = rep(c("circle", "square"), each = 2),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data         = df,
+      ggplot2::aes(icon = icon, group = grp, color = grp),
+      stroke_width = 20,
+      size         = 3,
+      dpi          = 50,
+      seed         = 1
+    ) +
+    ggplot2::scale_color_manual(values = c("A" = "#1565C0", "B" = "#2E7D32")) +
+    ggplot2::theme_void()
+
+  expect_doppelganger(
+    title = "geom_pop stroke width",
+    fig   = p
+  )
+})
+
+# ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************
