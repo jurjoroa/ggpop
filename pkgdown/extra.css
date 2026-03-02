@@ -232,3 +232,201 @@ pre code {
 [data-bs-theme="dark"] pre a,
 [data-bs-theme="dark"] pre a:visited  { color: #00796b !important; }
 [data-bs-theme="dark"] pre a:hover    { color: #FF6B6B !important; }
+
+/* ── Copy-code button — dark theme (default) ────────────────────── */
+.btn-copy-code {
+  background: transparent;
+  border: 1.5px solid rgba(255, 107, 107, 0.45);
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: rgba(255, 107, 107, 0.75);
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 1 !important;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.btn-copy-code:hover,
+.btn-copy-code:focus {
+  color: #FF6B6B;
+  border-color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.1);
+  outline: none;
+  box-shadow: none;
+}
+
+/* ── Copy-code button — light theme ────────────────────────────── */
+[data-bs-theme="dark"] .btn-copy-code {
+  border-color: rgba(192, 57, 43, 0.35);
+  color: rgba(192, 57, 43, 0.65);
+}
+
+[data-bs-theme="dark"] .btn-copy-code:hover,
+[data-bs-theme="dark"] .btn-copy-code:focus {
+  color: #c0392b;
+  border-color: #c0392b;
+  background: rgba(192, 57, 43, 0.08);
+}
+
+/* ── Code-folding toggle — dark theme (default) ─────────────────── */
+details.code-fold > summary {
+  display: flex !important;
+  width: fit-content !important;
+  margin: 0 auto 10px !important;
+  align-items: center !important;
+  gap: 7px;
+  background: transparent !important;
+  border: 1.5px solid rgba(255, 107, 107, 0.45) !important;
+  border-radius: 6px !important;
+  padding: 6px 16px !important;
+  cursor: pointer;
+  color: rgba(255, 107, 107, 0.85) !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em;
+  list-style: none !important;
+  transform: translateY(0);
+  transition: color 0.2s ease, border-color 0.2s ease,
+              background 0.2s ease, box-shadow 0.2s ease,
+              transform 0.2s ease;
+}
+
+/* fa-code icon before the label */
+details.code-fold > summary::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f121";
+  font-size: 0.8rem;
+  transition: transform 0.25s ease;
+}
+
+/* chevron after the label — rotates when open */
+details.code-fold > summary::after {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f078";
+  font-size: 0.7rem;
+  margin-left: 2px;
+  transition: transform 0.25s ease;
+}
+
+details[open].code-fold > summary::after {
+  transform: rotate(180deg);
+}
+
+details.code-fold > summary:hover,
+details.code-fold > summary:focus {
+  color: #FF6B6B !important;
+  border-color: #FF6B6B !important;
+  background: rgba(255, 107, 107, 0.08) !important;
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15) !important;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+details.code-fold > summary:hover::before {
+  transform: scale(1.25);
+}
+
+/* ── Code-folding toggle — light theme ─────────────────────────── */
+[data-bs-theme="dark"] details.code-fold > summary {
+  border-color: rgba(192, 57, 43, 0.35) !important;
+  color: rgba(192, 57, 43, 0.75) !important;
+}
+
+[data-bs-theme="dark"] details.code-fold > summary:hover {
+  color: #c0392b !important;
+  border-color: #c0392b !important;
+  background: rgba(192, 57, 43, 0.06) !important;
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12) !important;
+}
+
+
+
+
+/* reactable table ─────────────────────────── */
+
+/* Make everything transparent */
+.reactable, .ReactTable, .rt-table {
+  background-color: transparent !important;
+}
+
+/* Header styling - lines and font in #FF6B6B */
+.rt-thead {
+  background-color: transparent !important;
+  color: #FF6B6B !important;
+  border-bottom: 2px solid #FF6B6B !important;
+}
+
+.rt-th {
+  color: #FF6B6B !important;
+  border-right: 1px solid #FF6B6B !important;
+}
+
+/* Body text in white */
+.rt-tbody {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+.rt-td {
+  color: white !important;
+  border-right: 1px solid rgba(255, 107, 107, 0.3) !important;
+}
+
+/* Striped rows - transparent */
+.rt-tr-striped {
+  background-color: transparent !important;
+}
+
+/* Hover effect */
+.rt-tr:hover {
+  background-color: transparent !important;
+}
+
+/* Search bar - general (top search) */
+.rt-search {
+  color: white !important;
+}
+
+.rt-search input {
+  background-color: transparent !important;
+  color: white !important;
+  border: 1px solid #FF6B6B !important;
+}
+
+.rt-search input::placeholder {
+  color: white !important;
+}
+
+/* Filter row and cells - transparent background */
+.rt-tr-filters {
+  background-color: transparent !important;
+}
+
+.rt-td-filter {
+  background-color: transparent !important;
+}
+
+
+/* Filter inputs - by variable (column filters) */
+.rt-thead-filter input, .rt-thead-filter select,
+.rt-td-filter input, .rt-td-filter select {
+  background-color: transparent !important;
+  color: white !important;
+  border: 1px solid #FF6B6B !important;
+}
+
+.rt-thead-filter input::placeholder,
+.rt-td-filter input::placeholder {
+  color: white !important;
+}
+
+
+/* Search input - the actual input field */
+input.rt-search {
+  background-color: transparent !important;
+  color: white !important;
+  border: 1px solid #FF6B6B !important;
+}

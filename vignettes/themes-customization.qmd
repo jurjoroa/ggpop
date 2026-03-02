@@ -2,7 +2,7 @@
 title: "Themes & Customization"
 format:
   html:
-    code-fold: true
+    code-fold: false
     code-summary: "Show the code"
 vignette: >
   %\VignetteIndexEntry{Themes and Customization}
@@ -13,6 +13,7 @@ vignette: >
 ```{r}
 #| label: load
 #| message: false
+#| echo: false
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -39,6 +40,7 @@ df_sex_proc <- process_data(
 ```
 
 ## Themes Overview
+<div style="line-height: 0.6;"><br></div>
 
 `ggpop` ships with three built-in themes, all optimized for icon-based charts:
 
@@ -48,14 +50,23 @@ df_sex_proc <- process_data(
 | `theme_pop_dark()` | Dark background variant |
 | `theme_pop_minimal()` | Ultra-minimal, no legend or titles |
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## `theme_pop()`
+<div style="line-height: 0.6;"><br></div>
 
 The default theme. Removes axes and gridlines, keeping the focus on the icons. All standard ggplot2 `theme()` arguments can be added on top.
 
 ```{r}
 #| label: theme-pop
+#| fig-width: 10
+#| fig-height: 10
+#| message: false
+#| warning: false
+
+
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -65,8 +76,9 @@ ggplot() +
     legend_icons = TRUE
   ) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
+  theme_pop(base_size = 15) +
+  theme(legend.position = "bottom") +
   scale_legend_icon(size = 5) +
-  theme_pop() +
   labs(
     title    = "Mexico Population by Sex (2024)",
     subtitle = "Each icon represents ~1% of the total population",
@@ -82,6 +94,10 @@ ggplot() +
 
 ```{r}
 #| label: theme-pop-params
+#| fig-width: 10
+#| fig-height: 10
+#| message: false
+#| warning: false
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -91,22 +107,30 @@ ggplot() +
     legend_icons = TRUE
   ) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
+  theme_pop(base_size = 15) +
+  theme(legend.position = "bottom") +
   scale_legend_icon(size = 5) +
-  theme_pop(base_size = 14, legend_position = "bottom") +
   labs(
     title = "Larger text, legend at bottom",
     color = "Sex"
   )
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## `theme_pop_dark()`
+<div style="line-height: 0.6;"><br></div>
 
 A dark variant built on top of `theme_pop()`. Accepts `bg_color` and `text_color` for full control.
 
 ```{r}
 #| label: theme-pop-dark
+#| fig-width: 10
+#| fig-height: 10
+#| message: false
+#| warning: false
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -116,8 +140,9 @@ ggplot() +
     legend_icons = TRUE
   ) +
   scale_color_manual(values = c("male" = "#64B5F6", "female" = "#F48FB1")) +
+  theme_pop_dark(base_size = 15) +
+  theme(legend.position = "bottom") +
   scale_legend_icon(size = 5) +
-  theme_pop_dark() +
   labs(
     title    = "Mexico Population by Sex (2024)",
     subtitle = "Dark theme — ideal for presentations",
@@ -129,6 +154,10 @@ Custom background and text colors:
 
 ```{r}
 #| label: theme-pop-dark-custom
+#| fig-width: 10
+#| fig-height: 10
+#| message: false
+#| warning: false
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -138,8 +167,9 @@ ggplot() +
     legend_icons = TRUE
   ) +
   scale_color_manual(values = c("male" = "#80DEEA", "female" = "#FF8A65")) +
+  theme_pop_dark(base_size = 15, bg_color = "#0D1B2A", text_color = "#E0F2F1") +
+  theme(legend.position = "bottom") +
   scale_legend_icon(size = 5) +
-  theme_pop_dark(bg_color = "#0D1B2A", text_color = "#E0F2F1") +
   labs(
     title    = "Mexico Population by Sex (2024)",
     subtitle = "Custom dark background",
@@ -147,14 +177,21 @@ ggplot() +
   )
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## `theme_pop_minimal()`
+<div style="line-height: 0.6;"><br></div>
 
 Strips everything — no title, no legend, no margins. Best for embedding icon arrays inside dashboards or documents.
 
 ```{r}
 #| label: theme-pop-minimal
+#| fig-width: 10
+#| fig-height: 10
+#| message: false
+#| warning: false
 ggplot() +
   geom_pop(
     data = df_sex_proc,
@@ -163,17 +200,24 @@ ggplot() +
     dpi  = 100
   ) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
-  theme_pop_minimal()
+  theme_pop_minimal(base_size = 15)
 ```
+
+<div style="line-height: 0.6;"><br></div>
 
 ---
 
 ## `scale_legend_icon()`
+<div style="line-height: 0.6;"><br></div>
 
 Controls the size of icons in the legend. Use it alongside `legend_icons = TRUE` in `geom_pop()` or `geom_icon_point()`.
 
 ```{r}
 #| label: scale-legend
+#| fig-width: 10
+#| fig-height: 10
+#| message: false
+#| warning: false
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -183,19 +227,27 @@ ggplot() +
     legend_icons = TRUE
   ) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
-  scale_legend_icon(size = 8) +
-  theme_pop() +
+  theme_pop(base_size = 15) +
+  theme(legend.position = "bottom") +
+  scale_legend_icon(size = 5) +
   labs(title = "Larger legend icons with scale_legend_icon(size = 8)", color = "Sex")
 ```
+
+<div style="line-height: 0.6;"><br></div>
 
 ---
 
 ## `stroke_width` — Icon Outlines
+<div style="line-height: 0.6;"><br></div>
 
 Add an outline to icons with `stroke_width`. Higher values produce a thicker border, useful for light icons on light backgrounds.
 
 ```{r}
 #| label: stroke
+#| fig-width: 10
+#| fig-height: 10
+#| message: false
+#| warning: false
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -206,19 +258,27 @@ ggplot() +
     stroke_width = 8
   ) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
+  theme_pop(base_size = 15) +
+  theme(legend.position = "bottom") +
   scale_legend_icon(size = 5) +
-  theme_pop() +
   labs(title = "Icons with stroke_width = 8", color = "Sex")
 ```
+
+<div style="line-height: 0.6;"><br></div>
 
 ---
 
 ## Combining with ggplot2 `theme()`
+<div style="line-height: 0.6;"><br></div>
 
 `theme_pop()` is a standard ggplot2 theme — add any `theme()` call on top to override specific elements.
 
 ```{r}
 #| label: custom-theme
+#| fig-width: 10
+#| fig-height: 10
+#| message: false
+#| warning: false
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -228,15 +288,16 @@ ggplot() +
     legend_icons = TRUE
   ) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
-  scale_legend_icon(size = 5) +
-  theme_pop() +
+  theme_pop_minimal(base_size=15) +
   theme(
     plot.background  = element_rect(fill = "#F5F5F5", color = NA),
     plot.title       = element_text(color = "#1E88E5", face = "bold", size = 16),
     plot.subtitle    = element_text(color = "#546E7A"),
     legend.text      = element_text(color = "#37474F"),
+    legend.position = "bottom",
     plot.margin      = margin(20, 20, 20, 20)
   ) +
+  scale_legend_icon(size = 5) +
   labs(
     title    = "Customized with theme()",
     subtitle = "theme_pop() + additional theme() overrides",
@@ -244,9 +305,12 @@ ggplot() +
   )
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Summary
+<div style="line-height: 0.6;"><br></div>
 
 | Function | Purpose |
 |:---|:---|
