@@ -124,6 +124,26 @@ key_glyph_icon_point <- function(
   if (is.na(ic) || !nzchar(ic)) ic <- legend_fallback_icon
 
   key_data$icon <- as.character(ic)[1]
+
+  alpha_by_legend <- params$alpha_by_legend
+  if (!is.null(alpha_by_legend)) {
+    if (!is.na(lbl) && lbl %in% names(alpha_by_legend)) {
+      key_data$alpha <- alpha_by_legend[[lbl]]
+    } else {
+      alpha_levels <- unname(alpha_by_legend)
+      idx <- NA_integer_
+      for (field in legend_index_fields) {
+        if (field %in% names(key_data)) {
+          idx <- as.integer(key_data[[field]][1])
+          if (!is.na(idx)) break
+        }
+      }
+      if (is.na(idx)) idx <- 1L
+      idx <- max(1L, min(length(alpha_levels), idx))
+      key_data$alpha <- alpha_levels[idx]
+    }
+  }
+
   stroke_width <- params$stroke_width
 
   draw_key_pop_image(key_data, params, size, stroke_width = stroke_width)

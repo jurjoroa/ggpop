@@ -293,7 +293,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
 
   structure(
     list(layer = layer_out, facet_col = if (.facet_explicit) facet_col else NULL,
-         df_pop = df_final),
+         df_pop = df_final, has_alpha_mapping = !is.null(alpha_by_legend)),
     class = "ggpop_geom_pop"
   )
 }
