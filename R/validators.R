@@ -1965,6 +1965,49 @@ warn_size_conflict_icon_point <- function(size_mapped, size_param, size_missing)
 }
 
 # ******************************************************************************
+## 06.09 Icon Point Size Range -------------------------------------------------
+# ******************************************************************************
+
+#' Warn when geom_icon_point size is outside the visible range
+#'
+#' @param size Size parameter value
+#' @param missing_size Logical - was size parameter missing?
+#' @return Invisible NULL
+#' @keywords internal
+#' @noRd
+warn_icon_point_size_range <- function(size, missing_size) {
+  if (missing_size || !is.numeric(size) || length(size) != 1 || is.na(size)) {
+    return(invisible(NULL))
+  }
+
+  if (size < 0.5) {
+    cli::cli_warn(
+      c(
+        "{.arg size} = {.val {size}} is very small — icons may be invisible.",
+        "i" = "For {.fn geom_icon_point}, typical values range from {.val 0.5} to {.val 5}.",
+        "i" = "Try a larger value:",
+        " " = "  {.code geom_icon_point(size = 0.5)}   # Small but visible",
+        " " = "  {.code geom_icon_point(size = 1)}     # Default"
+      ),
+      call = NULL
+    )
+  } else if (size > 10) {
+    cli::cli_warn(
+      c(
+        "{.arg size} = {.val {size}} is very large — icons may overflow the plot area.",
+        "i" = "For {.fn geom_icon_point}, typical values range from {.val 0.5} to {.val 5}.",
+        "i" = "Try a smaller value:",
+        " " = "  {.code geom_icon_point(size = 1)}     # Default",
+        " " = "  {.code geom_icon_point(size = 5)}     # Large but contained"
+      ),
+      call = NULL
+    )
+  }
+
+  invisible(NULL)
+}
+
+# ******************************************************************************
 # 07 Composite validators ------------------------------------------------------
 # ******************************************************************************
 

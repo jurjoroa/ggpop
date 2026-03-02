@@ -89,6 +89,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
   warn_size_conflict(combined_mapping, .missing_size, size)
   warn_alpha_conflict(combined_mapping, extra_args)
+  warn_icon_point_size_range(size, .missing_size)
 
   # 06 Resolve icon source + normalize icon column ----
 
