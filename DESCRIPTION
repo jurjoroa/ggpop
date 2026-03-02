@@ -38,7 +38,10 @@ Suggests:
     ggforce,
     ggrepel,
     ggtext,
-    scales
+    scales,
+    reactable,
+    reactablefmtr
+    
 Config/Needs/website: sf, geofacet, ggtext, quarto
 VignetteBuilder: quarto
 Config/testthat/edition: 3
