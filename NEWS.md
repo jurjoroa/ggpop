@@ -4,6 +4,7 @@ This release of `ggpop` delivers new theming support, expanded icon customizatio
 
 ## Bug Fixes
 
+- Fixed false "Facet / grouping caution" warning and incorrect per-group icon positioning triggered when a user-provided data frame happened to contain a column named `group`. Both the warning and the auto-facet detection are now gated on whether the data was produced by `process_data()`, so raw data frames work correctly regardless of column names (#346).
 - Fixed icon size inconsistency across different ggplot2 themes and corrected `scale_legend_icon()` to properly reflect theme settings (#287).
 - Fixed legend icon ordering for factor variables mapped to `colour`, ensuring legend icons follow factor level order rather than data row order (#294).
 
@@ -48,6 +49,7 @@ Issues are listed in chronological merge order.
 - #337
 - #340
 - #341
+- #346
 
 ## Version
 

@@ -1594,8 +1594,8 @@ warn_xy_aesthetics_ignored <- function(combined_mapping) {
 #' @return Invisible NULL
 #' @keywords internal
 #' @noRd
-warn_faceting_caution <- function(data, facet_explicit, facet_col) {
-  has_multi_groups <- "group" %in% names(data) && dplyr::n_distinct(data$group) > 1
+warn_faceting_caution <- function(data, facet_explicit, facet_col, processed_mode = TRUE) {
+  has_multi_groups <- processed_mode && "group" %in% names(data) && dplyr::n_distinct(data$group) > 1
 
   # Determine what message to show
   if (!has_multi_groups && !facet_explicit) {
@@ -2056,11 +2056,12 @@ validate_all_aesthetics <- function(mapping_list, inherited_mapping_list, data) 
 #' @keywords internal
 #' @noRd
 warn_all_geom_pop <- function(combined_mapping, missing_size, size,
-                              data, facet_explicit, facet_col, dots = list()) {
+                              data, facet_explicit, facet_col, dots = list(),
+                              processed_mode = TRUE) {
   warn_size_conflict(combined_mapping, missing_size, size)
   warn_alpha_conflict(combined_mapping, dots)
   warn_xy_aesthetics_ignored(combined_mapping)
-  warn_faceting_caution(data, facet_explicit, facet_col)
+  warn_faceting_caution(data, facet_explicit, facet_col, processed_mode)
 
   invisible(NULL)
 }

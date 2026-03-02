@@ -388,6 +388,14 @@ Combining `geom_pop()` with the `geofacet` package places each state's panel in 
 
 ![Example Plot geofacet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png)
 
+
+### `gganimate` — A World Transformed
+
+`transition_time()` animates the Gapminder classic — life expectancy versus GDP per capita — across five decades. `geom_icon_point()` encodes each region with a matching earth icon, so the continent story is legible at a glance even as points race across the frame.
+
+**[Code available in ggpop package website](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html#gganimate-a-world-transformed)**.
+
+![Example gganimate animation](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/world_transformed.gif)
 ---
 
 ## Citation
