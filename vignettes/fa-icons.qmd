@@ -11,6 +11,7 @@ vignette: >
 ---
 
 ## What is `fa_icons()`?
+<div style="line-height: 0.6;"><br></div>
 
 `fa_icons()` is a wrapper functions from fontawesome that lets you search and browse the Font Awesome icons available for use in `geom_pop()` and `geom_icon_point()`. Instead of looking for the icon, you can filter by keyword, category, or regular expression and get back a tidy tibble — or a plain character vector — ready to use in your plot code.
 
@@ -24,9 +25,12 @@ library(ggplot2)
 library(dplyr)
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Listing All Icons
+<div style="line-height: 0.6;"><br></div>
 
 Called with no arguments, `fa_icons()` returns every available Font Awesome icon with its primary semantic category.
 
@@ -42,9 +46,12 @@ Each row contains:
 | `icon` | Icon name to pass to `geom_pop()` / `geom_icon_point()` |
 | `primary_class` | The first matching semantic category, or `NA` if unclassified |
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Searching by Name
+<div style="line-height: 0.6;"><br></div>
 
 Pass a string to `query` to filter icons whose names contain that substring.
 
@@ -58,9 +65,12 @@ fa_icons(query = "person")
 fa_icons(query = "heart")
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Regex Search
+<div style="line-height: 0.6;"><br></div>
 
 Set `regex = TRUE` to use a Perl-compatible regular expression instead of a fixed string.
 
@@ -76,9 +86,12 @@ fa_icons(query = "^arrow", regex = TRUE)
 fa_icons(query = "^(star|circle)$", regex = TRUE)
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Filtering by Category
+<div style="line-height: 0.6;"><br></div>
 
 Use `category` to return only icons that belong to a semantic group.
 
@@ -94,9 +107,12 @@ Combine `query` and `category` to narrow results further.
 fa_icons(query = "person", category = "people_users")
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Quick Vector Lookup
+<div style="line-height: 0.6;"><br></div>
 
 Set `as_vector = TRUE` to skip the tibble and get a plain sorted character vector. This is the fastest way to browse names or pipe them into other code.
 
@@ -110,9 +126,12 @@ fa_icons(query = "house", as_vector = TRUE)
 fa_icons(category = "animals", as_vector = TRUE)
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Showing All Classes
+<div style="line-height: 0.6;"><br></div>
 
 By default only `primary_class` is returned. Set `primary_only = FALSE` to also get the `all_classes` list-column, showing every category each icon matches.
 
@@ -121,9 +140,12 @@ By default only `primary_class` is returned. Set `primary_only = FALSE` to also 
 fa_icons(query = "heart", primary_only = FALSE)
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Hiding Unclassified Icons
+<div style="line-height: 0.6;"><br></div>
 
 Some icons do not match any category. Set `include_unclassified = FALSE` to drop them.
 
@@ -132,9 +154,12 @@ Some icons do not match any category. Set `include_unclassified = FALSE` to drop
 fa_icons(query = "user", include_unclassified = FALSE)
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Using a Custom Class Map
+<div style="line-height: 0.6;"><br></div>
 
 Supply your own named list of `category = regex` pairs to `class_map` for domain-specific classification.
 
@@ -148,9 +173,12 @@ my_map <- list(
 fa_icons(class_map = my_map, include_unclassified = FALSE)
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## From Discovery to Plot
+<div style="line-height: 0.6;"><br></div>
 
 A common workflow: search for icons, pick ones you like, then put them directly into a geom.
 
@@ -200,9 +228,12 @@ ggplot() +
     legend.title = element_text(size = 14, face = "bold", color="white"))
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Parameter Reference
+<div style="line-height: 0.6;"><br></div>
 
 | Parameter | Default | Description |
 |:---|:---|:---|
@@ -215,10 +246,12 @@ ggplot() +
 | `primary_only` | `TRUE` | Return only `primary_class`; set `FALSE` to add `all_classes` |
 | `as_vector` | `FALSE` | Return a plain sorted character vector instead of a tibble |
 
+<div style="line-height: 0.6;"><br></div>
 
 ---
 
 ## Icon Gallery by Category
+<div style="line-height: 0.6;"><br></div>
 
 The gallery below lets you identify every available icon in fontawesome package. Each category is drawn as a `geom_pop()` chart — one icon per type — with the legend showing the actual icon image alongside its name. All icons within a category share a single colour. Pick the ones you like the most for your analysis.
 

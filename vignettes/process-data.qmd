@@ -11,6 +11,7 @@ vignette: >
 ---
 
 ## What is `process_data()`?
+<div style="line-height: 0.6;"><br></div>
 
 `process_data()` is a helper function that converts raw population counts into a sampled data frame ready for `geom_pop()`. Each row in the output represents one icon in the final chart.
 
@@ -28,9 +29,12 @@ library(ggplot2)
 library(dplyr)
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Basic Usage
+<div style="line-height: 0.6;"><br></div>
 
 The minimum inputs are `data`, `group_var` (the grouping column), and `sum_var` (the count column). `sample_size` controls how many icons appear in the final chart (max 1,000).
 
@@ -58,9 +62,12 @@ The output contains:
 - **prop**: proportion of the total
 - One row per sampled icon
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Understanding Proportions
+<div style="line-height: 0.6;"><br></div>
 
 `process_data()` calculates each group's share of the total and allocates icons proportionally. With `sample_size = 100`, a group with 48% of the population gets ~48 icons.
 
@@ -74,9 +81,12 @@ df_sex_proc %>%
   )
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Multiple Groups
+<div style="line-height: 0.6;"><br></div>
 
 Works with any number of groups — not just two.
 
@@ -99,9 +109,12 @@ df_regions_processed %>%
   summarise(icons = n())
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Hierarchical Grouping with `high_group_var`
+<div style="line-height: 0.6;"><br></div>
 
 Use `high_group_var` to nest groups under a higher-level category. This is useful when you want to facet by a parent group while preserving sub-group icon assignments.
 
@@ -128,9 +141,12 @@ df_health_processed %>%
   summarise(icons = n(), .groups = "drop")
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Skipping `process_data()`
+<div style="line-height: 0.6;"><br></div>
 
 `process_data()` is optional. If your data already has one row per icon, pass it directly to `geom_pop()`. The only requirement is a maximum of 1,000 rows per plot (or per facet group).
 
@@ -186,9 +202,12 @@ ggplot() +
   )
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Summary
+<div style="line-height: 0.6;"><br></div>
 
 | Parameter | Description |
 |:---|:---|
