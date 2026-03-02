@@ -62,6 +62,15 @@ install.packages("remotes")
 remotes::install_github("jurjoroa/ggpop")
 ```
 
+## Key Functions
+
+| Function | Purpose |
+|:---|:---|
+| `process_data()` | Convert group counts → one row per icon |
+| `fa_icons()` | Search 2,000+ Font Awesome icons from your R console |
+| `theme_pop()` | Built-in minimal theme (also `theme_pop_dark()`, `theme_pop_minimal()`) |
+| `scale_legend_icon()` | Resize legend icons independently of the plot icons |
+
 ---
 
 ## `geom_pop()` — Population Charts
@@ -147,7 +156,11 @@ For example, here is a small sample of the 2,000+ free icons available:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome_icons.png" width="70%" alt="fontawesome table preview" /></p>
 
-You can check the full list of icons at the [Font Awesome website](https://fontawesome.com/icons?d=gallery&p=2&m=free).
+You can check the full list of icons at the [Font Awesome website](https://fontawesome.com/icons?d=gallery&p=2&m=free), or search directly from R:
+
+``` r
+fa_icons(query = "person")
+```
 
 ### 5.- Plot population chart
 
@@ -370,7 +383,7 @@ This example shows `geom_icon_point()` in combination with five other geoms — 
 
 `geom_pop()` integrates natively with ggplot2's faceting system, letting you compare populations across groups or geographies without any extra setup. Just add a `facet` parameter or a standard `facet_wrap()` / `facet_grid()` call, and ggpop handles the rest.
 
-For even more examples, vignettes, and the full function reference, visit the **[ggpop package website](https://jurjoroa.github.io/ggpop/)**.
+For even more examples, vignettes, tips, and the full function reference, visit the **[ggpop package website](https://jurjoroa.github.io/ggpop/)**.
 
 ### `facet_wrap()` — Transportation Methods Across US Cities
 
