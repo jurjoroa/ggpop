@@ -105,15 +105,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 ## What is `geom_icon_point()`?
 
-<div style="line-height: 0.5;"><br></div>
+<div style="line-height: 0.6;"><br></div>
 
 `geom_icon_point()` is the scatter plot cousin of `geom_pop()`. It works exactly like `ggplot2::geom_point()` — but replaces dots with Font Awesome icons. No data preprocessing is required: just supply any data frame with `x` and `y` variables and let the icons do the talking.
+
+<div style="line-height: 0.6;"><br></div>
 
 ---
 
 ## 1. Basic Usage — A Fixed Icon
 
-<div style="line-height: 0.5;"><br></div>
+<div style="line-height: 0.6;"><br></div>
 
 The simplest use case: a single icon for all points, with `color` carrying the grouping information. Use the `icon` parameter (not `aes()`) to fix one icon across all observations.
 
@@ -123,7 +125,6 @@ The simplest use case: a single icon for all points, with `color` carrying the g
 #| message: false
 #| warning: false
 
-fa_icons(query = "seedling")
 
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
@@ -169,11 +170,13 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   )
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## 2. Mapping Icons to Categories
 
-<div style="line-height: 0.5;"><br></div>
+<div style="line-height: 0.6;"><br></div>
 
 `geom_icon_point()` shines when each category gets its own icon. Map `icon` inside `aes()` to a column in your data — each group then carries its own visual identity.
 
@@ -267,11 +270,13 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
   )
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## 3. Size Mapping
 
-<div style="line-height: 0.5;"><br></div>
+<div style="line-height: 0.6;"><br></div>
 
 Map a continuous variable to `size` inside `aes()` to add a third dimension of information. Use `scales::rescale()` to keep icon sizes in a readable range — raw values that are too large or too small make icons unreadable.
 
@@ -281,8 +286,11 @@ Map a continuous variable to `size` inside `aes()` to add a third dimension of i
 #| message: false
 #| warning: false
 
+
+# Search the icons you want to use with fa_icons() and note their names:
 fa_icons(query = "apple")
 fa_icons(query = "spotify")
+
 
 df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
@@ -296,6 +304,7 @@ df_brand <- data.frame(
 
 # Rescale employees to a readable icon size range
 df_brand$size_scaled <- scales::rescale(df_brand$employees, to = c(0.8, 2.5))
+
 
 ggplot(df_brand, aes(x = revenue, y = market_cap,
                      icon = icon, color = brand, size = size_scaled)) +
@@ -369,11 +378,13 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
        size     = "Employees")
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## 4. Factor Ordering
 
-<div style="line-height: 0.5;"><br></div>
+<div style="line-height: 0.6;"><br></div>
 
 When `color` is mapped to a factor, the legend follows **factor level order**. `geom_icon_point()` automatically assigns icons to legend entries in the same order — so setting factor levels is all you need for a correctly ordered legend.
 
@@ -383,6 +394,7 @@ When `color` is mapped to a factor, the legend follows **factor level order**. `
 #| message: false
 #| warning: false
 
+# Search the icons you want to use with fa_icons() and note their names:
 fa_icons(query = "mug")
 fa_icons(query = "fire")
 
@@ -465,11 +477,13 @@ ggplot(df_coffee, aes(x = acidity, y = body, icon = icon, color = roast)) +
 
 > **Tip:** Always set factor levels explicitly with `factor(..., levels = ...)` before plotting. This guarantees that the icon in the legend matches the correct group, regardless of data row order.
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## 5. Combining with Other Geoms
 
-<div style="line-height: 0.5;"><br></div>
+<div style="line-height: 0.6;"><br></div>
 
 `geom_icon_point()` is fully compatible with all standard ggplot2 geoms. Here we combine it with `geom_smooth()`, `geom_vline()`, `geom_hline()`, `geom_label()`, and `annotate()` to build a fully annotated analytical chart.
 
@@ -592,11 +606,13 @@ ggplot(df_health, aes(x = spend, y = life_exp,
   )
 ```
 
+<div style="line-height: 0.6;"><br></div>
+
 ---
 
 ## Summary
 
-<div style="line-height: 0.5;"><br></div>
+<div style="line-height: 0.6;"><br></div>
 
 | Feature | How |
 |:---|:---|
@@ -606,4 +622,3 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 | Factor ordering | `factor(..., levels = ...)` before plotting |
 | Combine geoms | Add any ggplot2 geom before or after |
 
-Visit the [ggpop website](https://jurjoroa.github.io/ggpop/) for the full function reference and more examples.
