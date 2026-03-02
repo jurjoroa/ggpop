@@ -2,12 +2,16 @@
 
 ## Example 1: Single Icon Scatter Plot
 
+  
+
 The simplest use: a fixed icon for all points, color encodes the
 grouping variable.
 
 Show the code
 
 ``` r
+fa_icons(query = "seedling")
+
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -27,9 +31,13 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 
 ![](examples-geom-icon-point_files/figure-html/single-icon-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Example 2: Different Icon per Category
+
+  
 
 Each food item gets its own icon. The icon is the identity — no legend
 needed to understand what each point represents.
@@ -41,6 +49,9 @@ library(ggpop)
 library(ggplot2)
 library(dplyr)
 
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "apple")
+fa_icons(query = "drumstick")
 
 df_food <- data.frame(
   food     = c("Apple", "Carrot", "Orange", "Chicken", "Beef", "Salmon",
@@ -77,9 +88,13 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
 
 ![](examples-geom-icon-point_files/figure-html/mapped-icons-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Example 3: Size Mapping
+
+  
 
 Map a continuous variable to icon size. Use
 [`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html)
@@ -92,7 +107,11 @@ library(ggpop)
 library(ggrepel)
 library(ggtext)
 
-# --- DATA (keeps your original 9 icons exactly; adds more; removes SAP/Intel/Qualcomm) ---
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "apple")
+fa_icons(query = "microchip")
+
+
 df_brand <- data.frame(
   brand      = c("Apple", "Google", "Microsoft", "Meta", "Amazon",
                  "Netflix", "Spotify", "Uber", "Airbnb",
@@ -161,7 +180,6 @@ df_brand$size_scaled <- scales::rescale(df_brand$employees, to = c(1.2, 3.2))
 
 ggplot(df_brand, aes(x = revenue, y = market_cap,
                      icon = icon, color = brand, size = size_scaled)) +
-  # ── P/S ratio reference lines ──────────────────────────────────────────
   geom_abline(slope = 1, intercept = log10(5),  linetype = "dashed",
               color = alpha("white", 0.25), linewidth = 0.5) +
   geom_abline(slope = 1, intercept = log10(10), linetype = "dashed",
@@ -172,9 +190,7 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
   annotate("text", x = 500, y = 1600, label = "P/S ratio = 5×",
            color = col_accent, size = 2.8, hjust = 1,
            fontface = "italic", alpha = 0.6) +
-  # ── Icons ──────────────────────────────────────────────────────────────
   geom_icon_point(dpi = 150) +
-  # ── Labels ─────────────────────────────────────────────────────────────
   ggrepel::geom_label_repel(
     aes(label = paste0(brand, "\n$", market_cap, "B"), color = brand),
     fill          = alpha(bg, 0.88),
@@ -250,14 +266,15 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
   )
 ```
 
-    Ignoring unknown labels:
-    • size : "Employees"
-
 ![](examples-geom-icon-point_files/figure-html/size-mapping-1.png)
+
+  
 
 ------------------------------------------------------------------------
 
 ## Example 4: Paris 2024 Olympics — New Sports
+
+  
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
 in a fixed-position grid with no traditional axes. All 45 Olympic
@@ -273,6 +290,10 @@ library(ggpop)
 library(ggplot2)
 library(dplyr)
 library(ggtext)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "person-swimming")
+fa_icons(query = "volleyball")
 
 df_paris_disciplines <- data.frame(
   sport = c(
@@ -371,9 +392,13 @@ ggplot(df_grid, aes(x = x, y = y)) +
 
 ![](examples-geom-icon-point_files/figure-html/paris-display-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Example 5: Combined Geoms
+
+  
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
 works alongside any ggplot2 geom. Here combined with
@@ -383,6 +408,11 @@ reference lines, labels, and quadrant annotations.
 Show the code
 
 ``` r
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "pills")
+fa_icons(query = "stethoscope")
+fa_icons(query = "hospital")
+
 df_health <- data.frame(
   country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
                "Morocco", "Germany", "France", "Japan"),
@@ -444,9 +474,13 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 ![](examples-geom-icon-point_files/figure-html/combined-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Example 6: Dark Theme Scatter
+
+  
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
 with
@@ -459,6 +493,11 @@ Show the code
 library(ggpop)
 library(ggplot2)
 library(dplyr)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "graduate")
+fa_icons(query = "chalkboard")
+fa_icons(query = "flask")
 
 df_academic <- data.frame(
   name        = c("Alice", "Bob", "Carol", "Dan", "Eve",
@@ -484,7 +523,8 @@ ggplot(df_academic, aes(x = study_hours, y = score,
   theme_pop_dark(bg_color = "#0D1B2A", text_color = "white") +
   theme(
     axis.text  = element_text(color = "#90A4AE"),
-    axis.title = element_text(color = "#B0BEC5")
+    axis.title = element_text(color = "#B0BEC5"),
+    legend.title = element_text(color = "white", size = 10, face = "bold"),
   ) +
   scale_legend_icon(size = 6) +
   labs(
@@ -498,9 +538,13 @@ ggplot(df_academic, aes(x = study_hours, y = score,
 
 ![](examples-geom-icon-point_files/figure-html/dark-theme-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## `ggrepel` — The Green Energy Divide
+
+  
 
 [`geom_label_repel()`](https://ggrepel.slowkow.com/reference/geom_text_repel.html)
 prevents country labels from overlapping, letting every data point speak
@@ -515,6 +559,11 @@ Show the code
 ``` r
 library(ggrepel)
 library(ggtext)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "droplet")
+fa_icons(query = "wind")
+fa_icons(query = "sun")
 
 df_energy <- data.frame(
   country     = c("Iceland", "Norway", "Costa Rica", "New Zealand", "Brazil",
@@ -676,9 +725,13 @@ ggplot(df_energy, aes(x = mwh_per_cap, y = renewable)) +
 
 ![](examples-geom-icon-point_files/figure-html/ggrepel-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## `ggforce` — The Power Trade-Off
+
+  
 
 [`geom_mark_ellipse()`](https://ggforce.data-imaginist.com/reference/geom_mark_ellipse.html)
 draws annotated convex-hull ellipses around groups of points, making
@@ -695,6 +748,11 @@ Show the code
 ``` r
 library(ggforce)
 library(ggtext)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "mobile")
+fa_icons(query = "laptop")
+fa_icons(query = "clock")
 
 set.seed(42)
 
@@ -808,9 +866,13 @@ ggplot(df_devices, aes(x = battery, y = perf, color = category, icon = icon)) +
 
 ![](examples-geom-icon-point_files/figure-html/ggforce-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## `gganimate` — A World Transformed
+
+  
 
 `transition_time()` animates the Gapminder classic — life expectancy
 versus GDP per capita — across five decades.
@@ -824,6 +886,9 @@ Show the code
 library(ggrepel)
 library(gganimate)
 library(ggtext)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "earth")
 
 set.seed(42)
 

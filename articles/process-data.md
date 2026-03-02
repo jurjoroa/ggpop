@@ -2,6 +2,8 @@
 
 ## What is `process_data()`?
 
+  
+
 [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
 is a helper function that converts raw population counts into a sampled
 data frame ready for
@@ -14,23 +16,23 @@ It handles:
 - Proportionally allocating a fixed sample size across groups
 - Supporting hierarchical grouping via `high_group_var`
 
-Show the code
-
 ``` r
 library(ggpop)
 library(ggplot2)
 library(dplyr)
 ```
 
+  
+
 ------------------------------------------------------------------------
 
 ## Basic Usage
 
+  
+
 The minimum inputs are `data`, `group_var` (the grouping column), and
 `sum_var` (the count column). `sample_size` controls how many icons
 appear in the final chart (max 1,000).
-
-Show the code
 
 ``` r
 df_sex <- data.frame(
@@ -49,12 +51,12 @@ head(df_sex_proc)
 ```
 
         type        n      prop
-    1   male 63459580 0.4849388
+    1 female 67401427 0.5150612
     2 female 67401427 0.5150612
     3 female 67401427 0.5150612
-    4 female 67401427 0.5150612
-    5 female 67401427 0.5150612
-    6 female 67401427 0.5150612
+    4   male 63459580 0.4849388
+    5   male 63459580 0.4849388
+    6   male 63459580 0.4849388
 
 The output contains:
 
@@ -63,16 +65,18 @@ The output contains:
 - **prop**: proportion of the total
 - One row per sampled icon
 
+  
+
 ------------------------------------------------------------------------
 
 ## Understanding Proportions
+
+  
 
 [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
 calculates each group’s share of the total and allocates icons
 proportionally. With `sample_size = 100`, a group with 48% of the
 population gets ~48 icons.
-
-Show the code
 
 ``` r
 df_sex_proc %>%
@@ -86,16 +90,18 @@ df_sex_proc %>%
     # A tibble: 2 × 3
       type   icons proportion
       <chr>  <int>      <dbl>
-    1 female    53       51.5
-    2 male      47       48.5
+    1 female    51       51.5
+    2 male      49       48.5
+
+  
 
 ------------------------------------------------------------------------
 
 ## Multiple Groups
 
-Works with any number of groups — not just two.
+  
 
-Show the code
+Works with any number of groups — not just two.
 
 ``` r
 df_regions <- data.frame(
@@ -118,20 +124,22 @@ df_regions_processed %>%
     # A tibble: 4 × 2
       type  icons
       <chr> <int>
-    1 East     42
-    2 North    27
+    1 East     40
+    2 North    28
     3 South    19
-    4 West     12
+    4 West     13
+
+  
 
 ------------------------------------------------------------------------
 
 ## Hierarchical Grouping with `high_group_var`
 
+  
+
 Use `high_group_var` to nest groups under a higher-level category. This
 is useful when you want to facet by a parent group while preserving
 sub-group icon assignments.
-
-Show the code
 
 ``` r
 df_health <- data.frame(
@@ -158,18 +166,22 @@ df_health_processed %>%
     # A tibble: 8 × 3
       group type    icons
       <chr> <chr>   <int>
-    1 East  At Risk    47
-    2 East  Healthy    53
+    1 East  At Risk    44
+    2 East  Healthy    56
     3 North At Risk    33
     4 North Healthy    67
-    5 South At Risk    25
-    6 South Healthy    75
-    7 West  At Risk    22
-    8 West  Healthy    78
+    5 South At Risk    28
+    6 South Healthy    72
+    7 West  At Risk    21
+    8 West  Healthy    79
+
+  
 
 ------------------------------------------------------------------------
 
 ## Skipping `process_data()`
+
+  
 
 [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
 is optional. If your data already has one row per icon, pass it directly
@@ -178,40 +190,61 @@ to
 The only requirement is a maximum of 1,000 rows per plot (or per facet
 group).
 
-Show the code
-
 ``` r
 df_direct <- data.frame(
-  status = c(rep("Healthy", 70), rep("At Risk", 20), rep("Ill", 10)),
-  icon   = c(rep("person", 70), rep("person-half-dress", 20), rep("bed-pulse", 10))
+  activity = c(
+    rep("Walking",  35),
+    rep("Running",  25),
+    rep("Hiking",   20),
+    rep("Cycling",  15),
+    rep("Swimming",  5)
+  ),
+  icon = c(
+    rep("person-walking",  35),
+    rep("person-running",  25),
+    rep("person-hiking",   20),
+    rep("person-biking",   15),
+    rep("person-swimming",  5)
+  )
 )
 
 # Pass directly — no process_data() needed
 ggplot() +
   geom_pop(
     data = df_direct,
-    aes(icon = icon, color = status),
-    size = 2, dpi = 100, legend_icons = TRUE
+    aes(icon = icon, color = activity),
+    size = 2, dpi = 100, legend_icons = TRUE, arrange = TRUE
   ) +
   scale_color_manual(values = c(
-    "Healthy"  = "#43A047",
-    "At Risk"  = "#FFB300",
-    "Ill"      = "#E53935"
+    "Walking"  = "#5C6BC0",
+    "Running"  = "#E53935",
+    "Hiking"   = "#43A047",
+    "Cycling"  = "#FFB300",
+    "Swimming" = "#039BE5"
   )) +
-  scale_legend_icon(size = 5) +
   theme_pop() +
+  theme(plot.title = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text = element_text(color = "white"),
+        legend.title = element_text(color = "white"),
+        legend.position = "bottom") +
+  scale_legend_icon(size = 8) +
   labs(
-    title    = "Simulated Patient Population (n = 100)",
-    subtitle = "Each icon represents one patient",
-    color    = "Status"
+    title    = "Physical Activity Distribution (n = 100)",
+    subtitle = "Each icon represents one survey participant",
+    color    = "Activity"
   )
 ```
 
 ![](process-data_files/figure-html/skip-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Summary
+
+  
 
 | Parameter        | Description                             |
 |:-----------------|:----------------------------------------|
@@ -220,6 +253,3 @@ ggplot() +
 | `sum_var`        | Column with population counts           |
 | `sample_size`    | Number of icons to generate (max 1,000) |
 | `high_group_var` | Optional parent grouping for faceting   |
-
-Visit the [ggpop website](https://jurjoroa.github.io/ggpop/) for the
-full function reference.

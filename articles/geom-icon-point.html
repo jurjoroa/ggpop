@@ -81,21 +81,75 @@
 
 
 
-    <section class="level2"><h2 id="what-is-geom_icon_point">What is <code>geom_icon_point()</code>?<a class="anchor" aria-label="anchor" href="#what-is-geom_icon_point"></a>
+    <style>
+/* ── Smooth code-fold animation ──────────────────────────────────────────── */
+details > div.sourceCode {
+  overflow: hidden;
+}
+
+@keyframes fold-open {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fold-close {
+  from { opacity: 1; transform: translateY(0);    }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+details.fold-opening > div.sourceCode {
+  animation: fold-open 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+details.fold-closing > div.sourceCode {
+  animation: fold-close 0.22s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('details').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (!e.target.closest('summary')) return;
+      e.preventDefault();
+
+      var content = el.querySelector('div.sourceCode');
+      if (!content) return;
+
+      if (el.open) {
+        el.classList.remove('fold-opening');
+        el.classList.add('fold-closing');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-closing');
+          el.removeAttribute('open');
+        }, { once: true });
+      } else {
+        el.setAttribute('open', '');
+        el.classList.remove('fold-closing');
+        el.classList.add('fold-opening');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-opening');
+        }, { once: true });
+      }
+    });
+  });
+});
+</script><section class="level2"><h2 id="what-is-geom_icon_point">What is <code>geom_icon_point()</code>?<a class="anchor" aria-label="anchor" href="#what-is-geom_icon_point"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> is the scatter plot cousin of <code><a href="../reference/geom_pop.html">geom_pop()</a></code>. It works exactly like <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">ggplot2::geom_point()</a></code> — but replaces dots with Font Awesome icons. No data preprocessing is required: just supply any data frame with <code>x</code> and <code>y</code> variables and let the icons do the talking.</p>
-<div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
-</details>
+<div style="line-height: 0.6;">
+<br>
 </div>
 <hr></section><section class="level2"><h2 id="basic-usage-a-fixed-icon">1. Basic Usage — A Fixed Icon<a class="anchor" aria-label="anchor" href="#basic-usage-a-fixed-icon"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>The simplest use case: a single icon for all points, with <code>color</code> carrying the grouping information. Use the <code>icon</code> parameter (not <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code>) to fix one icon across all observations.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">iris</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Sepal.Length</span>, y <span class="op">=</span> <span class="va">Petal.Length</span>, color <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"seedling"</span>, size <span class="op">=</span> <span class="fl">1.5</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -103,7 +157,7 @@
 <span>    <span class="st">"versicolor"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>,</span>
 <span>    <span class="st">"virginica"</span>  <span class="op">=</span> <span class="st">"#E53935"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Iris: Sepal vs. Petal Length"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Fixed icon — color encodes species"</span>,</span>
@@ -111,19 +165,33 @@
 <span>    y        <span class="op">=</span> <span class="st">"Petal Length (cm)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Species"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output-display">
+</div>
+<div class="cell">
+<div class="cell-output-display">
 <div>
-<figure><p><img src="geom-icon-point_files/figure-html/basic-1.png" width="672"></p>
+<figure><p><img src="geom-icon-point_files/figure-html/basic-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="mapping-icons-to-categories">2. Mapping Icons to Categories<a class="anchor" aria-label="anchor" href="#mapping-icons-to-categories"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> shines when each category gets its own icon. Map <code>icon</code> inside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> to a column in your data — each group then carries its own visual identity.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_food</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"apple"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"drumstick"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"cheese"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create a data frame with an 'icon' column that matches your categories:</span></span>
+<span><span class="va">df_food</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  food     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Carrot"</span>, <span class="st">"Orange"</span>, <span class="st">"Chicken"</span>, <span class="st">"Beef"</span>, <span class="st">"Salmon"</span>,</span>
 <span>               <span class="st">"Milk"</span>, <span class="st">"Cheese"</span>, <span class="st">"Yogurt"</span><span class="op">)</span>,</span>
 <span>  calories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">41</span>, <span class="fl">47</span>, <span class="fl">165</span>, <span class="fl">250</span>, <span class="fl">208</span>, <span class="fl">61</span>, <span class="fl">402</span>, <span class="fl">59</span><span class="op">)</span>,</span>
@@ -134,8 +202,11 @@
 <span>               <span class="st">"bottle-water"</span>, <span class="st">"cheese"</span>, <span class="st">"jar"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Set factor levels to control legend order and icon assignment</span></span>
 <span><span class="va">df_food</span><span class="op">$</span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_food</span><span class="op">$</span><span class="va">group</span>,</span>
 <span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Fruit &amp; Veg"</span>, <span class="st">"Dairy"</span>, <span class="st">"Meat &amp; Fish"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_food</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">calories</span>, y <span class="op">=</span> <span class="va">protein</span>, icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
@@ -144,7 +215,7 @@
 <span>    <span class="st">"Dairy"</span>        <span class="op">=</span> <span class="st">"#1E88E5"</span>,</span>
 <span>    <span class="st">"Meat &amp; Fish"</span>  <span class="op">=</span> <span class="st">"#E53935"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Calories vs. Protein by Food"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents a specific food; color reflects the group"</span>,</span>
@@ -152,50 +223,32 @@
 <span>    y        <span class="op">=</span> <span class="st">"Protein (g per 100g)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Group"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output cell-output-stderr">
-<pre><code>Warning: Multiple icons per color/group detected.
-
-! Why you are seeing this warning:
-  The legend can only display ONE icon per group, but some groups have
-  multiple:
-
-- Fruit &amp; Veg: 3 icons (apple-whole, carrot, lemon)
-- Dairy: 3 icons (bottle-water, cheese, jar)
-- Meat &amp; Fish: 3 icons (drumstick-bite, bacon, fish)
-
-ℹ What happens:
-  - The most frequent icon for each group will be shown in the legend
-  - Other icons in that group will still appear in the plot
-  - This may confuse viewers if icons have different meanings
-
-ℹ Recommended fixes:
-
-  Option 1: Use consistent icons per group
-  `df &lt;- df %&gt;% mutate(icon = case_when(`
-  `sex == 'A' ~ 'male',`
-  `sex == 'B' ~ 'female'`
-  `))`
-
-  Option 2: Create a separate grouping variable
-  `df &lt;- df %&gt;% mutate(group = paste(sex, icon, sep = '_'))`
-  `ggplot() + geom_pop(aes(icon = icon, color = group))`
-
-  Option 3: Set legend_icons = FALSE to use point markers
-  `geom_pop(..., legend_icons = FALSE)`</code></pre>
 </div>
+<div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img src="geom-icon-point_files/figure-html/mapped-icons-1.png" width="672"></p>
+<figure><p><img src="geom-icon-point_files/figure-html/mapped-icons-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="size-mapping">3. Size Mapping<a class="anchor" aria-label="anchor" href="#size-mapping"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Map a continuous variable to <code>size</code> inside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> to add a third dimension of information. Use <code><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">scales::rescale()</a></code> to keep icon sizes in a readable range — raw values that are too large or too small make icons unreadable.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_brand</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"apple"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"spotify"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">df_brand</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  brand      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Google"</span>, <span class="st">"Microsoft"</span>, <span class="st">"Meta"</span>, <span class="st">"Amazon"</span>,</span>
 <span>                 <span class="st">"Netflix"</span>, <span class="st">"Spotify"</span>, <span class="st">"Uber"</span>, <span class="st">"Airbnb"</span><span class="op">)</span>,</span>
 <span>  revenue    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">394</span>, <span class="fl">283</span>, <span class="fl">212</span>, <span class="fl">117</span>, <span class="fl">514</span>, <span class="fl">32</span>, <span class="fl">13</span>, <span class="fl">37</span>, <span class="fl">9</span><span class="op">)</span>,</span>
@@ -207,6 +260,7 @@
 <span></span>
 <span><span class="co"># Rescale employees to a readable icon size range</span></span>
 <span><span class="va">df_brand</span><span class="op">$</span><span class="va">size_scaled</span> <span class="op">&lt;-</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="va">df_brand</span><span class="op">$</span><span class="va">employees</span>, to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">2.5</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_brand</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">revenue</span>, y <span class="op">=</span> <span class="va">market_cap</span>,</span>
 <span>                     icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">brand</span>, size <span class="op">=</span> <span class="va">size_scaled</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -221,7 +275,8 @@
 <span>    <span class="st">"Airbnb"</span>    <span class="op">=</span> <span class="st">"#FF4081"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html" class="external-link">scale_size_continuous</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Tech Giants: Revenue vs. Market Cap"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Icon = brand  ·  Size = employees (rescaled)  ·  Log scales"</span>,</span>
@@ -230,22 +285,82 @@
 <span>    color    <span class="op">=</span> <span class="st">"Brand"</span>,</span>
 <span>    size     <span class="op">=</span> <span class="st">"Employees"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output cell-output-stderr">
-<pre><code>Ignoring unknown labels:
-• size : "Employees"</code></pre>
 </div>
+<div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img src="geom-icon-point_files/figure-html/size-mapping-1.png" width="672"></p>
+<figure><p><img src="geom-icon-point_files/figure-html/size-mapping-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="factor-ordering">4. Factor Ordering<a class="anchor" aria-label="anchor" href="#factor-ordering"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>When <code>color</code> is mapped to a factor, the legend follows <strong>factor level order</strong>. <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> automatically assigns icons to legend entries in the same order — so setting factor levels is all you need for a correctly ordered legend.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"mug"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"fire"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_coffee</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  bean    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Colombian"</span>, <span class="st">"Ethiopian"</span>, <span class="st">"Brazilian"</span>,</span>
+<span>              <span class="st">"Kenyan"</span>, <span class="st">"Guatemalan"</span>, <span class="st">"Honduran"</span>,</span>
+<span>              <span class="st">"Sumatran"</span>, <span class="st">"Robusta"</span>, <span class="st">"Vietnamese"</span><span class="op">)</span>,</span>
+<span>  acidity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7.2</span>, <span class="fl">8.5</span>, <span class="fl">5.1</span>, <span class="fl">8.8</span>, <span class="fl">7.5</span>, <span class="fl">7.1</span>, <span class="fl">4.2</span>, <span class="fl">3.8</span>, <span class="fl">3.5</span><span class="op">)</span>,</span>
+<span>  body    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6.5</span>, <span class="fl">5.8</span>, <span class="fl">8.2</span>, <span class="fl">5.5</span>, <span class="fl">6.8</span>, <span class="fl">6.5</span>, <span class="fl">9.1</span>, <span class="fl">9.5</span>, <span class="fl">9.2</span><span class="op">)</span>,</span>
+<span>  roast   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Light"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Medium"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Dark"</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  icon    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"mug-hot"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"coffee"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"fire-flame-curved"</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Factor level order controls both legend order AND icon assignment</span></span>
+<span><span class="va">df_coffee</span><span class="op">$</span><span class="va">roast</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_coffee</span><span class="op">$</span><span class="va">roast</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Light"</span>, <span class="st">"Medium"</span>, <span class="st">"Dark"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_coffee</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">acidity</span>, y <span class="op">=</span> <span class="va">body</span>, icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">roast</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Light"</span>  <span class="op">=</span> <span class="st">"#D4A843"</span>,</span>
+<span>    <span class="st">"Medium"</span> <span class="op">=</span> <span class="st">"#D4A574"</span>,</span>
+<span>    <span class="st">"Dark"</span>   <span class="op">=</span> <span class="st">"#A67C52"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Coffee Beans: Acidity vs. Body by Roast Level"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Factor levels follow roast intensity: Light \u2192 Medium \u2192 Dark"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="st">"Acidity (1\u201310 scale)"</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Body / Mouthfeel (1\u201310 scale)"</span>,</span>
+<span>    color    <span class="op">=</span> <span class="st">"Roast"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img src="geom-icon-point_files/figure-html/factor-ordering-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote>
+<p><strong>Tip:</strong> Always set factor levels explicitly with <code>factor(..., levels = ...)</code> before plotting. This guarantees that the icon in the legend matches the correct group, regardless of data row order.</p>
+</blockquote>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<hr></section><section class="level2"><h2 id="combining-with-other-geoms">5. Combining with Other Geoms<a class="anchor" aria-label="anchor" href="#combining-with-other-geoms"></a>
+</h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> is fully compatible with all standard ggplot2 geoms. Here we combine it with <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_label()</a></code>, and <code><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate()</a></code> to build a fully annotated analytical chart.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  country    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chad"</span>, <span class="st">"Mali"</span>, <span class="st">"Niger"</span>, <span class="st">"Bolivia"</span>, <span class="st">"Egypt"</span>, <span class="st">"Morocco"</span>,</span>
 <span>                 <span class="st">"Germany"</span>, <span class="st">"France"</span>, <span class="st">"Japan"</span><span class="op">)</span>,</span>
@@ -255,44 +370,7 @@
 <span>  icon       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"pills"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"stethoscope"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"hospital"</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Factor level order controls both legend order AND icon assignment</span></span>
-<span><span class="va">df_health</span><span class="op">$</span><span class="va">income</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_health</span><span class="op">$</span><span class="va">income</span>,</span>
-<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Low"</span>, <span class="st">"Middle"</span>, <span class="st">"High"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_health</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">spend</span>, y <span class="op">=</span> <span class="va">life_exp</span>,</span>
-<span>                      icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">income</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/dollar_format.html" class="external-link">dollar_format</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Low"</span>    <span class="op">=</span> <span class="st">"#E53935"</span>,</span>
-<span>    <span class="st">"Middle"</span> <span class="op">=</span> <span class="st">"#FFB300"</span>,</span>
-<span>    <span class="st">"High"</span>   <span class="op">=</span> <span class="st">"#43A047"</span></span>
-<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Health Spending vs. Life Expectancy"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Factor levels control legend order and icon assignment"</span>,</span>
-<span>    x        <span class="op">=</span> <span class="st">"Health Spending per Capita (log scale)"</span>,</span>
-<span>    y        <span class="op">=</span> <span class="st">"Life Expectancy (years)"</span>,</span>
-<span>    color    <span class="op">=</span> <span class="st">"Income Group"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output-display">
-<div>
-<figure><p><img src="geom-icon-point_files/figure-html/factor-ordering-1.png" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<blockquote>
-<p><strong>Tip:</strong> Always set factor levels explicitly with <code>factor(..., levels = ...)</code> before plotting. This guarantees that the icon in the legend matches the correct group, regardless of data row order.</p>
-</blockquote>
-<hr></section><section class="level2"><h2 id="combining-with-other-geoms">5. Combining with Other Geoms<a class="anchor" aria-label="anchor" href="#combining-with-other-geoms"></a>
-</h2>
-<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> is fully compatible with all standard ggplot2 geoms. Here we combine it with <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_label()</a></code>, and <code><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate()</a></code> to build a fully annotated analytical chart.</p>
-<div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_health</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">spend</span>, y <span class="op">=</span> <span class="va">life_exp</span>,</span>
 <span>                      icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">income</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Reference lines: world averages</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">1060</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
@@ -322,8 +400,9 @@
 <span>    <span class="st">"Middle"</span> <span class="op">=</span> <span class="st">"#FFB300"</span>,</span>
 <span>    <span class="st">"High"</span>   <span class="op">=</span> <span class="st">"#43A047"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"More Spending \u2260 Longer Lives"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Health expenditure per capita vs. life expectancy  \u00b7  X-axis is log-scaled"</span>,</span>
@@ -331,38 +410,23 @@
 <span>    y        <span class="op">=</span> <span class="st">"Life Expectancy (years)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Income Group"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output cell-output-stderr">
-<pre><code>Warning: The following aesthetics were dropped during statistical transformation: icon.
-ℹ This can happen when ggplot fails to infer the correct grouping structure in
-  the data.
-ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-  variable into a factor?
-The following aesthetics were dropped during statistical transformation: icon.
-ℹ This can happen when ggplot fails to infer the correct grouping structure in
-  the data.
-ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-  variable into a factor?</code></pre>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: The `label.size` argument of `geom_label()` is deprecated as of ggplot2 3.5.0.
-ℹ Please use the `linewidth` argument instead.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: The following aesthetics were dropped during statistical transformation: icon.
-ℹ This can happen when ggplot fails to infer the correct grouping structure in
-  the data.
-ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
-  variable into a factor?</code></pre>
-</div>
+<div class="cell">
 <div class="cell-output-display">
 <div>
-<figure><p><img src="geom-icon-point_files/figure-html/combined-geoms-1.png" width="672"></p>
+<figure><p><img src="geom-icon-point_files/figure-html/combined-geoms-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <table class="table caption-top">
 <thead><tr class="header">
 <th style="text-align: left;">Feature</th>
@@ -393,9 +457,7 @@ The following aesthetics were dropped during statistical transformation: icon.
 <td style="text-align: left;">Add any ggplot2 geom before or after</td>
 </tr>
 </tbody>
-</table>
-<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop website</a> for the full function reference and more examples.</p>
-</section><script id="quarto-html-after-body" type="application/javascript">
+</table></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);

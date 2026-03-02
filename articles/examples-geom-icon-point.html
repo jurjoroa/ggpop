@@ -135,10 +135,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script><section class="level2"><h2 id="example-1-single-icon-scatter-plot">Example 1: Single Icon Scatter Plot<a class="anchor" aria-label="anchor" href="#example-1-single-icon-scatter-plot"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>The simplest use: a fixed icon for all points, color encodes the grouping variable.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">iris</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Sepal.Length</span>, y <span class="op">=</span> <span class="va">Petal.Length</span>, color <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"seedling"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">iris</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Sepal.Length</span>, y <span class="op">=</span> <span class="va">Petal.Length</span>, color <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="st">"seedling"</span>, size <span class="op">=</span> <span class="fl">1.5</span>, dpi <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"setosa"</span>     <span class="op">=</span> <span class="st">"#43A047"</span>,</span>
@@ -163,8 +168,14 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="example-2-different-icon-per-category">Example 2: Different Icon per Category<a class="anchor" aria-label="anchor" href="#example-2-different-icon-per-category"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Each food item gets its own icon. The icon is the identity — no legend needed to understand what each point represents.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
@@ -172,6 +183,9 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"apple"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"drumstick"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_food</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  food     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Carrot"</span>, <span class="st">"Orange"</span>, <span class="st">"Chicken"</span>, <span class="st">"Beef"</span>, <span class="st">"Salmon"</span>,</span>
@@ -214,8 +228,14 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="example-3-size-mapping">Example 3: Size Mapping<a class="anchor" aria-label="anchor" href="#example-3-size-mapping"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Map a continuous variable to icon size. Use <code><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">scales::rescale()</a></code> to keep sizes readable.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
@@ -223,7 +243,11 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># --- DATA (keeps your original 9 icons exactly; adds more; removes SAP/Intel/Qualcomm) ---</span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"apple"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"microchip"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
 <span><span class="va">df_brand</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  brand      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apple"</span>, <span class="st">"Google"</span>, <span class="st">"Microsoft"</span>, <span class="st">"Meta"</span>, <span class="st">"Amazon"</span>,</span>
 <span>                 <span class="st">"Netflix"</span>, <span class="st">"Spotify"</span>, <span class="st">"Uber"</span>, <span class="st">"Airbnb"</span>,</span>
@@ -292,7 +316,6 @@ document.addEventListener('DOMContentLoaded', function () {
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_brand</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">revenue</span>, y <span class="op">=</span> <span class="va">market_cap</span>,</span>
 <span>                     icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">brand</span>, size <span class="op">=</span> <span class="va">size_scaled</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># ── P/S ratio reference lines ──────────────────────────────────────────</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, intercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>,  linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
 <span>              color <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">alpha</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="fl">0.25</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, intercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
@@ -303,9 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">500</span>, y <span class="op">=</span> <span class="fl">1600</span>, label <span class="op">=</span> <span class="st">"P/S ratio = 5×"</span>,</span>
 <span>           color <span class="op">=</span> <span class="va">col_accent</span>, size <span class="op">=</span> <span class="fl">2.8</span>, hjust <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>           fontface <span class="op">=</span> <span class="st">"italic"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># ── Icons ──────────────────────────────────────────────────────────────</span></span>
 <span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># ── Labels ─────────────────────────────────────────────────────────────</span></span>
 <span>  <span class="fu">ggrepel</span><span class="fu">::</span><span class="fu"><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_label_repel</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">brand</span>, <span class="st">"\n$"</span>, <span class="va">market_cap</span>, <span class="st">"B"</span><span class="op">)</span>, color <span class="op">=</span> <span class="va">brand</span><span class="op">)</span>,</span>
 <span>    fill          <span class="op">=</span> <span class="fu"><a href="https://scales.r-lib.org/reference/alpha.html" class="external-link">alpha</a></span><span class="op">(</span><span class="va">bg</span>, <span class="fl">0.88</span><span class="op">)</span>,</span>
@@ -382,10 +403,6 @@ document.addEventListener('DOMContentLoaded', function () {
 </details>
 </div>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Ignoring unknown labels:
-• size : "Employees"</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="examples-geom-icon-point_files/figure-html/size-mapping-1.png" width="960"></p>
@@ -393,15 +410,25 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="example-4-paris-2024-olympics-new-sports">Example 4: Paris 2024 Olympics — New Sports<a class="anchor" aria-label="anchor" href="#example-4-paris-2024-olympics-new-sports"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> in a fixed-position grid with no traditional axes. All 45 Olympic disciplines at Paris 2024 are arranged in a 9×5 layout, each with its own icon. The 4 sports making their Olympic debut are highlighted in cyan; all existing disciplines are in gold. Annotations use <code>ggtext</code> for inline HTML styling.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"person-swimming"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"volleyball"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_paris_disciplines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  sport <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -506,12 +533,23 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="example-5-combined-geoms">Example 5: Combined Geoms<a class="anchor" aria-label="anchor" href="#example-5-combined-geoms"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> works alongside any ggplot2 geom. Here combined with <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth()</a></code>, reference lines, labels, and quadrant annotations.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"pills"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"stethoscope"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"hospital"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_health</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  country  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Chad"</span>, <span class="st">"Mali"</span>, <span class="st">"Niger"</span>, <span class="st">"Bolivia"</span>, <span class="st">"Egypt"</span>,</span>
 <span>               <span class="st">"Morocco"</span>, <span class="st">"Germany"</span>, <span class="st">"France"</span>, <span class="st">"Japan"</span><span class="op">)</span>,</span>
 <span>  spend    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">27</span>, <span class="fl">30</span>, <span class="fl">22</span>, <span class="fl">215</span>, <span class="fl">185</span>, <span class="fl">190</span>, <span class="fl">5986</span>, <span class="fl">4902</span>, <span class="fl">4717</span><span class="op">)</span>,</span>
@@ -568,21 +606,35 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>    y        <span class="op">=</span> <span class="st">"Life Expectancy (years)"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Income Group"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output-display">
+</details>
+</div>
+<div class="cell">
+<div class="cell-output-display">
 <div>
 <figure><p><img src="examples-geom-icon-point_files/figure-html/combined-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="example-6-dark-theme-scatter">Example 6: Dark Theme Scatter<a class="anchor" aria-label="anchor" href="#example-6-dark-theme-scatter"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> with <code><a href="../reference/theme_pop_dark.html">theme_pop_dark()</a></code> for a presentation-ready chart.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"graduate"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"chalkboard"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"flask"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_academic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  name        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Carol"</span>, <span class="st">"Dan"</span>, <span class="st">"Eve"</span>,</span>
@@ -608,7 +660,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>  <span class="fu"><a href="../reference/theme_pop_dark.html">theme_pop_dark</a></span><span class="op">(</span>bg_color <span class="op">=</span> <span class="st">"#0D1B2A"</span>, text_color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>    axis.text  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#90A4AE"</span><span class="op">)</span>,</span>
-<span>    axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#B0BEC5"</span><span class="op">)</span></span>
+<span>    axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#B0BEC5"</span><span class="op">)</span>,</span>
+<span>    legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">10</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
@@ -618,21 +671,35 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>    y        <span class="op">=</span> <span class="st">"Performance Score"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Role"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output-display">
+</details>
+</div>
+<div class="cell">
+<div class="cell-output-display">
 <div>
 <figure><p><img src="examples-geom-icon-point_files/figure-html/dark-theme-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="ggrepel-the-green-energy-divide">
 <code>ggrepel</code> — The Green Energy Divide<a class="anchor" aria-label="anchor" href="#ggrepel-the-green-energy-divide"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_label_repel()</a></code> prevents country labels from overlapping, letting every data point speak for itself even in dense clusters. Here 22 countries are plotted by electricity consumption per capita versus renewable share. Without label repulsion the European cluster — high renewables, moderate consumption — would be illegible. Icon encodes the dominant energy source; color encodes the continent.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"droplet"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"wind"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"sun"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_energy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  country     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Iceland"</span>, <span class="st">"Norway"</span>, <span class="st">"Costa Rica"</span>, <span class="st">"New Zealand"</span>, <span class="st">"Brazil"</span>,</span>
@@ -800,14 +867,25 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="ggforce-the-power-trade-off">
 <code>ggforce</code> — The Power Trade-Off<a class="anchor" aria-label="anchor" href="#ggforce-the-power-trade-off"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="https://ggforce.data-imaginist.com/reference/geom_mark_ellipse.html" class="external-link">geom_mark_ellipse()</a></code> draws annotated convex-hull ellipses around groups of points, making cluster structure immediately legible. Here 17 consumer electronics devices are compared on battery life (log scale) versus performance score. The ellipses label each category’s cluster with a short description, while <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> encodes device type through icons — revealing how wearables dominate the far right (days of uptime) at the cost of raw performance.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com" class="external-link">ggforce</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"mobile"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"laptop"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"clock"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
@@ -927,15 +1005,24 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="gganimate-a-world-transformed">
 <code>gganimate</code> — A World Transformed<a class="anchor" aria-label="anchor" href="#gganimate-a-world-transformed"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code>transition_time()</code> animates the Gapminder classic — life expectancy versus GDP per capita — across five decades. <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> encodes each region with a matching earth icon, so the continent story is legible at a glance even as points race across the frame.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gganimate.com" class="external-link">gganimate</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"earth"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>

@@ -30,8 +30,8 @@ fa_icons(
 - category:
 
   Character vector. One or more category names to filter by. Run
-  [`fa_categories()`](https://jurjoroa.github.io/ggpop/reference/fa_categories.md)
-  to see valid options. Setting `category` implies `classify = TRUE`.
+  `fa_categories()` to see valid options. Setting `category` implies
+  `classify = TRUE`.
 
 - regex:
 

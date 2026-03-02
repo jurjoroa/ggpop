@@ -47,7 +47,8 @@
 <p>This release of <code>ggpop</code> delivers new theming support, expanded icon customization, critical bug fixes, and significant internal refactoring toward a fully ggplot-native architecture. Deprecated functionality has been removed and the package has been finalized.</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-7-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-7-0"></a></h3>
-<ul><li>Fixed icon size inconsistency across different ggplot2 themes and corrected <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> to properly reflect theme settings (<a href="https://github.com/jurjoroa/ggpop/issues/287" class="external-link">#287</a>).</li>
+<ul><li>Fixed false “Facet / grouping caution” warning and incorrect per-group icon positioning triggered when a user-provided data frame happened to contain a column named <code>group</code>. Both the warning and the auto-facet detection are now gated on whether the data was produced by <code><a href="../reference/process_data.html">process_data()</a></code>, so raw data frames work correctly regardless of column names (<a href="https://github.com/jurjoroa/ggpop/issues/346" class="external-link">#346</a>).</li>
+<li>Fixed icon size inconsistency across different ggplot2 themes and corrected <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> to properly reflect theme settings (<a href="https://github.com/jurjoroa/ggpop/issues/287" class="external-link">#287</a>).</li>
 <li>Fixed legend icon ordering for factor variables mapped to <code>colour</code>, ensuring legend icons follow factor level order rather than data row order (<a href="https://github.com/jurjoroa/ggpop/issues/294" class="external-link">#294</a>).</li>
 </ul></div>
 <div class="section level3">
@@ -91,6 +92,7 @@
 <li>#337</li>
 <li>#340</li>
 <li>#341</li>
+<li>#346</li>
 </ul></div>
 <div class="section level3">
 <h3 id="version-1-7-0">Version<a class="anchor" aria-label="anchor" href="#version-1-7-0"></a></h3>

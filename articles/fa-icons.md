@@ -2,6 +2,8 @@
 
 ## What is `fa_icons()`?
 
+  
+
 [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
 is a wrapper functions from fontawesome that lets you search and browse
 the Font Awesome icons available for use in
@@ -12,9 +14,13 @@ Instead of looking for the icon, you can filter by keyword, category, or
 regular expression and get back a tidy tibble — or a plain character
 vector — ready to use in your plot code.
 
+  
+
 ------------------------------------------------------------------------
 
 ## Listing All Icons
+
+  
 
 Called with no arguments,
 [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
@@ -47,9 +53,13 @@ Each row contains:
 | `icon`          | Icon name to pass to [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) / [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) |
 | `primary_class` | The first matching semantic category, or `NA` if unclassified                                                                                                                      |
 
+  
+
 ------------------------------------------------------------------------
 
 ## Searching by Name
+
+  
 
 Pass a string to `query` to filter icons whose names contain that
 substring.
@@ -94,9 +104,13 @@ fa_icons(query = "heart")
     12 heart-pulse              medical_health
     13 shield-heart             security_privacy
 
+  
+
 ------------------------------------------------------------------------
 
 ## Regex Search
+
+  
 
 Set `regex = TRUE` to use a Perl-compatible regular expression instead
 of a fixed string.
@@ -132,9 +146,13 @@ fa_icons(query = "^(star|circle)$", regex = TRUE)
     1 circle shapes_symbols
     2 star   shapes_symbols
 
+  
+
 ------------------------------------------------------------------------
 
 ## Filtering by Category
+
+  
 
 Use `category` to return only icons that belong to a semantic group.
 
@@ -178,9 +196,13 @@ fa_icons(query = "person", category = "people_users")
     10 person-circle-check       people_users
     # ℹ 36 more rows
 
+  
+
 ------------------------------------------------------------------------
 
 ## Quick Vector Lookup
+
+  
 
 Set `as_vector = TRUE` to skip the tibble and get a plain sorted
 character vector. This is the fastest way to browse names or pipe them
@@ -225,9 +247,13 @@ fa_icons(category = "animals", as_vector = TRUE)
     [11] "horse"        "horse-head"   "kiwi-bird"    "mosquito"     "mosquito-net"
     [16] "otter"        "spider"      
 
+  
+
 ------------------------------------------------------------------------
 
 ## Showing All Classes
+
+  
 
 By default only `primary_class` is returned. Set `primary_only = FALSE`
 to also get the `all_classes` list-column, showing every category each
@@ -254,9 +280,13 @@ fa_icons(query = "heart", primary_only = FALSE)
     12 heart-pulse              medical_health   <chr [1]>
     13 shield-heart             security_privacy <chr [1]>  
 
+  
+
 ------------------------------------------------------------------------
 
 ## Hiding Unclassified Icons
+
+  
 
 Some icons do not match any category. Set `include_unclassified = FALSE`
 to drop them.
@@ -280,9 +310,13 @@ fa_icons(query = "user", include_unclassified = FALSE)
     10 user-check         people_users
     # ℹ 28 more rows
 
+  
+
 ------------------------------------------------------------------------
 
 ## Using a Custom Class Map
+
+  
 
 Supply your own named list of `category = regex` pairs to `class_map`
 for domain-specific classification.
@@ -311,9 +345,13 @@ fa_icons(class_map = my_map, include_unclassified = FALSE)
     10 car-rear    mobility
     # ℹ 28 more rows
 
+  
+
 ------------------------------------------------------------------------
 
 ## From Discovery to Plot
+
+  
 
 A common workflow: search for icons, pick ones you like, then put them
 directly into a geom.
@@ -406,9 +444,13 @@ ggplot() +
 
 ![](fa-icons_files/figure-html/workflow-plot-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Parameter Reference
+
+  
 
 | Parameter              | Default  | Description                                                   |
 |:-----------------------|:---------|:--------------------------------------------------------------|
@@ -421,9 +463,13 @@ ggplot() +
 | `primary_only`         | `TRUE`   | Return only `primary_class`; set `FALSE` to add `all_classes` |
 | `as_vector`            | `FALSE`  | Return a plain sorted character vector instead of a tibble    |
 
+  
+
 ------------------------------------------------------------------------
 
 ## Icon Gallery by Category
+
+  
 
 The gallery below lets you identify every available icon in fontawesome
 package. Each category is drawn as a

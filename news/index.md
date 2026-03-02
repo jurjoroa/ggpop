@@ -9,6 +9,13 @@ been removed and the package has been finalized.
 
 ### Bug Fixes
 
+- Fixed false “Facet / grouping caution” warning and incorrect per-group
+  icon positioning triggered when a user-provided data frame happened to
+  contain a column named `group`. Both the warning and the auto-facet
+  detection are now gated on whether the data was produced by
+  [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md),
+  so raw data frames work correctly regardless of column names
+  ([\#346](https://github.com/jurjoroa/ggpop/issues/346)).
 - Fixed icon size inconsistency across different ggplot2 themes and
   corrected
   [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md)
@@ -107,6 +114,7 @@ Issues are listed in chronological merge order.
 - \#337
 - \#340
 - \#341
+- \#346
 
 ### Version
 

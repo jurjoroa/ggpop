@@ -81,11 +81,72 @@
 
 
 
-    <section class="level2"><h2 id="what-is-fa_icons">What is <code>fa_icons()</code>?<a class="anchor" aria-label="anchor" href="#what-is-fa_icons"></a>
+    <style>
+/* ── Smooth code-fold animation ──────────────────────────────────────────── */
+details > div.sourceCode {
+  overflow: hidden;
+}
+
+@keyframes fold-open {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fold-close {
+  from { opacity: 1; transform: translateY(0);    }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+details.fold-opening > div.sourceCode {
+  animation: fold-open 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+details.fold-closing > div.sourceCode {
+  animation: fold-close 0.22s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('details').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (!e.target.closest('summary')) return;
+      e.preventDefault();
+
+      var content = el.querySelector('div.sourceCode');
+      if (!content) return;
+
+      if (el.open) {
+        el.classList.remove('fold-opening');
+        el.classList.add('fold-closing');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-closing');
+          el.removeAttribute('open');
+        }, { once: true });
+      } else {
+        el.setAttribute('open', '');
+        el.classList.remove('fold-closing');
+        el.classList.add('fold-opening');
+        content.addEventListener('animationend', function () {
+          el.classList.remove('fold-opening');
+        }, { once: true });
+      }
+    });
+  });
+});
+</script><section class="level2"><h2 id="what-is-fa_icons">What is <code>fa_icons()</code>?<a class="anchor" aria-label="anchor" href="#what-is-fa_icons"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="../reference/fa_icons.html">fa_icons()</a></code> is a wrapper functions from fontawesome that lets you search and browse the Font Awesome icons available for use in <code><a href="../reference/geom_pop.html">geom_pop()</a></code> and <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>. Instead of looking for the icon, you can filter by keyword, category, or regular expression and get back a tidy tibble — or a plain character vector — ready to use in your plot code.</p>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="listing-all-icons">Listing All Icons<a class="anchor" aria-label="anchor" href="#listing-all-icons"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Called with no arguments, <code><a href="../reference/fa_icons.html">fa_icons()</a></code> returns every available Font Awesome icon with its primary semantic category.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -129,8 +190,14 @@
 </tr>
 </tbody>
 </table>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="searching-by-name">Searching by Name<a class="anchor" aria-label="anchor" href="#searching-by-name"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Pass a string to <code>query</code> to filter icons whose names contain that substring.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
@@ -174,8 +241,14 @@
 13 shield-heart             security_privacy</code></pre>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="regex-search">Regex Search<a class="anchor" aria-label="anchor" href="#regex-search"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Set <code>regex = TRUE</code> to use a Perl-compatible regular expression instead of a fixed string.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
@@ -210,8 +283,14 @@
 2 star   shapes_symbols</code></pre>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="filtering-by-category">Filtering by Category<a class="anchor" aria-label="anchor" href="#filtering-by-category"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Use <code>category</code> to return only icons that belong to a semantic group.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
@@ -254,8 +333,14 @@
 # ℹ 36 more rows</code></pre>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="quick-vector-lookup">Quick Vector Lookup<a class="anchor" aria-label="anchor" href="#quick-vector-lookup"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Set <code>as_vector = TRUE</code> to skip the tibble and get a plain sorted character vector. This is the fastest way to browse names or pipe them into other code.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
@@ -298,8 +383,14 @@
 [16] "otter"        "spider"      </code></pre>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="showing-all-classes">Showing All Classes<a class="anchor" aria-label="anchor" href="#showing-all-classes"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>By default only <code>primary_class</code> is returned. Set <code>primary_only = FALSE</code> to also get the <code>all_classes</code> list-column, showing every category each icon matches.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
@@ -323,8 +414,14 @@
 13 shield-heart             security_privacy &lt;chr [1]&gt;  </code></pre>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="hiding-unclassified-icons">Hiding Unclassified Icons<a class="anchor" aria-label="anchor" href="#hiding-unclassified-icons"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Some icons do not match any category. Set <code>include_unclassified = FALSE</code> to drop them.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
@@ -346,8 +443,14 @@
 # ℹ 28 more rows</code></pre>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="using-a-custom-class-map">Using a Custom Class Map<a class="anchor" aria-label="anchor" href="#using-a-custom-class-map"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Supply your own named list of <code>category = regex</code> pairs to <code>class_map</code> for domain-specific classification.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
@@ -374,8 +477,14 @@
 # ℹ 28 more rows</code></pre>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="from-discovery-to-plot">From Discovery to Plot<a class="anchor" aria-label="anchor" href="#from-discovery-to-plot"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>A common workflow: search for icons, pick ones you like, then put them directly into a geom.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="downlit sourceCode r">
@@ -468,8 +577,14 @@
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="parameter-reference">Parameter Reference<a class="anchor" aria-label="anchor" href="#parameter-reference"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <table class="table caption-top">
 <colgroup>
 <col style="width: 33%">
@@ -525,8 +640,14 @@
 </tr>
 </tbody>
 </table>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="icon-gallery-by-category">Icon Gallery by Category<a class="anchor" aria-label="anchor" href="#icon-gallery-by-category"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>The gallery below lets you identify every available icon in fontawesome package. Each category is drawn as a <code><a href="../reference/geom_pop.html">geom_pop()</a></code> chart — one icon per type — with the legend showing the actual icon image alongside its name. All icons within a category share a single colour. Pick the ones you like the most for your analysis.</p>
 <section class="level3"><h3 id="people-accessibility">People &amp; Accessibility<a class="anchor" aria-label="anchor" href="#people-accessibility"></a>
 </h3>

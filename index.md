@@ -510,7 +510,18 @@ geofacet](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures
 
 Example Plot geofacet
 
-------------------------------------------------------------------------
+### `gganimate` — A World Transformed
+
+`transition_time()` animates the Gapminder classic — life expectancy
+versus GDP per capita — across five decades.
+[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+encodes each region with a matching earth icon, so the continent story
+is legible at a glance even as points race across the frame.
+
+**[Code available in ggpop package
+website](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html#gganimate-a-world-transformed)**.
+
+## ![Example gganimate animation](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/world_transformed.gif)
 
 ## Citation
 

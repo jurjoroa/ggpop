@@ -17,7 +17,9 @@
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="getting-started_files/libs/quarto-html/popper.min.js"></script><script src="getting-started_files/libs/quarto-html/tippy.umd.min.js"></script><link href="getting-started_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="getting-started_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="getting-started_files/libs/core-js-2.5.3/shim.min.js"></script><script src="getting-started_files/libs/react-18.2.0/react.min.js"></script><script src="getting-started_files/libs/react-18.2.0/react-dom.min.js"></script><script src="getting-started_files/libs/reactwidget-2.0.0/react-tools.js"></script><link href="getting-started_files/libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="getting-started_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="getting-started_files/libs/reactable-0.4.5/reactable.css" rel="stylesheet">
+<script src="getting-started_files/libs/reactable-binding-0.4.5/reactable.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Getting Started with ggpop">
 <meta property="og:image" content="https://jurjoroa.github.io/ggpop/logo.png">
 <!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-CX1ZY99J1P"></script><script>
@@ -83,21 +85,35 @@
 
     <section class="level2"><h2 id="what-is-ggpop">What is ggpop?<a class="anchor" aria-label="anchor" href="#what-is-ggpop"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code>ggpop</code> is a <code>ggplot2</code> extension for creating <strong>icon-based population charts</strong>. Instead of bars or dots, each observation is represented by a Font Awesome icon — making your data immediately human and intuitive.</p>
 <p>This vignette walks you through the core workflow using <code><a href="../reference/geom_pop.html">geom_pop()</a></code>, the main function for building proportional population grids.</p>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># From CRAN</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggpop"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Development version from GitHub</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jurjoroa/ggpop"</span><span class="op">)</span></span></code></pre></div>
-</details>
+</div>
+<div style="line-height: 0.6;">
+<br>
 </div>
 <hr></section><section class="level2"><h2 id="the-geom_pop-workflow">The <code>geom_pop()</code> Workflow<a class="anchor" aria-label="anchor" href="#the-geom_pop-workflow"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="../reference/geom_pop.html">geom_pop()</a></code> follows a simple three-step workflow:</p>
 <ol type="1">
 <li>
@@ -108,11 +124,17 @@
 <strong>Plot</strong> — pass the data to <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot()</a></code> and add <code><a href="../reference/geom_pop.html">geom_pop()</a></code>
 </li>
 </ol>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="step-1-your-data">Step 1: Your Data<a class="anchor" aria-label="anchor" href="#step-1-your-data"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>We start with a simple data frame containing population counts by sex. This mirrors the kind of data you’d typically bring to <code><a href="../reference/geom_pop.html">geom_pop()</a></code>.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -124,17 +146,23 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_pop_mx</span></span></code></pre></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>     sex        n country
 1   male 63459580  Mexico
 2 female 67401427  Mexico</code></pre>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="step-2-process-the-data">Step 2: Process the Data<a class="anchor" aria-label="anchor" href="#step-2-process-the-data"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p><code><a href="../reference/process_data.html">process_data()</a></code> converts raw population counts into a sampled data frame where each row represents one icon. It calculates group proportions and allocates icons accordingly.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_processed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_data.html">process_data</a></span><span class="op">(</span></span>
 <span>  data        <span class="op">=</span> <span class="va">df_pop_mx</span>,</span>
 <span>  group_var   <span class="op">=</span> <span class="va">sex</span>,</span>
@@ -143,36 +171,58 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_processed</span><span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output cell-output-stdout">
+<div class="cell-output cell-output-stdout">
 <pre><code>    type        n      prop
-1   male 63459580 0.4849388
-2   male 63459580 0.4849388
-3 female 67401427 0.5150612
-4 female 67401427 0.5150612
-5   male 63459580 0.4849388
-6 female 67401427 0.5150612</code></pre>
+1 female 67401427 0.5150612
+2 female 67401427 0.5150612
+3   male 63459580 0.4849388
+4   male 63459580 0.4849388
+5 female 67401427 0.5150612
+6   male 63459580 0.4849388</code></pre>
 </div>
 </div>
 <blockquote>
 <p><strong>Note:</strong> <code><a href="../reference/process_data.html">process_data()</a></code> is optional. If your data already has one row per icon (up to 1,000 rows), you can pass it directly to <code><a href="../reference/geom_pop.html">geom_pop()</a></code>.</p>
 </blockquote>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="step-3-assign-icons">Step 3: Assign Icons<a class="anchor" aria-label="anchor" href="#step-3-assign-icons"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Add an <code>icon</code> column to your processed data. Icon names come from Font Awesome — use any of the 2,000+ free icons.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"person"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-9737ba61525026d54710" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9737ba61525026d54710">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["hot-tub-person","person","person-arrow-down-to-line","person-arrow-up-from-line","person-biking","person-booth","person-breastfeeding","person-burst","person-cane","person-chalkboard","person-circle-check","person-circle-exclamation","person-circle-minus","person-circle-plus","person-circle-question","person-circle-xmark","person-digging","person-dots-from-line","person-dress","person-dress-burst","person-drowning","person-falling","person-falling-burst","person-half-dress","person-harassing","person-hiking","person-military-pointing","person-military-rifle","person-military-to-person","person-praying","person-pregnant","person-rays","person-rifle","person-running","person-shelter","person-skating","person-skiing","person-skiing-nordic","person-snowboarding","person-swimming","person-through-window","person-walking","person-walking-arrow-loop-left","person-walking-arrow-right","person-walking-dashed-line-arrow-right","person-walking-luggage","person-walking-with-cane","square-person-confined"],"primary_class":["people_social","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","shapes_symbols"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"38742b52e812dd4e4359d88da4e06bfc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>We selected the <code>male</code> and <code>female</code> icons for our population chart. You can choose any icons that fit your data and story!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_processed</span> <span class="op">&lt;-</span> <span class="va">df_processed</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
 <span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"male"</span>   <span class="op">~</span> <span class="st">"male"</span>,</span>
 <span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"female"</span> <span class="op">~</span> <span class="st">"female"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</details>
+</div>
+<div style="line-height: 0.6;">
+<br>
 </div>
 <hr></section><section class="level2"><h2 id="step-4-plot">Step 4: Plot<a class="anchor" aria-label="anchor" href="#step-4-plot"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Pass the data to <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot()</a></code> and add <code><a href="../reference/geom_pop.html">geom_pop()</a></code>. Map <code>icon</code> and <code>color</code> to your grouping variable.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">df_processed</span>,</span>
@@ -181,106 +231,192 @@
 <span>    dpi  <span class="op">=</span> <span class="fl">100</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>, <span class="st">"female"</span> <span class="op">=</span> <span class="st">"#D81B60"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span>base_size<span class="op">=</span><span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Mexico Population by Sex (2024)"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the total population"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output-display">
+<div class="cell-output-display">
 <div>
-<figure><p><img src="getting-started_files/figure-html/basic-plot-1.png" width="672"></p>
+<figure><p><img src="getting-started_files/figure-html/basic-plot-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
-<hr></section><section class="level2"><h2 id="adding-a-legend-with-icons">Adding a Legend with Icons<a class="anchor" aria-label="anchor" href="#adding-a-legend-with-icons"></a>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<hr></section><section class="level2"><h2 id="scaling-legend-icons">Scaling legend icons<a class="anchor" aria-label="anchor" href="#scaling-legend-icons"></a>
 </h2>
-<p>Set <code>legend_icons = TRUE</code> inside <code><a href="../reference/geom_pop.html">geom_pop()</a></code> and use <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> to control the legend icon size.</p>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<p>Use <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> to control the legend icon size. You can also turn off legend icons with <code>legend_icons = FALSE</code> in <code><a href="../reference/geom_pop.html">geom_pop()</a></code> if you prefer a text-only legend with dots</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
-<span>    data         <span class="op">=</span> <span class="va">df_processed</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span>,</span>
-<span>    size         <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>    dpi          <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>    legend_icons <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_processed</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span>, legend_icons <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>, <span class="st">"female"</span> <span class="op">=</span> <span class="st">"#D81B60"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Mexico Population by Sex (2024)"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the total population"</span>,</span>
-<span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output-display">
+<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span>base_size<span class="op">=</span><span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title    <span class="op">=</span> <span class="st">"Mexico Population by Sex (2024)"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the total population"</span>,</span>
+<span>       color    <span class="op">=</span> <span class="st">"Sex"</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
 <div>
-<figure><p><img src="getting-started_files/figure-html/legend-plot-1.png" width="672"></p>
+<figure><p><img src="getting-started_files/figure-html/legend-plot-1.png" width="960"></p>
 </figure>
 </div>
 </div>
+</div>
+<div style="line-height: 0.6;">
+<br>
 </div>
 <hr></section><section class="level2"><h2 id="using-your-own-data">Using Your Own Data<a class="anchor" aria-label="anchor" href="#using-your-own-data"></a>
 </h2>
-<p>You don’t need <code><a href="../reference/process_data.html">process_data()</a></code>. Any data frame with one row per icon works directly:</p>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<p>You don’t need <code><a href="../reference/process_data.html">process_data()</a></code>. As long as the dataframe doesn’t have more than 1,000 rows, it works. You can also do a facet or use <code>cowplot</code> so you can have more panes. Any data frame with one row per icon works directly:</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_simple</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"bed"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-d5de48cdf2f81ddbfb76" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-d5de48cdf2f81ddbfb76">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["bed","bed-pulse","cart-flatbed","cart-flatbed-suitcase"],"primary_class":["buildings_extra","buildings_extra","shopping_commerce","shopping_commerce"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"4581162a367297874b1a8d5a308758f7"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>We created a simple data frame with 100 rows, representing a population of patients with three health statuses: “Healthy”, “At Risk”, and “Ill”. Each status is mapped to a different icon.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Our own data frame with one row per icon</span></span>
+<span><span class="va">df_simple</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Healthy"</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"At Risk"</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Ill"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  icon  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person-half-dress"</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"bed-pulse"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Set factor levels to control legend order</span></span>
 <span><span class="va">df_simple</span><span class="op">$</span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_simple</span><span class="op">$</span><span class="va">group</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Healthy"</span>, <span class="st">"At Risk"</span>, <span class="st">"Ill"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
-<span>    data         <span class="op">=</span> <span class="va">df_simple</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">group</span><span class="op">)</span>,</span>
-<span>    size         <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>    dpi          <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>    legend_icons <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_simple</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span>, legend_icons <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Healthy"</span>  <span class="op">=</span> <span class="st">"#43A047"</span>,</span>
 <span>    <span class="st">"At Risk"</span>  <span class="op">=</span> <span class="st">"#FFB300"</span>,</span>
 <span>    <span class="st">"Ill"</span>      <span class="op">=</span> <span class="st">"#E53935"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Simulated Patient Population (n = 100)"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents one patient"</span>,</span>
-<span>    color    <span class="op">=</span> <span class="st">"Status"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output cell-output-stderr">
-<pre><code>Warning: Facet / grouping caution.
-
-! Why you are seeing this warning:
-  - The data contains multiple groups in data$group
-  (often created by `process_data(high_group_var = ...)`)
-  - If the plot is not faceted, icons from different groups may overlap
-
-ℹ Recommended patterns:
-  - Facet in ggplot2:
-  `ggplot() + geom_pop(..., facet = group) + facet_wrap(~ group)`
-
-  - Alternative layout:
-  Create one plot per subgroup and combine with cowplot or patchwork
-
-ℹ If you want one pooled circle:
-  - Re-run `process_data()` without `high_group_var`</code></pre>
-</div>
+<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span>,</span>
+<span>        legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span> title    <span class="op">=</span> <span class="st">"Simulated Patient Population (n = 100)"</span>,</span>
+<span>        subtitle <span class="op">=</span> <span class="st">"Each icon represents one patient"</span>,</span>
+<span>        color    <span class="op">=</span> <span class="st">"Status"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="getting-started_files/figure-html/own-data-1.png" width="672"></p>
+<figure><p><img src="getting-started_files/figure-html/own-data-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<hr></section><section class="level2"><h2 id="use-geom_text-as-a-label">Use geom_text() as a label<a class="anchor" aria-label="anchor" href="#use-geom_text-as-a-label"></a>
+</h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<p><code><a href="../reference/geom_pop.html">geom_pop()</a></code> exposes its internally computed icon coordinates to downstream layers. This means you can add <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text()</a></code> — or any ggplot2 geom — <strong>without specifying <code>x</code> or <code>y</code></strong>: they are inherited automatically from the icon grid.</p>
+<p>This is useful when you want labels to float over the icons instead of relying on a legend. Set <code>show.legend = FALSE</code> in <code><a href="../reference/geom_pop.html">geom_pop()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Female names (50)</span></span>
+<span>    <span class="st">"María"</span>, <span class="st">"Guadalupe"</span>, <span class="st">"Juana"</span>, <span class="st">"Margarita"</span>, <span class="st">"Francisca"</span>,</span>
+<span>    <span class="st">"Teresa"</span>, <span class="st">"Rosa"</span>, <span class="st">"Antonia"</span>, <span class="st">"Ana"</span>, <span class="st">"Isabel"</span>,</span>
+<span>    <span class="st">"Carmen"</span>, <span class="st">"Josefina"</span>, <span class="st">"Laura"</span>, <span class="st">"Verónica"</span>, <span class="st">"Patricia"</span>,</span>
+<span>    <span class="st">"Leticia"</span>, <span class="st">"Silvia"</span>, <span class="st">"Elizabeth"</span>, <span class="st">"Adriana"</span>, <span class="st">"Martha"</span>,</span>
+<span>    <span class="st">"Elena"</span>, <span class="st">"Gabriela"</span>, <span class="st">"Alejandra"</span>, <span class="st">"Gloria"</span>, <span class="st">"Claudia"</span>,</span>
+<span>    <span class="st">"Lucía"</span>, <span class="st">"Beatriz"</span>, <span class="st">"Daniela"</span>, <span class="st">"Mónica"</span>, <span class="st">"Rocío"</span>,</span>
+<span>    <span class="st">"Alma"</span>, <span class="st">"Karla"</span>, <span class="st">"Yolanda"</span>, <span class="st">"Diana"</span>, <span class="st">"Sandra"</span>,</span>
+<span>    <span class="st">"Cecilia"</span>, <span class="st">"Paola"</span>, <span class="st">"Norma"</span>, <span class="st">"Angélica"</span>, <span class="st">"Irma"</span>,</span>
+<span>    <span class="st">"Liliana"</span>, <span class="st">"Brenda"</span>, <span class="st">"Jessica"</span>, <span class="st">"Susana"</span>, <span class="st">"Blanca"</span>,</span>
+<span>    <span class="st">"Marisol"</span>, <span class="st">"Carolina"</span>, <span class="st">"Luz"</span>, <span class="st">"Cristina"</span>, <span class="st">"Andrea"</span>,</span>
+<span>    <span class="co"># Male names (50)</span></span>
+<span>    <span class="st">"José"</span>, <span class="st">"Juan"</span>, <span class="st">"Luis"</span>, <span class="st">"Miguel"</span>, <span class="st">"Carlos"</span>,</span>
+<span>    <span class="st">"Francisco"</span>, <span class="st">"Antonio"</span>, <span class="st">"Jesús"</span>, <span class="st">"Pedro"</span>, <span class="st">"Manuel"</span>,</span>
+<span>    <span class="st">"Alejandro"</span>, <span class="st">"Jorge"</span>, <span class="st">"Rafael"</span>, <span class="st">"Roberto"</span>, <span class="st">"Fernando"</span>,</span>
+<span>    <span class="st">"Daniel"</span>, <span class="st">"Ricardo"</span>, <span class="st">"Javier"</span>, <span class="st">"Alberto"</span>, <span class="st">"Sergio"</span>,</span>
+<span>    <span class="st">"Raúl"</span>, <span class="st">"Enrique"</span>, <span class="st">"Guillermo"</span>, <span class="st">"Oscar"</span>, <span class="st">"Gerardo"</span>,</span>
+<span>    <span class="st">"Arturo"</span>, <span class="st">"Héctor"</span>, <span class="st">"Eduardo"</span>, <span class="st">"Armando"</span>, <span class="st">"David"</span>,</span>
+<span>    <span class="st">"Víctor"</span>, <span class="st">"Pablo"</span>, <span class="st">"Ángel"</span>, <span class="st">"Ramón"</span>, <span class="st">"Andrés"</span>,</span>
+<span>    <span class="st">"Mario"</span>, <span class="st">"Salvador"</span>, <span class="st">"Ignacio"</span>, <span class="st">"Gustavo"</span>, <span class="st">"Alfredo"</span>,</span>
+<span>    <span class="st">"Rubén"</span>, <span class="st">"Marco"</span>, <span class="st">"Rodrigo"</span>, <span class="st">"Joaquín"</span>, <span class="st">"Martín"</span>,</span>
+<span>    <span class="st">"Gabriel"</span>, <span class="st">"Felipe"</span>, <span class="st">"Ernesto"</span>, <span class="st">"Leonardo"</span>, <span class="st">"Sebastián"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  gender <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Female"</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  icon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person-dress"</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_labeled</span><span class="op">$</span><span class="va">gender</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_labeled</span><span class="op">$</span><span class="va">gender</span>,</span>
+<span>                            levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Female"</span>, <span class="st">"Male"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_labeled</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">gender</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span>, ncol <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">name</span><span class="op">)</span>,</span>
+<span>    nudge_y       <span class="op">=</span> <span class="fl">0.08</span>,</span>
+<span>    size          <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>    fontface      <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>    check_overlap <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Female"</span> <span class="op">=</span> <span class="st">"#E91E63"</span>,</span>
+<span>    <span class="st">"Male"</span>   <span class="op">=</span> <span class="st">"#2196F3"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    plot.title    <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, hjust <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span>,</span>
+<span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, hjust <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span>,</span>
+<span>    legend.position <span class="op">=</span> <span class="st">"none"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"100 Most Common Names in Mexico"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Pink icons represent female names, blue icons represent male names"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="getting-started_files/figure-html/geom-text-label-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <ul>
 <li>
 <strong><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code></strong> — use icons as scatter plot points on any x/y data</li>
@@ -289,9 +425,7 @@
 </li>
 <li>
 <strong>Themes</strong> — explore <code><a href="../reference/theme_pop.html">theme_pop()</a></code> and customize with standard ggplot2 theme options</li>
-</ul>
-<p>Visit the <a href="https://jurjoroa.github.io/ggpop/">ggpop website</a> for the full function reference and more examples.</p>
-</section><script id="quarto-html-after-body" type="application/javascript">
+</ul></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);

@@ -2,6 +2,8 @@
 
 ## What is ggpop?
 
+  
+
 `ggpop` is a `ggplot2` extension for creating **icon-based population
 charts**. Instead of bars or dots, each observation is represented by a
 Font Awesome icon — making your data immediately human and intuitive.
@@ -10,11 +12,13 @@ This vignette walks you through the core workflow using
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md),
 the main function for building proportional population grids.
 
+  
+
 ------------------------------------------------------------------------
 
 ## Installation
 
-Show the code
+  
 
 ``` r
 # From CRAN
@@ -24,9 +28,13 @@ install.packages("ggpop")
 remotes::install_github("jurjoroa/ggpop")
 ```
 
+  
+
 ------------------------------------------------------------------------
 
 ## The `geom_pop()` Workflow
+
+  
 
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
 follows a simple three-step workflow:
@@ -40,15 +48,17 @@ follows a simple three-step workflow:
     and add
     [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Step 1: Your Data
 
+  
+
 We start with a simple data frame containing population counts by sex.
 This mirrors the kind of data you’d typically bring to
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
-
-Show the code
 
 ``` r
 library(ggpop)
@@ -68,16 +78,18 @@ df_pop_mx
     1   male 63459580  Mexico
     2 female 67401427  Mexico
 
+  
+
 ------------------------------------------------------------------------
 
 ## Step 2: Process the Data
+
+  
 
 [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
 converts raw population counts into a sampled data frame where each row
 represents one icon. It calculates group proportions and allocates icons
 accordingly.
-
-Show the code
 
 ``` r
 df_processed <- process_data(
@@ -91,12 +103,12 @@ head(df_processed)
 ```
 
         type        n      prop
-    1   male 63459580 0.4849388
-    2   male 63459580 0.4849388
-    3 female 67401427 0.5150612
-    4 female 67401427 0.5150612
-    5   male 63459580 0.4849388
-    6 female 67401427 0.5150612
+    1 female 67401427 0.5150612
+    2 female 67401427 0.5150612
+    3   male 63459580 0.4849388
+    4   male 63459580 0.4849388
+    5 female 67401427 0.5150612
+    6   male 63459580 0.4849388
 
 > **Note:**
 > [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
@@ -104,14 +116,23 @@ head(df_processed)
 > rows), you can pass it directly to
 > [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
 
+  
+
 ------------------------------------------------------------------------
 
 ## Step 3: Assign Icons
 
+  
+
 Add an `icon` column to your processed data. Icon names come from Font
 Awesome — use any of the 2,000+ free icons.
 
-Show the code
+``` r
+fa_icons(query = "person")
+```
+
+We selected the `male` and `female` icons for our population chart. You
+can choose any icons that fit your data and story!
 
 ``` r
 df_processed <- df_processed %>%
@@ -121,17 +142,19 @@ df_processed <- df_processed %>%
   ))
 ```
 
+  
+
 ------------------------------------------------------------------------
 
 ## Step 4: Plot
+
+  
 
 Pass the data to
 [`ggplot()`](https://ggplot2.tidyverse.org/reference/ggplot.html) and
 add
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
 Map `icon` and `color` to your grouping variable.
-
-Show the code
 
 ``` r
 ggplot() +
@@ -142,7 +165,12 @@ ggplot() +
     dpi  = 100
   ) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
-  theme_pop() +
+  theme_pop(base_size=15) +
+  theme(plot.title = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text = element_text(color = "white"),
+        legend.title = element_text(color = "white"),
+        legend.position = "bottom") +
   labs(
     title    = "Mexico Population by Sex (2024)",
     subtitle = "Each icon represents ~1% of the total population",
@@ -152,101 +180,178 @@ ggplot() +
 
 ![](getting-started_files/figure-html/basic-plot-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
-## Adding a Legend with Icons
+## Scaling legend icons
 
-Set `legend_icons = TRUE` inside
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-and use
+  
+
+Use
 [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md)
-to control the legend icon size.
-
-Show the code
+to control the legend icon size. You can also turn off legend icons with
+`legend_icons = FALSE` in
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+if you prefer a text-only legend with dots
 
 ``` r
-ggplot() +
-  geom_pop(
-    data         = df_processed,
-    aes(icon = icon, color = type),
-    size         = 2,
-    dpi          = 100,
-    legend_icons = TRUE
-  ) +
+ggplot(data = df_processed, aes(icon = icon, color = type)) +
+  geom_pop(size = 2, dpi = 100, legend_icons = TRUE) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
-  scale_legend_icon(size = 5) +
-  theme_pop() +
-  labs(
-    title    = "Mexico Population by Sex (2024)",
-    subtitle = "Each icon represents ~1% of the total population",
-    color    = "Sex"
-  )
+  theme_pop(base_size=15) +
+  theme(plot.title = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text = element_text(color = "white"),
+        legend.title = element_text(color = "white"),
+        legend.position = "bottom") +
+  scale_legend_icon(size = 10) +
+  labs(title    = "Mexico Population by Sex (2024)",
+       subtitle = "Each icon represents ~1% of the total population",
+       color    = "Sex")
 ```
 
 ![](getting-started_files/figure-html/legend-plot-1.png)
+
+  
 
 ------------------------------------------------------------------------
 
 ## Using Your Own Data
 
+  
+
 You don’t need
 [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md).
-Any data frame with one row per icon works directly:
-
-Show the code
+As long as the dataframe doesn’t have more than 1,000 rows, it works.
+You can also do a facet or use `cowplot` so you can have more panes. Any
+data frame with one row per icon works directly:
 
 ``` r
+fa_icons(query = "bed")
+```
+
+We created a simple data frame with 100 rows, representing a population
+of patients with three health statuses: “Healthy”, “At Risk”, and “Ill”.
+Each status is mapped to a different icon.
+
+``` r
+# Our own data frame with one row per icon
 df_simple <- data.frame(
   group = c(rep("Healthy", 70), rep("At Risk", 20), rep("Ill", 10)),
   icon  = c(rep("person", 70), rep("person-half-dress", 20), rep("bed-pulse", 10))
 )
 
+# Set factor levels to control legend order
 df_simple$group <- factor(df_simple$group, levels = c("Healthy", "At Risk", "Ill"))
 
-ggplot() +
-  geom_pop(
-    data         = df_simple,
-    aes(icon = icon, color = group),
-    size         = 2,
-    dpi          = 100,
-    legend_icons = TRUE
-  ) +
+ggplot(data = df_simple, aes(icon = icon, color = group)) +
+  geom_pop(size = 2, dpi = 100, legend_icons = TRUE) +
   scale_color_manual(values = c(
     "Healthy"  = "#43A047",
     "At Risk"  = "#FFB300",
     "Ill"      = "#E53935"
   )) +
-  scale_legend_icon(size = 5) +
-  theme_pop() +
+  theme_pop(base_size = 15) +
+  theme(plot.title = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text = element_text(color = "white"),
+        legend.title = element_text(color = "white"),
+        legend.position = "bottom") +
+  scale_legend_icon(size = 8) +
+  labs( title    = "Simulated Patient Population (n = 100)",
+        subtitle = "Each icon represents one patient",
+        color    = "Status")
+```
+
+![](getting-started_files/figure-html/own-data-1.png)
+
+  
+
+------------------------------------------------------------------------
+
+## Use geom_text() as a label
+
+  
+
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+exposes its internally computed icon coordinates to downstream layers.
+This means you can add
+[`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html)
+— or any ggplot2 geom — **without specifying `x` or `y`**: they are
+inherited automatically from the icon grid.
+
+This is useful when you want labels to float over the icons instead of
+relying on a legend. Set `show.legend = FALSE` in
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
+
+``` r
+df_labeled <- data.frame(
+  name = c(
+    # Female names (50)
+    "María", "Guadalupe", "Juana", "Margarita", "Francisca",
+    "Teresa", "Rosa", "Antonia", "Ana", "Isabel",
+    "Carmen", "Josefina", "Laura", "Verónica", "Patricia",
+    "Leticia", "Silvia", "Elizabeth", "Adriana", "Martha",
+    "Elena", "Gabriela", "Alejandra", "Gloria", "Claudia",
+    "Lucía", "Beatriz", "Daniela", "Mónica", "Rocío",
+    "Alma", "Karla", "Yolanda", "Diana", "Sandra",
+    "Cecilia", "Paola", "Norma", "Angélica", "Irma",
+    "Liliana", "Brenda", "Jessica", "Susana", "Blanca",
+    "Marisol", "Carolina", "Luz", "Cristina", "Andrea",
+    # Male names (50)
+    "José", "Juan", "Luis", "Miguel", "Carlos",
+    "Francisco", "Antonio", "Jesús", "Pedro", "Manuel",
+    "Alejandro", "Jorge", "Rafael", "Roberto", "Fernando",
+    "Daniel", "Ricardo", "Javier", "Alberto", "Sergio",
+    "Raúl", "Enrique", "Guillermo", "Oscar", "Gerardo",
+    "Arturo", "Héctor", "Eduardo", "Armando", "David",
+    "Víctor", "Pablo", "Ángel", "Ramón", "Andrés",
+    "Mario", "Salvador", "Ignacio", "Gustavo", "Alfredo",
+    "Rubén", "Marco", "Rodrigo", "Joaquín", "Martín",
+    "Gabriel", "Felipe", "Ernesto", "Leonardo", "Sebastián"
+  ),
+  gender = c(rep("Female", 50), rep("Male", 50)),
+  icon = c(rep("person-dress", 50), rep("person", 50))
+)
+
+df_labeled$gender <- factor(df_labeled$gender,
+                            levels = c("Female", "Male"))
+
+ggplot(data = df_labeled, aes(icon = icon, color = gender)) +
+  geom_pop(size = 2, dpi = 100, show.legend = FALSE, ncol = 10) +
+  geom_text(
+    aes(label = name),
+    nudge_y       = 0.08,
+    size          = 4,
+    fontface      = "bold",
+    check_overlap = TRUE
+  ) +
+  scale_color_manual(values = c(
+    "Female" = "#E91E63",
+    "Male"   = "#2196F3"
+  )) +
+  theme_pop(base_size = 20) +
+  theme(
+    plot.title    = element_text(color = "white", hjust = .5),
+    plot.subtitle = element_text(color = "white", hjust = .5),
+    legend.position = "none"
+  ) +
   labs(
-    title    = "Simulated Patient Population (n = 100)",
-    subtitle = "Each icon represents one patient",
-    color    = "Status"
+    title    = "100 Most Common Names in Mexico",
+    subtitle = "Pink icons represent female names, blue icons represent male names"
   )
 ```
 
-    Warning: Facet / grouping caution.
+![](getting-started_files/figure-html/geom-text-label-1.png)
 
-    ! Why you are seeing this warning:
-      - The data contains multiple groups in data$group
-      (often created by `process_data(high_group_var = ...)`)
-      - If the plot is not faceted, icons from different groups may overlap
-
-    ℹ Recommended patterns:
-      - Facet in ggplot2:
-      `ggplot() + geom_pop(..., facet = group) + facet_wrap(~ group)`
-
-      - Alternative layout:
-      Create one plot per subgroup and combine with cowplot or patchwork
-
-    ℹ If you want one pooled circle:
-      - Re-run `process_data()` without `high_group_var`
-
-![](getting-started_files/figure-html/own-data-1.png)
+  
 
 ------------------------------------------------------------------------
 
 ## Next Steps
+
+  
 
 - **[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)**
   — use icons as scatter plot points on any x/y data
@@ -256,6 +361,3 @@ ggplot() +
 - **Themes** — explore
   [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md)
   and customize with standard ggplot2 theme options
-
-Visit the [ggpop website](https://jurjoroa.github.io/ggpop/) for the
-full function reference and more examples.

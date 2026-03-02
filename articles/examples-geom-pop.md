@@ -1,8 +1,8 @@
 # geom_pop() Examples
 
-------------------------------------------------------------------------
-
 ## Example 1: World Population by Continent
+
+  
 
 Out of every 100 people on Earth, how many come from each continent?
 Each icon uses a distinct symbol and color per continent, and the legend
@@ -19,6 +19,13 @@ df_world <- data.frame(
   continent = c("Asia", "Africa", "Europe", "Latin America", "North America", "Oceania"),
   n         = c(4753079000, 1441090000, 748000000, 662000000, 376000000, 45000000)
 )
+
+# Search the icons you want to use with fa_icons() and note their names:
+
+fa_icons(query = "torii")
+fa_icons(query = "sun")
+fa_icons(query = "landmark")
+
 
 df_world_proc <- process_data(
   data        = df_world,
@@ -85,9 +92,13 @@ ggplot(data = df_world_proc,
 
 ![](examples-geom-pop_files/figure-html/world-population-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Example 2: Population by Sex
+
+  
 
 A simple two-group population chart using Mexico’s 2024 population data.
 
@@ -97,6 +108,10 @@ Show the code
 library(ggpop)
 library(ggplot2)
 library(dplyr)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "male")
+fa_icons(query = "female")
 
 df_sex <- data.frame(
   sex = c("Male", "Female"),
@@ -139,9 +154,13 @@ ggplot(data = df_sex_proc, aes(icon = icon, color = type)) +
 
 ![](examples-geom-pop_files/figure-html/sex-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Example 3: Education Levels
+
+  
 
 Population chart showing education attainment across four levels.
 
@@ -152,6 +171,12 @@ library(ggpop)
 library(ggplot2)
 library(dplyr)
 library(ggtext)
+
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "person")
+fa_icons(query = "child")
+fa_icons(query = "graduate")
 
 df_edu <- data.frame(
   level = c("No Schooling", "Primary", "Secondary", "University"),
@@ -248,9 +273,13 @@ labs(
 
 ![](examples-geom-pop_files/figure-html/education-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Example 4: Disease Burden with Dark Theme
+
+  
 
 A dark-themed chart showing disease categories in a simulated
 population.
@@ -261,6 +290,11 @@ Show the code
 library(ggpop)
 library(ggplot2)
 library(dplyr)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "heart")
+fa_icons(query = "ribbon")
+
 
 df_disease <- data.frame(
   condition = c(rep("Cardiovascular", 32), rep("Cancer", 18),
@@ -309,9 +343,13 @@ ggplot() +
 
 ![](examples-geom-pop_files/figure-html/disease-dark-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## Example 5: Disability Status with Stroke
+
+  
 
 Using `stroke_width` to outline icons for better visibility and
 `arrange = TRUE` to group icons by type.
@@ -322,6 +360,9 @@ Show the code
 library(ggpop)
 library(ggplot2)
 library(dplyr)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "person")
 
 
 df_disability <- data.frame(
@@ -375,9 +416,84 @@ ggplot(data = df_disability_proc,
 
 ![](examples-geom-pop_files/figure-html/disability-1.png)
 
+## Example 6: 100 Most Common Names in Mexico
+
+We can also add labels to icons using
+[`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html).
+In this example, the 100 most common names in Mexico are displayed with
+a pink icon for female names and a blue icon for male names. The
+`check_overlap = TRUE` argument prevents label overlap, so only a subset
+of names will be shown.
+
+Show the code
+
+``` r
+df_labeled <- data.frame(
+  name = c(
+    # Female names (50)
+    "María", "Guadalupe", "Juana", "Margarita", "Francisca",
+    "Teresa", "Rosa", "Antonia", "Ana", "Isabel",
+    "Carmen", "Josefina", "Laura", "Verónica", "Patricia",
+    "Leticia", "Silvia", "Elizabeth", "Adriana", "Martha",
+    "Elena", "Gabriela", "Alejandra", "Gloria", "Claudia",
+    "Lucía", "Beatriz", "Daniela", "Mónica", "Rocío",
+    "Alma", "Karla", "Yolanda", "Diana", "Sandra",
+    "Cecilia", "Paola", "Norma", "Angélica", "Irma",
+    "Liliana", "Brenda", "Jessica", "Susana", "Blanca",
+    "Marisol", "Carolina", "Luz", "Cristina", "Andrea",
+    # Male names (50)
+    "José", "Juan", "Luis", "Miguel", "Carlos",
+    "Francisco", "Antonio", "Jesús", "Pedro", "Manuel",
+    "Alejandro", "Jorge", "Rafael", "Roberto", "Fernando",
+    "Daniel", "Ricardo", "Javier", "Alberto", "Sergio",
+    "Raúl", "Enrique", "Guillermo", "Oscar", "Gerardo",
+    "Arturo", "Héctor", "Eduardo", "Armando", "David",
+    "Víctor", "Pablo", "Ángel", "Ramón", "Andrés",
+    "Mario", "Salvador", "Ignacio", "Gustavo", "Alfredo",
+    "Rubén", "Marco", "Rodrigo", "Joaquín", "Martín",
+    "Gabriel", "Felipe", "Ernesto", "Leonardo", "Sebastián"
+  ),
+  gender = c(rep("Female", 50), rep("Male", 50)),
+  icon = c(rep("person-dress", 50), rep("person", 50))
+)
+
+df_labeled$gender <- factor(df_labeled$gender,
+                            levels = c("Female", "Male"))
+
+ggplot(data = df_labeled, aes(icon = icon, color = gender)) +
+  geom_pop(size = 2, dpi = 100, show.legend = FALSE, ncol = 10) +
+  geom_text(
+    aes(label = name),
+    nudge_y       = 0.08,
+    size          = 4,
+    fontface      = "bold",
+    check_overlap = TRUE
+  ) +
+  scale_color_manual(values = c(
+    "Female" = "#E91E63",
+    "Male"   = "#2196F3"
+  )) +
+  theme_pop(base_size = 20) +
+  theme(
+    plot.title    = element_text(color = "white", hjust = .5),
+    plot.subtitle = element_text(color = "white", hjust = .5),
+    legend.position = "none"
+  ) +
+  labs(
+    title    = "100 Most Common Names in Mexico",
+    subtitle = "Pink icons represent female names, blue icons represent male names"
+  )
+```
+
+![](examples-geom-pop_files/figure-html/geom-text-label-1.png)
+
+  
+
 ------------------------------------------------------------------------
 
 ## `cowplot` — Health Survey Dashboard
+
+  
 
 Combining multiple
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
@@ -393,6 +509,10 @@ library(ggpop)
 library(ggplot2)
 library(dplyr)
 library(cowplot)
+
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "person")
 
 # --- Plot 1: Sex distribution ---
 df_sex_cw <- data.frame(
@@ -511,9 +631,13 @@ plot_grid(top_row, bottom_row, nrow = 2)
 
 ![](examples-geom-pop_files/figure-html/cowplot-1.png)
 
+  
+
 ------------------------------------------------------------------------
 
 ## `facet_wrap` — Transportation Methods Across US Cities
+
+  
 
 Using `facet_wrap(~ group)`, this chart breaks down the daily commute
 mix across major US cities. Each panel shows one city’s full
@@ -528,6 +652,11 @@ Show the code
 # Example: Transportation Methods Across Cities with 7 Icon Groups
 library(ggplot2)
 library(dplyr)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "car")
+fa_icons(query = "train")
+fa_icons(query = "bicycle")
 
 # 1. Create sample data for transportation methods across different countries
 df_transport <- data.frame(
@@ -636,9 +765,13 @@ ggplot(data = df_transport_prop,
 
 Example Plot facet
 
+  
+
 ------------------------------------------------------------------------
 
 ## `facet_geo` — Gun Violence Across US States
+
+  
 
 Combining
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
@@ -666,6 +799,7 @@ Show the code
 
 ``` r
 library(sf); library(dplyr); library(geofacet)
+
 
 url <- "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/7a5e5e1b1009312506ebd873d7858fa424c14b68/DATA/us_states_hexgrid.geojson.json"
 
@@ -743,9 +877,13 @@ ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
 
 Example Plot geofacet
 
+  
+
 ------------------------------------------------------------------------
 
 ## `gifski` — A World Grown Older (png animation)
+
+  
 
 Three countries placed side by side with `patchwork`’s `|` operator —
 Japan (rapidly ageing), the United States (moderate pace), and Nigeria
@@ -762,6 +900,10 @@ library(ggplot2)
 library(dplyr)
 library(patchwork)
 library(gifski)
+
+# Search the icons you want to use with fa_icons() and note their names:
+fa_icons(query = "person")
+
 
 set.seed(42)
 

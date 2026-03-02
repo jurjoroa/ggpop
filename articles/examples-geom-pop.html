@@ -133,9 +133,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-</script><hr>
-<section class="level2"><h2 id="example-1-world-population-by-continent">Example 1: World Population by Continent<a class="anchor" aria-label="anchor" href="#example-1-world-population-by-continent"></a>
+</script><section class="level2"><h2 id="example-1-world-population-by-continent">Example 1: World Population by Continent<a class="anchor" aria-label="anchor" href="#example-1-world-population-by-continent"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Out of every 100 people on Earth, how many come from each continent? Each icon uses a distinct symbol and color per continent, and the legend shows the exact count.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -147,6 +149,13 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>  continent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Asia"</span>, <span class="st">"Africa"</span>, <span class="st">"Europe"</span>, <span class="st">"Latin America"</span>, <span class="st">"North America"</span>, <span class="st">"Oceania"</span><span class="op">)</span>,</span>
 <span>  n         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4753079000</span>, <span class="fl">1441090000</span>, <span class="fl">748000000</span>, <span class="fl">662000000</span>, <span class="fl">376000000</span>, <span class="fl">45000000</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"torii"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"sun"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"landmark"</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="va">df_world_proc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_data.html">process_data</a></span><span class="op">(</span></span>
 <span>  data        <span class="op">=</span> <span class="va">df_world</span>,</span>
@@ -207,7 +216,10 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the global population  \u00b7  Sample of 500"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Continent"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output cell-output-stderr">
+</details>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
 <pre><code>Downloading dataset...</code></pre>
 </div>
 <div class="cell-output-display">
@@ -217,14 +229,24 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="example-2-population-by-sex">Example 2: Population by Sex<a class="anchor" aria-label="anchor" href="#example-2-population-by-sex"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>A simple two-group population chart using Mexico’s 2024 population data.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"male"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"female"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"Female"</span><span class="op">)</span>,</span>
@@ -273,8 +295,14 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="example-3-education-levels">Example 3: Education Levels<a class="anchor" aria-label="anchor" href="#example-3-education-levels"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Population chart showing education attainment across four levels.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
@@ -282,6 +310,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"person"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"child"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"graduate"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_edu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No Schooling"</span>, <span class="st">"Primary"</span>, <span class="st">"Secondary"</span>, <span class="st">"University"</span><span class="op">)</span>,</span>
@@ -384,14 +418,25 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="example-4-disease-burden-with-dark-theme">Example 4: Disease Burden with Dark Theme<a class="anchor" aria-label="anchor" href="#example-4-disease-burden-with-dark-theme"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>A dark-themed chart showing disease categories in a simulated population.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"heart"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"ribbon"</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="va">df_disease</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Cardiovascular"</span>, <span class="fl">32</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Cancer"</span>, <span class="fl">18</span><span class="op">)</span>,</span>
@@ -436,21 +481,33 @@ document.addEventListener('DOMContentLoaded', function () {
 <span>    legend.margin    <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">margin</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
 <span>    legend.spacing.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">8</span>, <span class="st">"pt"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-</details><div class="cell-output-display">
+</details>
+</div>
+<div class="cell">
+<div class="cell-output-display">
 <div>
 <figure><p><img src="examples-geom-pop_files/figure-html/disease-dark-1.png" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="example-5-disability-status-with-stroke">Example 5: Disability Status with Stroke<a class="anchor" aria-label="anchor" href="#example-5-disability-status-with-stroke"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Using <code>stroke_width</code> to outline icons for better visibility and <code>arrange = TRUE</code> to group icons by type.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"person"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="va">df_disability</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -510,16 +567,93 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+</section><section class="level2"><h2 id="example-6-100-most-common-names-in-mexico">Example 6: 100 Most Common Names in Mexico<a class="anchor" aria-label="anchor" href="#example-6-100-most-common-names-in-mexico"></a>
+</h2>
+<p>We can also add labels to icons using <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text()</a></code>. In this example, the 100 most common names in Mexico are displayed with a pink icon for female names and a blue icon for male names. The <code>check_overlap = TRUE</code> argument prevents label overlap, so only a subset of names will be shown.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Female names (50)</span></span>
+<span>    <span class="st">"María"</span>, <span class="st">"Guadalupe"</span>, <span class="st">"Juana"</span>, <span class="st">"Margarita"</span>, <span class="st">"Francisca"</span>,</span>
+<span>    <span class="st">"Teresa"</span>, <span class="st">"Rosa"</span>, <span class="st">"Antonia"</span>, <span class="st">"Ana"</span>, <span class="st">"Isabel"</span>,</span>
+<span>    <span class="st">"Carmen"</span>, <span class="st">"Josefina"</span>, <span class="st">"Laura"</span>, <span class="st">"Verónica"</span>, <span class="st">"Patricia"</span>,</span>
+<span>    <span class="st">"Leticia"</span>, <span class="st">"Silvia"</span>, <span class="st">"Elizabeth"</span>, <span class="st">"Adriana"</span>, <span class="st">"Martha"</span>,</span>
+<span>    <span class="st">"Elena"</span>, <span class="st">"Gabriela"</span>, <span class="st">"Alejandra"</span>, <span class="st">"Gloria"</span>, <span class="st">"Claudia"</span>,</span>
+<span>    <span class="st">"Lucía"</span>, <span class="st">"Beatriz"</span>, <span class="st">"Daniela"</span>, <span class="st">"Mónica"</span>, <span class="st">"Rocío"</span>,</span>
+<span>    <span class="st">"Alma"</span>, <span class="st">"Karla"</span>, <span class="st">"Yolanda"</span>, <span class="st">"Diana"</span>, <span class="st">"Sandra"</span>,</span>
+<span>    <span class="st">"Cecilia"</span>, <span class="st">"Paola"</span>, <span class="st">"Norma"</span>, <span class="st">"Angélica"</span>, <span class="st">"Irma"</span>,</span>
+<span>    <span class="st">"Liliana"</span>, <span class="st">"Brenda"</span>, <span class="st">"Jessica"</span>, <span class="st">"Susana"</span>, <span class="st">"Blanca"</span>,</span>
+<span>    <span class="st">"Marisol"</span>, <span class="st">"Carolina"</span>, <span class="st">"Luz"</span>, <span class="st">"Cristina"</span>, <span class="st">"Andrea"</span>,</span>
+<span>    <span class="co"># Male names (50)</span></span>
+<span>    <span class="st">"José"</span>, <span class="st">"Juan"</span>, <span class="st">"Luis"</span>, <span class="st">"Miguel"</span>, <span class="st">"Carlos"</span>,</span>
+<span>    <span class="st">"Francisco"</span>, <span class="st">"Antonio"</span>, <span class="st">"Jesús"</span>, <span class="st">"Pedro"</span>, <span class="st">"Manuel"</span>,</span>
+<span>    <span class="st">"Alejandro"</span>, <span class="st">"Jorge"</span>, <span class="st">"Rafael"</span>, <span class="st">"Roberto"</span>, <span class="st">"Fernando"</span>,</span>
+<span>    <span class="st">"Daniel"</span>, <span class="st">"Ricardo"</span>, <span class="st">"Javier"</span>, <span class="st">"Alberto"</span>, <span class="st">"Sergio"</span>,</span>
+<span>    <span class="st">"Raúl"</span>, <span class="st">"Enrique"</span>, <span class="st">"Guillermo"</span>, <span class="st">"Oscar"</span>, <span class="st">"Gerardo"</span>,</span>
+<span>    <span class="st">"Arturo"</span>, <span class="st">"Héctor"</span>, <span class="st">"Eduardo"</span>, <span class="st">"Armando"</span>, <span class="st">"David"</span>,</span>
+<span>    <span class="st">"Víctor"</span>, <span class="st">"Pablo"</span>, <span class="st">"Ángel"</span>, <span class="st">"Ramón"</span>, <span class="st">"Andrés"</span>,</span>
+<span>    <span class="st">"Mario"</span>, <span class="st">"Salvador"</span>, <span class="st">"Ignacio"</span>, <span class="st">"Gustavo"</span>, <span class="st">"Alfredo"</span>,</span>
+<span>    <span class="st">"Rubén"</span>, <span class="st">"Marco"</span>, <span class="st">"Rodrigo"</span>, <span class="st">"Joaquín"</span>, <span class="st">"Martín"</span>,</span>
+<span>    <span class="st">"Gabriel"</span>, <span class="st">"Felipe"</span>, <span class="st">"Ernesto"</span>, <span class="st">"Leonardo"</span>, <span class="st">"Sebastián"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  gender <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Female"</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  icon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person-dress"</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"person"</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_labeled</span><span class="op">$</span><span class="va">gender</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_labeled</span><span class="op">$</span><span class="va">gender</span>,</span>
+<span>                            levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Female"</span>, <span class="st">"Male"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_labeled</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">gender</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span>, ncol <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">name</span><span class="op">)</span>,</span>
+<span>    nudge_y       <span class="op">=</span> <span class="fl">0.08</span>,</span>
+<span>    size          <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>    fontface      <span class="op">=</span> <span class="st">"bold"</span>,</span>
+<span>    check_overlap <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Female"</span> <span class="op">=</span> <span class="st">"#E91E63"</span>,</span>
+<span>    <span class="st">"Male"</span>   <span class="op">=</span> <span class="st">"#2196F3"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    plot.title    <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, hjust <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span>,</span>
+<span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span>, hjust <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span>,</span>
+<span>    legend.position <span class="op">=</span> <span class="st">"none"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"100 Most Common Names in Mexico"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Pink icons represent female names, blue icons represent male names"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-pop_files/figure-html/geom-text-label-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="cowplot-health-survey-dashboard">
 <code>cowplot</code> — Health Survey Dashboard<a class="anchor" aria-label="anchor" href="#cowplot-health-survey-dashboard"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Combining multiple <code><a href="../reference/geom_pop.html">geom_pop()</a></code> panels into a single plot with the <code>cowplot</code> package. Three independent population charts — sex distribution, age groups, and vaccination coverage — are built as separate <code>ggplot</code> objects and then arranged: two panels in the top row and one centered below.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/cowplot/" class="external-link">cowplot</a></span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"person"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># --- Plot 1: Sex distribution ---</span></span>
 <span><span class="va">df_sex_cw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -644,15 +778,26 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </div>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="facet_wrap-transportation-methods-across-us-cities">
 <code>facet_wrap</code> — Transportation Methods Across US Cities<a class="anchor" aria-label="anchor" href="#facet_wrap-transportation-methods-across-us-cities"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Using <code>facet_wrap(~ group)</code>, this chart breaks down the daily commute mix across major US cities. Each panel shows one city’s full distribution of transportation modes — car, bus, train, bicycle, motorcycle, walking, and ride-share — with each icon representing approximately 400 commuters. The dark background and per-mode color coding make it easy to compare cities at a glance.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example: Transportation Methods Across Cities with 7 Icon Groups</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"car"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"bicycle"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 1. Create sample data for transportation methods across different countries</span></span>
 <span><span class="va">df_transport</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -761,21 +906,28 @@ document.addEventListener('DOMContentLoaded', function () {
 <figure><p><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/transportation_methods_countries.png"></p>
 <figcaption>Example Plot facet</figcaption></figure>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="facet_geo-gun-violence-across-us-states">
 <code>facet_geo</code> — Gun Violence Across US States<a class="anchor" aria-label="anchor" href="#facet_geo-gun-violence-across-us-states"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Combining <code><a href="../reference/geom_pop.html">geom_pop()</a></code> with the <code>geofacet</code> package places each state’s panel in its actual geographic position on the US map. Here, skull icons represent gun deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000 people. The layout immediately reveals regional patterns that a standard bar chart would hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the South and rural West cluster visually as the hardest-hit regions.</p>
 <p>Note: According to issue #488 from geofacet package</p>
 <p>“You may want to install ggplot2 v3.5.2 until it is fixed so the plot can work. Note that this is the case for all grids, not the US states grid alone (so if possible, please update the issue title).”.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_version</span><span class="op">(</span>package <span class="op">=</span> <span class="st">"ggplot2"</span>,</span>
 <span>                          version <span class="op">=</span> <span class="st">"3.5.2"</span>,</span>
 <span>                          repos <span class="op">=</span> <span class="st">"http://cran.us.r-project.org"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hafen/geofacet" class="external-link">geofacet</a></span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/7a5e5e1b1009312506ebd873d7858fa424c14b68/DATA/us_states_hexgrid.geojson.json"</span></span>
 <span></span>
@@ -853,17 +1005,27 @@ document.addEventListener('DOMContentLoaded', function () {
 <figure><p><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/gun_death_rates_us_states_hexgrid.png"></p>
 <figcaption>Example Plot geofacet</figcaption></figure>
 </div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="gifski-a-world-grown-older-png-animation">
 <code>gifski</code> — A World Grown Older (png animation)<a class="anchor" aria-label="anchor" href="#gifski-a-world-grown-older-png-animation"></a>
 </h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <p>Three countries placed side by side with <code>patchwork</code>’s <code>|</code> operator — Japan (rapidly ageing), the United States (moderate pace), and Nigeria (still young) — each showing its own age distribution for a given decade. A loop builds one patchwork frame per time point and <code>gifski</code> stitches the frames into a GIF, making it immediately clear how differently the ageing transition unfolds across the world.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-rust.r-universe.dev/gifski" class="external-link">gifski</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Search the icons you want to use with fa_icons() and note their names:</span></span>
+<span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"person"</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
