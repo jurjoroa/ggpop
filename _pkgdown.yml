@@ -82,6 +82,9 @@ navbar:
     - text: "Functions"
       icon: fa-cogs
       href: reference/index.html
+    - text: "Tips"
+      icon: fa-lightbulb
+      href: articles/tips.html
     - text: "News"
       icon: fa-newspaper
       href: news/index.html
@@ -96,7 +99,7 @@ home:
 
 authors:
   "Jorge A. Roa-Contreras":
-    href: https://orcid.org/0000-0002-3972-9793
+    href: https://github.com/jurjoroa
   "Ralitza Soultanova":
     href: https://orcid.org/0009-0000-9324-5653
   "Fernando Alarid-Escudero":
@@ -112,6 +115,10 @@ footer:
     package_logo: "<a href='https://jurjoroa.github.io/ggpop/'><img src='https://jurjoroa.github.io/ggpop/inst/figures/shp.png' height='40' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
 
 articles:
+  - title: "Tips & Best Practices"
+    desc: "Key rules and conventions to maximize your ggpop experience."
+    contents:
+      - tips
   - title: "Finding Icons"
     desc: "Search and browse Font Awesome icons available for use in ggpop."
     contents:
