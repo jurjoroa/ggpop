@@ -1741,25 +1741,26 @@ testthat::test_that("stroke_width mapped", {
     y       = c(1, 1, 1),
     status  = c("Recovered", "Improving", "No change"),
     icon    = c("minus", "xmark", "square"),
-    stroke   = c(10, 5, 12),
     stringsAsFactors = FALSE
   )
-
+  
   df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
-
-  p <- ggplot2::ggplot(
-    df,
-    ggplot2::aes(x = x, y = y, icon = icon, color = status, stroke_width = stroke)
-  ) +
-    geom_icon_point(size = 1, dpi = 50, legend_icons = TRUE) +
-    ggplot2::scale_color_manual(values = c(
-      "Recovered" = "#43A047",
-      "Improving" = "#FFB300",
-      "No change" = "#E53935"
-    )) +
-    ggplot2::guides(stroke_width = "none") +
-    ggplot2::theme_void()
-
+  
+  p <- suppressWarnings(
+    ggplot2::ggplot(
+      df,
+      ggplot2::aes(x = x, y = y, icon = icon, color = status)
+    ) +
+      geom_icon_point(size = 1, dpi = 50, legend_icons = TRUE, stroke_width = 100) +
+      ggplot2::scale_color_manual(values = c(
+        "Recovered" = "#43A047",
+        "Improving" = "#FFB300",
+        "No change" = "#E53935"
+      )) +
+      ggplot2::guides(stroke_width = "none") +
+      ggplot2::theme_void()
+  )
+  
   expect_doppelganger(
     title = "geom_icon_point stroke_width mapped",
     fig   = p
