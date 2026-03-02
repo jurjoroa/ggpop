@@ -88,6 +88,9 @@ navbar:
     - text: "News"
       icon: fa-newspaper
       href: news/index.html
+    - text: "New to R?"
+      icon: fa-brands fa-r-project
+      href: articles/new-to-r.html
   right:
     - icon: fa-github
       href: https://github.com/jurjoroa/ggpop
@@ -110,6 +113,10 @@ footer:
     package_logo: "<a href='https://jurjoroa.github.io/ggpop/'><img src='https://jurjoroa.github.io/ggpop/inst/figures/shp.png' height='40' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
 
 articles:
+  - title: "New to R? Start Here"
+    desc: "A friendly crash course on R for complete beginners — from zero to your first icon chart."
+    contents:
+      - new-to-r
   - title: "Tips & Best Practices"
     desc: "Key rules and conventions to maximize your ggpop experience."
     contents:
