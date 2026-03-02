@@ -67,7 +67,7 @@ with category classification.
 fa_icons()
 
 # Quick lookup — plain sorted vector
-fa_icons(as_vector = TRUE)
+head(fa_icons(as_vector = TRUE), 10)
 
 # Search for icons whose name contains "heart"
 fa_icons(query = "heart")

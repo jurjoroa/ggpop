@@ -67,36 +67,37 @@ navbar:
   title: 'ggpop'
   left:
     - text: "Home"
-      icon: fa-home fa-lg
+      icon: fa-home
       href: index.html
     - text: "Vignettes"
-      icon: fa-book
+      icon: fa-leanpub
       href: articles/index.html
     - text: "Examples"
-      icon: fa-cubes
+      icon: fa-rainbow
       menu:
         - text: "geom_pop()"
           href: articles/examples-geom-pop.html
         - text: "geom_icon_point()"
           href: articles/examples-geom-icon-point.html
     - text: "Functions"
-      icon: fa-cogs
+      icon: fa-diagram-project
       href: reference/index.html
+    - text: "Tips"
+      icon: fa-lightbulb
+      href: articles/tips.html
     - text: "News"
       icon: fa-newspaper
       href: news/index.html
+    - text: "New to R?"
+      icon: fa-brands fa-r-project
+      href: articles/new-to-r.html
   right:
     - icon: fa-github
       href: https://github.com/jurjoroa/ggpop
 
-home:
-  links:
-    - text: Report a bug
-      href: https://github.com/jurjoroa/ggpop/issues
-
 authors:
   "Jorge A. Roa-Contreras":
-    href: https://orcid.org/0000-0002-3972-9793
+    href: https://github.com/jurjoroa
   "Ralitza Soultanova":
     href: https://orcid.org/0009-0000-9324-5653
   "Fernando Alarid-Escudero":
@@ -112,6 +113,14 @@ footer:
     package_logo: "<a href='https://jurjoroa.github.io/ggpop/'><img src='https://jurjoroa.github.io/ggpop/inst/figures/shp.png' height='40' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
 
 articles:
+  - title: "New to R? Start Here"
+    desc: "A friendly crash course on R for complete beginners — from zero to your first icon chart."
+    contents:
+      - new-to-r
+  - title: "Tips & Best Practices"
+    desc: "Key rules and conventions to maximize your ggpop experience."
+    contents:
+      - tips
   - title: "Finding Icons"
     desc: "Search and browse Font Awesome icons available for use in ggpop."
     contents:
