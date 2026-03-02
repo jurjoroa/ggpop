@@ -67,20 +67,20 @@ navbar:
   title: 'ggpop'
   left:
     - text: "Home"
-      icon: fa-home fa-lg
+      icon: fa-home
       href: index.html
     - text: "Vignettes"
-      icon: fa-book
+      icon: fa-leanpub
       href: articles/index.html
     - text: "Examples"
-      icon: fa-cubes
+      icon: fa-rainbow
       menu:
         - text: "geom_pop()"
           href: articles/examples-geom-pop.html
         - text: "geom_icon_point()"
           href: articles/examples-geom-icon-point.html
     - text: "Functions"
-      icon: fa-cogs
+      icon: fa-diagram-project
       href: reference/index.html
     - text: "Tips"
       icon: fa-lightbulb
