@@ -9,6 +9,30 @@ been removed and the package has been finalized.
 
 ### Bug Fixes
 
+- Fixed `stroke_width` having no effect in
+  [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+  when placed inside
+  [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html). The
+  validator `validate_stroke_width_not_aesthetic()` was already used in
+  [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+  but missing from
+  [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md),
+  causing the parameter to be silently bypassed. Both geoms now warn
+  users to move `stroke_width` outside
+  [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html)
+  ([\#353](https://github.com/jurjoroa/ggpop/issues/353)).
+
+- Fixed literal and expression alpha values in
+  [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html)
+  (e.g. `aes(alpha = 0.5)` or `aes(alpha = col / 10)`) not applying to
+  legend icons. Only column-mapped alpha previously affected the legend;
+  fixed constants and computed expressions are now correctly resolved
+  and applied to both plot icons and legend keys in
+  [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+  and
+  [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+  ([\#353](https://github.com/jurjoroa/ggpop/issues/353)).
+
 - Fixed false “Facet / grouping caution” warning and incorrect per-group
   icon positioning triggered when a user-provided data frame happened to
   contain a column named `group`. Both the warning and the auto-facet
@@ -16,11 +40,13 @@ been removed and the package has been finalized.
   [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md),
   so raw data frames work correctly regardless of column names
   ([\#346](https://github.com/jurjoroa/ggpop/issues/346)).
+
 - Fixed icon size inconsistency across different ggplot2 themes and
   corrected
   [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md)
   to properly reflect theme settings
   ([\#287](https://github.com/jurjoroa/ggpop/issues/287)).
+
 - Fixed legend icon ordering for factor variables mapped to `colour`,
   ensuring legend icons follow factor level order rather than data row
   order ([\#294](https://github.com/jurjoroa/ggpop/issues/294)).
@@ -32,6 +58,16 @@ been removed and the package has been finalized.
   [`last_plot()`](https://ggplot2.tidyverse.org/reference/get_last_plot.html)
   during layer construction
   ([\#266](https://github.com/jurjoroa/ggpop/issues/266)).
+- Added `validate_alpha_column()` to check all values in a column mapped
+  to alpha at construction time. Values `> 1` or `<= 0` abort with a
+  descriptive message and a rescaling hint; values in `(0, 0.1)` trigger
+  a low-alpha warning
+  ([\#353](https://github.com/jurjoroa/ggpop/issues/353)).
+- Added `validate_literal_alpha_in_aes()` to validate literal and
+  expression alpha values inside
+  [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html), applying
+  the same range rules as the fixed `alpha` parameter
+  ([\#353](https://github.com/jurjoroa/ggpop/issues/353)).
 - Added robustness unit tests for the `stroke_width` parameter to
   validate behavior across edge cases
   ([\#269](https://github.com/jurjoroa/ggpop/issues/269)).
@@ -115,6 +151,7 @@ Issues are listed in chronological merge order.
 - \#340
 - \#341
 - \#346
+- \#353
 
 ### Version
 

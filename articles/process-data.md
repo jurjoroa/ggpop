@@ -90,8 +90,8 @@ df_sex_proc %>%
     # A tibble: 2 × 3
       type   icons proportion
       <chr>  <int>      <dbl>
-    1 female    44       51.5
-    2 male      56       48.5
+    1 female    47       51.5
+    2 male      53       48.5
 
   
 
@@ -124,10 +124,10 @@ df_regions_processed %>%
     # A tibble: 4 × 2
       type  icons
       <chr> <int>
-    1 East     34
-    2 North    32
-    3 South    19
-    4 West     15
+    1 East     40
+    2 North    28
+    3 South    24
+    4 West      8
 
   
 
@@ -166,12 +166,12 @@ df_health_processed %>%
     # A tibble: 8 × 3
       group type    icons
       <chr> <chr>   <int>
-    1 East  At Risk    37
-    2 East  Healthy    63
-    3 North At Risk    32
-    4 North Healthy    68
-    5 South At Risk    30
-    6 South Healthy    70
+    1 East  At Risk    42
+    2 East  Healthy    58
+    3 North At Risk    25
+    4 North Healthy    75
+    5 South At Risk    27
+    6 South Healthy    73
     7 West  At Risk    20
     8 West  Healthy    80
 

@@ -12,7 +12,7 @@ Show the code
 ``` r
 fa_icons(query = "seedling")
 
-ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species, alpha = Petal.Width)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
     "setosa"     = "#43A047",

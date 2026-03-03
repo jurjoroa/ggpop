@@ -8,12 +8,12 @@ first icon chart.
 - [New to R? Start
   Here](https://jurjoroa.github.io/ggpop/articles/new-to-r.md):
 
-### Tips & Best Practices
+### Getting Started
 
-Key rules and conventions to maximize your ggpop experience.
+Learn the core geom_pop() workflow from data to plot.
 
-- [Tips & Best
-  Practices](https://jurjoroa.github.io/ggpop/articles/tips.md):
+- [Getting Started with ggpop
+  (geom_pop)](https://jurjoroa.github.io/ggpop/articles/getting-started.md):
 
 ### Finding Icons
 
@@ -28,13 +28,6 @@ Prepare your data for ggpop.
 
 - [Preparing Data with
   process_data()](https://jurjoroa.github.io/ggpop/articles/process-data.md):
-
-### Getting Started
-
-Learn the core geom_pop() workflow from data to plot.
-
-- [Getting Started with
-  ggpop](https://jurjoroa.github.io/ggpop/articles/getting-started.md):
 
 ### Icon Scatter Plots
 
@@ -58,3 +51,10 @@ Ready-to-use examples for both geoms.
   Examples](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.md):
 - [geom_icon_point()
   Examples](https://jurjoroa.github.io/ggpop/articles/examples-geom-icon-point.md):
+
+### Tips & Best Practices
+
+Key rules and conventions to maximize your ggpop experience.
+
+- [Tips & Best
+  Practices](https://jurjoroa.github.io/ggpop/articles/tips.md):

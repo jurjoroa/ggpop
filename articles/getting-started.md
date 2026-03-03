@@ -1,4 +1,4 @@
-# Getting Started with ggpop
+# Getting Started with ggpop (geom_pop)
 
 ## What is ggpop?
 
@@ -103,10 +103,10 @@ head(df_processed)
 ```
 
         type        n      prop
-    1   male 63459580 0.4849388
-    2 female 67401427 0.5150612
+    1 female 67401427 0.5150612
+    2   male 63459580 0.4849388
     3   male 63459580 0.4849388
-    4 female 67401427 0.5150612
+    4   male 63459580 0.4849388
     5   male 63459580 0.4849388
     6   male 63459580 0.4849388
 
@@ -212,6 +212,102 @@ ggplot(data = df_processed, aes(icon = icon, color = type)) +
 ```
 
 ![](getting-started_files/figure-html/legend-plot-1.png)
+
+  
+
+------------------------------------------------------------------------
+
+## Arranging icons by group
+
+  
+
+By default,
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+places icons in the order they appear in your data — groups are mixed
+across the grid. Setting `arrange = TRUE` clusters all icons of the same
+group together, making proportions easier to compare at a glance.
+
+``` r
+ggplot(data = df_processed, aes(icon = icon, color = type)) +
+  geom_pop(size = 2, dpi = 100, legend_icons = TRUE, arrange = TRUE) +
+  scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
+  theme_pop(base_size = 15) +
+  theme(plot.title    = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text   = element_text(color = "white"),
+        legend.title  = element_text(color = "white"),
+        legend.position = "bottom") +
+  scale_legend_icon(size = 10) +
+  labs(title    = "Mexico Population by Sex (2024)",
+       subtitle = "Icons arranged by group — each icon represents ~1% of the total population",
+       color    = "Sex")
+```
+
+![](getting-started_files/figure-html/arrange-plot-1.png)
+
+Use `arrange = TRUE` whenever you want the chart to read like a stacked
+composition — all females together, all males together — rather than a
+random scatter. This is especially useful when groups have very
+different sizes and you want the boundary between them to be immediately
+visible.
+
+  
+
+------------------------------------------------------------------------
+
+## Using alpha transparency
+
+  
+
+You can use `alpha` to control icon transparency — making some groups
+stand out while others fade into the background. You can pass a fixed
+value directly as a parameter (`geom_pop(alpha = 0.5)`), or map it to a
+column via `aes(alpha = col)` for variable transparency per group.
+
+This is useful when you want to visually emphasize one group over
+others, or communicate certainty — fully opaque icons for confirmed
+data, faded icons for uncertain or secondary categories.
+
+> **Note:** `alpha` is a reserved column name in ggpop. If you want to
+> map transparency per group, name your column something else — for
+> example `opacity`.
+
+``` r
+df_trial <- data.frame(
+  status  = c(rep("Recovered", 55), rep("Improving", 30), rep("No change", 15)),
+  icon    = c(rep("circle-check", 55), rep("arrow-trend-up", 30), rep("circle-minus", 15)),
+  opacity = c(rep(1.0, 55), rep(0.6, 30), rep(0.3, 15))
+)
+
+df_trial$status <- factor(df_trial$status,
+                          levels = c("Recovered", "Improving", "No change"))
+
+ggplot2::ggplot(data = df_trial, aes(icon = icon, color = status, alpha = opacity)) +
+  geom_pop(size = 2, dpi = 100, legend_icons = TRUE) +
+  scale_color_manual(values = c(
+    "Recovered"  = "#43A047",
+    "Improving"  = "#FFB300",
+    "No change"  = "#E53935"
+  )) +
+  guides(alpha = "none") +
+  theme_pop(base_size = 15) +
+  theme(plot.title    = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text   = element_text(color = "white"),
+        legend.title  = element_text(color = "white"),
+        legend.position = "bottom") +
+  scale_legend_icon(size = 8) +
+  labs(
+    title    = "Clinical Trial Outcomes (n = 100)",
+    subtitle = "Opacity reflects outcome certainty — faded icons indicate less definitive results",
+    color    = "Status"
+  )
+```
+
+![](getting-started_files/figure-html/alpha-plot-1.png)
+
+> **Note:** `guides(alpha = "none")` hides the automatic alpha legend
+> entry — the color legend already tells the full story.
 
   
 
