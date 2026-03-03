@@ -41,12 +41,12 @@ fa_icons(query = "heart")
 :::
 
 ```{r}
-#| label: tip2
-#| fig-width: 7
-#| fig-height: 5
+#| label: tip1
+#| fig-width: 10
+#| fig-height: 10
 #| message: false
 #| warning: false
-df_tip2 <- data.frame(
+df_tip1 <- data.frame(
   transport = rep(c("Car", "Bicycle", "Plane"), each = 10),
   icon      = rep(c("car", "bicycle", "plane"), each = 10),
   stringsAsFactors = FALSE
@@ -54,9 +54,9 @@ df_tip2 <- data.frame(
 
 ggplot() +
   geom_pop(
-    data = df_tip2,
+    data = df_tip1,
     aes(icon = icon, color = transport),
-    size = 3, dpi = 96, legend_icons = TRUE
+    size = 3, dpi = 100, legend_icons = TRUE
   ) +
   scale_color_manual(values = c(
     "Car"     = "#E64A19",
@@ -65,7 +65,7 @@ ggplot() +
   )) +
   theme_pop() +
   scale_legend_icon(size = 8) +
-  labs(title = "Tip 2: Valid FA icon names", color = "Transport")
+  labs(title = "Tip 1: Valid FA icon names", color = "Transport")
 ```
 
 <div style="line-height: 0.6;"><br></div>
@@ -85,17 +85,18 @@ ggplot() +
 | `coord_size` | Coordinate scaling |
 | `icon_size` | Icon rendering size |
 | `icon_stroke_width` | Stroke scaling |
+| `alpha` | Icon transparency (internal) |
 
 **Rename any conflicting columns before calling `geom_pop()` or `geom_icon_point()`.**
 
 ```{r}
-#| label: tip3
-#| fig-width: 6
-#| fig-height: 5
+#| label: tip2
+#| fig-width: 10
+#| fig-height: 10
 #| message: false
 #| warning: false
 # Safe column names — no conflict with internal reserved names
-df_tip3 <- data.frame(
+df_tip2 <- data.frame(
   sex      = rep(c("Male", "Female"), each = 20),
   icon     = rep(c("mars", "venus"), each = 20),
   age_grp  = rep(c("Adult", "Child"), times = 20),  # safe name
@@ -104,47 +105,43 @@ df_tip3 <- data.frame(
 
 ggplot() +
   geom_pop(
-    data = df_tip3,
+    data = df_tip2,
     aes(icon = icon, color = sex),
-    size = 3, dpi = 96, legend_icons = TRUE
+    size = 3, dpi = 100, legend_icons = TRUE
   ) +
   scale_color_manual(values = c("Male" = "#1565C0", "Female" = "#C62828")) +
   theme_pop() +
   scale_legend_icon(size = 8) +
-  labs(title = "Tip 3: Safe column names", color = "Sex")
+  labs(title = "Tip 2: Safe column names", color = "Sex")
 ```
 
 <div style="line-height: 0.6;"><br></div>
 
 ---
 
-## Tip 3 — Use `color`, not `fill` or `alpha`
+## Tip 3 — Use `color`, not `fill`
 
 `geom_pop()` renders icons as raster images. This means:
 
 - `fill` is **not supported** → hard error
-- `alpha` is **not supported** in `geom_pop()` → hard error
-- **`color`** is the correct aesthetic for icon styling
-
-For `geom_icon_point()`, `alpha` is accepted as a parameter (not in `aes()`), but values below `0.1` will warn.
+- **`color`** is the correct aesthetic for icon color
+- **`alpha`** is supported — either as a fixed parameter (`geom_pop(alpha = 0.5)`) or mapped via `aes(alpha = col)`, but **`alpha` is a reserved column name** — rename your column first (e.g. `opacity`)
 
 ::: {.callout-important}
 ## What NOT to do
 ```r
-# Both of these will error in geom_pop():
-aes(icon = icon, group = sex, fill  = sex)   # Error
-aes(icon = icon, group = sex, alpha = sex)   # Error
-geom_pop(..., alpha = 0.5)                   # Error
+# fill will error in geom_pop():
+aes(icon = icon, group = sex, fill = sex)   # Error
 ```
 :::
 
 ```{r}
-#| label: tip4
-#| fig-width: 7
-#| fig-height: 5
+#| label: tip3
+#| fig-width: 10
+#| fig-height: 10
 #| message: false
 #| warning: false
-df_tip4 <- data.frame(
+df_tip3 <- data.frame(
   region = rep(c("North", "South", "East", "West"), each = 15),
   icon   = rep(c("compass", "arrow-down", "arrow-right", "arrow-left"), each = 15),
   stringsAsFactors = FALSE
@@ -152,9 +149,9 @@ df_tip4 <- data.frame(
 
 ggplot() +
   geom_pop(
-    data = df_tip4,
-    aes(icon = icon, color = region),   # color ✓ — not fill or alpha
-    size = 3, dpi = 96, legend_icons = TRUE
+    data = df_tip3,
+    aes(icon = icon, color = region,  alpha = 0.5),                       # fixed alpha ✓ — works as a 
+    size = 3, dpi = 100, legend_icons = TRUE
   ) +
   scale_color_manual(values = c(
     "North" = "#00897B", "South" = "#E64A19",
@@ -162,7 +159,7 @@ ggplot() +
   )) +
   theme_pop() +
   scale_legend_icon(size = 8) +
-  labs(title = "Tip 4: Use color, not fill or alpha", color = "Region")
+  labs(title = "Tip 3: Use color, not fill", color = "Region")
 ```
 
 <div style="line-height: 0.6;"><br></div>
@@ -174,19 +171,19 @@ ggplot() +
 `geom_pop()` enforces a hard limit of **1,000 icons** — both globally and per facet panel. Exceeding this limit raises an error immediately. Use `process_data()` with a `sample_size` argument to control the icon count automatically.
 
 ```{r}
-#| label: tip5
-#| fig-width: 7
-#| fig-height: 6
+#| label: tip4
+#| fig-width: 10
+#| fig-height: 10
 #| message: false
 #| warning: false
-df_tip5_raw <- data.frame(
+df_tip4_raw <- data.frame(
   group = c("Group A", "Group B", "Group C"),
   n     = c(4500000, 3200000, 2100000)
 )
 
 # process_data samples down to sample_size icons total
-df_tip5 <- process_data(
-  data        = df_tip5_raw,
+df_tip4 <- process_data(
+  data        = df_tip4_raw,
   group_var   = group,
   sum_var     = n,
   sample_size = 100          # stays well under the 1,000 limit
@@ -199,9 +196,9 @@ df_tip5 <- process_data(
 
 ggplot() +
   geom_pop(
-    data = df_tip5,
+    data = df_tip4,
     aes(icon = icon, color = type),
-    size = 3, dpi = 96, legend_icons = TRUE
+    size = 2, dpi = 100, legend_icons = TRUE
   ) +
   scale_color_manual(values = c(
     "Group A" = "#1565C0",
@@ -211,7 +208,7 @@ ggplot() +
   theme_pop() +
   scale_legend_icon(size = 8) +
   labs(
-    title    = "Tip 5: Use process_data() to control icon count",
+    title    = "Tip 4: Use process_data() to control icon count",
     subtitle = "sample_size = 100 — well under the 1,000-icon limit",
     color    = "Group"
   )
@@ -233,12 +230,12 @@ geom_pop(data = df, aes(icon = icon, group = sex, x = sex, y = sex))
 :::
 
 ```{r}
-#| label: tip6
-#| fig-width: 6
-#| fig-height: 5
+#| label: tip5
+#| fig-width: 10
+#| fig-height: 10
 #| message: false
 #| warning: false
-df_tip6 <- data.frame(
+df_tip5 <- data.frame(
   type = rep(c("Urban", "Rural"), each = 25),
   icon = rep(c("building", "tree"), each = 25),
   stringsAsFactors = FALSE
@@ -247,19 +244,17 @@ df_tip6 <- data.frame(
 # Correct: no x or y in aes() — geom_pop() handles layout automatically
 ggplot() +
   geom_pop(
-    data = df_tip6,
+    data = df_tip5,
     aes(icon = icon, color = type),
-    size = 3, dpi = 96, legend_icons = TRUE
+    size = 3, dpi = 100, legend_icons = TRUE
   ) +
   scale_color_manual(values = c("Urban" = "#5C6BC0", "Rural" = "#388E3C")) +
   theme_pop() +
   scale_legend_icon(size = 8) +
-  labs(title = "Tip 6: No x/y mapping needed in geom_pop()", color = "Area")
+  labs(title = "Tip 5: No x/y mapping needed in geom_pop()", color = "Area")
 ```
 
 <div style="line-height: 0.6;"><br></div>
-
----
 
 ---
 
@@ -270,13 +265,13 @@ When `legend_icons = TRUE`, ggpop reads the first icon from each group to render
 **Ensure each value of your `color` grouping variable maps to exactly one icon name.**
 
 ```{r}
-#| label: tip10
-#| fig-width: 7
-#| fig-height: 5
+#| label: tip6
+#| fig-width: 10
+#| fig-height: 10
 #| message: false
 #| warning: false
 # Each group maps to exactly one icon — clean legend
-df_tip10 <- data.frame(
+df_tip6 <- data.frame(
   species = rep(c("Birds", "Fish", "Trees"), each = 20),
   icon    = rep(c("dove", "fish", "tree"), each = 20),
   stringsAsFactors = FALSE
@@ -284,9 +279,9 @@ df_tip10 <- data.frame(
 
 ggplot() +
   geom_pop(
-    data = df_tip10,
+    data = df_tip6,
     aes(icon = icon, color = species),
-    size = 3, dpi = 96,
+    size = 3, dpi = 100,
     legend_icons = TRUE            # one icon per group ✓ — no warning
   ) +
   scale_color_manual(values = c(
@@ -296,7 +291,7 @@ ggplot() +
   )) +
   theme_pop() +
   scale_legend_icon(size = 8) +
-  labs(title = "Tip 10: One icon per legend group", color = "Species")
+  labs(title = "Tip 6: One icon per legend group", color = "Species")
 ```
 
 <div style="line-height: 0.6;"><br></div>
@@ -320,30 +315,27 @@ ggplot(...) +
 :::
 
 ```{r}
-#| label: tip11
-#| fig-width: 7
-#| fig-height: 6
+#| label: tip7
+#| fig-width: 10
+#| fig-height: 10
 #| message: false
 #| warning: false
-df_tip11 <- data.frame(
+df_tip7 <- data.frame(
   status = rep(c("Active", "Inactive"), each = 25),
   icon   = rep(c("circle-check", "circle-xmark"), each = 25),
   stringsAsFactors = FALSE
 )
 
 # Correct order: theme calls BEFORE scale_legend_icon()
-ggplot() +
-  geom_pop(
-    data = df_tip11,
-    aes(icon = icon, color = status),
-    size = 3, dpi = 96, legend_icons = TRUE
-  ) +
+ggplot(data = df_tip7,
+    aes(icon = icon, color = status)) +
+  geom_pop(size = 3, dpi = 100, legend_icons = TRUE) +
   scale_color_manual(values = c("Active" = "#2E7D32", "Inactive" = "#C62828")) +
   theme_pop() +                     # ← theme first  ✓
   theme(legend.position = "bottom") +
   scale_legend_icon(size = 10) +    # ← scale_legend_icon last  ✓
   labs(
-    title    = "Tip 11: Correct layer order",
+    title    = "Tip 7: Correct layer order",
     subtitle = "theme calls → scale_legend_icon()",
     color    = "Status"
   )
@@ -358,9 +350,9 @@ ggplot() +
 If your data has one row per group with a **count column** (not one row per icon), use `process_data()` to expand it. It handles proportional sampling, reproducibility, and returns one row per icon — ready for `geom_pop()`.
 
 ```{r}
-#| label: tip12
-#| fig-width: 7
-#| fig-height: 6
+#| label: tip8
+#| fig-width: 10
+#| fig-height: 10
 #| message: false
 #| warning: false
 # Your raw count data
@@ -386,12 +378,8 @@ df_edu <- process_data(
 df_edu$type <- factor(df_edu$type,
   levels = c("No degree", "High school", "Bachelor's", "Graduate"))
 
-ggplot() +
-  geom_pop(
-    data = df_edu,
-    aes(icon = icon, color = type),
-    size = 3, dpi = 96, legend_icons = TRUE, arrange = TRUE
-  ) +
+ggplot(data = df_edu, aes(icon = icon, color = type)) +
+  geom_pop(size = 2, dpi = 100, legend_icons = TRUE, arrange = TRUE) +
   scale_color_manual(values = c(
     "No degree"   = "#B71C1C",
     "High school" = "#E65100",
@@ -399,10 +387,66 @@ ggplot() +
     "Graduate"    = "#1B5E20"
   )) +
   theme_pop() +
-  scale_legend_icon(size = 8) +
+  scale_legend_icon(size = 6) +
   labs(
-    title    = "Tip 12: Use process_data() for count-based data",
+    title    = "Tip 8: Use process_data() for count-based data",
     subtitle = "Each icon ≈ 1% of the total population sample",
     color    = "Education"
+  )
+```
+
+<div style="line-height: 0.6;"><br></div>
+
+---
+
+## Tip 9 — Use `seed` for reproducible charts
+
+`geom_pop()` uses randomness when placing icons across the grid. This means that every time you run the same code, the exact icon layout may differ slightly — which can be a problem in reports, papers, or automated pipelines where you need consistent output.
+
+Pass a `seed` argument directly to `geom_pop()` to lock the randomness. Any integer works; the same seed always produces the same layout.
+
+::: {.callout-tip}
+## Why this matters
+If you are including a chart in a paper, dashboard, or automated report, you want the output to be **identical every time** the code runs. A fixed seed guarantees that.
+:::
+
+```{r}
+#| label: tip9
+#| fig-width: 10
+#| fig-height: 10
+#| message: false
+#| warning: false
+df_tip9_raw <- data.frame(
+  source     = c("Coal", "Natural Gas", "Nuclear", "Renewables"),
+  generation = c(800000, 1600000, 700000, 900000)
+)
+
+df_tip9 <- process_data(
+  data        = df_tip9_raw,
+  group_var   = source,
+  sum_var     = generation,
+  sample_size = 100
+) %>%
+  mutate(icon = case_when(
+    type == "Coal"        ~ "industry",
+    type == "Natural Gas" ~ "fire",
+    type == "Nuclear"     ~ "atom",
+    type == "Renewables"  ~ "sun"
+  ))
+
+ggplot(data = df_tip9, aes(icon = icon, color = type)) +
+  geom_pop(size = 2, dpi = 100, seed = 42) +
+  scale_color_manual(values = c(
+    "Coal"        = "#B0BEC5",
+    "Natural Gas" = "#FFB74D",
+    "Nuclear"     = "#CE93D8",
+    "Renewables"  = "#4DB6AC"
+  )) +
+  theme_pop() +
+  scale_legend_icon(size = 8) +
+  labs(
+    title    = "U.S. Electricity Generation by Source",
+    subtitle = "Each icon represents ~1% of total generation — layout fixed with seed = 42",
+    color    = "Energy source"
   )
 ```

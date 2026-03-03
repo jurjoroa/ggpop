@@ -1,5 +1,5 @@
 ---
-title: "Getting Started with ggpop"
+title: "Getting Started with ggpop (geom_pop)"
 format:
   html:
     code-fold: false
@@ -211,6 +211,96 @@ ggplot(data = df_processed, aes(icon = icon, color = type)) +
        subtitle = "Each icon represents ~1% of the total population",
        color    = "Sex")
 ```
+
+<div style="line-height: 0.6;"><br></div>
+
+---
+
+## Arranging icons by group
+<div style="line-height: 0.6;"><br></div>
+
+By default, `geom_pop()` places icons in the order they appear in your data — groups are mixed across the grid. Setting `arrange = TRUE` clusters all icons of the same group together, making proportions easier to compare at a glance.
+
+```{r}
+#| label: arrange-plot
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+#| message: false
+#| warning: false
+
+ggplot(data = df_processed, aes(icon = icon, color = type)) +
+  geom_pop(size = 2, dpi = 100, legend_icons = TRUE, arrange = TRUE) +
+  scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
+  theme_pop(base_size = 15) +
+  theme(plot.title    = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text   = element_text(color = "white"),
+        legend.title  = element_text(color = "white"),
+        legend.position = "bottom") +
+  scale_legend_icon(size = 10) +
+  labs(title    = "Mexico Population by Sex (2024)",
+       subtitle = "Icons arranged by group — each icon represents ~1% of the total population",
+       color    = "Sex")
+```
+
+Use `arrange = TRUE` whenever you want the chart to read like a stacked composition — all females together, all males together — rather than a random scatter. This is especially useful when groups have very different sizes and you want the boundary between them to be immediately visible.
+
+<div style="line-height: 0.6;"><br></div>
+
+---
+
+## Using alpha transparency
+<div style="line-height: 0.6;"><br></div>
+
+You can use `alpha` to control icon transparency — making some groups stand out while others fade into the background. You can pass a fixed value directly as a parameter (`geom_pop(alpha = 0.5)`), or map it to a column via `aes(alpha = col)` for variable transparency per group.
+
+This is useful when you want to visually emphasize one group over others, or communicate certainty — fully opaque icons for confirmed data, faded icons for uncertain or secondary categories.
+
+> **Note:** `alpha` is a reserved column name in ggpop. If you want to map transparency per group, name your column something else — for example `opacity`.
+
+```{r}
+#| label: alpha-plot
+#| fig-width: 10
+#| fig-height: 10
+#| dev: png
+#| dev-args: !expr list(bg = "transparent")
+#| message: false
+#| warning: false
+
+df_trial <- data.frame(
+  status  = c(rep("Recovered", 55), rep("Improving", 30), rep("No change", 15)),
+  icon    = c(rep("circle-check", 55), rep("arrow-trend-up", 30), rep("circle-minus", 15)),
+  opacity = c(rep(1.0, 55), rep(0.6, 30), rep(0.3, 15))
+)
+
+df_trial$status <- factor(df_trial$status,
+                          levels = c("Recovered", "Improving", "No change"))
+
+ggplot2::ggplot(data = df_trial, aes(icon = icon, color = status, alpha = opacity)) +
+  geom_pop(size = 2, dpi = 100, legend_icons = TRUE) +
+  scale_color_manual(values = c(
+    "Recovered"  = "#43A047",
+    "Improving"  = "#FFB300",
+    "No change"  = "#E53935"
+  )) +
+  guides(alpha = "none") +
+  theme_pop(base_size = 15) +
+  theme(plot.title    = element_text(color = "white"),
+        plot.subtitle = element_text(color = "white"),
+        legend.text   = element_text(color = "white"),
+        legend.title  = element_text(color = "white"),
+        legend.position = "bottom") +
+  scale_legend_icon(size = 8) +
+  labs(
+    title    = "Clinical Trial Outcomes (n = 100)",
+    subtitle = "Opacity reflects outcome certainty — faded icons indicate less definitive results",
+    color    = "Status"
+  )
+```
+
+> **Note:** `guides(alpha = "none")` hides the automatic alpha legend entry — the color legend already tells the full story.
 
 <div style="line-height: 0.6;"><br></div>
 
