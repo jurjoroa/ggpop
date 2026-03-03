@@ -1256,7 +1256,7 @@ validate_alpha_column <- function(alpha_vals, col_name) {
     cli::cli_warn(
       c(
         "Very low alpha values in column {.field {col_name}}.",
-        "!" = "Some values are < 0.1 — icons may be nearly invisible.",
+        "!" = "Some values are < 0.1 -- icons may be nearly invisible.",
         "i" = "Typical usable range: 0.3 to 1.0"
       ),
       call = NULL
@@ -1283,7 +1283,7 @@ validate_literal_alpha_in_aes <- function(combined_mapping, data = NULL) {
     return(invisible(NULL))
   }
 
-  # If it resolves to a symbol it's a plain column name — handled by validate_alpha_column
+  # If it resolves to a symbol it's a plain column name -- handled by validate_alpha_column
   is_col <- tryCatch({
     rlang::as_name(combined_mapping[["alpha"]])
     TRUE
@@ -1291,7 +1291,7 @@ validate_literal_alpha_in_aes <- function(combined_mapping, data = NULL) {
 
   if (is_col) return(invisible(NULL))
 
-  # Evaluate with data context so expressions like Petal.Width/100 resolve
+  # Evaluate with data context
   alpha_vals <- tryCatch(
     suppressWarnings(as.numeric(rlang::eval_tidy(combined_mapping[["alpha"]], data = data))),
     error = function(e) NULL
