@@ -140,6 +140,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   alpha_by_legend <- NULL
   if (!is.null(alpha_var_name) && alpha_var_name %in% names(data) &&
       !is.null(legend_var) && legend_var %in% names(data)) {
+    validate_alpha_column(data[[alpha_var_name]], alpha_var_name)
     df_alpha_summary <- data %>%
       dplyr::group_by(.data[[legend_var]]) %>%
       dplyr::summarise(av = dplyr::first(.data[[alpha_var_name]]), .groups = "drop")
