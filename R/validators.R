@@ -1209,6 +1209,43 @@ validate_stroke_width_not_aesthetic <- function(combined_mapping) {
   invisible(NULL)
 }
 
+#' Validate a literal alpha value inside aes()
+#'
+#' When the user maps a numeric constant (e.g. \code{aes(alpha = 0.09)}),
+#' ggplot2 stores it as a literal expression rather than a column name.
+#' This validator extracts the value and runs the same checks as
+#' \code{validate_alpha_parameter}: aborts if \code{<= 0} or \code{> 1},
+#' warns if \code{(0, 0.1)}.
+#'
+#' @param combined_mapping Combined list of aesthetic mappings.
+#' @return Invisible NULL.
+#' @keywords internal
+#' @noRd
+validate_literal_alpha_in_aes <- function(combined_mapping) {
+  if (!("alpha" %in% names(combined_mapping))) {
+    return(invisible(NULL))
+  }
+
+  # If it resolves to a symbol it's a column name — handled elsewhere
+  is_col <- tryCatch({
+    rlang::as_name(combined_mapping[["alpha"]])
+    TRUE
+  }, error = function(e) FALSE)
+
+  if (is_col) return(invisible(NULL))
+
+  alpha_val <- tryCatch(
+    as.numeric(rlang::eval_tidy(combined_mapping[["alpha"]])),
+    error = function(e) NULL
+  )
+
+  if (!is.null(alpha_val) && length(alpha_val) == 1 && is.finite(alpha_val)) {
+    validate_alpha_parameter(alpha_val)
+  }
+
+  invisible(NULL)
+}
+
 # ******************************************************************************
 # 04 Grouping & faceting validators --------------------------------------------
 # ******************************************************************************
@@ -1780,7 +1817,7 @@ validate_alpha_parameter <- function(alpha_val) {
 
   # Validate it's a single numeric value in valid range
   if (!is.numeric(alpha_val) || length(alpha_val) != 1 ||
-    is.na(alpha_val) || alpha_val < 0 || alpha_val > 1) {
+    is.na(alpha_val) || alpha_val <= 0 || alpha_val > 1) {
     invalid_reason <- if (!is.numeric(alpha_val)) {
       class(alpha_val)[1]
     } else if (length(alpha_val) != 1) {

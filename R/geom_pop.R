@@ -129,6 +129,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   validate_no_fill_aesthetic(combined_mapping)
   validate_no_image_aesthetic(mapping_list)
   validate_stroke_width_not_aesthetic(combined_mapping)
+  validate_literal_alpha_in_aes(combined_mapping)
 
   icon_info <- resolve_icon_variable(
     mapping_list, inherited_mapping_list,
@@ -247,6 +248,16 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
       as.numeric(df_alpha_summary$av),
       as.character(df_alpha_summary[[legend_var]])
     )
+  } else if ("alpha" %in% names(combined_mapping) && !is.null(legend_var) &&
+             legend_var %in% names(df_final)) {
+    alpha_literal <- tryCatch(
+      as.numeric(rlang::eval_tidy(combined_mapping[["alpha"]])),
+      error = function(e) NULL
+    )
+    if (!is.null(alpha_literal) && length(alpha_literal) == 1 && is.finite(alpha_literal)) {
+      legend_groups <- as.character(unique(df_final[[legend_var]]))
+      alpha_by_legend <- setNames(rep(alpha_literal, length(legend_groups)), legend_groups)
+    }
   }
 
   # 16 Legend key glyph: custom icon rendering ----
