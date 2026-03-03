@@ -62,14 +62,17 @@ install.packages("remotes")
 remotes::install_github("jurjoroa/ggpop")
 ```
 
-## Key Functions
+## Key Functions & Parameters
 
-| Function | Purpose |
+| Function / Parameter | Purpose |
 |:---|:---|
-| `process_data()` | Convert group counts → one row per icon |
+| `process_data()` | Convert group counts → one row per icon; use `high_group_var` for independent per-group sampling (e.g. for faceted charts) |
 | `fa_icons()` | Search 2,000+ Font Awesome icons from your R console |
 | `theme_pop()` | Built-in minimal theme (also `theme_pop_dark()`, `theme_pop_minimal()`) |
 | `scale_legend_icon()` | Resize legend icons independently of the plot icons |
+| `arrange` | `geom_pop()` parameter — cluster icons by group (`TRUE`) or scatter randomly (`FALSE`, default) |
+| `stroke_width` | `geom_pop()` parameter — add an outline to every icon, in pixels (e.g. `stroke_width = 1`) |
+| `seed` | `geom_pop()` parameter — fix the random icon layout for reproducible charts (e.g. `seed = 42`) |
 
 ---
 
@@ -170,8 +173,8 @@ Now we can proceed to plot the population chart using the assigned icons.
 library(ggplot2)
 
 ggplot() +
-  geom_pop(data = df_pop_mx_prop, aes(icon = icon, group = type, color = type),
-           size = 1, arrange = F, legend_icons = F) +
+  geom_pop(data = df_pop_mx_prop, aes(icon = icon, color = type),
+           size = 1, arrange = FALSE, legend_icons = FALSE) +
   theme_void() +
   theme(legend.position = "bottom")
 ```
@@ -185,8 +188,8 @@ The `geom_pop()` function creates a population chart using the `df_pop_mx_prop` 
 Like any ggplot object, we can layer on themes, colors, titles, and a legend to make the chart presentation-ready.
 
 ``` r
-ggplot(data = df_pop_mx_prop, aes(icon = icon, group = type, color = type)) +
-  geom_pop(size = 1, arrange = T) +
+ggplot(data = df_pop_mx_prop, aes(icon = icon, color = type)) +
+  geom_pop(size = 1, arrange = TRUE) +
   theme_void(base_size = 40) +
   theme(legend.position = "bottom") +
   labs(title = "Population in Mexico by Sex",
@@ -235,8 +238,8 @@ library(showtext)
 font_add_google("Quicksand", "quicksand")
 showtext_auto()
 
-ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, group = type, color = type)) +
-  geom_pop(size = 1.1, arrange = F) +
+ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, color = type)) +
+  geom_pop(size = 1.1, arrange = FALSE) +
   theme_pop(base_size = 100, base_family = "quicksand") +
   scale_legend_icon(size = 10,
                     legend.text = element_text(color = "#D4AF37", 
