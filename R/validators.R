@@ -827,7 +827,7 @@ validate_data_is_dataframe <- function(data) {
 #' @keywords internal
 #' @noRd
 validate_no_reserved_columns <- function(data) {
-  reserved_cols <- c("x1", "y1", "pos", "image", "coord_size", "icon_size", "icon_stroke_width")
+  reserved_cols <- c("x1", "y1", "pos", "image", "coord_size", "icon_size", "icon_stroke_width", "alpha")
   user_cols <- names(data)
   conflicts <- intersect(reserved_cols, user_cols)
 
@@ -859,6 +859,7 @@ validate_no_reserved_columns <- function(data) {
         " " = "  - coord_size    (coordinate lookup key)",
         " " = "  - icon_size     (internal size calculation)",
         " " = "  - icon_stroke_width (internal stroke calculation)",
+        " " = "  - alpha          (internal transparency calculation)",
         " " = "",
         "i" = "Fix - rename the conflicting column(s):",
         " " = "  {.code {rename_code}}",
@@ -1203,6 +1204,111 @@ validate_stroke_width_not_aesthetic <- function(combined_mapping) {
       ),
       call = NULL
     )
+  }
+
+  invisible(NULL)
+}
+
+#' Validate alpha values in a mapped column
+#'
+#' When the user maps alpha to a data column (e.g. \code{aes(alpha = Petal.Width)}),
+#' this checks that all non-NA values are in \code{(0, 1]}.
+#' Aborts if any value is \code{> 1} or \code{<= 0}; warns if any are in \code{(0, 0.1)}.
+#'
+#' @param alpha_vals Numeric vector of alpha values from the column.
+#' @param col_name Character. Column name used in error messages.
+#' @return Invisible NULL.
+#' @keywords internal
+#' @noRd
+validate_alpha_column <- function(alpha_vals, col_name) {
+  alpha_vals <- suppressWarnings(as.numeric(alpha_vals))
+  alpha_vals <- alpha_vals[!is.na(alpha_vals)]
+
+  if (length(alpha_vals) == 0) return(invisible(NULL))
+
+  bad_high <- unique(alpha_vals[alpha_vals > 1])
+  if (length(bad_high) > 0) {
+    cli::cli_abort(
+      c(
+        "Invalid alpha values in column {.field {col_name}}.",
+        "x" = "Alpha must be in (0, 1]. Found values > 1: {.val {head(bad_high, 3)}}",
+        "i" = "Rescale your column to (0, 1] before mapping it to alpha.",
+        " " = "  Example: {.code dplyr::mutate(alpha = scales::rescale({col_name}, to = c(0.2, 1)))}"
+      ),
+      call = NULL
+    )
+  }
+
+  bad_zero <- unique(alpha_vals[alpha_vals <= 0])
+  if (length(bad_zero) > 0) {
+    cli::cli_abort(
+      c(
+        "Invalid alpha values in column {.field {col_name}}.",
+        "x" = "Alpha must be > 0. Found values <= 0: {.val {head(bad_zero, 3)}}",
+        "i" = "Remove or replace zero/negative values before mapping to alpha."
+      ),
+      call = NULL
+    )
+  }
+
+  low_vals <- alpha_vals[alpha_vals > 0 & alpha_vals < 0.1]
+  if (length(low_vals) > 0) {
+    cli::cli_warn(
+      c(
+        "Very low alpha values in column {.field {col_name}}.",
+        "!" = "Some values are < 0.1 — icons may be nearly invisible.",
+        "i" = "Typical usable range: 0.3 to 1.0"
+      ),
+      call = NULL
+    )
+  }
+
+  invisible(NULL)
+}
+
+#' Validate a literal alpha value inside aes()
+#'
+#' When the user maps a numeric constant (e.g. \code{aes(alpha = 0.09)}),
+#' ggplot2 stores it as a literal expression rather than a column name.
+#' This validator extracts the value and runs the same checks as
+#' \code{validate_alpha_parameter}: aborts if \code{<= 0} or \code{> 1},
+#' warns if \code{(0, 0.1)}.
+#'
+#' @param combined_mapping Combined list of aesthetic mappings.
+#' @return Invisible NULL.
+#' @keywords internal
+#' @noRd
+validate_literal_alpha_in_aes <- function(combined_mapping, data = NULL) {
+  if (!("alpha" %in% names(combined_mapping))) {
+    return(invisible(NULL))
+  }
+
+  # If it resolves to a symbol it's a plain column name — handled by validate_alpha_column
+  is_col <- tryCatch({
+    rlang::as_name(combined_mapping[["alpha"]])
+    TRUE
+  }, error = function(e) FALSE)
+
+  if (is_col) return(invisible(NULL))
+
+  # Evaluate with data context so expressions like Petal.Width/100 resolve
+  alpha_vals <- tryCatch(
+    suppressWarnings(as.numeric(rlang::eval_tidy(combined_mapping[["alpha"]], data = data))),
+    error = function(e) NULL
+  )
+
+  alpha_vals <- alpha_vals[!is.na(alpha_vals)]
+  if (is.null(alpha_vals) || length(alpha_vals) == 0) return(invisible(NULL))
+
+  expr_label <- tryCatch(
+    deparse(rlang::get_expr(combined_mapping[["alpha"]])),
+    error = function(e) "alpha expression"
+  )
+
+  if (length(alpha_vals) == 1) {
+    validate_alpha_parameter(alpha_vals)
+  } else {
+    validate_alpha_column(alpha_vals, expr_label)
   }
 
   invisible(NULL)
@@ -1779,7 +1885,7 @@ validate_alpha_parameter <- function(alpha_val) {
 
   # Validate it's a single numeric value in valid range
   if (!is.numeric(alpha_val) || length(alpha_val) != 1 ||
-    is.na(alpha_val) || alpha_val < 0 || alpha_val > 1) {
+    is.na(alpha_val) || alpha_val <= 0 || alpha_val > 1) {
     invalid_reason <- if (!is.numeric(alpha_val)) {
       class(alpha_val)[1]
     } else if (length(alpha_val) != 1) {

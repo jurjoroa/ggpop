@@ -302,6 +302,43 @@ testthat::test_that("Warning: stroke_width > 30", {
   )
 })
 
+### 03.07.02 stroke_width inside aes() is ignored (ggplot pattern) -------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (ggplot pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_raw, ggplot2::aes(icon = icon, group = sex, color = sex, stroke_width = sex)) +
+      geom_pop(dpi = 60),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
+### 03.07.03 stroke_width inside aes() is ignored (geom pattern) ---------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (geom pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex, color = sex, stroke_width = sex),
+        dpi = 60
+      ),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
+### 03.07.04 stroke_width inside aes() is ignored (mixed pattern) --------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (mixed pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_raw, ggplot2::aes(icon = icon, group = sex)) +
+      geom_pop(
+        ggplot2::aes(color = sex, stroke_width = sex),
+        dpi = 60
+      ),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
 
 # ******************************************************************************
 ## 03.08 Smoke: warnings should still allow build ------------------------------
@@ -323,6 +360,55 @@ testthat::test_that("Build: plot builds cleanly from raw data with group column"
   )
 
   testthat::expect_s3_class(p, "ggplot")
+})
+
+# ******************************************************************************
+## 03.09 Warnings: alpha in aes() ---------------------------------------------
+# ******************************************************************************
+
+### 03.09.01 literal low alpha warns ------------------------------------------
+
+testthat::test_that("Warning: aes(alpha = 0.05) warns low alpha", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex, color = sex, alpha = 0.05),
+        dpi = 60
+      )
+  )
+})
+
+### 03.09.02 column with small values warns -----------------------------------
+
+testthat::test_that("Warning: alpha column with values < 0.1 warns", {
+  df_low <- df_raw
+  df_low$opacity <- c(0.05, 0.07, 0.04, 0.06)
+
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_low,
+        ggplot2::aes(icon = icon, group = sex, color = sex, alpha = opacity),
+        dpi = 60
+      )
+  )
+})
+
+### 03.09.03 expression with small values warns --------------------------------
+
+testthat::test_that("Warning: aes(alpha = opacity / 100) expression warns", {
+  df_expr <- df_raw
+  df_expr$opacity <- c(5, 7, 4, 6)
+
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_expr,
+        ggplot2::aes(icon = icon, group = sex, color = sex, alpha = opacity / 100),
+        dpi = 60
+      )
+  )
 })
 
 # ******************************************************************************

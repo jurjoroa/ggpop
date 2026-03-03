@@ -217,16 +217,6 @@ testthat::test_that("Edge case: alpha = 0.09 triggers warning (mixed)", {
 })
 
 
-### 03.04.04 alpha in both aes() and parameter triggers warning ---------------
-
-testthat::test_that("Warning: alpha in both aes() and parameter", {
-  testthat::expect_warning(
-    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, alpha = point_size)) +
-      geom_icon_point(alpha = 0.5, color = "blue")
-  )
-})
-
-
 # ******************************************************************************
 ## 03.05 Warnings: icon-related ------------------------------------------------
 # ******************************************************************************
@@ -557,6 +547,83 @@ testthat::test_that("Warning: very large stroke_width (ggplot pattern)", {
   testthat::expect_warning(
     ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon)) +
       geom_icon_point(stroke_width = 40, dpi = 60)
+  )
+})
+
+### 03.10.02 stroke_width inside aes() is ignored (ggplot pattern) -------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (ggplot pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, stroke_width = point_size)) +
+      geom_icon_point(dpi = 60),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
+### 03.10.03 stroke_width inside aes() is ignored (geom pattern) ---------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (geom pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_icon_point(
+        data = df_scatter,
+        ggplot2::aes(x = x, y = y, icon = icon, stroke_width = point_size),
+        dpi = 60
+      ),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
+### 03.10.04 stroke_width inside aes() is ignored (mixed pattern) --------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (mixed pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y)) +
+      geom_icon_point(
+        ggplot2::aes(icon = icon, stroke_width = point_size),
+        dpi = 60
+      ),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
+# ******************************************************************************
+## 03.11 Warnings: alpha in aes() ---------------------------------------------
+# ******************************************************************************
+
+### 03.11.01 literal low alpha warns ------------------------------------------
+
+testthat::test_that("Warning: aes(alpha = 0.05) warns low alpha", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = 0.05)) +
+      geom_icon_point(dpi = 60),
+    regexp = "low.*alpha|alpha.*low",
+    ignore.case = TRUE
+  )
+})
+
+### 03.11.02 column with small values warns -----------------------------------
+
+testthat::test_that("Warning: alpha column with values < 0.1 warns", {
+  df_low <- df_scatter
+  df_low$opacity <- c(0.05, 0.07, 0.04, 0.06, 0.03)
+
+  testthat::expect_warning(
+    ggplot2::ggplot(df_low, ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = opacity)) +
+      geom_icon_point(dpi = 60),
+    regexp = "low.*alpha|alpha.*low",
+    ignore.case = TRUE
+  )
+})
+
+### 03.11.03 expression with small values warns --------------------------------
+
+testthat::test_that("Warning: aes(alpha = point_size / 100) expression warns", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = point_size / 100)) +
+      geom_icon_point(dpi = 60),
+    regexp = "low.*alpha|alpha.*low",
+    ignore.case = TRUE
   )
 })
 

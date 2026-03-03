@@ -550,20 +550,6 @@ testthat::test_that("Real-world: multiple layers with different data", {
   )
 })
 
-### 07.06 Complex: all aesthetics + parameters --------------------------------
-
-testthat::test_that("Real-world: complex plot with many aesthetics", {
-  testthat::expect_no_warning(
-    ggplot2::ggplot(
-      df_scatter,
-      ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = point_size)
-    ) +
-      geom_icon_point(size = 4, dpi = 100) +
-      ggplot2::scale_alpha_continuous(range = c(0.3, 1)) +
-      ggplot2::theme_minimal()
-  )
-})
-
 ### 07.07 Real-world: with scale transformations ------------------------------
 
 testthat::test_that("Real-world: with log scale", {
@@ -1561,6 +1547,9 @@ testthat::test_that("handles many layers", {
 # 18 Snapshot ------------------------------------------------------------------
 # ******************************************************************************
 
+
+### 18.01 geom_icon_point -----
+
 testthat::test_that("geom_icon_point", {
   set.seed(1)
   n <- 5
@@ -1568,7 +1557,7 @@ testthat::test_that("geom_icon_point", {
     x = rnorm(n),
     y = rnorm(n),
     grp = rep(c("A", "B", "C"), length.out = n),
-    icon = rep(c("user", "car", "heart"), length.out = n),
+    icon = rep(c("minus", "xmark", "square"), length.out = n),
     stringsAsFactors = FALSE
   )
 
@@ -1592,14 +1581,14 @@ testthat::test_that("geom_icon_point", {
   )
 })
 
-testthat::test_that("geom_icon_point scale_legend_icon()", {
+testthat::test_that("scale_legend_icon()", {
   set.seed(1)
   n <- 5
   df <- data.frame(
     x = rnorm(n),
     y = rnorm(n),
     grp = rep(c("A", "B", "C"), length.out = n),
-    icon = rep(c("user", "car", "heart"), length.out = n),
+    icon = rep(c("minus", "xmark", "square"), length.out = n),
     stringsAsFactors = FALSE
   )
 
@@ -1624,12 +1613,12 @@ testthat::test_that("geom_icon_point scale_legend_icon()", {
 })
 
 
-testthat::test_that("geom_icon_point factor levels", {
+testthat::test_that("factor levels", {
   df <- data.frame(
     x      = c(1, 2, 3),
     y      = c(1, 1, 1),
     income = c(rep("Low", 1), rep("Mid", 1), rep("High", 1)),
-    icon   = c(rep("pills", 1), rep("stethoscope", 1), rep("hospital", 1))
+    icon   = c(rep("minus", 1), rep("xmark", 1), rep("square", 1))
   )
 
   # Factor: legend should show Low → Mid → High with matching icons
@@ -1650,11 +1639,7 @@ testthat::test_that("geom_icon_point factor levels", {
   )
 })
 
-# ******************************************************************************
-## show.legend = FALSE ---------------------------------------------------------
-# ******************************************************************************
-
-testthat::test_that("geom_icon_point show.legend = FALSE hides icon legend", {
+testthat::test_that("show.legend = FALSE hides icon legend", {
   df_show <- data.frame(
     x     = c(1, 2, 3),
     y     = c(1, 1, 1),
@@ -1662,13 +1647,140 @@ testthat::test_that("geom_icon_point show.legend = FALSE hides icon legend", {
   )
 
   p <- ggplot2::ggplot(df_show, ggplot2::aes(x = x, y = y, color = group)) +
-    geom_icon_point(icon = "circle", size = 1, dpi = 50, show.legend = FALSE) +
+    geom_icon_point(icon = "minus", size = 1, dpi = 50, show.legend = FALSE) +
     ggplot2::geom_point(show.legend = TRUE) +
     ggplot2::scale_color_manual(values = c("A" = "#E53935", "B" = "#1E88E5", "C" = "#43A047"))
 
   expect_doppelganger(
     title = "geom_icon_point show.legend FALSE",
     fig   = p
+  )
+})
+
+
+testthat::test_that("alpha mapped", {
+  df <- data.frame(
+    x       = c(1, 2, 3),
+    y       = c(1, 1, 1),
+    status  = c("Recovered", "Improving", "No change"),
+    icon    = c("minus", "xmark", "square"),
+    opacity = c(1.0, 0.6, 0.3),
+    stringsAsFactors = FALSE
+  )
+
+  df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
+
+  p <- ggplot2::ggplot(
+    df,
+    ggplot2::aes(x = x, y = y, icon = icon, color = status, alpha = opacity)
+  ) +
+    geom_icon_point(size = 1, dpi = 50, legend_icons = TRUE) +
+    ggplot2::scale_color_manual(values = c(
+      "Recovered" = "#43A047",
+      "Improving" = "#FFB300",
+      "No change" = "#E53935"
+    )) +
+    ggplot2::guides(alpha = "none") +
+    ggplot2::theme_void()
+
+  expect_doppelganger(
+    title = "geom_icon_point alpha mapped",
+    fig   = p
+  )
+})
+
+
+testthat::test_that("alpha=1 for all mapped", {
+  df <- data.frame(
+    x       = c(1, 2, 3),
+    y       = c(1, 1, 1),
+    status  = c("Recovered", "Improving", "No change"),
+    icon    = c("minus", "xmark", "square"),
+    opacity = c(1, 1, 1),
+    stringsAsFactors = FALSE
+  )
+  
+  df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
+  
+  p <- ggplot2::ggplot(
+    df,
+    ggplot2::aes(x = x, y = y, icon = icon, color = status, alpha = opacity)
+  ) +
+    geom_icon_point(size = 1, dpi = 50, legend_icons = TRUE) +
+    ggplot2::scale_color_manual(values = c(
+      "Recovered" = "#43A047",
+      "Improving" = "#FFB300",
+      "No change" = "#E53935"
+    )) +
+    ggplot2::guides(alpha = "none") +
+    ggplot2::theme_void()
+  
+  expect_doppelganger(
+    title = "geom_icon_point alpha=1 for all mapped",
+    fig   = p
+  )
+})
+
+testthat::test_that("stroke_width mapped", {
+  df <- data.frame(
+    x       = c(1, 2, 3),
+    y       = c(1, 1, 1),
+    status  = c("Recovered", "Improving", "No change"),
+    icon    = c("minus", "xmark", "square"),
+    stringsAsFactors = FALSE
+  )
+  
+  df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
+  
+  p <- suppressWarnings(
+    ggplot2::ggplot(
+      df,
+      ggplot2::aes(x = x, y = y, icon = icon, color = status)
+    ) +
+      geom_icon_point(size = 1, dpi = 50, legend_icons = TRUE, stroke_width = 100) +
+      ggplot2::scale_color_manual(values = c(
+        "Recovered" = "#43A047",
+        "Improving" = "#FFB300",
+        "No change" = "#E53935"
+      )) +
+      ggplot2::guides(stroke_width = "none") +
+      ggplot2::theme_void()
+  )
+  
+  expect_doppelganger(
+    title = "geom_icon_point stroke_width mapped",
+    fig   = p
+  )
+})
+
+
+testthat::test_that("geom_icon_point alpha literal in aes builds without error", {
+  df <- data.frame(
+    x      = c(1, 2, 3),
+    y      = c(1, 1, 1),
+    status = c("Recovered", "Improving", "No change"),
+    icon   = c("circle-check", "arrow-trend-up", "circle-minus"),
+    stringsAsFactors = FALSE
+  )
+  df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
+
+  testthat::expect_no_error(
+    testthat::expect_no_warning(
+      ggplot2::ggplot_build(
+        ggplot2::ggplot(
+          df,
+          ggplot2::aes(x = x, y = y, icon = icon, color = status, alpha = 0.5)
+        ) +
+          geom_icon_point(size = 1, dpi = 50, legend_icons = TRUE) +
+          ggplot2::scale_color_manual(values = c(
+            "Recovered" = "#43A047",
+            "Improving" = "#FFB300",
+            "No change" = "#E53935"
+          )) +
+          ggplot2::guides(alpha = "none") +
+          ggplot2::theme_void()
+      )
+    )
   )
 })
 

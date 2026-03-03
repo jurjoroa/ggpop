@@ -741,5 +741,50 @@ testthat::test_that("Error: missing icon AND invalid dpi", {
 
 
 # ******************************************************************************
+## 03.12 Errors: alpha in aes() validation ------------------------------------
+# ******************************************************************************
+
+### 03.12.01 literal alpha = 0 aborts -----------------------------------------
+
+testthat::test_that("Error: aes(alpha = 0) aborts", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = 0)) +
+      geom_icon_point(dpi = 60)
+  )
+})
+
+### 03.12.02 literal alpha > 1 aborts -----------------------------------------
+
+testthat::test_that("Error: aes(alpha = 1.5) aborts", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = 1.5)) +
+      geom_icon_point(dpi = 60)
+  )
+})
+
+### 03.12.03 column with values > 1 aborts ------------------------------------
+
+testthat::test_that("Error: alpha column values > 1 aborts", {
+  testthat::expect_error(
+    ggplot2::ggplot(df_scatter, ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = point_size)) +
+      geom_icon_point(dpi = 60),
+    regexp = "values > 1"
+  )
+})
+
+### 03.12.04 column with values <= 0 aborts -----------------------------------
+
+testthat::test_that("Error: alpha column values <= 0 aborts", {
+  df_zero <- df_scatter
+  df_zero$opacity <- c(0.5, 0.0, 0.8, 0.3, 0.6)
+
+  testthat::expect_error(
+    ggplot2::ggplot(df_zero, ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = opacity)) +
+      geom_icon_point(dpi = 60),
+    regexp = "values <= 0"
+  )
+})
+
+# ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************
