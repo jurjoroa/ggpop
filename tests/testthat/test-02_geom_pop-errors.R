@@ -818,5 +818,69 @@ testthat::test_that("Error: nested list structure", {
 
 
 # ******************************************************************************
+## 03.04 Errors: alpha in aes() validation ------------------------------------
+# ******************************************************************************
+
+### 03.04.01 literal alpha = 0 aborts -----------------------------------------
+
+testthat::test_that("Error: aes(alpha = 0) aborts", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex, color = sex, alpha = 0),
+        dpi = 60
+      )
+  )
+})
+
+### 03.04.02 literal alpha > 1 aborts -----------------------------------------
+
+testthat::test_that("Error: aes(alpha = 1.5) aborts", {
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex, color = sex, alpha = 1.5),
+        dpi = 60
+      )
+  )
+})
+
+### 03.04.03 column with values > 1 aborts ------------------------------------
+
+testthat::test_that("Error: alpha column values > 1 aborts", {
+  df_bad <- df_raw
+  df_bad$opacity <- c(1.5, 0.8, 1.2, 0.5)
+
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_bad,
+        ggplot2::aes(icon = icon, group = sex, color = sex, alpha = opacity),
+        dpi = 60
+      ),
+    regexp = "values > 1"
+  )
+})
+
+### 03.04.04 column with values <= 0 aborts -----------------------------------
+
+testthat::test_that("Error: alpha column values <= 0 aborts", {
+  df_bad <- df_raw
+  df_bad$opacity <- c(0.5, 0.0, 0.8, 0.3)
+
+  testthat::expect_error(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_bad,
+        ggplot2::aes(icon = icon, group = sex, color = sex, alpha = opacity),
+        dpi = 60
+      ),
+    regexp = "values <= 0"
+  )
+})
+
+# ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************

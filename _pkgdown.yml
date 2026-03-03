@@ -117,10 +117,10 @@ articles:
     desc: "A friendly crash course on R for complete beginners — from zero to your first icon chart."
     contents:
       - new-to-r
-  - title: "Tips & Best Practices"
-    desc: "Key rules and conventions to maximize your ggpop experience."
+  - title: "Getting Started"
+    desc: "Learn the core geom_pop() workflow from data to plot."
     contents:
-      - tips
+      - getting-started
   - title: "Finding Icons"
     desc: "Search and browse Font Awesome icons available for use in ggpop."
     contents:
@@ -129,10 +129,6 @@ articles:
     desc: "Prepare your data for ggpop."
     contents:
       - process-data
-  - title: "Getting Started"
-    desc: "Learn the core geom_pop() workflow from data to plot."
-    contents:
-      - getting-started
   - title: "Icon Scatter Plots"
     desc: "Use geom_icon_point() to build icon-based scatter plots."
     contents:
@@ -146,3 +142,7 @@ articles:
     contents:
       - examples-geom-pop
       - examples-geom-icon-point
+  - title: "Tips & Best Practices"
+    desc: "Key rules and conventions to maximize your ggpop experience."
+    contents:
+      - tips

@@ -200,8 +200,8 @@ Now let's make a bar chart:
 
 ```{r}
 #| label: bar-chart
-#| fig-width: 7
-#| fig-height: 5
+#| fig-width: 10
+#| fig-height: 9
 #| message: false
 #| warning: false
 
@@ -270,7 +270,7 @@ Now the chart:
 ```{r}
 #| label: geom-pop-chart
 #| fig-width: 10
-#| fig-height: 10
+#| fig-height: 9
 #| message: false
 #| warning: false
 

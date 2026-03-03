@@ -84,6 +84,13 @@ ggplot_add.ggpop_geom_pop <- function(object, plot, object_name, ...) {
     if (!"y" %in% names(plot$mapping)) plot$mapping[["y"]] <- as.name("y1")
   }
 
+  # When alpha is mapped, inject scale_alpha_identity() so ggplot2 passes raw
+  # values through unchanged rather than rescaling via scale_alpha_continuous.
+  # Only inject if no alpha scale has been added yet by the user.
+  if (isTRUE(object$has_alpha_mapping) && is.null(plot$scales$get_scales("alpha"))) {
+    plot <- plot + ggplot2::scale_alpha_identity()
+  }
+
   # If geom_pop had an explicit facet=, automatically add facet_wrap(~facet_col)
   if (!is.null(object$facet_col) && nzchar(object$facet_col)) {
     # If plot already has a facet, do not override it
@@ -124,6 +131,17 @@ ggplot_add.ggpop_icon_point_layer <- function(object, plot, object_name, ...) {
       ),
       call = NULL
     )
+  }
+
+  # When alpha is mapped in any icon_point layer, inject scale_alpha_identity()
+  # so ggplot2 passes raw values through unchanged instead of rescaling.
+  # Only inject if no alpha scale has been added yet by the user.
+  has_alpha <- any(vapply(plot$layers, function(l) {
+    isTRUE(l$ggpop_has_alpha_mapping)
+  }, logical(1), USE.NAMES = FALSE))
+
+  if (has_alpha && is.null(plot$scales$get_scales("alpha"))) {
+    plot <- plot + ggplot2::scale_alpha_identity()
   }
 
   plot
