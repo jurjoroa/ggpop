@@ -20,11 +20,8 @@
 
 ## An Alternative Approach to Visualization
 
-`ggpop` offers a fresh alternative to traditional data visualizations by using icons and proportional symbols in population charts. This approach not only improves the aesthetics of your plots but also helps your audience better engage with and understand the data. By converting numerical values into intuitive visual representations, `ggpop` makes complex population data clearer and easier to remember, allowing users to tell more compelling and accessible stories.
+`ggpop` offers a fresh alternative to traditional data visualizations by using icons and proportional symbols in population charts. This approach not only improves the aesthetics of your plots but also helps your audience better engage with and understand the data. By converting numerical values into intuitive visual representations, `ggpop` makes population data clearer and easier to remember, allowing users to tell more compelling stories.
 
-## Why ggpop?
-
-- **Visual Impact**: Icons create an immediate emotional connection with your audience.
 - **Intuitive Understanding**: Proportional representation simplifies data.
 - **Flexible**: Support for 2,000+ Font Awesome icons.
 - **Fast**: Optimized rendering handles up to 1,000 icons smoothly for `geom_pop()` and unlimited for `geom_icon_point()`
@@ -159,7 +156,7 @@ For example, here is a small sample of the 2,000+ free icons available:
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome_icons.png" width="70%" alt="fontawesome table preview" /></p>
 
-You can check the full list of icons at the [Font Awesome website](https://fontawesome.com/icons?d=gallery&p=2&m=free), or search directly from R:
+You can check the full list of icons at the [Font Awesome website](https://fontawesome.com/icons?d=gallery&p=2&m=free), or search directly from `ggpop` function `fa_icons()`. For example, to search for icons related to "person", you can run:
 
 ``` r
 fa_icons(query = "person")

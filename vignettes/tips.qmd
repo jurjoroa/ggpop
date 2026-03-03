@@ -528,66 +528,7 @@ ggplot(data = df_tip9, aes(icon = icon, color = type)) +
 
 ---
 
-## Tip 10 — Use factor levels to control legend order
-
-By default, ggplot2 sorts legend entries alphabetically. If you want a specific order — low-to-high severity, lifecycle stages, clinical categories — **set factor levels** on the grouping column before plotting.
-
-Factor levels also determine the clustering order when `arrange = TRUE`: icons from the first level appear first in the grid, then the second, and so on.
-
-::: {.callout-tip}
-## How to set factor levels
-```r
-df$severity <- factor(df$severity, levels = c("Low", "Medium", "High"))
-```
-:::
-
-```{r}
-#| label: tip11
-#| fig-width: 10
-#| fig-height: 10
-#| message: false
-#| warning: false
-#| dev: png
-#| dev-args: !expr list(bg = "transparent")
-
-
-df_tip11 <- data.frame(
-  severity = c(rep("Low", 50), rep("Medium", 30), rep("High", 20)),
-  icon     = c(rep("circle-check", 50), rep("triangle-exclamation", 30), rep("circle-xmark", 20)),
-  stringsAsFactors = FALSE
-)
-
-# Without factor: legend order is alphabetical — High, Low, Medium
-# With factor: legend follows the severity scale — Low, Medium, High
-df_tip11$severity <- factor(df_tip11$severity,
-  levels = c("Low", "Medium", "High"))
-
-ggplot(data = df_tip11, aes(icon = icon, color = severity)) +
-  geom_pop(size = 2, dpi = 100, legend_icons = TRUE, arrange = TRUE) +
-  scale_color_manual(values = c(
-    "Low"    = "#2E7D32",
-    "Medium" = "#F9A825",
-    "High"   = "#C62828"
-  )) +
-  theme_pop() +
-  theme(plot.title = element_text(color = "white"),
-        plot.subtitle = element_text(color = "white"),
-        legend.text = element_text(color = "white"),
-        legend.title = element_text(color = "white"),
-        legend.position = "bottom") +
-  scale_legend_icon(size = 8) +
-  labs(
-    title    = "Tip 11: Factor levels control legend order",
-    subtitle = "Low → Medium → High — set with factor(levels = ...)",
-    color    = "Severity"
-  )
-```
-
-<div style="line-height: 0.6;"><br></div>
-
----
-
-## Tip 11 — Use `arrange = TRUE` to cluster icons by group
+## Tip 10 — Use `arrange = TRUE` to cluster icons by group
 
 By default, `geom_pop()` scatters icons randomly across the grid — groups are interleaved. Setting `arrange = TRUE` places all icons from the same group contiguously, making the boundary between groups immediately visible.
 
@@ -636,7 +577,7 @@ ggplot(data = df_tip12, aes(icon = icon, color = outcome)) +
 
 ---
 
-## Tip 12 — Per-group alpha: rename the column and hide the alpha legend entry
+## Tip 11 — Per-group alpha: rename the column and hide the alpha legend entry
 
 When you want different transparency per group, follow this three-step workflow:
 
@@ -699,7 +640,7 @@ ggplot(data = df_tip13, aes(icon = icon, color = status, alpha = opacity)) +
 
 ---
 
-## Tip 13 — With `facet_wrap()`, the icon limit applies per panel
+## Tip 12 — With `facet_wrap()`, the icon limit applies per panel
 
 `geom_pop()` enforces a maximum of **1,000 icons per facet panel** — not globally. Four panels of 250 icons each (1,000 total) is well within limits; two panels of 1,001 each will error.
 
