@@ -1653,6 +1653,34 @@ testthat::test_that("stroke width", {
   )
 })
 
+testthat::test_that("geom_pop alpha literal in aes builds without error", {
+  df <- data.frame(
+    status = c(rep("Recovered", 1), rep("Improving", 1), rep("No change", 1)),
+    icon   = c(rep("circle-check", 1), rep("arrow-trend-up", 1), rep("circle-minus", 1)),
+    stringsAsFactors = FALSE
+  )
+  df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
+
+  testthat::expect_no_error(
+    testthat::expect_no_warning(
+      ggplot2::ggplot_build(
+        ggplot2::ggplot(
+          data = df,
+          ggplot2::aes(icon = icon, color = status, alpha = 0.5)
+        ) +
+          geom_pop(size = 1, dpi = 50, legend_icons = TRUE, seed = 1) +
+          ggplot2::scale_color_manual(values = c(
+            "Recovered" = "#43A047",
+            "Improving" = "#FFB300",
+            "No change" = "#E53935"
+          )) +
+          ggplot2::guides(alpha = "none") +
+          ggplot2::theme_void()
+      )
+    )
+  )
+})
+
 # ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************

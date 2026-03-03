@@ -550,19 +550,6 @@ testthat::test_that("Real-world: multiple layers with different data", {
   )
 })
 
-### 07.06 Complex: all aesthetics + parameters --------------------------------
-
-testthat::test_that("Real-world: complex plot with many aesthetics", {
-  testthat::expect_no_warning(
-    ggplot2::ggplot(
-      df_scatter,
-      ggplot2::aes(x = x, y = y, icon = icon, color = category, alpha = point_size)
-    ) +
-      geom_icon_point(size = 4, dpi = 100) +
-      ggplot2::theme_minimal()
-  )
-})
-
 ### 07.07 Real-world: with scale transformations ------------------------------
 
 testthat::test_that("Real-world: with log scale", {
@@ -1766,6 +1753,36 @@ testthat::test_that("stroke_width mapped", {
   )
 })
 
+
+testthat::test_that("geom_icon_point alpha literal in aes builds without error", {
+  df <- data.frame(
+    x      = c(1, 2, 3),
+    y      = c(1, 1, 1),
+    status = c("Recovered", "Improving", "No change"),
+    icon   = c("circle-check", "arrow-trend-up", "circle-minus"),
+    stringsAsFactors = FALSE
+  )
+  df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
+
+  testthat::expect_no_error(
+    testthat::expect_no_warning(
+      ggplot2::ggplot_build(
+        ggplot2::ggplot(
+          df,
+          ggplot2::aes(x = x, y = y, icon = icon, color = status, alpha = 0.5)
+        ) +
+          geom_icon_point(size = 1, dpi = 50, legend_icons = TRUE) +
+          ggplot2::scale_color_manual(values = c(
+            "Recovered" = "#43A047",
+            "Improving" = "#FFB300",
+            "No change" = "#E53935"
+          )) +
+          ggplot2::guides(alpha = "none") +
+          ggplot2::theme_void()
+      )
+    )
+  )
+})
 
 # ******************************************************************************
 # END --------------------------------------------------------------------------

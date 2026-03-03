@@ -88,6 +88,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # 05 Warnings for potential conflicts ----
 
   validate_stroke_width_not_aesthetic(combined_mapping)
+  validate_literal_alpha_in_aes(combined_mapping, data = data)
   warn_size_conflict(combined_mapping, .missing_size, size)
   warn_alpha_conflict(combined_mapping, extra_args)
 
@@ -139,6 +140,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   alpha_by_legend <- NULL
   if (!is.null(alpha_var_name) && alpha_var_name %in% names(data) &&
       !is.null(legend_var) && legend_var %in% names(data)) {
+    validate_alpha_column(data[[alpha_var_name]], alpha_var_name)
     df_alpha_summary <- data %>%
       dplyr::group_by(.data[[legend_var]]) %>%
       dplyr::summarise(av = dplyr::first(.data[[alpha_var_name]]), .groups = "drop")
@@ -146,6 +148,16 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
       as.numeric(df_alpha_summary$av),
       as.character(df_alpha_summary[[legend_var]])
     )
+  } else if ("alpha" %in% names(combined_mapping) && !is.null(legend_var) &&
+             legend_var %in% names(data)) {
+    alpha_literal <- tryCatch(
+      as.numeric(rlang::eval_tidy(combined_mapping[["alpha"]])),
+      error = function(e) NULL
+    )
+    if (!is.null(alpha_literal) && length(alpha_literal) == 1 && is.finite(alpha_literal)) {
+      legend_groups <- as.character(unique(data[[legend_var]]))
+      alpha_by_legend <- setNames(rep(alpha_literal, length(legend_groups)), legend_groups)
+    }
   }
 
 
