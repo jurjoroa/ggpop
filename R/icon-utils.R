@@ -114,7 +114,6 @@ generate_icon_cache_path <- function(icon,
   alpha_str <- sprintf(alpha_format, alpha)
   dpi_str <- sprintf(dpi_format, dpi)
 
-  # Build cache key parts
   cache_parts <- c(
     icon,
     paste0("c", color_hex),
@@ -122,7 +121,6 @@ generate_icon_cache_path <- function(icon,
     paste0("d", dpi_str)
   )
 
-  # Add stroke to cache key if provided
   if (!is.null(stroke_width) && stroke_width > 0) {
     cache_parts <- c(
       cache_parts,
@@ -159,13 +157,8 @@ normalize_icon_png <- function(png_path,
 
   img <- magick::image_read(png_path)
 
-  # Remove transparent padding around the glyph
   img <- magick::image_trim(img)
-
-  # Scale to fit within dpi x dpi, preserving aspect ratio
   img <- magick::image_scale(img, paste0(dpi, "x", dpi))
-
-  # Pad to exact dpi x dpi with transparent background
   img <- magick::image_extent(
     img,
     geometry = paste0(dpi, "x", dpi),
@@ -219,13 +212,8 @@ generate_icon_png <- function(icon,
     return(NA_character_)
   }
 
-  # Normalize color
   hex_color <- normalize_color(color, fallback_hex = fallback_hex)
-
-  # Create RGBA color
   rgba_color <- create_rgba_color(hex_color, alpha)
-
-  # Get cache path (includes stroke in cache key)
   png_path <- generate_icon_cache_path(
     icon,
     hex_color,
@@ -239,7 +227,6 @@ generate_icon_png <- function(icon,
     stroke_color_tag = stroke_color_tag
   )
 
-  # Generate PNG if not cached
   if (!file.exists(png_path)) {
     if (!is.null(stroke_width) && stroke_width > 0) {
       # With stroke (stroke color same as fill)

@@ -500,7 +500,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
                                        arg_size = "size",
                                        arg_unit = "unit",
                                        arg_spacing = "spacing") {
-  # Validate size - Type check
   if (!is.numeric(size)) {
     cli::cli_abort(
       c(
@@ -515,7 +514,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
   }
 
-  # Validate size - Length check
   if (length(size) != 1) {
     cli::cli_abort(
       c(
@@ -530,7 +528,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
   }
 
-  # Validate size - Positive check
   if (size <= 0) {
     cli::cli_abort(
       c(
@@ -545,7 +542,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
   }
 
-  # Validate size - Finite check
   if (!is.finite(size)) {
     cli::cli_abort(
       c(
@@ -560,7 +556,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
   }
 
-  # Validate unit - Type and length check
   if (!is.character(unit) || length(unit) != 1) {
     cli::cli_abort(
       c(
@@ -575,7 +570,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
   }
 
-  # BAN npc unit - Abort if npc is used
   if (unit == "npc") {
     cli::cli_abort(
       c(
@@ -593,7 +587,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
   }
 
-  # Validate unit - Valid grid units (warning only)
   valid_units <- c(
     "cm", "inches", "mm", "points", "picas",
     "bigpts", "dida", "cicero", "scaledpts", "lines",
@@ -616,7 +609,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     )
   }
 
-  # Validate spacing - Type and length check
   if (!is.numeric(spacing) || length(spacing) != 1) {
     cli::cli_warn(
       c(
@@ -631,7 +623,6 @@ validate_scale_legend_icon <- function(size, unit, spacing,
     spacing <- 0.2
   }
 
-  # Validate spacing - Non-negative check
   if (spacing < 0) {
     cli::cli_warn(
       c(
