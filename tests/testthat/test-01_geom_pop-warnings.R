@@ -302,6 +302,43 @@ testthat::test_that("Warning: stroke_width > 30", {
   )
 })
 
+### 03.07.02 stroke_width inside aes() is ignored (ggplot pattern) -------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (ggplot pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_raw, ggplot2::aes(icon = icon, group = sex, color = sex, stroke_width = sex)) +
+      geom_pop(dpi = 60),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
+### 03.07.03 stroke_width inside aes() is ignored (geom pattern) ---------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (geom pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot() +
+      geom_pop(
+        data = df_raw,
+        ggplot2::aes(icon = icon, group = sex, color = sex, stroke_width = sex),
+        dpi = 60
+      ),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
+### 03.07.04 stroke_width inside aes() is ignored (mixed pattern) --------------
+
+testthat::test_that("Warning: stroke_width in aes() is ignored (mixed pattern)", {
+  testthat::expect_warning(
+    ggplot2::ggplot(df_raw, ggplot2::aes(icon = icon, group = sex)) +
+      geom_pop(
+        ggplot2::aes(color = sex, stroke_width = sex),
+        dpi = 60
+      ),
+    regexp = "stroke_width.*aes\\(\\).*IGNORED|IGNORED"
+  )
+})
+
 
 # ******************************************************************************
 ## 03.08 Smoke: warnings should still allow build ------------------------------

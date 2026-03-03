@@ -827,7 +827,7 @@ validate_data_is_dataframe <- function(data) {
 #' @keywords internal
 #' @noRd
 validate_no_reserved_columns <- function(data) {
-  reserved_cols <- c("x1", "y1", "pos", "image", "coord_size", "icon_size", "icon_stroke_width")
+  reserved_cols <- c("x1", "y1", "pos", "image", "coord_size", "icon_size", "icon_stroke_width", "alpha")
   user_cols <- names(data)
   conflicts <- intersect(reserved_cols, user_cols)
 
@@ -859,6 +859,7 @@ validate_no_reserved_columns <- function(data) {
         " " = "  - coord_size    (coordinate lookup key)",
         " " = "  - icon_size     (internal size calculation)",
         " " = "  - icon_stroke_width (internal stroke calculation)",
+        " " = "  - alpha          (internal transparency calculation)",
         " " = "",
         "i" = "Fix - rename the conflicting column(s):",
         " " = "  {.code {rename_code}}",

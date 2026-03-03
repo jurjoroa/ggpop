@@ -1422,11 +1422,13 @@ testthat::test_that("DPI validation errors work correctly", {
 # 14 Snapshot ------------------------------------------------------------------
 # ******************************************************************************
 
+### 14.01 geom_pop -----
+
 
 testthat::test_that("geom_pop", {
   df <- data.frame(
     sex = c("male", "female", "male", "female"),
-    icon = c("male", "female", "male", "female"),
+    icon = c("minus", "xmark", "minus", "xmark"),
     stringsAsFactors = FALSE
   )
 
@@ -1444,10 +1446,10 @@ testthat::test_that("geom_pop", {
 })
 
 
-testthat::test_that("geom_pop scale_legend_icon()", {
+testthat::test_that("scale_legend_icon()", {
   df <- data.frame(
     sex = c("male", "female", "male", "female"),
-    icon = c("male", "female", "male", "female"),
+    icon = c("minus", "xmark", "minus", "xmark"),
     stringsAsFactors = FALSE
   )
 
@@ -1466,10 +1468,10 @@ testthat::test_that("geom_pop scale_legend_icon()", {
 })
 
 
-testthat::test_that("geom_pop factor levels", {
+testthat::test_that("factor levels", {
   df <- data.frame(
     income = c(rep("Low", 1), rep("Mid", 1), rep("High", 1)),
-    icon   = c(rep("pills", 1), rep("stethoscope", 1), rep("hospital", 1))
+    icon   = c(rep("xmark", 1), rep("minus", 1), rep("square", 1))
   )
 
   # Factor: legend should show Low → Mid → High with matching icons
@@ -1494,11 +1496,8 @@ testthat::test_that("geom_pop factor levels", {
   )
 })
 
-# ******************************************************************************
-## show.legend = FALSE ---------------------------------------------------------
-# ******************************************************************************
 
-testthat::test_that("geom_pop show.legend = FALSE hides icon legend", {
+testthat::test_that("show.legend = FALSE hides icon legend", {
   df_show <- data.frame(
     type = c("A", "B", "C"),
     icon = c("circle", "circle", "circle")
@@ -1520,9 +1519,6 @@ testthat::test_that("geom_pop show.legend = FALSE hides icon legend", {
   )
 })
 
-# ******************************************************************************
-## Coordinate inheritance (geom_text, geom_label) ------------------------------
-# ******************************************************************************
 
 testthat::test_that("geom_text inherits x and y from geom_pop without error", {
   df_label <- data.frame(
@@ -1542,6 +1538,117 @@ testthat::test_that("geom_text inherits x and y from geom_pop without error", {
 
   expect_doppelganger(
     title = "geom_pop geom_text coordinate inheritance",
+    fig   = p
+  )
+})
+
+
+
+testthat::test_that("alpha mapped", {
+  df <- data.frame(
+    status  = c(rep("Recovered", 1), rep("Improving", 1), rep("No change", 1)),
+    icon    = c(rep("circle", 1), rep("square", 1), rep("minus", 1)),
+    opacity = c(rep(1.0, 1), rep(0.6, 1), rep(0.3, 1)),
+    stringsAsFactors = FALSE
+  )
+
+  df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
+
+  p <- ggplot2::ggplot(
+    data = df,
+    ggplot2::aes(icon = icon, color = status, alpha = opacity)
+  ) +
+    geom_pop(size = 1, dpi = 50, legend_icons = TRUE, seed = 1) +
+    ggplot2::scale_color_manual(values = c(
+      "Recovered" = "#43A047",
+      "Improving" = "#FFB300",
+      "No change" = "#E53935"
+    )) +
+    ggplot2::guides(alpha = "none") +
+    ggplot2::theme_void()
+
+  expect_doppelganger(
+    title = "geom_pop alpha mapped",
+    fig   = p
+  )
+})
+
+testthat::test_that("alpha=1 for all mapped", {
+  df <- data.frame(
+    status  = c(rep("Recovered", 1), rep("Improving", 1), rep("No change", 1)),
+    icon    = c(rep("circle", 1), rep("square", 1), rep("minus", 1)),
+    opacity = c(rep(1.0, 1), rep(1, 1), rep(1, 1)),
+    stringsAsFactors = FALSE
+  )
+  
+  df$status <- factor(df$status, levels = c("Recovered", "Improving", "No change"))
+  
+  p <- ggplot2::ggplot(
+    data = df,
+    ggplot2::aes(icon = icon, color = status, alpha = opacity)
+  ) +
+    geom_pop(size = 1, dpi = 50, legend_icons = TRUE, seed = 1) +
+    ggplot2::scale_color_manual(values = c(
+      "Recovered" = "#43A047",
+      "Improving" = "#FFB300",
+      "No change" = "#E53935"
+    )) +
+    ggplot2::guides(alpha = "none") +
+    ggplot2::theme_void()
+  
+  expect_doppelganger(
+    title = "geom_pop alpha=1 for all mapped",
+    fig   = p
+  )
+})
+
+
+testthat::test_that("arrange TRUE", {
+  df <- data.frame(
+    sex  = rep(c("M", "F"), each = 2),
+    icon = rep(c("circle", "square"), each = 2),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data    = df,
+      ggplot2::aes(icon = icon, group = sex, color = sex),
+      arrange = TRUE,
+      size    = 3,
+      dpi     = 50
+    ) +
+    ggplot2::scale_color_manual(values = c("M" = "#1E88E5", "F" = "#D81B60")) +
+    ggplot2::theme_void()
+
+  expect_doppelganger(
+    title = "geom_pop arrange TRUE",
+    fig   = p
+  )
+})
+
+
+testthat::test_that("stroke width", {
+  df <- data.frame(
+    grp  = rep(c("A", "B"), each = 2),
+    icon = rep(c("minus", "square"), each = 2),
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot() +
+    geom_pop(
+      data         = df,
+      ggplot2::aes(icon = icon, group = grp, color = grp),
+      stroke_width = 20,
+      size         = 3,
+      dpi          = 50,
+      seed         = 1
+    ) +
+    ggplot2::scale_color_manual(values = c("A" = "#1565C0", "B" = "#2E7D32")) +
+    ggplot2::theme_void()
+
+  expect_doppelganger(
+    title = "geom_pop stroke width",
     fig   = p
   )
 })
