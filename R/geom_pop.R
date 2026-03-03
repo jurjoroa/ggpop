@@ -129,7 +129,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
   validate_no_fill_aesthetic(combined_mapping)
   validate_no_image_aesthetic(mapping_list)
   validate_stroke_width_not_aesthetic(combined_mapping)
-  validate_literal_alpha_in_aes(combined_mapping)
+  validate_literal_alpha_in_aes(combined_mapping, data = data)
 
   icon_info <- resolve_icon_variable(
     mapping_list, inherited_mapping_list,

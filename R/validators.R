@@ -1278,12 +1278,12 @@ validate_alpha_column <- function(alpha_vals, col_name) {
 #' @return Invisible NULL.
 #' @keywords internal
 #' @noRd
-validate_literal_alpha_in_aes <- function(combined_mapping) {
+validate_literal_alpha_in_aes <- function(combined_mapping, data = NULL) {
   if (!("alpha" %in% names(combined_mapping))) {
     return(invisible(NULL))
   }
 
-  # If it resolves to a symbol it's a column name — handled elsewhere
+  # If it resolves to a symbol it's a plain column name — handled by validate_alpha_column
   is_col <- tryCatch({
     rlang::as_name(combined_mapping[["alpha"]])
     TRUE
@@ -1291,13 +1291,24 @@ validate_literal_alpha_in_aes <- function(combined_mapping) {
 
   if (is_col) return(invisible(NULL))
 
-  alpha_val <- tryCatch(
-    as.numeric(rlang::eval_tidy(combined_mapping[["alpha"]])),
+  # Evaluate with data context so expressions like Petal.Width/100 resolve
+  alpha_vals <- tryCatch(
+    suppressWarnings(as.numeric(rlang::eval_tidy(combined_mapping[["alpha"]], data = data))),
     error = function(e) NULL
   )
 
-  if (!is.null(alpha_val) && length(alpha_val) == 1 && is.finite(alpha_val)) {
-    validate_alpha_parameter(alpha_val)
+  alpha_vals <- alpha_vals[!is.na(alpha_vals)]
+  if (is.null(alpha_vals) || length(alpha_vals) == 0) return(invisible(NULL))
+
+  expr_label <- tryCatch(
+    deparse(rlang::get_expr(combined_mapping[["alpha"]])),
+    error = function(e) "alpha expression"
+  )
+
+  if (length(alpha_vals) == 1) {
+    validate_alpha_parameter(alpha_vals)
+  } else {
+    validate_alpha_column(alpha_vals, expr_label)
   }
 
   invisible(NULL)
