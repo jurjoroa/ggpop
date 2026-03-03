@@ -1,5 +1,12 @@
 url: https://jurjoroa.github.io/ggpop/
 title: "ggpop"
+
+home:
+  description: >
+    ggpop is an R package for creating icon-based population charts and pictogram
+    plots with ggplot2. Use geom_pop() and geom_icon_point() to visualize proportion
+    and population data with 2,000+ Font Awesome icons. Free and open-source (MIT).
+
 template:
   params:
       ganalytics: G-CX1ZY99J1P
@@ -9,7 +16,34 @@ template:
     fg: "white"
     primary: "#FF6B6B"
   assets: pkgdown/assets
+  opengraph:
+    image:
+      src: https://jurjoroa.github.io/ggpop/inst/figures/shp.png
+      alt: "ggpop - icon-based population charts for R"
+    twitter:
+      card: summary_large_image
   includes:
+    in_header: |
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "ggpop",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "R",
+        "softwareVersion": "1.7.0",
+        "description": "R package for creating icon-based population charts and pictogram plots with ggplot2. Visualize proportion and population data in R",
+        "url": "https://jurjoroa.github.io/ggpop/",
+        "downloadUrl": "https://cran.r-project.org/package=ggpop",
+        "license": "https://opensource.org/licenses/MIT",
+        "author": [
+          {"@type": "Person", "name": "Jorge A. Roa-Contreras"},
+          {"@type": "Person", "name": "Ralitza Soultanova"},
+          {"@type": "Person", "name": "Fernando Alarid-Escudero"},
+          {"@type": "Person", "name": "Carlos Pineda-Antunez"}
+        ]
+      }
+      </script>
     after_body: |
       <script>
       (function () {
