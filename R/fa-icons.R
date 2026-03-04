@@ -170,7 +170,7 @@ fa_icons <- function(query                = NULL,
 
   # ── Classify ─────────────────────────────────────────────────────────────────
   all_classes <- lapply(icons, function(ic) {
-    names(class_map)[vapply(class_map, \(pat) grepl(pat, ic, perl = TRUE), logical(1))]
+    names(class_map)[vapply(class_map, function(pat) grepl(pat, ic, perl = TRUE), logical(1))]
   })
 
   primary_class <- vapply(all_classes, function(x) {
