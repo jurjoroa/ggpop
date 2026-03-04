@@ -68,7 +68,6 @@ theme_pop <- function(
     )
   }
 
-  # Build theme from scratch
   ggplot2::theme(
     # Remove all axis elements
     axis.line = ggplot2::element_blank(),
