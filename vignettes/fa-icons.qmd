@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
 ## What is `fa_icons()`?
 <div style="line-height: 0.6;"><br></div>
 
-`fa_icons()` is a wrapper functions from fontawesome that lets you search and browse the Font Awesome icons available for use in `geom_pop()` and `geom_icon_point()`. Instead of looking for the icon, you can filter by keyword, category, or regular expression and get back a tidy tibble — or a plain character vector — ready to use in your plot code.
+`fa_icons()` searches Font Awesome icons by keyword, category, or regex and returns a tibble or character vector ready to use in your plot.
 
 ```{r}
 #| label: load
@@ -89,7 +89,7 @@ library(dplyr)
 ## Listing All Icons
 <div style="line-height: 0.6;"><br></div>
 
-Called with no arguments, `fa_icons()` returns every available Font Awesome icon with its primary semantic category.
+`fa_icons()` with no arguments returns all icons with their primary category.
 
 ```{r}
 #| label: all-icons
@@ -171,7 +171,7 @@ fa_icons(query = "person", category = "people_users")
 ## Quick Vector Lookup
 <div style="line-height: 0.6;"><br></div>
 
-Set `as_vector = TRUE` to skip the tibble and get a plain sorted character vector. This is the fastest way to browse names or pipe them into other code.
+Set `as_vector = TRUE` for a plain character vector.
 
 ```{r}
 #| label: as-vector
@@ -190,7 +190,7 @@ fa_icons(category = "animals", as_vector = TRUE)
 ## Showing All Classes
 <div style="line-height: 0.6;"><br></div>
 
-By default only `primary_class` is returned. Set `primary_only = FALSE` to also get the `all_classes` list-column, showing every category each icon matches.
+Set `primary_only = FALSE` to get all category matches.
 
 ```{r}
 #| label: all-classes
@@ -204,7 +204,7 @@ fa_icons(query = "heart", primary_only = FALSE)
 ## Hiding Unclassified Icons
 <div style="line-height: 0.6;"><br></div>
 
-Some icons do not match any category. Set `include_unclassified = FALSE` to drop them.
+Set `include_unclassified = FALSE` to exclude unclassified icons.
 
 ```{r}
 #| label: classified-only
@@ -237,7 +237,7 @@ fa_icons(class_map = my_map, include_unclassified = FALSE)
 ## From Discovery to Plot
 <div style="line-height: 0.6;"><br></div>
 
-A common workflow: search for icons, pick ones you like, then put them directly into a geom.
+Common workflow: search, select, use:
 
 ```{r}
 #| label: workflow-search

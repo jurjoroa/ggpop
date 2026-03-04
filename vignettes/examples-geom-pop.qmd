@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
 ## Example 1: World Population by Continent
 <div style="line-height: 0.6;"><br></div>
 
-Out of every 100 people on Earth, how many come from each continent? Each icon uses a distinct symbol and color per continent, and the legend shows the exact count.
+Out of every 100 people on Earth, how many come from each continent?
 
 ```{r}
 #| label: world-population-eval
@@ -272,7 +272,7 @@ ggplot(data = df_world_proc,
 ## Example 2: Population by Sex
 <div style="line-height: 0.6;"><br></div>
 
-A simple two-group population chart using Mexico's 2024 population data.
+Population distribution by sex (Mexico 2024).
 
 ```{r}
 #| label: sex-display
@@ -382,7 +382,7 @@ ggplot() +
 ## Example 3: Education Levels
 <div style="line-height: 0.6;"><br></div>
 
-Population chart showing education attainment across four levels.
+Education attainment across four levels.
 
 ```{r}
 #| label: education-display
@@ -612,7 +612,7 @@ labs(
 ## Example 4: Disease Burden with Dark Theme
 <div style="line-height: 0.6;"><br></div>
 
-A dark-themed chart showing disease categories in a simulated population.
+Disease burden by category (dark theme).
 
 ```{r}
 #| label: disease-dark-eval
@@ -741,7 +741,7 @@ ggplot() +
 ## Example 5: Disability Status with Stroke
 <div style="line-height: 0.6;"><br></div>
 
-Using `stroke_width` to outline icons for better visibility and `arrange = TRUE` to group icons by type.
+Using `stroke_width` for icon outlines and `arrange = TRUE` to group by type.
 
 ```{r}
 #| label: disability-display
@@ -872,7 +872,7 @@ ggplot(data = df_disability_proc,
 
 ## Example 6: 100 Most Common Names in Mexico
 
-We can also add labels to icons using `geom_text()`. In this example, the 100 most common names in Mexico are displayed with a pink icon for female names and a blue icon for male names. The `check_overlap = TRUE` argument prevents label overlap, so only a subset of names will be shown.
+Adding text labels to icons with `geom_text()` and `check_overlap = TRUE` to prevent overlap.
 
 ```{r}
 #| label: geom-text-label
@@ -947,10 +947,7 @@ ggplot(data = df_labeled, aes(icon = icon, color = gender)) +
 
 ## Example 7:Animated Markov Cohort (Sick-Sicker)
 
-The Sick-Sicker model is a common health economics model structure that simulates disease progression across multiple health states. In this example, we simulate a cohort of individuals starting at age 40 and track their transitions through the states of `Healthy`, `Sick`, `Sicker`, and `Death` until age 100. We then visualize the changing distribution of the cohort across these states over time using an animated population plot.
-
-We simulate a **Sick-Sicker** model from age **40** to **100** across four states:
-`Healthy`, `Sick`, `Sicker`, and `Death`.
+Animated Sick-Sicker model tracking disease progression from age 40 to 100 across four states: Healthy, Sick, Sicker, and Death.
 
 ```{r}
 #| label: sick-sicker-animated
@@ -1100,7 +1097,7 @@ p_anim <- ggplot(df_icons, aes(icon = icon, color = state)) +
 ## `cowplot` — Health Survey Dashboard
 <div style="line-height: 0.6;"><br></div>
 
-Combining multiple `geom_pop()` panels into a single plot with the `cowplot` package. Three independent population charts — sex distribution, age groups, and vaccination coverage — are built as separate `ggplot` objects and then arranged: two panels in the top row and one centered below.
+Combining multiple `geom_pop()` panels with `cowplot`: two charts on top (sex, age groups), one centered below (vaccination).
 
 ```{r}
 #| label: cowplot-display
@@ -1376,7 +1373,7 @@ plot_grid(top_row, bottom_row, nrow = 2)
 ## `facet_wrap` — Transportation Methods Across US Cities
 <div style="line-height: 0.6;"><br></div>
 
-Using `facet_wrap(~ group)`, this chart breaks down the daily commute mix across major US cities. Each panel shows one city's full distribution of transportation modes — car, bus, train, bicycle, motorcycle, walking, and ride-share — with each icon representing approximately 400 commuters. The dark background and per-mode color coding make it easy to compare cities at a glance.
+Transportation methods across cities using `facet_wrap()`: each panel shows one city's distribution of commute modes.
 
 ```{r}
 #| label: transportation-display
@@ -1503,7 +1500,7 @@ ggplot(data = df_transport_prop,
 ## `facet_geo` — Gun Violence Across US States
 <div style="line-height: 0.6;"><br></div>
 
-Combining `geom_pop()` with the `geofacet` package places each state's panel in its actual geographic position on the US map. Here, skull icons represent gun deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000 people. The layout immediately reveals regional patterns that a standard bar chart would hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the South and rural West cluster visually as the hardest-hit regions.
+Gun deaths per 100,000 people (2023 CDC data) by US state using `geofacet` for geographic placement.
 
 Note: According to issue #488 from geofacet package
 
@@ -1608,7 +1605,7 @@ ggplot(df_hex_prop, aes(icon = icon, group = type, color = type)) +
 ## `gifski` — A World Grown Older (png animation)
 <div style="line-height: 0.6;"><br></div>
 
-Three countries placed side by side with `patchwork`'s `|` operator — Japan (rapidly ageing), the United States (moderate pace), and Nigeria (still young) — each showing its own age distribution for a given decade. A loop builds one patchwork frame per time point and `gifski` stitches the frames into a GIF, making it immediately clear how differently the ageing transition unfolds across the world.
+Age structure changes across Japan, the United States, and Nigeria animated with `patchwork` and `gifski`.
 
 ```{r}
 #| label: patchwork-anim-display

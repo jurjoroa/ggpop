@@ -13,7 +13,7 @@ vignette: >
 ## What is `process_data()`?
 <div style="line-height: 0.6;"><br></div>
 
-`process_data()` is a helper function that converts raw population counts into a sampled data frame ready for `geom_pop()`. Each row in the output represents one icon in the final chart.
+`process_data()` converts raw population counts into a sampled data frame (one row per icon) ready for `geom_pop()`.
 
 It handles:
 
@@ -36,7 +36,7 @@ library(dplyr)
 ## Basic Usage
 <div style="line-height: 0.6;"><br></div>
 
-The minimum inputs are `data`, `group_var` (the grouping column), and `sum_var` (the count column). `sample_size` controls how many icons appear in the final chart (max 1,000).
+Required: `data`, `group_var`, `sum_var`. `sample_size` sets icon count (max 1,000).
 
 ```{r}
 #| label: basic
@@ -69,7 +69,7 @@ The output contains:
 ## Understanding Proportions
 <div style="line-height: 0.6;"><br></div>
 
-`process_data()` calculates each group's share of the total and allocates icons proportionally. With `sample_size = 100`, a group with 48% of the population gets ~48 icons.
+With `sample_size = 100`, a group with 48% of the population gets ~48 icons.
 
 ```{r}
 #| label: proportions
@@ -116,7 +116,7 @@ df_regions_processed %>%
 ## Hierarchical Grouping with `high_group_var`
 <div style="line-height: 0.6;"><br></div>
 
-Use `high_group_var` to nest groups under a higher-level category. This is useful when you want to facet by a parent group while preserving sub-group icon assignments.
+Use `high_group_var` to nest groups under a parent category for faceted plots.
 
 ```{r}
 #| label: hierarchical
@@ -148,7 +148,7 @@ df_health_processed %>%
 ## Skipping `process_data()`
 <div style="line-height: 0.6;"><br></div>
 
-`process_data()` is optional. If your data already has one row per icon, pass it directly to `geom_pop()`. The only requirement is a maximum of 1,000 rows per plot (or per facet group).
+Optional — pass data directly to `geom_pop()` if it already has one row per icon (max 1,000 rows per plot or facet).
 
 ```{r}
 #| label: skip

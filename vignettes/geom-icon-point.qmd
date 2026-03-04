@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <div style="line-height: 0.6;"><br></div>
 
-`geom_icon_point()` is the scatter plot cousin of `geom_pop()`. It works exactly like `ggplot2::geom_point()` — but replaces dots with Font Awesome icons. No data preprocessing is required: just supply any data frame with `x` and `y` variables and let the icons do the talking.
+`geom_icon_point()` works like `ggplot2::geom_point()` but replaces dots with Font Awesome icons. No preprocessing needed — supply any data frame with `x` and `y` variables.
 
 <div style="line-height: 0.6;"><br></div>
 
@@ -178,7 +178,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 
 <div style="line-height: 0.6;"><br></div>
 
-`geom_icon_point()` shines when each category gets its own icon. Map `icon` inside `aes()` to a column in your data — each group then carries its own visual identity.
+Map `icon` inside `aes()` to give each category its own icon.
 
 ```{r}
 #| label: mapped-icons-display
@@ -278,7 +278,7 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
 
 <div style="line-height: 0.6;"><br></div>
 
-Map a continuous variable to `size` inside `aes()` to add a third dimension of information. Use `scales::rescale()` to keep icon sizes in a readable range — raw values that are too large or too small make icons unreadable.
+Map a continuous variable to `size`. Use `scales::rescale()` to keep sizes readable.
 
 ```{r}
 #| label: size-mapping-display
@@ -386,7 +386,7 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 
 <div style="line-height: 0.6;"><br></div>
 
-When `color` is mapped to a factor, the legend follows **factor level order**. `geom_icon_point()` automatically assigns icons to legend entries in the same order — so setting factor levels is all you need for a correctly ordered legend.
+When `color` is a factor, icons follow factor level order automatically.
 
 ```{r}
 #| label: factor-ordering-display
@@ -485,7 +485,7 @@ ggplot(df_coffee, aes(x = acidity, y = body, icon = icon, color = roast)) +
 
 <div style="line-height: 0.6;"><br></div>
 
-`geom_icon_point()` is fully compatible with all standard ggplot2 geoms. Here we combine it with `geom_smooth()`, `geom_vline()`, `geom_hline()`, `geom_label()`, and `annotate()` to build a fully annotated analytical chart.
+`geom_icon_point()` works with all standard ggplot2 geoms:
 
 ```{r}
 #| label: combined-geoms-display
