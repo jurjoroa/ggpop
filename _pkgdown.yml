@@ -21,6 +21,7 @@ template:
       src: https://jurjoroa.github.io/ggpop/inst/figures/shp.png
       alt: "ggpop - icon-based population charts for R"
     twitter:
+      creator: "@jorgeroac"
       card: summary_large_image
   includes:
     in_header: |
