@@ -18,12 +18,11 @@ A data frame containing the `df_coordinates_final` dataset.
 
 ## Details
 
-The dataset is downloaded from the following URL:
-<https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/data/df_coordinates_final.rda>.
-The file is cached in a directory specific to the package, which is
-determined using [`R_user_dir`](https://rdrr.io/r/tools/userdir.html).
-If the dataset is already cached, it will be loaded directly from the
-cache instead of downloading again.
+The dataset is downloaded from GitHub The file is cached in a directory
+specific to the package, which is determined using
+[`R_user_dir`](https://rdrr.io/r/tools/userdir.html). If the dataset is
+already cached, it will be loaded directly from the cache instead of
+downloading again.
 
 ## Examples
 

@@ -33,6 +33,8 @@ Prepare your data for ggpop.
 
 Use geom_icon_point() to build icon-based scatter plots.
 
+- [geom_icon_point()
+  Examples](https://jurjoroa.github.io/ggpop/articles/examples-geom-icon-point.md):
 - [Icon Scatter Plots with
   geom_icon_point()](https://jurjoroa.github.io/ggpop/articles/geom-icon-point.md):
 
