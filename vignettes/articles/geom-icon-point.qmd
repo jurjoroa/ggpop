@@ -4,10 +4,6 @@ format:
   html:
     code-fold: false
     code-summary: "Show the code"
-vignette: >
-  %\VignetteIndexEntry{Icon Scatter Plots with geom_icon_point()}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r}

@@ -4,10 +4,6 @@ format:
   html:
     code-fold: false
     code-summary: "Show the code"
-vignette: >
-  %\VignetteIndexEntry{New to R? Start Here}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r}

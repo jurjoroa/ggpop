@@ -4,10 +4,6 @@ format:
   html:
     code-fold: false
     code-summary: "Show the code"
-vignette: >
-  %\VignetteIndexEntry{Tips & Best Practices}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r}

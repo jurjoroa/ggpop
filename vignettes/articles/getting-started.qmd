@@ -4,10 +4,6 @@ format:
   html:
     code-fold: false
     code-summary: "Show the code"
-vignette: >
-  %\VignetteIndexEntry{Getting Started with ggpop}
-  %\VignetteEngine{quarto::html}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ## What is ggpop?
