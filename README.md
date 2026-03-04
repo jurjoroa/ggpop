@@ -273,7 +273,7 @@ ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, color = type)) +
 
 ## `geom_icon_point()` — Icon Scatter Plots
 
-`geom_icon_point()` is the scatter plot cousin of `geom_pop()`. It works exactly like `geom_point()` — but swaps dots for Font Awesome icons. No preprocessing required: just pass any data with `x` and `y` variables and let the icons do the talking.
+`geom_icon_point()` is the scatter plot cousin of `geom_pop()`. It works exactly like `geom_point()` — but swaps dots for icons. No preprocessing required: just pass any data with `x` and `y` variables.
 
 This is ideal when you want to add visual identity to individual observations — making your audience immediately recognize *what* they are looking at, not just *where* a point sits on a chart.
 
@@ -372,7 +372,7 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 
 ### Featured Example: More Spending ≠ Longer Lives
 
-This example shows `geom_icon_point()` in combination with five other geoms — `geom_smooth()`, `geom_vline()`, `geom_hline()`, `geom_text()`, and `annotate()` — to build a fully annotated analytical chart. The icons encode income group visually (hospital for high-income countries, stethoscope for upper-middle, pills for lower-middle and low), `geom_text()` labels every country directly above its icon with no background, and the trend line, reference lines, and quadrant annotations do the analytical heavy lifting. The result is a chart that is both rigorous and immediately readable.
+This example shows `geom_icon_point()` in combination with five other geoms — `geom_smooth()`, `geom_vline()`, `geom_hline()`, `geom_text()`, and `annotate()` — to build a fully annotated analytical chart. The icons encode income group visually (hospital for high-income countries, stethoscope for upper-middle, pills for lower-middle and low), `geom_text()` labels every country directly above its icon with no background, and the trend line, reference lines, and quadrant annotations do the analytical heavy lifting.
 
 
 ![Health Spending vs Life Expectancy](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/health_spending_life_exp.png)
@@ -381,9 +381,8 @@ This example shows `geom_icon_point()` in combination with five other geoms — 
 
 ## More Examples: Facets & Other Packages
 
-`geom_pop()` integrates natively with ggplot2's faceting system, letting you compare populations across groups or geographies without any extra setup. Just add a `facet` parameter or a standard `facet_wrap()` / `facet_grid()` call, and ggpop handles the rest.
+`geom_pop()` integrates natively with ggplot2's faceting, letting you compare populations across groups or geographies without any extra setup. Just add a `facet` parameter or a standard `facet_wrap()` / `facet_grid()` call.
 
-For even more examples, vignettes, tips, and the full function reference, visit the **[ggpop package website](https://jurjoroa.github.io/ggpop/)**.
 
 ### Animated Markov simulation model example
 
