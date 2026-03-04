@@ -57,7 +57,7 @@ df_sex_proc <- process_data(
 ## `theme_pop()`
 <div style="line-height: 0.6;"><br></div>
 
-The default theme. Removes axes and gridlines, keeping the focus on the icons. All standard ggplot2 `theme()` arguments can be added on top.
+Default theme — removes axes and gridlines. Layer standard `theme()` calls on top to customize.
 
 ```{r}
 #| label: theme-pop
@@ -123,7 +123,7 @@ ggplot() +
 ## `theme_pop_dark()`
 <div style="line-height: 0.6;"><br></div>
 
-A dark variant built on top of `theme_pop()`. Accepts `bg_color` and `text_color` for full control.
+Dark variant of `theme_pop()` with `bg_color` and `text_color` parameters.
 
 ```{r}
 #| label: theme-pop-dark
@@ -184,7 +184,7 @@ ggplot() +
 ## `theme_pop_minimal()`
 <div style="line-height: 0.6;"><br></div>
 
-Strips everything — no title, no legend, no margins. Best for embedding icon arrays inside dashboards or documents.
+No title, legend, or margins. Best for embedding in dashboards.
 
 ```{r}
 #| label: theme-pop-minimal
@@ -210,7 +210,7 @@ ggplot() +
 ## `scale_legend_icon()`
 <div style="line-height: 0.6;"><br></div>
 
-Controls the size of icons in the legend. Use it alongside `legend_icons = TRUE` in `geom_pop()` or `geom_icon_point()`.
+Controls legend icon size when `legend_icons = TRUE`.
 
 ```{r}
 #| label: scale-legend
@@ -240,7 +240,7 @@ ggplot() +
 ## `stroke_width` — Icon Outlines
 <div style="line-height: 0.6;"><br></div>
 
-Add an outline to icons with `stroke_width`. Higher values produce a thicker border, useful for light icons on light backgrounds.
+Add outlines to icons with `stroke_width`, useful for light icons on light backgrounds.
 
 ```{r}
 #| label: stroke
@@ -271,7 +271,7 @@ ggplot() +
 ## Combining with ggplot2 `theme()`
 <div style="line-height: 0.6;"><br></div>
 
-`theme_pop()` is a standard ggplot2 theme — add any `theme()` call on top to override specific elements.
+Layer `theme()` calls on top of any `theme_pop*()` to override specific elements.
 
 ```{r}
 #| label: custom-theme

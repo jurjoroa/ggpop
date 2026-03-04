@@ -16,11 +16,11 @@
 
 > **Turn numbers into people. Turn data into stories.**
 
-`ggpop` is an R package built on top of ggplot2 that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users easily visualize population data using proportional, customizable icons arranged in intuitive, circular layouts. The package also includes functionality for adding clear, icon-enhanced captions, which makes charts easier to understand and visually attractive. Designed primarily for visual storytelling, ggpop helps users communicate population statistics in a straightforward and appealing manner.
+`ggpop` is an R package built on top of ggplot2 that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users visualize population data using customizable icons arranged in circular layouts. Designed primarily for visual storytelling, ggpop helps users communicate population statistics in an appealing manner.
 
 ## An Alternative Approach to Visualization
 
-`ggpop` offers a fresh alternative to traditional data visualizations by using icons and proportional symbols in population charts. This approach not only improves the aesthetics of your plots but also helps your audience better engage with and understand the data. By converting numerical values into intuitive visual representations, `ggpop` makes population data clearer and easier to remember, allowing users to tell more compelling stories.
+`ggpop` makes population data easier to remember, allowing users to tell more compelling stories.
 
 - **Intuitive Understanding**: Proportional representation simplifies data.
 - **Flexible**: Support for 2,000+ Font Awesome icons.
@@ -31,7 +31,7 @@
 
 ## Two Main Geoms
 
-ggpop has with two principal geoms. Each solves a different visualization problem:
+Two geoms for different visualization problems:
 
 |  | `geom_pop()` | `geom_icon_point()` |
 |:---|:---|:---|
@@ -75,11 +75,11 @@ remotes::install_github("jurjoroa/ggpop")
 
 ## `geom_pop()` — Population Charts
 
-`geom_pop()` creates proportional icon grids where each icon represents a share of the total population. Perfect for making demographic, health, or social statistics in a nice format.
+`geom_pop()` creates proportional icon grids where each icon represents a share of the total population.
 
 ### 1.- Create a Small Dataset or Use a Built-in Dataset
 
-The dataset **`df_pop_mx`** is a **minimal example** illustrating population counts by sex in Mexico in 2024. It has the following structure:
+The dataset **`df_pop_mx`** is a **minimal example** illustrating population counts by sex in Mexico in 2024.
 
 - **sex**: A categorical variable indicating the sex (`"male"` / `"female"`)
 - **n**: A numeric variable representing the population size for each sex category
@@ -128,7 +128,7 @@ The function calculates group proportions, then performs sampling to create a ne
 
 ### 3.- Assign icons to groups
 
-Here, we create a new column called `icon` in the `df_pop_mx_prop` dataset. The `case_when()` function checks each row's **type** (either "male" or "female") and assigns a matching value to the `icon` column.
+Assign a Font Awesome icon name to each group:
 
 ``` r
 df_pop_mx_prop <- df_pop_mx_prop %>%
@@ -144,27 +144,19 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
   <img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome.svg" width="115px" alt="Fontawesome" />
 </p>
 
-This package supports **Font Awesome icons**.
-
-- **Font Awesome icons** offer greater flexibility and a broader icon set (2,000+ free icons).
-
-- The icons are stored in the `fontawesome` package. The only thing you need to specify is the icon's name.
-
-For example, here is a small sample of the 2,000+ free icons available:
+Icon names come from the `fontawesome` package. A sample of available icons:
 
 `home` · `user` · `envelope` · `bell` · `camera` · `cog` · `heart` · `calendar` · `cart-plus` · `check` · `cloud` · `comment` · `download` · `edit` · `file` · `filter` · `flag` · `folder` · `phone`
 
 <p align="center"><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome_icons.png" width="70%" alt="fontawesome table preview" /></p>
 
-You can check the full list of icons at the [Font Awesome website](https://fontawesome.com/icons?d=gallery&p=2&m=free), or search directly from `ggpop` function `fa_icons()`. For example, to search for icons related to "person", you can run:
+Search from R with `fa_icons()` or browse the [Font Awesome gallery](https://fontawesome.com/icons):
 
 ``` r
 fa_icons(query = "person")
 ```
 
 ### 5.- Plot population chart
-
-Now we can proceed to plot the population chart using the assigned icons.
 
 ``` r
 library(ggplot2)
@@ -178,11 +170,7 @@ ggplot() +
 
 ![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot1.png)
 
-The `geom_pop()` function creates a population chart using the `df_pop_mx_prop` dataset. The object works as a `geom_point()` figure plotted at determined x and y coordinates. We can also group and color the icons by the **type** variable or the variable we are grouping for.
-
 #### 5.1 Improve the plot
-
-Like any ggplot object, we can layer on themes, colors, titles, and a legend to make the chart presentation-ready.
 
 ``` r
 ggplot(data = df_pop_mx_prop, aes(icon = icon, color = type)) +
@@ -207,7 +195,7 @@ ggplot(data = df_pop_mx_prop, aes(icon = icon, color = type)) +
 
 ![Example Plot](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot2.png)
 
-We can also include more than two icons in the same plot. In this example, we will identify the people that are disabled, and we will change some parameters.
+Multiple icon types in the same plot:
 
 ``` r
 #1.- We load or create the data
@@ -273,9 +261,7 @@ ggplot(data = df_pop_dis_mx_prop, aes(icon = icon, color = type)) +
 
 ## `geom_icon_point()` — Icon Scatter Plots
 
-`geom_icon_point()` is the scatter plot cousin of `geom_pop()`. It works exactly like `geom_point()` — but swaps dots for Font Awesome icons. No preprocessing required: just pass any data with `x` and `y` variables and let the icons do the talking.
-
-This is ideal when you want to add visual identity to individual observations — making your audience immediately recognize *what* they are looking at, not just *where* a point sits on a chart.
+`geom_icon_point()` works like `geom_point()` but replaces dots with icons. No preprocessing required.
 
 ### Key differences from `geom_pop()`
 
@@ -286,7 +272,7 @@ This is ideal when you want to add visual identity to individual observations �
 
 ### Example 1: Diet & Health Outcomes by Food Group
 
-Each point is a food item plotted by its calorie and protein content. Every food gets its own icon — apple, banana, orange, drumstick, bacon, fish, bottle-water, cheese, and jar — while color groups them by category.
+Each food item plotted by calorie and protein content, with a matching icon and color by category.
 
 ``` r
 library(ggplot2)
@@ -325,7 +311,7 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
 
 ### Example 2: Tech Brand Revenue vs. Market Cap
 
-Each brand gets its own icon and color. Icon size is mapped to number of employees — bigger companies appear larger on the chart, adding a third dimension of information at a glance.
+Icon size mapped to number of employees.
 
 ``` r
 library(ggplot2)
@@ -372,7 +358,7 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 
 ### Featured Example: More Spending ≠ Longer Lives
 
-This example shows `geom_icon_point()` in combination with five other geoms — `geom_smooth()`, `geom_vline()`, `geom_hline()`, `geom_text()`, and `annotate()` — to build a fully annotated analytical chart. The icons encode income group visually (hospital for high-income countries, stethoscope for upper-middle, pills for lower-middle and low), `geom_text()` labels every country directly above its icon with no background, and the trend line, reference lines, and quadrant annotations do the analytical heavy lifting. The result is a chart that is both rigorous and immediately readable.
+`geom_icon_point()` combined with `geom_smooth()`, reference lines, country labels, and quadrant annotations.
 
 
 ![Health Spending vs Life Expectancy](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/health_spending_life_exp.png)
@@ -381,20 +367,16 @@ This example shows `geom_icon_point()` in combination with five other geoms — 
 
 ## More Examples: Facets & Other Packages
 
-`geom_pop()` integrates natively with ggplot2's faceting system, letting you compare populations across groups or geographies without any extra setup. Just add a `facet` parameter or a standard `facet_wrap()` / `facet_grid()` call, and ggpop handles the rest.
-
-For even more examples, vignettes, tips, and the full function reference, visit the **[ggpop package website](https://jurjoroa.github.io/ggpop/)**.
-
 ### Animated Markov simulation model example
 
-See the Sick-Sicker cohort animation example (ages 40 to 100) built with `ggpop` and `gganimate`:
+Sick-Sicker cohort animation (ages 40 to 100) built with `ggpop` and `gganimate`:
 **[Code available in ggpop package website](https://jurjoroa.github.io/ggpop/articles/examples-markov-sick-sicker.html)**.
 
 ![Markov Model Simulation](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/sick_sicker_animation.gif)
 
 ### `facet_wrap()` — Transportation Methods Across US Cities
 
-Using `facet_wrap(~ group)`, this chart breaks down the daily commute mix across major US cities. Each panel shows one city's full distribution of transportation modes — car, bus, train, bicycle, motorcycle, walking, and ride-share — with each icon representing approximately 400 commuters. The dark background and per-mode color coding make it easy to compare cities at a glance.
+Transportation methods across cities using `facet_wrap()`: each panel shows one city's distribution of commute modes.
 
 **[Code available in ggpop package website](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html#facet_wrap-transportation-methods-across-us-cities)**.
 
@@ -402,7 +384,7 @@ Using `facet_wrap(~ group)`, this chart breaks down the daily commute mix across
 
 ### `facet_geo()` — Gun Violence Across US States
 
-Combining `geom_pop()` with the `geofacet` package places each state's panel in its actual geographic position on the US map. Here, skull icons represent gun deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000 people. The layout immediately reveals regional patterns that a standard bar chart would hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the South and rural West cluster visually as the hardest-hit regions.
+Gun deaths per 100,000 people (2023 CDC data) by US state using `geofacet` for geographic placement.
 
 **[Code available in ggpop package website](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html#facet_geo-gun-violence-across-us-states)**.
 
@@ -411,7 +393,7 @@ Combining `geom_pop()` with the `geofacet` package places each state's panel in 
 
 ### `gganimate` — A World Transformed
 
-`transition_time()` animates the Gapminder classic — life expectancy versus GDP per capita — across five decades. `geom_icon_point()` encodes each region with a matching earth icon, so the continent story is legible at a glance even as points race across the frame.
+Animated Gapminder-style: life expectancy vs. GDP per capita across five decades, with earth icons by region.
 
 **[Code available in ggpop package website](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html#gganimate-a-world-transformed)**.
 
