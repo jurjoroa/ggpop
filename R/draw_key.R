@@ -209,9 +209,6 @@ draw_key_pop_image <- function(
   # Configuration
   use_stroke <- !is.null(stroke_width) && is.numeric(stroke_width) && stroke_width > 0
 
-  # Get the legend key size from the theme
-  # The 'size' parameter is a unit object from theme(legend.key.size = ...)
-  # Convert to mm for consistent sizing
   key_size_mm <- tryCatch(
     {
       if (inherits(size, "unit")) {
@@ -227,27 +224,21 @@ draw_key_pop_image <- function(
     }
   )
 
-  # Calculate target icon size in mm (apply max_fill to the key size)
-  # User has full control - no minimum constraint
   target_size_mm <- key_size_mm * max_fill
 
   # Create grobs for each icon
   grobs <- lapply(seq_along(data$colour), function(i) {
-    # Extract icon name
     this_icon <- as.character(data$icon[i])
     if (is.na(this_icon) || !nzchar(this_icon)) this_icon <- fallback_icon
 
-    # Extract color
     this_col <- data$colour[i]
     if (is.na(this_col) || !nzchar(as.character(this_col))) this_col <- fallback_colour
 
-    # Extract alpha
     this_alpha <- data$alpha[i]
     if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- fallback_alpha
 
     # Render with stroke (uses FontAwesome directly)
     if (use_stroke) {
-      # Convert color to hex
       this_col_hex <- tryCatch(
         {
           rgb_vals <- grDevices::col2rgb(this_col) / 255
@@ -256,7 +247,6 @@ draw_key_pop_image <- function(
         error = function(e) "#000000"
       )
 
-      # Build cache key (no alpha baked in — transparency applied via gpar)
       color_hex <- gsub("#", "", this_col_hex)
       stroke_str <- sprintf("%.0f", stroke_width)
 
@@ -268,7 +258,6 @@ draw_key_pop_image <- function(
         )
       )
 
-      # Generate PNG if not cached
       if (!file.exists(png_path)) {
         fontawesome::fa_png(
           this_icon,
