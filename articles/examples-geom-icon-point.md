@@ -874,8 +874,9 @@ ggplot(df_devices, aes(x = battery, y = perf, color = category, icon = icon)) +
 
   
 
-`transition_time()` animates the Gapminder classic — life expectancy
-versus GDP per capita — across five decades.
+[`transition_time()`](https://gganimate.com/reference/transition_time.html)
+animates the Gapminder classic — life expectancy versus GDP per capita —
+across five decades.
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
 encodes each region with a matching earth icon, so the continent story
 is legible at a glance even as points race across the frame.

@@ -49,6 +49,8 @@ Ready-to-use examples for both geoms.
 
 - [geom_pop()
   Examples](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.md):
+- [Animated Markov Cohort
+  (Sick-Sicker)](https://jurjoroa.github.io/ggpop/articles/examples-markov-sick-sicker.md):
 - [geom_icon_point()
   Examples](https://jurjoroa.github.io/ggpop/articles/examples-geom-icon-point.md):
 

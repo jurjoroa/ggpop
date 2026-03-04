@@ -488,6 +488,17 @@ For even more examples, vignettes, tips, and the full function
 reference, visit the **[ggpop package
 website](https://jurjoroa.github.io/ggpop/)**.
 
+### Animated Markov simulation model example
+
+See the Sick-Sicker cohort animation example (ages 40 to 100) built with
+`ggpop` and `gganimate`: **[Code available in ggpop package
+website](https://jurjoroa.github.io/ggpop/articles/examples-markov-sick-sicker.html)**.
+
+![Markov Model
+Simulation](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/sick_sicker_animation.gif)
+
+Markov Model Simulation
+
 ### `facet_wrap()` — Transportation Methods Across US Cities
 
 Using `facet_wrap(~ group)`, this chart breaks down the daily commute
