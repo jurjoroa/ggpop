@@ -19,13 +19,36 @@
 <link href="process-data_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Preparing Data with process_data()">
-<meta property="og:image" content="https://jurjoroa.github.io/ggpop/logo.png">
+<meta property="og:image" content="https://jurjoroa.github.io/ggpop/inst/figures/shp.png">
+<meta property="og:image:alt" content="ggpop - icon-based population charts for R">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@jorgeroac">
+<meta name="twitter:site" content="@jorgeroac">
 <!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-CX1ZY99J1P"></script><script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-CX1ZY99J1P');
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "ggpop",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "R",
+  "softwareVersion": "1.7.0",
+  "description": "R package for creating icon-based population charts and pictogram plots with ggplot2. Visualize proportion and population data in R",
+  "url": "https://jurjoroa.github.io/ggpop/",
+  "downloadUrl": "https://cran.r-project.org/package=ggpop",
+  "license": "https://opensource.org/licenses/MIT",
+  "author": [
+    {"@type": "Person", "name": "Jorge A. Roa-Contreras"},
+    {"@type": "Person", "name": "Ralitza Soultanova"},
+    {"@type": "Person", "name": "Fernando Alarid-Escudero"},
+    {"@type": "Person", "name": "Carlos Pineda-Antunez"}
+  ]
+}
 </script>
 </head>
 <body>
@@ -129,11 +152,11 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_sex_proc</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    type        n      prop
-1   male 63459580 0.4849388
-2 female 67401427 0.5150612
+1 female 67401427 0.5150612
+2   male 63459580 0.4849388
 3 female 67401427 0.5150612
-4   male 63459580 0.4849388
-5   male 63459580 0.4849388
+4 female 67401427 0.5150612
+5 female 67401427 0.5150612
 6   male 63459580 0.4849388</code></pre>
 </div>
 </div>
@@ -168,8 +191,8 @@
 <pre><code># A tibble: 2 × 3
   type   icons proportion
   &lt;chr&gt;  &lt;int&gt;      &lt;dbl&gt;
-1 female    40       51.5
-2 male      60       48.5</code></pre>
+1 female    48       51.5
+2 male      52       48.5</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -202,10 +225,10 @@
 <pre><code># A tibble: 4 × 2
   type  icons
   &lt;chr&gt; &lt;int&gt;
-1 East     34
-2 North    31
-3 South    23
-4 West     12</code></pre>
+1 East     38
+2 North    30
+3 South    22
+4 West     10</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -243,14 +266,14 @@
 <pre><code># A tibble: 8 × 3
   group type    icons
   &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-1 East  At Risk    37
-2 East  Healthy    63
-3 North At Risk    38
-4 North Healthy    62
-5 South At Risk    35
-6 South Healthy    65
-7 West  At Risk    23
-8 West  Healthy    77</code></pre>
+1 East  At Risk    44
+2 East  Healthy    56
+3 North At Risk    30
+4 North Healthy    70
+5 South At Risk    21
+6 South Healthy    79
+7 West  At Risk    31
+8 West  Healthy    69</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
