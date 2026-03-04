@@ -16,8 +16,7 @@ without cluttering the global environment. The dataset is stored in a package-sp
 cache directory and retrieved efficiently for subsequent uses.
 }
 \details{
-The dataset is downloaded from the following URL:
-\url{https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/data/df_coordinates_final.rda}.
+The dataset is downloaded from GitHub
 The file is cached in a directory specific to the package, which is determined
 using \code{\link[tools]{R_user_dir}}. If the dataset is already cached, it will
 be loaded directly from the cache instead of downloading again.

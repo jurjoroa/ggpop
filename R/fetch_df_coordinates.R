@@ -9,8 +9,7 @@
 #'
 #' @return A data frame containing the `df_coordinates_final` dataset.
 #' @details
-#' The dataset is downloaded from the following URL:
-#' \url{https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/data/df_coordinates_final.rda}.
+#' The dataset is downloaded from GitHub
 #' The file is cached in a directory specific to the package, which is determined
 #' using \code{\link[tools]{R_user_dir}}. If the dataset is already cached, it will
 #' be loaded directly from the cache instead of downloading again.
@@ -30,8 +29,11 @@ fetch_df_coordinates <- function() {
 
   if (!file.exists(cache_file)) {
     githubURL <- "https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/data/df_coordinates_final_10_1000.rda"
-    message("Downloading dataset...")
-    download.file(githubURL, cache_file, method = "curl")
+    message(
+      "ggpop: downloading coordinate data from GitHub (~2 MB) and caching it locally.\n",
+      "This happens once. Future calls will load from cache."
+    )
+    download.file(githubURL, cache_file, mode = "wb", quiet = TRUE)
   }
 
   # Load the data into memory (invisible to the global environment)
