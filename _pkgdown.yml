@@ -77,6 +77,8 @@ navbar:
       menu:
         - text: "geom_pop()"
           href: articles/examples-geom-pop.html
+        - text: "Markov (Sick-Sicker)"
+          href: articles/examples-markov-sick-sicker.html
         - text: "geom_icon_point()"
           href: articles/examples-geom-icon-point.html
     - text: "Functions"
@@ -141,6 +143,7 @@ articles:
     desc: "Ready-to-use examples for both geoms."
     contents:
       - examples-geom-pop
+      - examples-markov-sick-sicker
       - examples-geom-icon-point
   - title: "Tips & Best Practices"
     desc: "Key rules and conventions to maximize your ggpop experience."
