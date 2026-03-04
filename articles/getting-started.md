@@ -5,8 +5,7 @@
   
 
 `ggpop` is a `ggplot2` extension for creating **icon-based population
-charts**. Instead of bars or dots, each observation is represented by a
-Font Awesome icon — making your data immediately human and intuitive.
+charts**, replacing bars or dots with Font Awesome icons.
 
 This vignette walks you through the core workflow using
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md),
@@ -56,9 +55,7 @@ follows a simple three-step workflow:
 
   
 
-We start with a simple data frame containing population counts by sex.
-This mirrors the kind of data you’d typically bring to
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
+A data frame with population counts by sex:
 
 ``` r
 library(ggpop)
@@ -104,10 +101,10 @@ head(df_processed)
 
         type        n      prop
     1   male 63459580 0.4849388
-    2 female 67401427 0.5150612
-    3 female 67401427 0.5150612
-    4 female 67401427 0.5150612
-    5 female 67401427 0.5150612
+    2   male 63459580 0.4849388
+    3   male 63459580 0.4849388
+    4   male 63459580 0.4849388
+    5   male 63459580 0.4849388
     6 female 67401427 0.5150612
 
 > **Note:**
@@ -131,8 +128,7 @@ Awesome — use any of the 2,000+ free icons.
 fa_icons(query = "person")
 ```
 
-We selected the `male` and `female` icons for our population chart. You
-can choose any icons that fit your data and story!
+Assign an icon to each group:
 
 ``` r
 df_processed <- df_processed %>%
@@ -221,11 +217,8 @@ ggplot(data = df_processed, aes(icon = icon, color = type)) +
 
   
 
-By default,
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-places icons in the order they appear in your data — groups are mixed
-across the grid. Setting `arrange = TRUE` clusters all icons of the same
-group together, making proportions easier to compare at a glance.
+By default, icons are scattered randomly. Set `arrange = TRUE` to
+cluster icons by group.
 
 ``` r
 ggplot(data = df_processed, aes(icon = icon, color = type)) +
@@ -245,11 +238,8 @@ ggplot(data = df_processed, aes(icon = icon, color = type)) +
 
 ![](getting-started_files/figure-html/arrange-plot-1.png)
 
-Use `arrange = TRUE` whenever you want the chart to read like a stacked
-composition — all females together, all males together — rather than a
-random scatter. This is especially useful when groups have very
-different sizes and you want the boundary between them to be immediately
-visible.
+Use `arrange = TRUE` when group boundaries matter — especially when
+group sizes differ significantly.
 
   
 
@@ -264,9 +254,7 @@ stand out while others fade into the background. You can pass a fixed
 value directly as a parameter (`geom_pop(alpha = 0.5)`), or map it to a
 column via `aes(alpha = col)` for variable transparency per group.
 
-This is useful when you want to visually emphasize one group over
-others, or communicate certainty — fully opaque icons for confirmed
-data, faded icons for uncertain or secondary categories.
+Use transparency to emphasize one group or convey certainty.
 
 > **Note:** `alpha` is a reserved column name in ggpop. If you want to
 > map transparency per group, name your column something else — for
@@ -317,19 +305,16 @@ ggplot2::ggplot(data = df_trial, aes(icon = icon, color = status, alpha = opacit
 
   
 
-You don’t need
-[`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md).
-As long as the dataframe doesn’t have more than 1,000 rows, it works.
-You can also do a facet or use `cowplot` so you can have more panes. Any
-data frame with one row per icon works directly:
+Any data frame with one row per icon (max 1,000 rows) works directly —
+no
+[`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
+needed:
 
 ``` r
 fa_icons(query = "bed")
 ```
 
-We created a simple data frame with 100 rows, representing a population
-of patients with three health statuses: “Healthy”, “At Risk”, and “Ill”.
-Each status is mapped to a different icon.
+100 patients across three health statuses, each mapped to an icon:
 
 ``` r
 # Our own data frame with one row per icon

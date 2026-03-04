@@ -4,7 +4,6 @@ pkgdown_sha: ~
 articles:
   examples-geom-icon-point: examples-geom-icon-point.html
   examples-geom-pop: examples-geom-pop.html
-  examples-markov-sick-sicker: examples-markov-sick-sicker.html
   fa-icons: fa-icons.html
   geom-icon-point: geom-icon-point.html
   getting-started: getting-started.html
@@ -12,7 +11,7 @@ articles:
   process-data: process-data.html
   themes-customization: themes-customization.html
   tips: tips.html
-last_built: 2026-03-04T18:21Z
+last_built: 2026-03-04T20:37Z
 urls:
   reference: https://jurjoroa.github.io/ggpop/reference
   article: https://jurjoroa.github.io/ggpop/articles

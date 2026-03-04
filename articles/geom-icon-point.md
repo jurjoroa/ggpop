@@ -5,13 +5,10 @@
   
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-is the scatter plot cousin of
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
-It works exactly like
+works like
 [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
-— but replaces dots with Font Awesome icons. No data preprocessing is
-required: just supply any data frame with `x` and `y` variables and let
-the icons do the talking.
+but replaces dots with Font Awesome icons. No preprocessing needed —
+supply any data frame with `x` and `y` variables.
 
   
 
@@ -54,10 +51,9 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
 
   
 
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-shines when each category gets its own icon. Map `icon` inside
-[`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) to a column
-in your data — each group then carries its own visual identity.
+Map `icon` inside
+[`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) to give each
+category its own icon.
 
 ``` r
 # Search the icons you want to use with fa_icons() and note their names:
@@ -110,12 +106,9 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = group)) +
 
   
 
-Map a continuous variable to `size` inside
-[`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) to add a
-third dimension of information. Use
+Map a continuous variable to `size`. Use
 [`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html)
-to keep icon sizes in a readable range — raw values that are too large
-or too small make icons unreadable.
+to keep sizes readable.
 
 ``` r
 # Search the icons you want to use with fa_icons() and note their names:
@@ -172,11 +165,7 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 
   
 
-When `color` is mapped to a factor, the legend follows **factor level
-order**.
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-automatically assigns icons to legend entries in the same order — so
-setting factor levels is all you need for a correctly ordered legend.
+When `color` is a factor, icons follow factor level order automatically.
 
 ``` r
 # Search the icons you want to use with fa_icons() and note their names:
@@ -230,15 +219,7 @@ ggplot(df_coffee, aes(x = acidity, y = body, icon = icon, color = roast)) +
   
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-is fully compatible with all standard ggplot2 geoms. Here we combine it
-with
-[`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html),
-[`geom_vline()`](https://ggplot2.tidyverse.org/reference/geom_abline.html),
-[`geom_hline()`](https://ggplot2.tidyverse.org/reference/geom_abline.html),
-[`geom_label()`](https://ggplot2.tidyverse.org/reference/geom_text.html),
-and
-[`annotate()`](https://ggplot2.tidyverse.org/reference/annotate.html) to
-build a fully annotated analytical chart.
+works with all standard ggplot2 geoms:
 
 ``` r
 df_health <- data.frame(

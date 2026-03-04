@@ -75,7 +75,6 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-rainbow"></span> Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="../articles/examples-geom-pop.html">geom_pop()</a></li>
-    <li><a class="dropdown-item" href="../articles/examples-markov-sick-sicker.html">Markov (Sick-Sicker)</a></li>
     <li><a class="dropdown-item" href="../articles/examples-geom-icon-point.html">geom_icon_point()</a></li>
   </ul>
 </li>
@@ -165,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p><code><a href="../reference/fa_icons.html">fa_icons()</a></code> is a wrapper functions from fontawesome that lets you search and browse the Font Awesome icons available for use in <code><a href="../reference/geom_pop.html">geom_pop()</a></code> and <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>. Instead of looking for the icon, you can filter by keyword, category, or regular expression and get back a tidy tibble — or a plain character vector — ready to use in your plot code.</p>
+<p><code><a href="../reference/fa_icons.html">fa_icons()</a></code> searches Font Awesome icons by keyword, category, or regex and returns a tibble or character vector ready to use in your plot.</p>
 <div style="line-height: 0.6;">
 <br>
 </div>
@@ -174,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Called with no arguments, <code><a href="../reference/fa_icons.html">fa_icons()</a></code> returns every available Font Awesome icon with its primary semantic category.</p>
+<p><code><a href="../reference/fa_icons.html">fa_icons()</a></code> with no arguments returns all icons with their primary category.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -368,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Set <code>as_vector = TRUE</code> to skip the tibble and get a plain sorted character vector. This is the fastest way to browse names or pipe them into other code.</p>
+<p>Set <code>as_vector = TRUE</code> for a plain character vector.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"house"</span>, as_vector <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -418,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>By default only <code>primary_class</code> is returned. Set <code>primary_only = FALSE</code> to also get the <code>all_classes</code> list-column, showing every category each icon matches.</p>
+<p>Set <code>primary_only = FALSE</code> to get all category matches.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"heart"</span>, primary_only <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -449,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Some icons do not match any category. Set <code>include_unclassified = FALSE</code> to drop them.</p>
+<p>Set <code>include_unclassified = FALSE</code> to exclude unclassified icons.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"user"</span>, include_unclassified <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -512,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>A common workflow: search for icons, pick ones you like, then put them directly into a geom.</p>
+<p>Common workflow: search, select, use:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Find candidate icons</span></span>

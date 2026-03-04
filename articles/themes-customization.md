@@ -21,10 +21,9 @@ charts:
 
   
 
-The default theme. Removes axes and gridlines, keeping the focus on the
-icons. All standard ggplot2
-[`theme()`](https://ggplot2.tidyverse.org/reference/theme.html)
-arguments can be added on top.
+Default theme — removes axes and gridlines. Layer standard
+[`theme()`](https://ggplot2.tidyverse.org/reference/theme.html) calls on
+top to customize.
 
 ``` r
 ggplot() +
@@ -86,9 +85,9 @@ ggplot() +
 
   
 
-A dark variant built on top of
-[`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md).
-Accepts `bg_color` and `text_color` for full control.
+Dark variant of
+[`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md)
+with `bg_color` and `text_color` parameters.
 
 ``` r
 ggplot() +
@@ -144,8 +143,7 @@ ggplot() +
 
   
 
-Strips everything — no title, no legend, no margins. Best for embedding
-icon arrays inside dashboards or documents.
+No title, legend, or margins. Best for embedding in dashboards.
 
 ``` r
 ggplot() +
@@ -169,11 +167,7 @@ ggplot() +
 
   
 
-Controls the size of icons in the legend. Use it alongside
-`legend_icons = TRUE` in
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-or
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md).
+Controls legend icon size when `legend_icons = TRUE`.
 
 ``` r
 ggplot() +
@@ -201,8 +195,8 @@ ggplot() +
 
   
 
-Add an outline to icons with `stroke_width`. Higher values produce a
-thicker border, useful for light icons on light backgrounds.
+Add outlines to icons with `stroke_width`, useful for light icons on
+light backgrounds.
 
 ``` r
 ggplot() +
@@ -231,10 +225,8 @@ ggplot() +
 
   
 
-[`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md)
-is a standard ggplot2 theme — add any
-[`theme()`](https://ggplot2.tidyverse.org/reference/theme.html) call on
-top to override specific elements.
+Layer [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html)
+calls on top of any `theme_pop*()` to override specific elements.
 
 ``` r
 ggplot() +

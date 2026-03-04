@@ -75,7 +75,6 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-rainbow"></span> Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="../articles/examples-geom-pop.html">geom_pop()</a></li>
-    <li><a class="dropdown-item" href="../articles/examples-markov-sick-sicker.html">Markov (Sick-Sicker)</a></li>
     <li><a class="dropdown-item" href="../articles/examples-geom-icon-point.html">geom_icon_point()</a></li>
   </ul>
 </li>
@@ -108,14 +107,14 @@
 
 
 
-    <p>This page collects the most important rules and conventions to keep in mind when working with <code>ggpop</code>. Each tip explains what to do (and why), followed by a working example.</p>
+    <p>Essential rules and conventions for using <code>ggpop</code>, with working examples.</p>
 <div style="line-height: 0.6;">
 <br>
 </div>
 <hr>
 <section class="level2"><h2 id="tip-1-use-valid-font-awesome-icon-names">Tip 1 — Use valid Font Awesome icon names<a class="anchor" aria-label="anchor" href="#tip-1-use-valid-font-awesome-icon-names"></a>
 </h2>
-<p>The <code>icon</code> column (or <code>aes(icon = ...)</code>) must contain <strong>valid Font Awesome icon names</strong> — no <code>NA</code> values, no whitespace-only strings, and no names that don’t exist in Font Awesome. Use <code><a href="../reference/fa_icons.html">fa_icons()</a></code> to look up available names before building your plot.</p>
+<p>The <code>icon</code> column must contain valid Font Awesome names. Use <code><a href="../reference/fa_icons.html">fa_icons()</a></code> to search.</p>
 <div>
 <blockquote>
 <p><strong>How to find valid icon names</strong></p>
@@ -300,7 +299,7 @@
 </div>
 <hr></section><section class="level2"><h2 id="tip-4-keep-your-total-icon-count-at-or-below-1000">Tip 4 — Keep your total icon count at or below 1,000<a class="anchor" aria-label="anchor" href="#tip-4-keep-your-total-icon-count-at-or-below-1000"></a>
 </h2>
-<p><code><a href="../reference/geom_pop.html">geom_pop()</a></code> enforces a hard limit of <strong>1,000 icons</strong> — both globally and per facet panel. Exceeding this limit raises an error immediately. Use <code><a href="../reference/process_data.html">process_data()</a></code> with a <code>sample_size</code> argument to control the icon count automatically.</p>
+<p>Max <strong>1,000 icons</strong> per facet panel — exceeding this raises an error. Use <code>process_data(sample_size = ...)</code> to stay within limits.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_tip4_raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -357,7 +356,7 @@
 <hr></section><section class="level2"><h2 id="tip-5-dont-map-x-or-y-in-geom_pop">Tip 5 — Don’t map <code>x</code> or <code>y</code> in <code>geom_pop()</code>
 <a class="anchor" aria-label="anchor" href="#tip-5-dont-map-x-or-y-in-geom_pop"></a>
 </h2>
-<p><code><a href="../reference/geom_pop.html">geom_pop()</a></code> computes icon positions internally in a grid layout. Mapping <code>x</code> or <code>y</code> in <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> has no effect — ggpop ignores them and issues a warning. Leave those aesthetics unmapped.</p>
+<p>Don’t map <code>x</code> or <code>y</code> in <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> — ggpop computes positions internally and will warn if you do.</p>
 <div>
 <blockquote>
 <p><strong>This will warn (and x/y are silently ignored)</strong></p>
@@ -402,8 +401,7 @@
 <hr></section><section class="level2"><h2 id="tip-6-one-icon-per-legend-group-when-using-legend_icons-true">Tip 6 — One icon per legend group when using <code>legend_icons = TRUE</code>
 <a class="anchor" aria-label="anchor" href="#tip-6-one-icon-per-legend-group-when-using-legend_icons-true"></a>
 </h2>
-<p>When <code>legend_icons = TRUE</code>, ggpop reads the first icon from each group to render in the legend. If a single group contains <strong>multiple different icons</strong>, ggpop issues a warning because it can only show one icon per legend key.</p>
-<p><strong>Ensure each value of your <code>color</code> grouping variable maps to exactly one icon name.</strong></p>
+<p>Each <code>color</code> group must map to exactly one icon name when <code>legend_icons = TRUE</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Each group maps to exactly one icon — clean legend</span></span>
@@ -445,8 +443,7 @@
 </div>
 <hr></section><section class="level2"><h2 id="tip-7-scale_legend_icon-must-come-after-all-theme-calls">Tip 7 — <code>scale_legend_icon()</code> must come after all theme calls<a class="anchor" aria-label="anchor" href="#tip-7-scale_legend_icon-must-come-after-all-theme-calls"></a>
 </h2>
-<p><code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> intercepts ggplot2’s theme system to resize legend keys. If a <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme()</a></code> or <code>theme_*()</code> call appears <strong>after</strong> <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code>, it can reset the legend key size and break the sizing.</p>
-<p><strong>Rule:</strong> all <code><a href="../reference/theme_pop.html">theme_pop()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal()</a></code>, <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme()</a></code> calls must precede <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code>.</p>
+<p>All <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme()</a></code> and <code>theme_*()</code> calls must come <strong>before</strong> <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> — a theme call after it resets the key size.</p>
 <div>
 <blockquote>
 <p><strong>Wrong order — theme() after scale_legend_icon() resets key size</strong></p>
@@ -495,7 +492,7 @@
 </div>
 <hr></section><section class="level2"><h2 id="tip-8-use-process_data-to-convert-count-data">Tip 8 — Use <code>process_data()</code> to convert count data<a class="anchor" aria-label="anchor" href="#tip-8-use-process_data-to-convert-count-data"></a>
 </h2>
-<p>If your data has one row per group with a <strong>count column</strong> (not one row per icon), use <code><a href="../reference/process_data.html">process_data()</a></code> to expand it. It handles proportional sampling, reproducibility, and returns one row per icon — ready for <code><a href="../reference/geom_pop.html">geom_pop()</a></code>.</p>
+<p>If your data has one row per group with a count column, use <code><a href="../reference/process_data.html">process_data()</a></code> to expand it to one row per icon.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Your raw count data</span></span>
@@ -553,8 +550,7 @@
 </div>
 <hr></section><section class="level2"><h2 id="tip-9-use-seed-for-reproducible-charts">Tip 9 — Use <code>seed</code> for reproducible charts<a class="anchor" aria-label="anchor" href="#tip-9-use-seed-for-reproducible-charts"></a>
 </h2>
-<p><code><a href="../reference/geom_pop.html">geom_pop()</a></code> uses randomness when placing icons across the grid. This means that every time you run the same code, the exact icon layout may differ slightly — which can be a problem in reports, papers, or automated pipelines where you need consistent output.</p>
-<p>Pass a <code>seed</code> argument directly to <code><a href="../reference/geom_pop.html">geom_pop()</a></code> to lock the randomness. Any integer works; the same seed always produces the same layout.</p>
+<p>Pass <code>seed</code> to <code><a href="../reference/geom_pop.html">geom_pop()</a></code> for a reproducible layout — useful in papers, dashboards, or automated pipelines.</p>
 <div>
 <blockquote>
 <p><strong>Why this matters</strong></p>
@@ -613,8 +609,7 @@
 </div>
 <hr></section><section class="level2"><h2 id="tip-10-use-arrange-true-to-cluster-icons-by-group">Tip 10 — Use <code>arrange = TRUE</code> to cluster icons by group<a class="anchor" aria-label="anchor" href="#tip-10-use-arrange-true-to-cluster-icons-by-group"></a>
 </h2>
-<p>By default, <code><a href="../reference/geom_pop.html">geom_pop()</a></code> scatters icons randomly across the grid — groups are interleaved. Setting <code>arrange = TRUE</code> places all icons from the same group contiguously, making the boundary between groups immediately visible.</p>
-<p>Use the default (<code>arrange = FALSE</code>) for a realistic “population scatter” effect. Use <code>arrange = TRUE</code> when you want the chart to read like a stacked composition — all of one category together, then the next.</p>
+<p>Use <code>arrange = FALSE</code> (default) for a scattered effect. Use <code>arrange = TRUE</code> to cluster icons by group, making boundaries between groups visible.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_tip12</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -667,7 +662,7 @@
 <li>
 <strong>Suppress</strong> the auto-generated alpha legend with <code>guides(alpha = "none")</code> — the color legend already encodes all the information</li>
 </ol>
-<p>Skipping step 3 leaves an unwanted numeric legend entry in the plot. Skipping step 1 causes an error.</p>
+<p>Skipping step 3 leaves an unwanted legend entry. Skipping step 1 causes an error.</p>
 <div>
 <blockquote>
 <p><strong>What NOT to do</strong></p>

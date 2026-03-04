@@ -4,8 +4,7 @@
 
   
 
-The simplest use: a fixed icon for all points, color encodes the
-grouping variable.
+Fixed icon for all points; color encodes the grouping variable.
 
 Show the code
 
@@ -39,8 +38,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species, alpha = Pe
 
   
 
-Each food item gets its own icon. The icon is the identity — no legend
-needed to understand what each point represents.
+Each food item maps to its own icon; no legend needed.
 
 Show the code
 
@@ -96,9 +94,8 @@ ggplot(df_food, aes(x = calories, y = protein, icon = icon, color = food)) +
 
   
 
-Map a continuous variable to icon size. Use
-[`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html)
-to keep sizes readable.
+Map a continuous variable to icon size with
+[`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html).
 
 Show the code
 
@@ -276,12 +273,8 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 
   
 
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-in a fixed-position grid with no traditional axes. All 45 Olympic
-disciplines at Paris 2024 are arranged in a 9×5 layout, each with its
-own icon. The 4 sports making their Olympic debut are highlighted in
-cyan; all existing disciplines are in gold. Annotations use `ggtext` for
-inline HTML styling.
+All 45 Olympic disciplines in a 9x5 grid: new sports (4) in cyan,
+existing disciplines in gold.
 
 Show the code
 
@@ -401,9 +394,9 @@ ggplot(df_grid, aes(x = x, y = y)) +
   
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-works alongside any ggplot2 geom. Here combined with
+combined with
 [`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html),
-reference lines, labels, and quadrant annotations.
+reference lines, and annotations.
 
 Show the code
 
@@ -482,10 +475,9 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
   
 
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-with
+Using
 [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md)
-for a presentation-ready chart.
+for a dark-themed scatter plot.
 
 Show the code
 
@@ -546,13 +538,9 @@ ggplot(df_academic, aes(x = study_hours, y = score,
 
   
 
-[`geom_label_repel()`](https://ggrepel.slowkow.com/reference/geom_text_repel.html)
-prevents country labels from overlapping, letting every data point speak
-for itself even in dense clusters. Here 22 countries are plotted by
-electricity consumption per capita versus renewable share. Without label
-repulsion the European cluster — high renewables, moderate consumption —
-would be illegible. Icon encodes the dominant energy source; color
-encodes the continent.
+Energy consumption vs. renewable share with
+[`geom_label_repel()`](https://ggrepel.slowkow.com/reference/geom_text_repel.html):
+icon = energy source, color = continent.
 
 Show the code
 
@@ -733,15 +721,9 @@ ggplot(df_energy, aes(x = mwh_per_cap, y = renewable)) +
 
   
 
+Battery life vs. performance for 17 devices using
 [`geom_mark_ellipse()`](https://ggforce.data-imaginist.com/reference/geom_mark_ellipse.html)
-draws annotated convex-hull ellipses around groups of points, making
-cluster structure immediately legible. Here 17 consumer electronics
-devices are compared on battery life (log scale) versus performance
-score. The ellipses label each category’s cluster with a short
-description, while
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-encodes device type through icons — revealing how wearables dominate the
-far right (days of uptime) at the cost of raw performance.
+to highlight category clusters.
 
 Show the code
 
@@ -874,12 +856,8 @@ ggplot(df_devices, aes(x = battery, y = perf, color = category, icon = icon)) +
 
   
 
-[`transition_time()`](https://gganimate.com/reference/transition_time.html)
-animates the Gapminder classic — life expectancy versus GDP per capita —
-across five decades.
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-encodes each region with a matching earth icon, so the continent story
-is legible at a glance even as points race across the frame.
+Animated Gapminder-style: life expectancy vs. GDP per capita across five
+decades, with earth icons by region.
 
 Show the code
 

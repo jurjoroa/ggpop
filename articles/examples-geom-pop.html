@@ -75,7 +75,6 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-rainbow"></span> Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="../articles/examples-geom-pop.html">geom_pop()</a></li>
-    <li><a class="dropdown-item" href="../articles/examples-markov-sick-sicker.html">Markov (Sick-Sicker)</a></li>
     <li><a class="dropdown-item" href="../articles/examples-geom-icon-point.html">geom_icon_point()</a></li>
   </ul>
 </li>
@@ -165,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Out of every 100 people on Earth, how many come from each continent? Each icon uses a distinct symbol and color per continent, and the legend shows the exact count.</p>
+<p>Out of every 100 people on Earth, how many come from each continent?</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
@@ -264,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>A simple two-group population chart using Mexico’s 2024 population data.</p>
+<p>Population distribution by sex (Mexico 2024).</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
@@ -330,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Population chart showing education attainment across four levels.</p>
+<p>Education attainment across four levels.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
@@ -453,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>A dark-themed chart showing disease categories in a simulated population.</p>
+<p>Disease burden by category (dark theme).</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
@@ -526,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Using <code>stroke_width</code> to outline icons for better visibility and <code>arrange = TRUE</code> to group icons by type.</p>
+<p>Using <code>stroke_width</code> for icon outlines and <code>arrange = TRUE</code> to group by type.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
@@ -596,7 +595,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 </section><section class="level2"><h2 id="example-6-100-most-common-names-in-mexico">Example 6: 100 Most Common Names in Mexico<a class="anchor" aria-label="anchor" href="#example-6-100-most-common-names-in-mexico"></a>
 </h2>
-<p>We can also add labels to icons using <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text()</a></code>. In this example, the 100 most common names in Mexico are displayed with a pink icon for female names and a blue icon for male names. The <code>check_overlap = TRUE</code> argument prevents label overlap, so only a subset of names will be shown.</p>
+<p>Adding text labels to icons with <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text()</a></code> and <code>check_overlap = TRUE</code> to prevent overlap.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -664,15 +663,158 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<hr></section><section class="level2"><h2 id="cowplot-health-survey-dashboard">
+<hr></section><section class="level2"><h2 id="example-7animated-markov-cohort-sick-sicker">Example 7:Animated Markov Cohort (Sick-Sicker)<a class="anchor" aria-label="anchor" href="#example-7animated-markov-cohort-sick-sicker"></a>
+</h2>
+<p>Animated Sick-Sicker model tracking disease progression from age 40 to 100 across four states: Healthy, Sick, Sicker, and Death.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load package functions</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gganimate.com" class="external-link">gganimate</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># -------------------------------</span></span>
+<span><span class="co"># 1) Cohort Markov model inputs</span></span>
+<span><span class="co"># -------------------------------</span></span>
+<span><span class="va">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Healthy"</span>, <span class="st">"Sick"</span>, <span class="st">"Sicker"</span>, <span class="st">"Death"</span><span class="op">)</span></span>
+<span><span class="va">age_start</span> <span class="op">&lt;-</span> <span class="fl">40</span></span>
+<span><span class="va">age_end</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">n_cycles</span> <span class="op">&lt;-</span> <span class="va">age_end</span> <span class="op">-</span> <span class="va">age_start</span></span>
+<span></span>
+<span><span class="co"># Transition probability matrix (rows = current state, cols = next state)</span></span>
+<span><span class="co"># Healthy -&gt; Healthy/Sick/Sicker/Death</span></span>
+<span><span class="co"># Sick    -&gt; Healthy/Sick/Sicker/Death</span></span>
+<span><span class="co"># Sicker  -&gt; Healthy/Sick/Sicker/Death</span></span>
+<span><span class="co"># Death   -&gt; Death (absorbing)</span></span>
+<span><span class="va">m_P</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">0.85</span>, <span class="fl">0.12</span>, <span class="fl">0.02</span>, <span class="fl">0.01</span>,</span>
+<span>    <span class="fl">0.08</span>, <span class="fl">0.85</span>, <span class="fl">0.05</span>, <span class="fl">0.02</span>,</span>
+<span>    <span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">0.95</span>, <span class="fl">0.05</span>,</span>
+<span>    <span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">1.00</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">states</span><span class="op">)</span>,</span>
+<span>  byrow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">states</span>, <span class="va">states</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">m_P</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-10</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ---------------------------------</span></span>
+<span><span class="co"># 2) Cohort trace from age 40 to 100</span></span>
+<span><span class="co"># ---------------------------------</span></span>
+<span><span class="va">m_trace</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span>  <span class="fl">0</span>,</span>
+<span>  nrow <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">+</span> <span class="fl">1</span>,</span>
+<span>  ncol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">states</span><span class="op">)</span>,</span>
+<span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cycle <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="va">n_cycles</span>, state <span class="op">=</span> <span class="va">states</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Initial cohort distribution at age 40</span></span>
+<span><span class="va">m_trace</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">t</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_cycles</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">m_trace</span><span class="op">[</span><span class="va">t</span> <span class="op">+</span> <span class="fl">1</span>, <span class="op">]</span> <span class="op">&lt;-</span> <span class="va">m_trace</span><span class="op">[</span><span class="va">t</span>, <span class="op">]</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">m_P</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Long-format cohort proportions by age</span></span>
+<span><span class="va">cohort_long</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">m_trace</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cycle <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="va">n_cycles</span>,</span>
+<span>         age <span class="op">=</span> <span class="va">age_start</span> <span class="op">+</span> <span class="va">cycle</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">states</span><span class="op">)</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="st">"state"</span>,</span>
+<span>    values_to <span class="op">=</span> <span class="st">"prop"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ------------------------------------------------------</span></span>
+<span><span class="co"># 3) Convert each cycle's proportions to icon-level data</span></span>
+<span><span class="co"># ------------------------------------------------------</span></span>
+<span><span class="co"># process_data() samples icons within each age (high_group_var = "age")</span></span>
+<span><span class="co"># sample_size = 400 means each icon is ~0.25% of the cohort in each frame</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
+<span><span class="va">df_icons</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_data.html">process_data</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">cohort_long</span>,</span>
+<span>  high_group_var <span class="op">=</span> <span class="st">"age"</span>,</span>
+<span>  group_var <span class="op">=</span> <span class="va">state</span>,</span>
+<span>  sum_var <span class="op">=</span> <span class="va">prop</span>,</span>
+<span>  sample_size <span class="op">=</span> <span class="fl">400</span></span>
+<span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span>,</span>
+<span>    state <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">type</span>, levels <span class="op">=</span> <span class="va">states</span><span class="op">)</span>,</span>
+<span>    icon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>      <span class="va">state</span> <span class="op">==</span> <span class="st">"Healthy"</span> <span class="op">~</span> <span class="st">"person-walking"</span>,</span>
+<span>      <span class="va">state</span> <span class="op">==</span> <span class="st">"Sick"</span> <span class="op">~</span> <span class="st">"person-burst"</span>,</span>
+<span>      <span class="va">state</span> <span class="op">==</span> <span class="st">"Sicker"</span> <span class="op">~</span> <span class="st">"person-dots-from-line"</span>,</span>
+<span>      <span class="va">state</span> <span class="op">==</span> <span class="st">"Death"</span> <span class="op">~</span> <span class="st">"skull-crossbones"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># --------------------</span></span>
+<span><span class="co"># 4) Animated ggpop plot</span></span>
+<span><span class="co"># --------------------</span></span>
+<span><span class="va">p_anim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_icons</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">state</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span></span>
+<span>    size <span class="op">=</span> <span class="fl">1.1</span>,</span>
+<span>    arrange <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    legend_icons <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    seed <span class="op">=</span> <span class="fl">2026</span>,</span>
+<span>    dpi <span class="op">=</span> <span class="fl">100</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span></span>
+<span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"Healthy"</span> <span class="op">=</span> <span class="st">"#2E7D32"</span>,</span>
+<span>      <span class="st">"Sick"</span> <span class="op">=</span> <span class="st">"#F9A825"</span>,</span>
+<span>      <span class="st">"Sicker"</span> <span class="op">=</span> <span class="st">"#E64A19"</span>,</span>
+<span>      <span class="st">"Death"</span> <span class="op">=</span> <span class="st">"black"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    legend.position <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>    legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    plot.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#013A4F"</span>, fill <span class="op">=</span> <span class="st">"#013A4F"</span><span class="op">)</span>, <span class="co"># Transparent plot background</span></span>
+<span>    panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_rect</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#013A4F"</span>, fill <span class="op">=</span> <span class="st">"#013A4F"</span><span class="op">)</span>, <span class="co"># Transparent panel</span></span>
+<span>    legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span><span class="op">)</span>,</span>
+<span>    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, face <span class="op">=</span> <span class="st">"bold"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>    plot.caption <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#D4AF37"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Sick-Sicker Cohort Markov Model \u00b7 Age: {closest_state} years"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Cohort simulated from age 40 to 100"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Cohort starts Healthy at age 40. Each icon is ~0.25% of the cohort."</span></span>
+<span>  <span class="op">)</span>  <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://gganimate.com/reference/transition_states.html" class="external-link">transition_states</a></span><span class="op">(</span></span>
+<span>    states <span class="op">=</span> <span class="va">age</span>,</span>
+<span>    transition_length <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    state_length <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    wrap <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://gganimate.com/reference/ease_aes.html" class="external-link">ease_aes</a></span><span class="op">(</span><span class="st">"linear"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Optional: save the animation</span></span>
+<span><span class="co">#anim_save("sick_sicker_animation.gif", anim)</span></span></code></pre></div>
+</details>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/sick_sicker_animation.gif"></p>
+<figcaption>Markov Model Simulation</figcaption></figure>
+</div>
+</section><section class="level2"><h2 id="cowplot-health-survey-dashboard">
 <code>cowplot</code> — Health Survey Dashboard<a class="anchor" aria-label="anchor" href="#cowplot-health-survey-dashboard"></a>
 </h2>
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Combining multiple <code><a href="../reference/geom_pop.html">geom_pop()</a></code> panels into a single plot with the <code>cowplot</code> package. Three independent population charts — sex distribution, age groups, and vaccination coverage — are built as separate <code>ggplot</code> objects and then arranged: two panels in the top row and one centered below.</p>
+<p>Combining multiple <code><a href="../reference/geom_pop.html">geom_pop()</a></code> panels with <code>cowplot</code>: two charts on top (sex, age groups), one centered below (vaccination).</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -814,9 +956,9 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Using <code>facet_wrap(~ group)</code>, this chart breaks down the daily commute mix across major US cities. Each panel shows one city’s full distribution of transportation modes — car, bus, train, bicycle, motorcycle, walking, and ride-share — with each icon representing approximately 400 commuters. The dark background and per-mode color coding make it easy to compare cities at a glance.</p>
+<p>Transportation methods across cities using <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap()</a></code>: each panel shows one city’s distribution of commute modes.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example: Transportation Methods Across Cities with 7 Icon Groups</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -942,17 +1084,17 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Combining <code><a href="../reference/geom_pop.html">geom_pop()</a></code> with the <code>geofacet</code> package places each state’s panel in its actual geographic position on the US map. Here, skull icons represent gun deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000 people. The layout immediately reveals regional patterns that a standard bar chart would hide — Mississippi sits at nearly 8× the rate of Massachusetts, and the South and rural West cluster visually as the hardest-hit regions.</p>
+<p>Gun deaths per 100,000 people (2023 CDC data) by US state using <code>geofacet</code> for geographic placement.</p>
 <p>Note: According to issue #488 from geofacet package</p>
 <p>“You may want to install ggplot2 v3.5.2 until it is fixed so the plot can work. Note that this is the case for all grids, not the US states grid alone (so if possible, please update the issue title).”.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_version</span><span class="op">(</span>package <span class="op">=</span> <span class="st">"ggplot2"</span>,</span>
 <span>                          version <span class="op">=</span> <span class="st">"3.5.2"</span>,</span>
 <span>                          repos <span class="op">=</span> <span class="st">"http://cran.us.r-project.org"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hafen/geofacet" class="external-link">geofacet</a></span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -1041,9 +1183,9 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p>Three countries placed side by side with <code>patchwork</code>’s <code>|</code> operator — Japan (rapidly ageing), the United States (moderate pace), and Nigeria (still young) — each showing its own age distribution for a given decade. A loop builds one patchwork frame per time point and <code>gifski</code> stitches the frames into a GIF, making it immediately clear how differently the ageing transition unfolds across the world.</p>
+<p>Age structure changes across Japan, the United States, and Nigeria animated with <code>patchwork</code> and <code>gifski</code>.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>

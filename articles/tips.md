@@ -1,8 +1,7 @@
 # Tips & Best Practices
 
-This page collects the most important rules and conventions to keep in
-mind when working with `ggpop`. Each tip explains what to do (and why),
-followed by a working example.
+Essential rules and conventions for using `ggpop`, with working
+examples.
 
   
 
@@ -10,11 +9,9 @@ followed by a working example.
 
 ## Tip 1 — Use valid Font Awesome icon names
 
-The `icon` column (or `aes(icon = ...)`) must contain **valid Font
-Awesome icon names** — no `NA` values, no whitespace-only strings, and
-no names that don’t exist in Font Awesome. Use
+The `icon` column must contain valid Font Awesome names. Use
 [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
-to look up available names before building your plot.
+to search.
 
 > **How to find valid icon names**
 >
@@ -167,11 +164,8 @@ ggplot() +
 
 ## Tip 4 — Keep your total icon count at or below 1,000
 
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-enforces a hard limit of **1,000 icons** — both globally and per facet
-panel. Exceeding this limit raises an error immediately. Use
-[`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
-with a `sample_size` argument to control the icon count automatically.
+Max **1,000 icons** per facet panel — exceeding this raises an error.
+Use `process_data(sample_size = ...)` to stay within limits.
 
 ``` r
 df_tip4_raw <- data.frame(
@@ -225,11 +219,9 @@ ggplot() +
 
 ## Tip 5 — Don’t map `x` or `y` in `geom_pop()`
 
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-computes icon positions internally in a grid layout. Mapping `x` or `y`
-in [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) has no
-effect — ggpop ignores them and issues a warning. Leave those aesthetics
-unmapped.
+Don’t map `x` or `y` in
+[`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) — ggpop
+computes positions internally and will warn if you do.
 
 > **This will warn (and x/y are silently ignored)**
 >
@@ -270,13 +262,8 @@ ggplot() +
 
 ## Tip 6 — One icon per legend group when using `legend_icons = TRUE`
 
-When `legend_icons = TRUE`, ggpop reads the first icon from each group
-to render in the legend. If a single group contains **multiple different
-icons**, ggpop issues a warning because it can only show one icon per
-legend key.
-
-**Ensure each value of your `color` grouping variable maps to exactly
-one icon name.**
+Each `color` group must map to exactly one icon name when
+`legend_icons = TRUE`.
 
 ``` r
 # Each group maps to exactly one icon — clean legend
@@ -316,19 +303,10 @@ ggplot() +
 
 ## Tip 7 — `scale_legend_icon()` must come after all theme calls
 
+All [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html) and
+`theme_*()` calls must come **before**
 [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md)
-intercepts ggplot2’s theme system to resize legend keys. If a
-[`theme()`](https://ggplot2.tidyverse.org/reference/theme.html) or
-`theme_*()` call appears **after**
-[`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md),
-it can reset the legend key size and break the sizing.
-
-**Rule:** all
-[`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md),
-[`theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html),
-[`theme()`](https://ggplot2.tidyverse.org/reference/theme.html) calls
-must precede
-[`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md).
+— a theme call after it resets the key size.
 
 > **Wrong order — theme() after scale_legend_icon() resets key size**
 >
@@ -374,12 +352,9 @@ ggplot(data = df_tip7,
 
 ## Tip 8 — Use `process_data()` to convert count data
 
-If your data has one row per group with a **count column** (not one row
-per icon), use
+If your data has one row per group with a count column, use
 [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
-to expand it. It handles proportional sampling, reproducibility, and
-returns one row per icon — ready for
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
+to expand it to one row per icon.
 
 ``` r
 # Your raw count data
@@ -435,16 +410,10 @@ ggplot(data = df_edu, aes(icon = icon, color = type)) +
 
 ## Tip 9 — Use `seed` for reproducible charts
 
+Pass `seed` to
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-uses randomness when placing icons across the grid. This means that
-every time you run the same code, the exact icon layout may differ
-slightly — which can be a problem in reports, papers, or automated
-pipelines where you need consistent output.
-
-Pass a `seed` argument directly to
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-to lock the randomness. Any integer works; the same seed always produces
-the same layout.
+for a reproducible layout — useful in papers, dashboards, or automated
+pipelines.
 
 > **Why this matters**
 >
@@ -501,15 +470,9 @@ ggplot(data = df_tip9, aes(icon = icon, color = type)) +
 
 ## Tip 10 — Use `arrange = TRUE` to cluster icons by group
 
-By default,
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-scatters icons randomly across the grid — groups are interleaved.
-Setting `arrange = TRUE` places all icons from the same group
-contiguously, making the boundary between groups immediately visible.
-
-Use the default (`arrange = FALSE`) for a realistic “population scatter”
-effect. Use `arrange = TRUE` when you want the chart to read like a
-stacked composition — all of one category together, then the next.
+Use `arrange = FALSE` (default) for a scattered effect. Use
+`arrange = TRUE` to cluster icons by group, making boundaries between
+groups visible.
 
 ``` r
 df_tip12 <- data.frame(
@@ -562,8 +525,8 @@ workflow:
     `guides(alpha = "none")` — the color legend already encodes all the
     information
 
-Skipping step 3 leaves an unwanted numeric legend entry in the plot.
-Skipping step 1 causes an error.
+Skipping step 3 leaves an unwanted legend entry. Skipping step 1 causes
+an error.
 
 > **What NOT to do**
 >

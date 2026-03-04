@@ -75,7 +75,6 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-examples" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-rainbow"></span> Examples</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="../articles/examples-geom-pop.html">geom_pop()</a></li>
-    <li><a class="dropdown-item" href="../articles/examples-markov-sick-sicker.html">Markov (Sick-Sicker)</a></li>
     <li><a class="dropdown-item" href="../articles/examples-geom-icon-point.html">geom_icon_point()</a></li>
   </ul>
 </li>
@@ -108,8 +107,7 @@
 
 
 
-    <p>Welcome! This guide is for people who have <strong>never written a line of code</strong> but are curious about data visualization. By the end of this page, you’ll create real charts — starting from the very basics and finishing with beautiful icon charts.</p>
-<p>No math degree required. No prior programming experience needed. Just follow along.</p>
+    <p>A guide for complete beginners. No math or programming experience required — just follow along.</p>
 <div style="line-height: 0.6;">
 <br>
 </div>
@@ -117,11 +115,11 @@
 <section class="level2"><h2 id="what-is-r">What is R?<a class="anchor" aria-label="anchor" href="#what-is-r"></a>
 </h2>
 <p>R is a free programming language designed for working with data. Think of it as a very powerful calculator that can also draw charts, run statistics, and handle millions of rows of information.</p>
-<p>Here’s what makes R special for beginners:</p>
+<p>Why R works for beginners:</p>
 <ul>
 <li>It’s <strong>free</strong> and runs on Windows, Mac, and Linux</li>
 <li>It has thousands of <strong>packages</strong> (ready-made tools built by other people)</li>
-<li>Its community is <strong>huge</strong> — someone has already answered your question on the internet</li>
+<li>A large community — your questions are likely already answered online</li>
 <li>It’s used by scientists, journalists, economists, and data analysts around the world</li>
 </ul>
 <div style="line-height: 0.6;">
@@ -138,7 +136,7 @@
 <strong>RStudio</strong> — a friendly interface for writing R code. Download from <a href="https://posit.co/download/rstudio-desktop/" class="external-link">posit.co/download/rstudio-desktop</a>
 </li>
 </ol>
-<p>Install R first, then RStudio. Once both are installed, open RStudio — you’ll see four panels. The most important one is the <strong>Console</strong> (bottom-left): that’s where R listens for your commands.</p>
+<p>Install R, then RStudio. The <strong>Console</strong> (bottom-left) is where you type commands.</p>
 <div>
 <blockquote>
 <p><strong>Think of it like this</strong></p>
@@ -169,7 +167,7 @@
 <pre><code>[1] 25</code></pre>
 </div>
 </div>
-<p>R prints the result immediately. The <code>#</code> symbol starts a <strong>comment</strong> — anything after it is ignored by R. Use comments to write notes for yourself.</p>
+<p>The <code>#</code> symbol starts a <strong>comment</strong> — R ignores anything after it.</p>
 <div style="line-height: 0.6;">
 <br>
 </div>
@@ -229,16 +227,7 @@
 4 Lagos   15387639</code></pre>
 </div>
 </div>
-<p>Let’s break that down:</p>
-<ul>
-<li>
-<code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame()</a></code> creates a table</li>
-<li>
-<code>city = c(...)</code> creates a column named <code>city</code> with four values</li>
-<li>
-<code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> is how you combine multiple values into one list — short for “combine”</li>
-<li>The comma between columns separates them</li>
-</ul>
+<p><code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame()</a></code> creates a table. <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> combines values into a column. Commas separate columns.</p>
 <p>You can access a single column using <code>$</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
@@ -257,7 +246,7 @@
 </div>
 <hr></section><section class="level2"><h2 id="step-3-installing-packages">Step 3 — Installing packages<a class="anchor" aria-label="anchor" href="#step-3-installing-packages"></a>
 </h2>
-<p>R comes with built-in tools, but its real power comes from <strong>packages</strong> — collections of extra functions built by the community. You install a package once, then load it every session.</p>
+<p>R’s power comes from <strong>packages</strong> — collections of extra functions. Install once, load every session.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install packages (do this once)</span></span>
@@ -271,7 +260,7 @@
 <div>
 <blockquote>
 <p><strong>The difference between install and library</strong></p>
-<p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> downloads the package to your computer — do it once. <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> loads it into your current session — do it every time you open RStudio.</p>
+<p><code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code> downloads once. <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> loads per session.</p>
 </blockquote>
 </div>
 <div style="line-height: 0.6;">
@@ -279,7 +268,7 @@
 </div>
 <hr></section><section class="level2"><h2 id="step-4-your-first-chart-with-ggplot2">Step 4 — Your first chart with ggplot2<a class="anchor" aria-label="anchor" href="#step-4-your-first-chart-with-ggplot2"></a>
 </h2>
-<p><code>ggplot2</code> is the most popular R package for data visualization. Before we get to ggpop, let’s build a simple chart with it so you understand how the pieces fit together.</p>
+<p>First, a simple ggplot2 chart to understand the structure:</p>
 <p>We’ll use data about how people in a city get to work. Imagine we surveyed 100 commuters:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
@@ -353,14 +342,13 @@
 </tr>
 </tbody>
 </table>
-<p>This is the core idea of <code>ggplot2</code>: you <strong>layer</strong> pieces together with <code>+</code>. Each layer adds something new to the chart.</p>
+<p>ggplot2 builds charts by layering pieces with <code>+</code>.</p>
 <div style="line-height: 0.6;">
 <br>
 </div>
 <hr></section><section class="level2"><h2 id="step-5-upgrade-to-ggpop">Step 5 — Upgrade to ggpop<a class="anchor" aria-label="anchor" href="#step-5-upgrade-to-ggpop"></a>
 </h2>
-<p>A bar chart is useful, but when you want to show the actual number of people, not just the height of a bar, you need a different approach. Specially if you want to engage a non-technical audience or if you are looking for a more creative way to tell your story.</p>
-<p>That’s exactly what <code>ggpop</code> does. Let’s recreate the same story with icons.</p>
+<p><code>ggpop</code> replaces bars with icons — each person becomes visible. Let’s recreate this:</p>
 <p>First, we build a data frame with <strong>one row per person</strong> (instead of one row per group):</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
@@ -379,12 +367,7 @@
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<ul>
-<li>
-<code>rep("Car", 45)</code> repeats the word <code>"Car"</code> 45 times — one row per commuter</li>
-<li>
-<code>icon</code> holds the Font Awesome icon name for each person</li>
-</ul>
+<p><code>rep("Car", 45)</code> creates 45 rows — one per commuter. <code>icon</code> holds the Font Awesome name.</p>
 <p>Now the chart:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
@@ -412,7 +395,7 @@
 </div>
 </div>
 </div>
-<p>The structure is the same as ggplot2 — canvas, layers, labels — but now you can <em>see</em> each person. 45 car icons, 30 subway riders, 15 cyclists, 10 walkers.</p>
+<p>Same structure as ggplot2, but each data point is visible as an icon.</p>
 <div>
 <blockquote>
 <p><strong>Finding icon names</strong></p>
@@ -429,7 +412,7 @@
 <hr></section><section class="level2"><h2 id="step-6-scatter-plots-with-icons-using-geom_icon_point">Step 6 — Scatter plots with icons using <code>geom_icon_point()</code>
 <a class="anchor" aria-label="anchor" href="#step-6-scatter-plots-with-icons-using-geom_icon_point"></a>
 </h2>
-<p>ggpop also has a second geom: <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>. Instead of a grid of population icons, it places icons on a standard x/y scatter plot — one icon per data point.</p>
+<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> places icons on a scatter plot — one per data point, no grid.</p>
 <p>Let’s use a dataset about sleep and performance. We surveyed students on how many hours they slept and their exam score, grouped by their preferred study method:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
@@ -486,8 +469,7 @@
 </div>
 </div>
 </div>
-<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> works just like <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point()</a></code> from ggplot2 — it needs <code>x</code> and <code>y</code> coordinates — but each dot is replaced by a meaningful icon.</p>
-<p>Now plot it with <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> — just like a regular scatter plot, but with icons:</p>
+<p>Now with <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
@@ -517,7 +499,6 @@
 </div>
 </div>
 </div>
-<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> works just like <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point()</a></code> from ggplot2 — it needs <code>x</code> and <code>y</code> coordinates — but each dot is replaced by a meaningful icon.</p>
 <div style="line-height: 0.6;">
 <br>
 </div>
@@ -561,7 +542,7 @@
 <blockquote>
 <p><strong>Keep learning R</strong></p>
 <p>The best way to learn is to work with data you care about. Find a dataset about something you’re interested in — sports, music, health, economics — and try to visualize it.</p>
-<p>When you get stuck (and you will — everyone does), copy the error message into a search engine. The R community is incredibly helpful.</p>
+<p>When stuck, copy the error into a search engine — the R community is helpful.</p>
 </blockquote>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">

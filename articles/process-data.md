@@ -5,10 +5,9 @@
   
 
 [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
-is a helper function that converts raw population counts into a sampled
-data frame ready for
+converts raw population counts into a sampled data frame (one row per
+icon) ready for
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
-Each row in the output represents one icon in the final chart.
 
 It handles:
 
@@ -30,9 +29,8 @@ library(dplyr)
 
   
 
-The minimum inputs are `data`, `group_var` (the grouping column), and
-`sum_var` (the count column). `sample_size` controls how many icons
-appear in the final chart (max 1,000).
+Required: `data`, `group_var`, `sum_var`. `sample_size` sets icon count
+(max 1,000).
 
 ``` r
 df_sex <- data.frame(
@@ -51,12 +49,12 @@ head(df_sex_proc)
 ```
 
         type        n      prop
-    1 female 67401427 0.5150612
-    2 female 67401427 0.5150612
+    1   male 63459580 0.4849388
+    2   male 63459580 0.4849388
     3 female 67401427 0.5150612
-    4 female 67401427 0.5150612
-    5 female 67401427 0.5150612
-    6 female 67401427 0.5150612
+    4   male 63459580 0.4849388
+    5   male 63459580 0.4849388
+    6   male 63459580 0.4849388
 
 The output contains:
 
@@ -73,10 +71,8 @@ The output contains:
 
   
 
-[`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
-calculates each group’s share of the total and allocates icons
-proportionally. With `sample_size = 100`, a group with 48% of the
-population gets ~48 icons.
+With `sample_size = 100`, a group with 48% of the population gets ~48
+icons.
 
 ``` r
 df_sex_proc %>%
@@ -90,8 +86,8 @@ df_sex_proc %>%
     # A tibble: 2 × 3
       type   icons proportion
       <chr>  <int>      <dbl>
-    1 female    52       51.5
-    2 male      48       48.5
+    1 female    53       51.5
+    2 male      47       48.5
 
   
 
@@ -124,10 +120,10 @@ df_regions_processed %>%
     # A tibble: 4 × 2
       type  icons
       <chr> <int>
-    1 East     43
-    2 North    27
-    3 South    17
-    4 West     13
+    1 East     39
+    2 North    33
+    3 South    16
+    4 West     12
 
   
 
@@ -137,9 +133,8 @@ df_regions_processed %>%
 
   
 
-Use `high_group_var` to nest groups under a higher-level category. This
-is useful when you want to facet by a parent group while preserving
-sub-group icon assignments.
+Use `high_group_var` to nest groups under a parent category for faceted
+plots.
 
 ``` r
 df_health <- data.frame(
@@ -168,12 +163,12 @@ df_health_processed %>%
       <chr> <chr>   <int>
     1 East  At Risk    38
     2 East  Healthy    62
-    3 North At Risk    36
-    4 North Healthy    64
-    5 South At Risk    14
-    6 South Healthy    86
-    7 West  At Risk    23
-    8 West  Healthy    77
+    3 North At Risk    35
+    4 North Healthy    65
+    5 South At Risk    30
+    6 South Healthy    70
+    7 West  At Risk    29
+    8 West  Healthy    71
 
   
 
@@ -183,12 +178,9 @@ df_health_processed %>%
 
   
 
-[`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
-is optional. If your data already has one row per icon, pass it directly
-to
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
-The only requirement is a maximum of 1,000 rows per plot (or per facet
-group).
+Optional — pass data directly to
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+if it already has one row per icon (max 1,000 rows per plot or facet).
 
 ``` r
 df_direct <- data.frame(

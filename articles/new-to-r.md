@@ -1,12 +1,7 @@
 # New to R? Start Here
 
-Welcome! This guide is for people who have **never written a line of
-code** but are curious about data visualization. By the end of this
-page, you’ll create real charts — starting from the very basics and
-finishing with beautiful icon charts.
-
-No math degree required. No prior programming experience needed. Just
-follow along.
+A guide for complete beginners. No math or programming experience
+required — just follow along.
 
   
 
@@ -18,13 +13,12 @@ R is a free programming language designed for working with data. Think
 of it as a very powerful calculator that can also draw charts, run
 statistics, and handle millions of rows of information.
 
-Here’s what makes R special for beginners:
+Why R works for beginners:
 
 - It’s **free** and runs on Windows, Mac, and Linux
 - It has thousands of **packages** (ready-made tools built by other
   people)
-- Its community is **huge** — someone has already answered your question
-  on the internet
+- A large community — your questions are likely already answered online
 - It’s used by scientists, journalists, economists, and data analysts
   around the world
 
@@ -41,9 +35,8 @@ Before anything else, you need two free programs:
 2.  **RStudio** — a friendly interface for writing R code. Download from
     [posit.co/download/rstudio-desktop](https://posit.co/download/rstudio-desktop/)
 
-Install R first, then RStudio. Once both are installed, open RStudio —
-you’ll see four panels. The most important one is the **Console**
-(bottom-left): that’s where R listens for your commands.
+Install R, then RStudio. The **Console** (bottom-left) is where you type
+commands.
 
 > **Think of it like this**
 >
@@ -72,9 +65,7 @@ each line.
 
     [1] 25
 
-R prints the result immediately. The `#` symbol starts a **comment** —
-anything after it is ignored by R. Use comments to write notes for
-yourself.
+The `#` symbol starts a **comment** — R ignores anything after it.
 
   
 
@@ -139,14 +130,9 @@ df_cities
     3 Cairo   22183000
     4 Lagos   15387639
 
-Let’s break that down:
-
-- [`data.frame()`](https://rdrr.io/r/base/data.frame.html) creates a
-  table
-- `city = c(...)` creates a column named `city` with four values
-- [`c()`](https://rdrr.io/r/base/c.html) is how you combine multiple
-  values into one list — short for “combine”
-- The comma between columns separates them
+[`data.frame()`](https://rdrr.io/r/base/data.frame.html) creates a
+table. [`c()`](https://rdrr.io/r/base/c.html) combines values into a
+column. Commas separate columns.
 
 You can access a single column using `$`:
 
@@ -168,9 +154,8 @@ df_cities$population
 
 ## Step 3 — Installing packages
 
-R comes with built-in tools, but its real power comes from **packages**
-— collections of extra functions built by the community. You install a
-package once, then load it every session.
+R’s power comes from **packages** — collections of extra functions.
+Install once, load every session.
 
 ``` r
 # Install packages (do this once)
@@ -185,9 +170,8 @@ library(ggpop)
 > **The difference between install and library**
 >
 > [`install.packages()`](https://rdrr.io/r/utils/install.packages.html)
-> downloads the package to your computer — do it once.
-> [`library()`](https://rdrr.io/r/base/library.html) loads it into your
-> current session — do it every time you open RStudio.
+> downloads once. [`library()`](https://rdrr.io/r/base/library.html)
+> loads per session.
 
   
 
@@ -195,9 +179,7 @@ library(ggpop)
 
 ## Step 4 — Your first chart with ggplot2
 
-`ggplot2` is the most popular R package for data visualization. Before
-we get to ggpop, let’s build a simple chart with it so you understand
-how the pieces fit together.
+First, a simple ggplot2 chart to understand the structure:
 
 We’ll use data about how people in a city get to work. Imagine we
 surveyed 100 commuters:
@@ -246,8 +228,7 @@ Let’s read the code line by line:
 | `labs(...)`                                                               | Adds titles and axis labels                                             |
 | [`theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html) | Applies a clean, minimal style                                          |
 
-This is the core idea of `ggplot2`: you **layer** pieces together with
-`+`. Each layer adds something new to the chart.
+ggplot2 builds charts by layering pieces with `+`.
 
   
 
@@ -255,13 +236,8 @@ This is the core idea of `ggplot2`: you **layer** pieces together with
 
 ## Step 5 — Upgrade to ggpop
 
-A bar chart is useful, but when you want to show the actual number of
-people, not just the height of a bar, you need a different approach.
-Specially if you want to engage a non-technical audience or if you are
-looking for a more creative way to tell your story.
-
-That’s exactly what `ggpop` does. Let’s recreate the same story with
-icons.
+`ggpop` replaces bars with icons — each person becomes visible. Let’s
+recreate this:
 
 First, we build a data frame with **one row per person** (instead of one
 row per group):
@@ -283,9 +259,8 @@ df_commuters <- data.frame(
 )
 ```
 
-- `rep("Car", 45)` repeats the word `"Car"` 45 times — one row per
-  commuter
-- `icon` holds the Font Awesome icon name for each person
+`rep("Car", 45)` creates 45 rows — one per commuter. `icon` holds the
+Font Awesome name.
 
 Now the chart:
 
@@ -311,9 +286,7 @@ ggplot(data = df_commuters, aes(icon = icon, color = transport)) +
 
 ![](new-to-r_files/figure-html/geom-pop-chart-1.png)
 
-The structure is the same as ggplot2 — canvas, layers, labels — but now
-you can *see* each person. 45 car icons, 30 subway riders, 15 cyclists,
-10 walkers.
+Same structure as ggplot2, but each data point is visible as an icon.
 
 > **Finding icon names**
 >
@@ -333,10 +306,8 @@ you can *see* each person. 45 car icons, 30 subway riders, 15 cyclists,
 
 ## Step 6 — Scatter plots with icons using `geom_icon_point()`
 
-ggpop also has a second geom:
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md).
-Instead of a grid of population icons, it places icons on a standard x/y
-scatter plot — one icon per data point.
+[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+places icons on a scatter plot — one per data point, no grid.
 
 Let’s use a dataset about sleep and performance. We surveyed students on
 how many hours they slept and their exam score, grouped by their
@@ -395,15 +366,8 @@ ggplot(
 
 ![](new-to-r_files/figure-html/geom-icon-point-chart-1.png)
 
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-works just like
-[`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
-from ggplot2 — it needs `x` and `y` coordinates — but each dot is
-replaced by a meaningful icon.
-
-Now plot it with
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-— just like a regular scatter plot, but with icons:
+Now with
+[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md):
 
 ``` r
 ggplot(
@@ -430,12 +394,6 @@ ggplot(
 
 ![](new-to-r_files/figure-html/geom-point-1.png)
 
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-works just like
-[`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
-from ggplot2 — it needs `x` and `y` coordinates — but each dot is
-replaced by a meaningful icon.
-
   
 
 ------------------------------------------------------------------------
@@ -459,5 +417,5 @@ next:
 > dataset about something you’re interested in — sports, music, health,
 > economics — and try to visualize it.
 >
-> When you get stuck (and you will — everyone does), copy the error
-> message into a search engine. The R community is incredibly helpful.
+> When stuck, copy the error into a search engine — the R community is
+> helpful.

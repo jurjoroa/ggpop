@@ -5,14 +5,8 @@
   
 
 [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
-is a wrapper functions from fontawesome that lets you search and browse
-the Font Awesome icons available for use in
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-and
-[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md).
-Instead of looking for the icon, you can filter by keyword, category, or
-regular expression and get back a tidy tibble — or a plain character
-vector — ready to use in your plot code.
+searches Font Awesome icons by keyword, category, or regex and returns a
+tibble or character vector ready to use in your plot.
 
   
 
@@ -22,10 +16,8 @@ vector — ready to use in your plot code.
 
   
 
-Called with no arguments,
 [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
-returns every available Font Awesome icon with its primary semantic
-category.
+with no arguments returns all icons with their primary category.
 
 ``` r
 fa_icons()
@@ -204,9 +196,7 @@ fa_icons(query = "person", category = "people_users")
 
   
 
-Set `as_vector = TRUE` to skip the tibble and get a plain sorted
-character vector. This is the fastest way to browse names or pipe them
-into other code.
+Set `as_vector = TRUE` for a plain character vector.
 
 ``` r
 fa_icons(query = "house", as_vector = TRUE)
@@ -255,9 +245,7 @@ fa_icons(category = "animals", as_vector = TRUE)
 
   
 
-By default only `primary_class` is returned. Set `primary_only = FALSE`
-to also get the `all_classes` list-column, showing every category each
-icon matches.
+Set `primary_only = FALSE` to get all category matches.
 
 ``` r
 fa_icons(query = "heart", primary_only = FALSE)
@@ -288,8 +276,7 @@ fa_icons(query = "heart", primary_only = FALSE)
 
   
 
-Some icons do not match any category. Set `include_unclassified = FALSE`
-to drop them.
+Set `include_unclassified = FALSE` to exclude unclassified icons.
 
 ``` r
 fa_icons(query = "user", include_unclassified = FALSE)
@@ -353,8 +340,7 @@ fa_icons(class_map = my_map, include_unclassified = FALSE)
 
   
 
-A common workflow: search for icons, pick ones you like, then put them
-directly into a geom.
+Common workflow: search, select, use:
 
 ``` r
 # 1. Find candidate icons

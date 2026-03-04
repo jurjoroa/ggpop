@@ -5,8 +5,6 @@
   
 
 Out of every 100 people on Earth, how many come from each continent?
-Each icon uses a distinct symbol and color per continent, and the legend
-shows the exact count.
 
 Show the code
 
@@ -100,7 +98,7 @@ ggplot(data = df_world_proc,
 
   
 
-A simple two-group population chart using Mexico’s 2024 population data.
+Population distribution by sex (Mexico 2024).
 
 Show the code
 
@@ -162,7 +160,7 @@ ggplot(data = df_sex_proc, aes(icon = icon, color = type)) +
 
   
 
-Population chart showing education attainment across four levels.
+Education attainment across four levels.
 
 Show the code
 
@@ -281,8 +279,7 @@ labs(
 
   
 
-A dark-themed chart showing disease categories in a simulated
-population.
+Disease burden by category (dark theme).
 
 Show the code
 
@@ -351,8 +348,8 @@ ggplot() +
 
   
 
-Using `stroke_width` to outline icons for better visibility and
-`arrange = TRUE` to group icons by type.
+Using `stroke_width` for icon outlines and `arrange = TRUE` to group by
+type.
 
 Show the code
 
@@ -418,12 +415,9 @@ ggplot(data = df_disability_proc,
 
 ## Example 6: 100 Most Common Names in Mexico
 
-We can also add labels to icons using
-[`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html).
-In this example, the 100 most common names in Mexico are displayed with
-a pink icon for female names and a blue icon for male names. The
-`check_overlap = TRUE` argument prevents label overlap, so only a subset
-of names will be shown.
+Adding text labels to icons with
+[`geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html)
+and `check_overlap = TRUE` to prevent overlap.
 
 Show the code
 
@@ -491,16 +485,160 @@ ggplot(data = df_labeled, aes(icon = icon, color = gender)) +
 
 ------------------------------------------------------------------------
 
+## Example 7:Animated Markov Cohort (Sick-Sicker)
+
+Animated Sick-Sicker model tracking disease progression from age 40 to
+100 across four states: Healthy, Sick, Sicker, and Death.
+
+Show the code
+
+``` r
+# Load package functions
+
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(gganimate)
+
+# -------------------------------
+# 1) Cohort Markov model inputs
+# -------------------------------
+states <- c("Healthy", "Sick", "Sicker", "Death")
+age_start <- 40
+age_end <- 100
+n_cycles <- age_end - age_start
+
+# Transition probability matrix (rows = current state, cols = next state)
+# Healthy -> Healthy/Sick/Sicker/Death
+# Sick    -> Healthy/Sick/Sicker/Death
+# Sicker  -> Healthy/Sick/Sicker/Death
+# Death   -> Death (absorbing)
+m_P <- matrix(
+  c(
+    0.85, 0.12, 0.02, 0.01,
+    0.08, 0.85, 0.05, 0.02,
+    0.00, 0.00, 0.95, 0.05,
+    0.00, 0.00, 0.00, 1.00
+  ),
+  nrow = length(states),
+  byrow = TRUE,
+  dimnames = list(states, states)
+)
+
+stopifnot(all(abs(rowSums(m_P) - 1) < 1e-10))
+
+# ---------------------------------
+# 2) Cohort trace from age 40 to 100
+# ---------------------------------
+m_trace <- matrix(
+  0,
+  nrow = n_cycles + 1,
+  ncol = length(states),
+  dimnames = list(cycle = 0:n_cycles, state = states)
+)
+
+# Initial cohort distribution at age 40
+m_trace[1, ] <- c(1, 0, 0, 0)
+
+for (t in seq_len(n_cycles)) {
+  m_trace[t + 1, ] <- m_trace[t, ] %*% m_P
+}
+
+# Long-format cohort proportions by age
+cohort_long <- as.data.frame(m_trace) %>%
+  mutate(cycle = 0:n_cycles,
+         age = age_start + cycle) %>%
+  pivot_longer(
+    cols = all_of(states),
+    names_to = "state",
+    values_to = "prop"
+  )
+
+# ------------------------------------------------------
+# 3) Convert each cycle's proportions to icon-level data
+# ------------------------------------------------------
+# process_data() samples icons within each age (high_group_var = "age")
+# sample_size = 400 means each icon is ~0.25% of the cohort in each frame
+set.seed(2026)
+df_icons <- process_data(
+  data = cohort_long,
+  high_group_var = "age",
+  group_var = state,
+  sum_var = prop,
+  sample_size = 400
+) %>%
+  mutate(
+    age = as.integer(group),
+    state = factor(type, levels = states),
+    icon = case_when(
+      state == "Healthy" ~ "person-walking",
+      state == "Sick" ~ "person-burst",
+      state == "Sicker" ~ "person-dots-from-line",
+      state == "Death" ~ "skull-crossbones"
+    )
+  )
+
+# --------------------
+# 4) Animated ggpop plot
+# --------------------
+p_anim <- ggplot(df_icons, aes(icon = icon, color = state)) +
+  geom_pop(
+    size = 1.1,
+    arrange = TRUE,
+    legend_icons = TRUE,
+    seed = 2026,
+    dpi = 100
+  ) +
+  scale_color_manual(
+    values = c(
+      "Healthy" = "#2E7D32",
+      "Sick" = "#F9A825",
+      "Sicker" = "#E64A19",
+      "Death" = "black"
+    )
+  ) +
+  theme_pop(base_size = 20) +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    plot.background = element_rect(color = "#013A4F", fill = "#013A4F"), # Transparent plot background
+    panel.background = element_rect(color = "#013A4F", fill = "#013A4F"), # Transparent panel
+    legend.text = element_text(color = "#D4AF37"),
+    plot.title = element_text(color = "#D4AF37", face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(color = "#D4AF37", hjust = 0.5),
+    plot.caption = element_text(color = "#D4AF37")
+  ) +
+  scale_legend_icon(size = 8) +
+  labs(
+    title = "Sick-Sicker Cohort Markov Model \u00b7 Age: {closest_state} years",
+    subtitle = "Cohort simulated from age 40 to 100",
+    caption = "Cohort starts Healthy at age 40. Each icon is ~0.25% of the cohort."
+  )  +
+  transition_states(
+    states = age,
+    transition_length = 1,
+    state_length = 1,
+    wrap = FALSE
+  ) +
+  ease_aes("linear")
+
+# Optional: save the animation
+#anim_save("sick_sicker_animation.gif", anim)
+```
+
+![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/sick_sicker_animation.gif)
+
+Markov Model Simulation
+
 ## `cowplot` — Health Survey Dashboard
 
   
 
 Combining multiple
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-panels into a single plot with the `cowplot` package. Three independent
-population charts — sex distribution, age groups, and vaccination
-coverage — are built as separate `ggplot` objects and then arranged: two
-panels in the top row and one centered below.
+panels with `cowplot`: two charts on top (sex, age groups), one centered
+below (vaccination).
 
 Show the code
 
@@ -639,12 +777,9 @@ plot_grid(top_row, bottom_row, nrow = 2)
 
   
 
-Using `facet_wrap(~ group)`, this chart breaks down the daily commute
-mix across major US cities. Each panel shows one city’s full
-distribution of transportation modes — car, bus, train, bicycle,
-motorcycle, walking, and ride-share — with each icon representing
-approximately 400 commuters. The dark background and per-mode color
-coding make it easy to compare cities at a glance.
+Transportation methods across cities using
+[`facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html):
+each panel shows one city’s distribution of commute modes.
 
 Show the code
 
@@ -773,15 +908,8 @@ Example Plot facet
 
   
 
-Combining
-[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
-with the `geofacet` package places each state’s panel in its actual
-geographic position on the US map. Here, skull icons represent gun
-deaths per 100,000 people (2023 CDC data), with each icon equal to 2,000
-people. The layout immediately reveals regional patterns that a standard
-bar chart would hide — Mississippi sits at nearly 8× the rate of
-Massachusetts, and the South and rural West cluster visually as the
-hardest-hit regions.
+Gun deaths per 100,000 people (2023 CDC data) by US state using
+`geofacet` for geographic placement.
 
 Note: According to issue \#488 from geofacet package
 
@@ -885,12 +1013,8 @@ Example Plot geofacet
 
   
 
-Three countries placed side by side with `patchwork`’s `|` operator —
-Japan (rapidly ageing), the United States (moderate pace), and Nigeria
-(still young) — each showing its own age distribution for a given
-decade. A loop builds one patchwork frame per time point and `gifski`
-stitches the frames into a GIF, making it immediately clear how
-differently the ageing transition unfolds across the world.
+Age structure changes across Japan, the United States, and Nigeria
+animated with `patchwork` and `gifski`.
 
 Show the code
 
