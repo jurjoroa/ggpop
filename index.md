@@ -3,11 +3,11 @@
 > **Turn numbers into people. Turn data into stories.**
 
 `ggpop` is an R package built on top of ggplot2 that simplifies the
-creation of engaging, icon-based population charts. By combining
-features from `ggplot2` and `ggimage`, `ggpop` lets users visualize
-population data using customizable icons arranged in circular layouts.
-Designed primarily for visual storytelling, ggpop helps users
-communicate population statistics in an appealing manner.
+creation of icon-based population charts. By combining features from
+`ggplot2` and `ggimage`, `ggpop` lets users visualize population data
+using customizable icons arranged in circular layouts. Designed
+primarily for visual storytelling, ggpop helps users communicate
+population statistics in an appealing manner.
 
 ## An Alternative Approach to Visualization
 
@@ -24,8 +24,6 @@ more compelling stories.
 - **ggplot2 Native**: Integrates seamlessly with your existing workflow
   — themes, facets, scales and all.
 
-------------------------------------------------------------------------
-
 ## Two Main Geoms
 
 Two geoms for different visualization problems:
@@ -37,8 +35,6 @@ Two geoms for different visualization problems:
 | **What one icon means** | A fixed share of the total population                                                                     | A single observation                                                                 |
 | **Data prep needed**    | Yes — run [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md) first (optional) | No — plug in any data directly                                                       |
 | **Think of it as**      | A pictogram / isotype chart                                                                               | [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html) with icons |
-
-------------------------------------------------------------------------
 
 ## Installation
 
@@ -67,8 +63,6 @@ remotes::install_github("jurjoroa/ggpop")
 | `arrange`                                                                                | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) parameter — cluster icons by group (`TRUE`) or scatter randomly (`FALSE`, default)                                                  |
 | `stroke_width`                                                                           | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) parameter — add an outline to every icon, in pixels (e.g. `stroke_width = 1`)                                                       |
 | `seed`                                                                                   | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) parameter — fix the random icon layout for reproducible charts (e.g. `seed = 42`)                                                   |
-
-------------------------------------------------------------------------
 
 ## `geom_pop()` — Population Charts
 
