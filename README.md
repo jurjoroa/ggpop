@@ -16,7 +16,8 @@
 
 > **Turn numbers into people. Turn data into stories.**
 
-`ggpop` is an R package built on top of ggplot2 that simplifies the creation of engaging, icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users visualize population data using customizable icons arranged in circular layouts. Designed primarily for visual storytelling, ggpop helps users communicate population statistics in an appealing manner.
+`ggpop` is an R package built on top of ggplot2 that simplifies the creation of icon-based population charts. By combining features from `ggplot2` and `ggimage`, `ggpop` lets users visualize population data using customizable icons arranged in circular layouts. Designed primarily for visual storytelling, ggpop helps users communicate population statistics in an appealing manner.
+
 
 ## An Alternative Approach to Visualization
 
@@ -27,7 +28,6 @@
 - **Fast**: Optimized rendering handles up to 1,000 icons smoothly for `geom_pop()` and unlimited for `geom_icon_point()`
 - **ggplot2 Native**: Integrates seamlessly with your existing workflow — themes, facets, scales and all.
 
----
 
 ## Two Main Geoms
 
@@ -41,7 +41,6 @@ Two geoms for different visualization problems:
 | **Data prep needed** | Yes — run `process_data()` first (optional) | No — plug in any data directly |
 | **Think of it as** | A pictogram / isotype chart | `geom_point()` with icons |
 
----
 
 ## Installation
 
@@ -71,7 +70,7 @@ remotes::install_github("jurjoroa/ggpop")
 | `stroke_width` | `geom_pop()` parameter — add an outline to every icon, in pixels (e.g. `stroke_width = 1`) |
 | `seed` | `geom_pop()` parameter — fix the random icon layout for reproducible charts (e.g. `seed = 42`) |
 
----
+
 
 ## `geom_pop()` — Population Charts
 
