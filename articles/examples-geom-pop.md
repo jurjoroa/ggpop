@@ -86,9 +86,6 @@ ggplot(data = df_world_proc,
   )
 ```
 
-    ggpop: downloading coordinate data from GitHub (~2 MB) and caching it locally.
-    This happens once. Future calls will load from cache.
-
 ![](examples-geom-pop_files/figure-html/world-population-1.png)
 
   

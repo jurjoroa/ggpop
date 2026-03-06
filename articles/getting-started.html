@@ -86,6 +86,9 @@
 <li class="nav-item"><a class="nav-link" href="../articles/new-to-r.html"><span class="fa fa-brands fa-r-project"></span> New to R?</a></li>
       </ul>
 <ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/jurjoroa/ggpop"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
@@ -199,11 +202,11 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_processed</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    type        n      prop
-1 female 67401427 0.5150612
+1   male 63459580 0.4849388
 2   male 63459580 0.4849388
-3   male 63459580 0.4849388
-4   male 63459580 0.4849388
-5   male 63459580 0.4849388
+3 female 67401427 0.5150612
+4 female 67401427 0.5150612
+5 female 67401427 0.5150612
 6 female 67401427 0.5150612</code></pre>
 </div>
 </div>
@@ -225,8 +228,8 @@
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div class="reactable html-widget html-fill-item" id="htmlwidget-998490a14cf4dbc13ce1" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-998490a14cf4dbc13ce1">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["hot-tub-person","person","person-arrow-down-to-line","person-arrow-up-from-line","person-biking","person-booth","person-breastfeeding","person-burst","person-cane","person-chalkboard","person-circle-check","person-circle-exclamation","person-circle-minus","person-circle-plus","person-circle-question","person-circle-xmark","person-digging","person-dots-from-line","person-dress","person-dress-burst","person-drowning","person-falling","person-falling-burst","person-half-dress","person-harassing","person-hiking","person-military-pointing","person-military-rifle","person-military-to-person","person-praying","person-pregnant","person-rays","person-rifle","person-running","person-shelter","person-skating","person-skiing","person-skiing-nordic","person-snowboarding","person-swimming","person-through-window","person-walking","person-walking-arrow-loop-left","person-walking-arrow-right","person-walking-dashed-line-arrow-right","person-walking-luggage","person-walking-with-cane","square-person-confined"],"primary_class":["people_social","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","shapes_symbols"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"38742b52e812dd4e4359d88da4e06bfc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-4e9323e174c0a4e3d126" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-4e9323e174c0a4e3d126">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["hot-tub-person","person","person-arrow-down-to-line","person-arrow-up-from-line","person-biking","person-booth","person-breastfeeding","person-burst","person-cane","person-chalkboard","person-circle-check","person-circle-exclamation","person-circle-minus","person-circle-plus","person-circle-question","person-circle-xmark","person-digging","person-dots-from-line","person-dress","person-dress-burst","person-drowning","person-falling","person-falling-burst","person-half-dress","person-harassing","person-hiking","person-military-pointing","person-military-rifle","person-military-to-person","person-praying","person-pregnant","person-rays","person-rifle","person-running","person-shelter","person-skating","person-skiing","person-skiing-nordic","person-snowboarding","person-swimming","person-through-window","person-walking","person-walking-arrow-loop-left","person-walking-arrow-right","person-walking-dashed-line-arrow-right","person-walking-luggage","person-walking-with-cane","square-person-confined"],"primary_class":["people_social","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","shapes_symbols"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"38742b52e812dd4e4359d88da4e06bfc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Assign an icon to each group:</p>
@@ -407,8 +410,8 @@
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div class="reactable html-widget html-fill-item" id="htmlwidget-55cf97250ef9ab86d7be" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-55cf97250ef9ab86d7be">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["bed","bed-pulse","cart-flatbed","cart-flatbed-suitcase"],"primary_class":["buildings_extra","buildings_extra","shopping_commerce","shopping_commerce"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"4581162a367297874b1a8d5a308758f7"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-43e2cde8dbf5ab11d47b" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-43e2cde8dbf5ab11d47b">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["bed","bed-pulse","cart-flatbed","cart-flatbed-suitcase"],"primary_class":["buildings_extra","buildings_extra","shopping_commerce","shopping_commerce"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"4581162a367297874b1a8d5a308758f7"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>100 patients across three health statuses, each mapped to an icon:</p>

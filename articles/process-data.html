@@ -84,6 +84,9 @@
 <li class="nav-item"><a class="nav-link" href="../articles/new-to-r.html"><span class="fa fa-brands fa-r-project"></span> New to R?</a></li>
       </ul>
 <ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/jurjoroa/ggpop"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
@@ -152,9 +155,9 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df_sex_proc</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    type        n      prop
-1 female 67401427 0.5150612
-2   male 63459580 0.4849388
-3   male 63459580 0.4849388
+1   male 63459580 0.4849388
+2 female 67401427 0.5150612
+3 female 67401427 0.5150612
 4   male 63459580 0.4849388
 5 female 67401427 0.5150612
 6 female 67401427 0.5150612</code></pre>
@@ -191,8 +194,8 @@
 <pre><code># A tibble: 2 × 3
   type   icons proportion
   &lt;chr&gt;  &lt;int&gt;      &lt;dbl&gt;
-1 female    52       51.5
-2 male      48       48.5</code></pre>
+1 female    60       51.5
+2 male      40       48.5</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -225,10 +228,10 @@
 <pre><code># A tibble: 4 × 2
   type  icons
   &lt;chr&gt; &lt;int&gt;
-1 East     50
-2 North    28
-3 South    11
-4 West     11</code></pre>
+1 East     35
+2 North    27
+3 South    21
+4 West     17</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -266,14 +269,14 @@
 <pre><code># A tibble: 8 × 3
   group type    icons
   &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-1 East  At Risk    41
-2 East  Healthy    59
-3 North At Risk    36
-4 North Healthy    64
-5 South At Risk    30
-6 South Healthy    70
-7 West  At Risk    18
-8 West  Healthy    82</code></pre>
+1 East  At Risk    42
+2 East  Healthy    58
+3 North At Risk    26
+4 North Healthy    74
+5 South At Risk    22
+6 South Healthy    78
+7 West  At Risk    20
+8 West  Healthy    80</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">

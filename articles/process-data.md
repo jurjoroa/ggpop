@@ -49,9 +49,9 @@ head(df_sex_proc)
 ```
 
         type        n      prop
-    1 female 67401427 0.5150612
-    2   male 63459580 0.4849388
-    3   male 63459580 0.4849388
+    1   male 63459580 0.4849388
+    2 female 67401427 0.5150612
+    3 female 67401427 0.5150612
     4   male 63459580 0.4849388
     5 female 67401427 0.5150612
     6 female 67401427 0.5150612
@@ -86,8 +86,8 @@ df_sex_proc %>%
     # A tibble: 2 × 3
       type   icons proportion
       <chr>  <int>      <dbl>
-    1 female    52       51.5
-    2 male      48       48.5
+    1 female    60       51.5
+    2 male      40       48.5
 
   
 
@@ -120,10 +120,10 @@ df_regions_processed %>%
     # A tibble: 4 × 2
       type  icons
       <chr> <int>
-    1 East     50
-    2 North    28
-    3 South    11
-    4 West     11
+    1 East     35
+    2 North    27
+    3 South    21
+    4 West     17
 
   
 
@@ -161,14 +161,14 @@ df_health_processed %>%
     # A tibble: 8 × 3
       group type    icons
       <chr> <chr>   <int>
-    1 East  At Risk    41
-    2 East  Healthy    59
-    3 North At Risk    36
-    4 North Healthy    64
-    5 South At Risk    30
-    6 South Healthy    70
-    7 West  At Risk    18
-    8 West  Healthy    82
+    1 East  At Risk    42
+    2 East  Healthy    58
+    3 North At Risk    26
+    4 North Healthy    74
+    5 South At Risk    22
+    6 South Healthy    78
+    7 West  At Risk    20
+    8 West  Healthy    80
 
   
 
