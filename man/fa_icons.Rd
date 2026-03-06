@@ -63,10 +63,11 @@ category. Results can be returned as a plain character vector or as a tibble
 with category classification.
 }
 \examples{
+\donttest{
 # All icons as a classified tibble
 fa_icons()
 
-# Quick lookup — plain sorted vector
+# Quick lookup -- plain sorted vector
 head(fa_icons(as_vector = TRUE), 10)
 
 # Search for icons whose name contains "heart"
@@ -75,7 +76,8 @@ fa_icons(query = "heart")
 # Filter by category
 fa_icons(category = "animals")
 
-# Regex search — all icons starting with "arrow"
+# Regex search -- all icons starting with "arrow"
 fa_icons(query = "^arrow", regex = TRUE)
+}
 
 }
