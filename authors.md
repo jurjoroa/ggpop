@@ -20,11 +20,11 @@ Source:
 [`DESCRIPTION`](https://github.com/jurjoroa/ggpop/blob/main/DESCRIPTION)
 
 Roa-Contreras J, Soultanova R, Alarid-Escudero F, Pineda-Antunez C
-(2026). *ggpop: ggpop - R package to visualize population data*. R
+(2026). *ggpop: Icon-Based Population Charts and Plots for 'ggplot2'*. R
 package version 1.7.0, <https://jurjoroa.github.io/ggpop/>.
 
     @Manual{,
-      title = {ggpop: ggpop - R package to visualize population data},
+      title = {ggpop: Icon-Based Population Charts and Plots for 'ggplot2'},
       author = {Jorge A. Roa-Contreras and Ralitza Soultanova and Fernando Alarid-Escudero and Carlos Pineda-Antunez},
       year = {2026},
       note = {R package version 1.7.0},

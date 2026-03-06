@@ -90,6 +90,7 @@ columns:
 ## Examples
 
 ``` r
+# \donttest{
 # All icons as a classified tibble
 fa_icons()
 #> # A tibble: 1,881 × 2
@@ -107,7 +108,7 @@ fa_icons()
 #> 10 9     alphanumeric 
 #> # ℹ 1,871 more rows
 
-# Quick lookup — plain sorted vector
+# Quick lookup -- plain sorted vector
 head(fa_icons(as_vector = TRUE), 10)
 #>  [1] "0"        "1"        "2"        "3"        "4"        "42-group"
 #>  [7] "5"        "500px"    "6"        "7"       
@@ -154,7 +155,7 @@ fa_icons(category = "animals")
 #> 16 otter        animals      
 #> 17 spider       animals      
 
-# Regex search — all icons starting with "arrow"
+# Regex search -- all icons starting with "arrow"
 fa_icons(query = "^arrow", regex = TRUE)
 #> # A tibble: 53 × 2
 #>    icon                      primary_class     
@@ -170,4 +171,5 @@ fa_icons(query = "^arrow", regex = TRUE)
 #>  9 arrow-down-wide-short     arrows_directional
 #> 10 arrow-down-z-a            arrows_directional
 #> # ℹ 43 more rows
+# }
 ```
