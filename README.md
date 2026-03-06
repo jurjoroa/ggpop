@@ -11,7 +11,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/jurjoroa/ggpop)](https://github.com/jurjoroa/ggpop/issues)
 [![GitHub last commit](https://img.shields.io/github/last-commit/jurjoroa/ggpop)](https://github.com/jurjoroa/ggpop/commits/main)
 [![pkgdown](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://jurjoroa.github.io/ggpop/)
-[![codecov](https://codecov.io/gh/jurjoroa/ggpop/branch/main/graph/badge.svg)](https://codecov.io/gh/jurjoroa/ggpop)
+[![codecov](https://app.codecov.io/gh/jurjoroa/ggpop/branch/main/graph/badge.svg)](https://app.codecov.io/gh/jurjoroa/ggpop)
 <!-- badges: end -->
 
 > **Turn numbers into people. Turn data into stories.**
