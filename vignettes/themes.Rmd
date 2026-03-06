@@ -13,9 +13,9 @@ knitr::opts_chunk$set(
   comment    = "#>",
   dpi = 150,
   fig.asp = .8,
-  fig.width = 5,
+  fig.width = 6,
   fig.height = 5,
-  out.width = "60%",
+  out.width = "70%",
   fig.align = "center",
   message    = FALSE,
   warning    = FALSE
@@ -34,8 +34,8 @@ library(ggplot2)
 
 ```{r shared-data, include = FALSE}
 df_t <- data.frame(
-  grp  = rep(c("A", "B"), each = 20),
-  icon = rep(c("circle", "square"), each = 20)
+  grp  = rep(c("A", "B"), each = 10),
+  icon = rep(c("circle", "square"), each = 10)
 )
 ```
 
@@ -74,18 +74,4 @@ ggplot() +
   geom_pop(data = df_t, aes(icon = icon, color = grp), size = 2, dpi = 72) +
   scale_color_manual(values = c(A = "#1E88E5", B = "#E53935")) +
   theme_pop_minimal()
-```
-
-## Customizing with `theme()`
-
-All three themes accept additional `theme()` layers. Apply them after the
-theme call and before `scale_legend_icon()` if used.
-
-```{r custom}
-ggplot() +
-  geom_pop(data = df_t, aes(icon = icon, color = grp), size = 2, dpi = 72) +
-  scale_color_manual(values = c(A = "#1E88E5", B = "#E53935")) +
-  theme_pop(base_size = 11) +
-  theme(legend.position = "bottom") +
-  labs(title = "Custom legend position", color = NULL)
 ```
