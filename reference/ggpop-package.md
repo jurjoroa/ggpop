@@ -1,9 +1,76 @@
-# ggpop: ggpop - R package to visualize population data
+# ggpop: Icon-Based Population Charts for R
 
-Create in R visually engaging and informative population charts. ggpop
-allows users to represent population data proportionally using
-customizable icons, facilitating the creation of circular representative
-population charts.
+`ggpop` is a `ggplot2` extension for creating icon-based population
+charts and pictogram plots. Use
+[`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+and
+[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+to visualize proportion and population data with 2,000+ Font Awesome
+icons.
+
+## Main functions
+
+- [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
+  – proportional icon grids
+
+- [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+  – icon scatter plots
+
+- [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
+  – prepare count data for plotting
+
+- [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
+  – search Font Awesome icon names
+
+- [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md),
+  [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md),
+  [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md)
+  – built-in themes
+
+## process_data()
+
+Converts count data to one row per icon. `group_var` and `sum_var` are
+unquoted; `high_group_var` takes a character string for faceted charts.
+
+    df_plot <- process_data(
+      data        = data.frame(sex = c("Female", "Male"), n = c(55, 45)),
+      group_var   = sex,
+      sum_var     = n,
+      sample_size = 20
+    )
+
+## geom_pop()
+
+Draws icon grids. Add an `icon` column, map `icon` and `color` in
+[`aes()`](https://ggplot2.tidyverse.org/reference/aes.html). Do not map
+`x` or `y`.
+
+    ggplot() +
+      geom_pop(data = df_plot, aes(icon = icon, color = type), size = 2) +
+      scale_color_manual(values = c(Female = "#C0392B", Male = "#2980B9")) +
+      theme_pop()
+
+## geom_icon_point()
+
+Drop-in replacement for
+[`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
+using Font Awesome icons.
+
+    ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
+      geom_icon_point(icon = "seedling", size = 1)
+
+## fa_icons()
+
+Search the bundled Font Awesome icon list by keyword.
+
+    fa_icons(query = "person")
+
+## Themes
+
+Three built-in themes optimized for icon charts:
+[`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md),
+[`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md),
+[`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md).
 
 ## See also
 
@@ -28,3 +95,51 @@ Authors:
 
 - Carlos Pineda-Antunez <cpinedaa@uw.edu>
   ([ORCID](https://orcid.org/0000-0002-8352-7080))
+
+## Examples
+
+``` r
+library(ggplot2)
+library(dplyr)
+#> 
+#> Attaching package: ‘dplyr’
+#> The following objects are masked from ‘package:stats’:
+#> 
+#>     filter, lag
+#> The following objects are masked from ‘package:base’:
+#> 
+#>     intersect, setdiff, setequal, union
+
+## -------------------------------------------------------
+## geom_pop(): population icon grid
+## -------------------------------------------------------
+df_plot <- process_data(
+  data        = data.frame(sex = c("Female", "Male"), n = c(55, 45)),
+  group_var   = sex,
+  sum_var     = n,
+  sample_size = 20
+) %>%
+  mutate(icon = ifelse(type == "Female", "person-dress", "person"))
+
+ggplot() +
+  geom_pop(data = df_plot, aes(icon = icon, color = type), size = 2) +
+  scale_color_manual(values = c(Female = "#C0392B", Male = "#2980B9")) +
+  theme_pop() +
+  labs(title = "Population by sex", color = NULL)
+#> ggpop: downloading coordinate data from GitHub (~2 MB) and caching it locally.
+#> This happens once. Future calls will load from cache.
+
+
+## -------------------------------------------------------
+## geom_icon_point(): icon scatter plot
+## -------------------------------------------------------
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
+  geom_icon_point(icon = "seedling", size = 1) +
+  scale_color_manual(values = c(
+    setosa     = "#43A047",
+    versicolor = "#1E88E5",
+    virginica  = "#E53935"
+  )) +
+  labs(title = "Iris dataset", x = "Sepal Length", y = "Petal Length")
+
+```

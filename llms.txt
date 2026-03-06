@@ -485,6 +485,10 @@ website](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html#gganim
 - [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)
   : Create a circular representative population chart
 
+- [`ggpop`](https://jurjoroa.github.io/ggpop/reference/ggpop-package.md)
+  [`ggpop-package`](https://jurjoroa.github.io/ggpop/reference/ggpop-package.md)
+  : ggpop: Icon-Based Population Charts for R
+
 - [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
   : Process Population Data for Visualization
 
