@@ -2,13 +2,6 @@ pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
-  01-ggpop: 01-ggpop.html
-  02-process-data: 02-process-data.html
-  03-geom-pop: 03-geom-pop.html
-  04-geom-icon-point: 04-geom-icon-point.html
-  05-fa-icons: 05-fa-icons.html
-  06-themes: 06-themes.html
-  07-tips: 07-tips.html
   articles/examples-geom-icon-point: examples-geom-icon-point.html
   articles/examples-geom-pop: examples-geom-pop.html
   articles/fa-icons: fa-icons.html
@@ -18,7 +11,14 @@ articles:
   articles/process-data: process-data.html
   articles/themes-customization: themes-customization.html
   articles/tips: tips.html
-last_built: 2026-03-06T16:06Z
+  v-fa-icons: v-fa-icons.html
+  v-geom-icon-point: v-geom-icon-point.html
+  v-geom-pop: v-geom-pop.html
+  v-ggpop: v-ggpop.html
+  v-process-data: v-process-data.html
+  v-themes: v-themes.html
+  v-tips: v-tips.html
+last_built: 2026-03-06T16:53Z
 urls:
   reference: https://jurjoroa.github.io/ggpop/reference
   article: https://jurjoroa.github.io/ggpop/articles
