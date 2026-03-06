@@ -2,7 +2,7 @@
 title: "geom_pop()"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{geom_pop()}
+  %\VignetteIndexEntry{03 geom_pop()}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

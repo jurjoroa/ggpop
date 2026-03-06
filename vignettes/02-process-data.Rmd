@@ -2,7 +2,7 @@
 title: "process_data()"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{process_data()}
+  %\VignetteIndexEntry{02 process_data()}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

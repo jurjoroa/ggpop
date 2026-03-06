@@ -2,7 +2,7 @@
 title: "fa_icons()"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{fa_icons()}
+  %\VignetteIndexEntry{05 fa_icons()}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

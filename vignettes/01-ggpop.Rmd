@@ -2,7 +2,7 @@
 title: "Getting Started with ggpop"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting Started with ggpop}
+  %\VignetteIndexEntry{01 Getting Started with ggpop}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
