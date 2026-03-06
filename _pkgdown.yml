@@ -100,36 +100,44 @@ code:
   folding: show
 
 navbar:
-  title: 'ggpop'
-  left:
-    - text: "Home"
+  structure:
+    left:  [home, vignettes, examples, functions, tips, news, newtors]
+    right: [search, github]
+  components:
+    home:
+      text: "Home"
       icon: fa-home
       href: index.html
-    - text: "Vignettes"
+    vignettes:
+      text: "Vignettes"
       icon: fa-leanpub
       href: articles/index.html
-    - text: "Examples"
+    examples:
+      text: "Examples"
       icon: fa-rainbow
       menu:
         - text: "geom_pop()"
           href: articles/examples-geom-pop.html
         - text: "geom_icon_point()"
           href: articles/examples-geom-icon-point.html
-    - text: "Functions"
+    functions:
+      text: "Functions"
       icon: fa-diagram-project
       href: reference/index.html
-    - text: "Tips"
+    tips:
+      text: "Tips"
       icon: fa-lightbulb
       href: articles/tips.html
-    - text: "News"
+    news:
+      text: "News"
       icon: fa-newspaper
       href: news/index.html
-    - text: "New to R?"
+    newtors:
+      text: "New to R?"
       icon: fa-brands fa-r-project
       href: articles/new-to-r.html
-  right:
-    - search
-    - icon: fa-github
+    github:
+      icon: fa-github
       href: https://github.com/jurjoroa/ggpop
 
 authors:
@@ -153,33 +161,44 @@ articles:
   - title: "New to R? Start Here"
     desc: "A friendly crash course on R for complete beginners — from zero to your first icon chart."
     contents:
-      - matches("new-to-r")
+      - articles/new-to-r
   - title: "Getting Started"
     desc: "Learn the core geom_pop() workflow from data to plot."
     contents:
-      - matches("getting-started")
+      - articles/getting-started
   - title: "Finding Icons"
     desc: "Search and browse Font Awesome icons available for use in ggpop."
     contents:
-      - matches("fa-icons")
+      - articles/fa-icons
   - title: "Data Preparation"
     desc: "Prepare your data for ggpop."
     contents:
-      - matches("process-data")
+      - articles/process-data
   - title: "Icon Scatter Plots"
     desc: "Use geom_icon_point() to build icon-based scatter plots."
     contents:
-      - matches("geom-icon-point")
+      - articles/geom-icon-point
   - title: "Themes & Customization"
     desc: "Customize your plots with themes, colors, legend options, and stroke."
     contents:
-      - matches("themes-customization")
+      - articles/themes-customization
   - title: "Examples"
     desc: "Ready-to-use examples for both geoms."
     contents:
-      - matches("examples-geom-pop")
-      - matches("examples-geom-icon-point")
+      - articles/examples-geom-pop
+      - articles/examples-geom-icon-point
   - title: "Tips & Best Practices"
     desc: "Key rules and conventions to maximize your ggpop experience."
     contents:
-      - matches("tips")
+      - articles/tips
+  - title: ~
+    desc: ~
+    navbar: ~
+    contents:
+      - matches("01-ggpop")
+      - matches("02-process-data")
+      - matches("03-geom-pop")
+      - matches("04-geom-icon-point")
+      - matches("05-fa-icons")
+      - matches("06-themes")
+      - matches("07-tips")
