@@ -57,6 +57,7 @@ Imports:
     rsvg,
     cli,
     tibble
+VignetteBuilder: knitr
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
 URL: https://jurjoroa.github.io/ggpop/
