@@ -1,0 +1,77 @@
+---
+title: "Themes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{06 Themes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  dpi = 150,
+  fig.asp = .8,
+  fig.width = 6,
+  fig.height = 5,
+  out.width = "70%",
+  fig.align = "center",
+  message    = FALSE,
+  warning    = FALSE
+)
+library(ggpop)
+library(ggplot2)
+```
+
+`ggpop` ships three built-in themes optimized for icon charts:
+
+| Theme | Description |
+|:---|:---|
+| `theme_pop()` | Default -- clean, no axes |
+| `theme_pop_dark()` | Dark background variant |
+| `theme_pop_minimal()` | Ultra-minimal, no legend or titles |
+
+```{r shared-data, include = FALSE}
+df_t <- data.frame(
+  grp  = rep(c("A", "B"), each = 10),
+  icon = rep(c("circle", "square"), each = 10)
+)
+```
+
+## `theme_pop()`
+
+Default theme. Removes axes and gridlines. Layer standard `theme()` calls on
+top to customize further.
+
+```{r theme-pop}
+ggplot() +
+  geom_pop(data = df_t, aes(icon = icon, color = grp), size = 2, dpi = 72) +
+  scale_color_manual(values = c(A = "#1E88E5", B = "#E53935")) +
+  theme_pop() +
+  labs(title = "theme_pop()", color = NULL)
+```
+
+## `theme_pop_dark()`
+
+Dark background variant. Use lighter colors to maintain contrast.
+
+```{r theme-pop-dark}
+ggplot() +
+  geom_pop(data = df_t, aes(icon = icon, color = grp), size = 2, dpi = 72) +
+  scale_color_manual(values = c(A = "#64B5F6", B = "#EF9A9A")) +
+  theme_pop_dark() +
+  labs(title = "theme_pop_dark()", color = NULL)
+```
+
+## `theme_pop_minimal()`
+
+Ultra-minimal. No axes, no legend, no titles. Useful for embedding charts in
+dashboards or slides where context is provided externally.
+
+```{r theme-pop-minimal}
+ggplot() +
+  geom_pop(data = df_t, aes(icon = icon, color = grp), size = 2, dpi = 72) +
+  scale_color_manual(values = c(A = "#1E88E5", B = "#E53935")) +
+  theme_pop_minimal()
+```

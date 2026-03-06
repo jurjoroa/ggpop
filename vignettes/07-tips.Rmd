@@ -1,0 +1,119 @@
+---
+title: "Tips"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{07 Tips}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+Essential rules when using `ggpop`.
+
+---
+
+**1. Valid icon names only.**
+The `icon` column must contain valid Font Awesome names.
+Use `fa_icons(query = "...")` to find them.
+
+---
+
+**2. Reserved column names.**
+Rename any column named `x1`, `y1`, `pos`, `image`, `alpha`, `coord_size`,
+`icon_size`, or `icon_stroke_width` before calling either geom.
+
+---
+
+**3. Use `color`, not `fill`.**
+`fill` is not supported in `geom_pop()` or `geom_icon_point()` and will error.
+
+```r
+# Wrong
+aes(icon = icon, fill = sex)
+
+# Correct
+aes(icon = icon, color = sex)
+```
+
+---
+
+**4. `alpha` is a reserved column name.**
+Rename transparency columns (e.g. to `opacity`) before mapping them.
+Suppress the auto-generated alpha legend with `guides(alpha = "none")`.
+
+```r
+# Wrong -- alpha is reserved internally
+df$alpha <- c(1.0, 0.6, 0.3)
+aes(alpha = alpha)
+
+# Correct
+df$opacity <- c(1.0, 0.6, 0.3)
+aes(alpha = opacity)
+# + guides(alpha = "none") to hide the extra legend entry
+```
+
+---
+
+**5. Max 1,000 icons per panel in geom_pop() function**
+Use `process_data(sample_size = ...)` to stay within limits.
+With `facet_wrap()`, the cap applies per panel, not globally. This is ignored in `geom_icon_point()`, which can handle more icons but may become cluttered.
+
+---
+
+**6. Do not map `x` or `y` in `geom_pop()`.**
+Layout is computed internally. Mapping `x` or `y` raises a warning and is
+silently ignored.
+
+```r
+# Wrong
+geom_pop(data = df, aes(icon = icon, color = sex, x = sex, y = sex))
+
+# Correct
+geom_pop(data = df, aes(icon = icon, color = sex))
+```
+
+---
+
+**7. `scale_legend_icon()` must come after all `theme()` calls.**
+A `theme()` call placed after `scale_legend_icon()` resets the legend key size.
+
+```r
+# Correct order
+ggplot(...) +
+  geom_pop(..., legend_icons = TRUE) +
+  theme_pop() +
+  theme(...) +
+  scale_legend_icon(size = 8)
+```
+
+---
+
+**8. One icon per legend group when `legend_icons = TRUE`.**
+Each value of the `color` aesthetic must map to exactly one icon name.
+Multiple icons mapped to the same color group will raise a warning.
+
+---
+
+**9. Use `seed` for reproducible layouts.**
+Pass a fixed integer to get identical icon placement across runs.
+
+```r
+geom_pop(..., seed = 42)
+```
+
+---
+
+**10. `high_group_var` takes a character string. in porcess_data() function**
+
+```r
+# Wrong
+process_data(data = df, group_var = sex, sum_var = n,
+             high_group_var = region)
+
+# Correct
+process_data(data = df, group_var = sex, sum_var = n,
+             high_group_var = "region")
+```

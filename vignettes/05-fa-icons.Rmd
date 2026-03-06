@@ -1,0 +1,48 @@
+---
+title: "fa_icons()"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{05 fa_icons()}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  message  = FALSE,
+  warning  = FALSE
+)
+library(ggpop)
+```
+
+`fa_icons()` searches the bundled Font Awesome icon list by keyword. Use it to
+find valid icon names before building your `icon` column.
+
+## Search by keyword
+
+```{r search, eval = FALSE}
+fa_icons(query = "person")
+fa_icons(query = "car")
+fa_icons(query = "heart")
+```
+
+```{r search-show}
+head(fa_icons(query = "person"), 8)
+```
+
+## Common icon categories
+
+Some frequently used categories and example names:
+
+| Category | Example names |
+|:---|:---|
+| People | `person`, `person-dress`, `user`, `child` |
+| Health | `heart`, `stethoscope`, `syringe`, `pill` |
+| Transport | `car`, `bicycle`, `plane`, `bus` |
+| Nature | `tree`, `leaf`, `seedling`, `sun` |
+| UI / shapes | `circle`, `square`, `star`, `check` |
+
+Use `fa_icons(query = "...")` to explore any category. The `name` column in the
+result is what goes in your `icon` column or the `icon` parameter.
