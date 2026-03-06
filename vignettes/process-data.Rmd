@@ -1,0 +1,68 @@
+---
+title: "process_data()"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{process_data()}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse  = TRUE,
+  comment   = "#>",
+  message   = FALSE,
+  warning   = FALSE
+)
+library(ggpop)
+library(dplyr)
+```
+
+`process_data()` converts a count-based data frame to one row per icon.
+`group_var` and `sum_var` are unquoted (tidy eval); `high_group_var` takes a
+character string.
+
+```{r basic}
+df_raw <- data.frame(
+  sex = c("Female", "Male"),
+  n   = c(55, 45)
+)
+
+df_plot <- process_data(
+  data        = df_raw,
+  group_var   = sex,
+  sum_var     = n,
+  sample_size = 20
+)
+
+head(df_plot, 4)
+```
+
+The result has one row per icon. The `type` column carries the original group
+label and is what you map to `color` and `icon` in `geom_pop()`.
+
+## With `high_group_var`
+
+Use `high_group_var` when your data has a faceting variable. It samples
+independently within each panel so proportions are correct per group.
+
+```{r facet}
+df_region_raw <- data.frame(
+  region = c("North", "North", "South", "South"),
+  sex    = c("Female", "Male", "Female", "Male"),
+  n      = c(30, 20, 25, 25)
+)
+
+df_region <- process_data(
+  data           = df_region_raw,
+  group_var      = sex,
+  sum_var        = n,
+  sample_size    = 20,
+  high_group_var = "region"
+)
+
+head(df_region, 4)
+```
+
+The `group` column in the output contains the panel label — pass it to
+`facet_wrap(~group)` and `geom_pop(facet = group)`.
