@@ -389,83 +389,132 @@ ggplot(df_grid, aes(x = x, y = y)) +
 
 ------------------------------------------------------------------------
 
-## Example 5: Combined Geoms
+## Example 5: Combined Geoms in Cost-Effectiveness Analysis
 
   
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-combined with
-[`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html),
-reference lines, and annotations.
+combined with `calculate_icers()`, reference lines, and annotations.
 
 Show the code
 
 ``` r
-# Search the icons you want to use with fa_icons() and note their names:
-fa_icons(query = "pills")
-fa_icons(query = "stethoscope")
-fa_icons(query = "hospital")
+library(ggplot2) # For plotting
+library(ggrepel) # For better label placement
+library(dampack) # For cost-effectiveness analysis functions and data
+library(dplyr)   # For data manipulation
+library(scales)  # For formatting scales
 
-df_health <- data.frame(
-  country  = c("Chad", "Mali", "Niger", "Bolivia", "Egypt",
-               "Morocco", "Germany", "France", "Japan"),
-  spend    = c(27, 30, 22, 215, 185, 190, 5986, 4902, 4717),
-  life_exp = c(54, 58, 62, 71, 72, 74, 81, 83, 84),
-  income   = c(rep("Low", 3), rep("Middle", 3), rep("High", 3)),
-  icon     = c(rep("pills", 3), rep("stethoscope", 3), rep("hospital", 3))
-)
 
-df_health$income <- factor(df_health$income,
-  levels = c("Low", "Middle", "High"))
+data("psa_cdiff")
 
-ggplot(df_health, aes(x = spend, y = life_exp,
-                        icon = icon, color = income)) +
-  geom_vline(xintercept = 500, linetype = "dashed",
-             color = "#546E7A", linewidth = 0.5) +
-  geom_hline(yintercept = 72, linetype = "dashed",
-             color = "#546E7A", linewidth = 0.5) +
-  geom_smooth(aes(group = 1), method = "lm", se = TRUE,
-              color = "#78909C", fill = "#ECEFF1",
-              linewidth = 0.7, linetype = "dotted", alpha = 0.4) +
-  geom_icon_point(size = 2, dpi = 100) +
-  geom_label(aes(label = country), color = "white",
-             fill = "#1E3A5F", label.size = 0,
-             label.padding = unit(0.15, "lines"),
-             vjust = -1.3, size = 3) +
-  annotate("text", x = 20, y = 84, label = "EFFICIENT",
-           color = "#546E7A", size = 2.5, hjust = 0, fontface = "bold") +
-  annotate("text", x = 1500, y = 56, label = "COSTLY &\nINEFFICIENT",
-           color = "#546E7A", size = 2.5, hjust = 0,
-           fontface = "bold", lineheight = 0.9) +
-  scale_x_log10(labels = scales::dollar_format()) +
-  scale_color_manual(values = c(
-    "Low"    = "#E53935",
-    "Middle" = "#FFB300",
-    "High"   = "#43A047"
-  )) +
+df_cea <- calculate_icers(cost = summary(psa_cdiff)$meanCost,
+                          effect = summary(psa_cdiff)$meanEffect,
+                          strategies = summary(psa_cdiff)$Strategy)  %>%  
+  as.data.frame()
+
+df_cea <- df_cea  %>% 
+  mutate(
+    icon_type    = case_when(Status == "ND" ~ "check-to-slot",
+                             Status == "D"  ~ "ban",
+                             Status == "ED" ~ "exclamation-triangle"),
+    status_label = factor(case_when(Status == "ND" ~ "Non-Dominated",
+                                    Status == "D"  ~ "Strongly Dominated",
+                                    Status == "ED" ~ "Extended Dominance"),
+                          levels = c("Non-Dominated", "Extended Dominance", 
+                                     "Strongly Dominated")),
+    icer_label   = ifelse(!is.na(ICER),
+                          paste0(Strategy, "\n$", formatC(round(ICER), 
+                                                          big.mark = ",", 
+                                                          format = "d"), "/QALY"),
+                          Strategy))
+
+df_frontier <- df_cea  %>%  filter(Status == "ND")  %>%  arrange(Effect)
+
+wtp    <- 50000
+origin <- df_frontier  %>%  slice(1)
+df_wtp <- data.frame(x = seq(min(df_cea$Effect) - 0.005, max(df_cea$Effect) + 0.005, 
+                             length.out = 200))  %>% 
+  mutate(y = origin$Cost + wtp * (x - origin$Effect))
+
+df_selected <- df_frontier  %>%  
+  filter(is.na(ICER) | ICER <= wtp)  %>%  
+  slice_tail(n = 1) %>% 
+  mutate(icon = "circle")
+
+bg_dark  <- "#0D1B2A"
+bg_panel <- "#112236"
+grid_col <- "#1E3A5F"
+text_col <- "#E0E8F0"
+
+status_colors <- c("Non-Dominated" = "#06D6A0", 
+                   "Strongly Dominated" = "#FF6B6B",
+                   "Extended Dominance" = "#FCA311")
+
+
+ggplot(df_cea, aes(x = Effect, y = Cost, icon = icon_type, color = status_label)) +
+  # Selected strategy ring + label
+  geom_icon_point(data = df_selected, aes(x = Effect, y = Cost, icon = icon),
+             size = 1.5, dpi =120, color = "#FFD166") +
+  # Frontier line
+  geom_line(data = df_frontier, aes(x = Effect, y = Cost, group = 1),
+            color = "#06D6A0", linewidth = 1, alpha = 0.6, inherit.aes = FALSE) +
+  # Icons + labels
+  geom_icon_point(size = 1, dpi = 120) +
+  geom_label(aes(label = icer_label, color = status_label),
+             label.size = 0.4, label.padding = unit(0.25, "lines"),
+             label.r = unit(0.05, "lines"),
+             size = 2.5, fontface = "bold", lineheight = 0.95,
+             vjust = -0.9, hjust = 0.5, alpha = 0.15,
+             nudge_x = .0001,
+             show.legend = FALSE) +
+  annotate("label", x = df_selected$Effect, y = df_selected$Cost,
+           label = "\u2605 SELECTED\n@ $50k WTP", color = "#FFB347", 
+           fill = "white",
+           label.size = 0, size = 2.4, hjust = .5, 
+           vjust = 1.5, lineheight = 0.95) +
+  # Scales
+  scale_color_manual(values = status_colors) +
+  scale_y_continuous(labels = dollar_format(accuracy = 1),
+                     expand = expansion(mult = c(0.05, 0.15))) +
+  scale_x_continuous(labels = number_format(accuracy = 0.01)) +
+  # Theme
   theme_pop() +
   theme(
-    plot.background   = element_blank(),
-    panel.background  = element_blank(),
-    legend.background = element_blank(),
-    legend.key        = element_blank(),
-    legend.text = element_text(color = "white", size = 9),
-    axis.text         = element_text(color = "white", size = 9),
-    axis.title        = element_text(color = "white", size = 10),
-    plot.title = element_text(color = "white", size = 14, face = "bold", hjust = 0.5),
-    plot.subtitle = element_text(color = "white", size = 10)
+    plot.background       = element_rect(fill = bg_dark,    color = NA),
+    panel.background      = element_rect(fill = bg_panel,   color = NA),
+    panel.grid.major      = element_line(color = grid_col,  linewidth = 0.4),
+    panel.grid.minor      = element_line(color = grid_col,  linewidth = 0.2),
+    axis.text             = element_text(color = text_col,  size = 12, 
+                                         family = "mono"),
+    axis.title            = element_text(color = text_col,  size = 10,  
+                                         face = "bold"),
+    axis.ticks            = element_line(color = grid_col),
+    legend.background     = element_rect(fill = bg_dark,    color = NA),
+    legend.box.background = element_rect(fill = bg_panel,   color = "#1E3A5F", 
+                                         linewidth = 0.5),
+    legend.key            = element_blank(),
+    legend.text           = element_text(color = text_col,  size = 9),
+    legend.position        = c("bottom"),
+    legend.title          = element_text(color = text_col,  size = 10, 
+                                         face = "bold"),
+    legend.margin         = margin(6, 8, 6, 8),
+    plot.margin            = margin(t = 20, r = 10, b = 10, l = 10),
+    plot.title            = element_text(color = "white",   size = 15, 
+                                         face = "bold", hjust = 0.5),
+    plot.caption          = element_text(color = "#4A6A8A", size = 7.5, 
+                                         hjust = 1,   margin = margin(t = 10))
   ) +
-  scale_legend_icon(size = 6) +
+  coord_cartesian(clip = "off") +
+  scale_legend_icon(size = 5) +
   labs(
-    title    = "More Spending \u2260 Longer Lives",
-    subtitle = "Health expenditure per capita vs. life expectancy  \u00b7  X-axis is log-scaled",
-    x        = "Health Spending per Capita (log scale)",
-    y        = "Life Expectancy (years)",
-    color    = "Income Group"
+    title    = "Cost-Effectiveness of C. diff Treatment Strategies",
+    x        = "Effectiveness (QALYs)", y = "Mean Cost (USD)", color = "Dominance Status",
+    caption  = "Rajasingham et al. (2020) Clin Infect Dis  \u00b7  Reproduced via {dampack}"
   )
 ```
 
-![](examples-geom-icon-point_files/figure-html/combined-1.png)
+![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/cea_icon_plot.png)
 
   
 

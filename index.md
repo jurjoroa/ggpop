@@ -387,17 +387,15 @@ Cap](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/tech
 
 Tech Brand Revenue vs. Market Cap
 
-### Featured Example: More Spending ≠ Longer Lives
+### Featured Example: Cost-Effectiveness of Health Spending
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-combined with
-[`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html),
-reference lines, country labels, and quadrant annotations.
+combined with `calculate_icers()`, reference lines, and annotations.
 
-![Health Spending vs Life
-Expectancy](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/health_spending_life_exp.png)
+**[Code available in ggpop package
+website](https://jurjoroa.github.io/ggpop/articles/examples-geom-icon-point.html#example-5-combined-geoms-in-cost-effectiveness-analysis)**.
 
-Health Spending vs Life Expectancy
+![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/cea_icon_plot.png)
 
 ------------------------------------------------------------------------
 
@@ -406,7 +404,9 @@ Health Spending vs Life Expectancy
 ### Animated Markov simulation model example
 
 Sick-Sicker cohort animation (ages 40 to 100) built with `ggpop` and
-`gganimate`: **[Code available in ggpop package
+`gganimate`:
+
+**[Code available in ggpop package
 website](https://jurjoroa.github.io/ggpop/articles/examples-markov-sick-sicker.html)**.
 
 ![Markov Model
