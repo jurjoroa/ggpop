@@ -483,7 +483,7 @@ ggplot(data = df_labeled, aes(icon = icon, color = gender)) +
 
 ------------------------------------------------------------------------
 
-## Example 7:Animated Markov Cohort (Sick-Sicker)
+## Example 7: Animated Markov Cohort (Sick-Sicker)
 
 Animated Sick-Sicker model tracking disease progression from age 40 to
 100 across four states: Healthy, Sick, Sicker, and Death.
