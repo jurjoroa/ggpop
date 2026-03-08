@@ -60,12 +60,17 @@ template:
           });
         });
 
+        var LOGO_LIGHT = 'https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/shp.png';
+        var LOGO_DARK  = 'https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/shp-dark.png';
+
         function updateBtn(t) {
           var icon = document.querySelector('#ggpop-theme-btn .theme-icon');
           if (!icon) return;
           /* t='light' = dark mode active → show sun (click to go light)
              t='dark'  = light mode active → show moon (click to go dark) */
           icon.className = 'fa theme-icon ' + (t === 'light' ? 'fa-sun' : 'fa-moon');
+          var logo = document.getElementById('footer-logo');
+          if (logo) logo.src = t === 'dark' ? LOGO_DARK : LOGO_LIGHT;
         }
 
         function inject() {
@@ -90,9 +95,14 @@ template:
           });
         }
 
+        function initLogo() {
+          var logo = document.getElementById('footer-logo');
+          if (logo) logo.src = theme === 'dark' ? LOGO_DARK : LOGO_LIGHT;
+        }
+
         document.readyState === 'loading'
-          ? document.addEventListener('DOMContentLoaded', inject)
-          : inject();
+          ? document.addEventListener('DOMContentLoaded', function () { inject(); initLogo(); })
+          : (inject(), initLogo());
       })();
       </script>
 
@@ -155,7 +165,7 @@ footer:
     left: [package_logo, developed_by]
     right: built_with
   components:
-    package_logo: "<a href='https://jurjoroa.github.io/ggpop/'><img src='https://jurjoroa.github.io/ggpop/inst/figures/shp.png' height='40' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
+    package_logo: "<a href='https://jurjoroa.github.io/ggpop/'><img id='footer-logo' src='https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/shp.png' height='25' alt='ggpop' style='vertical-align: middle; margin-right: 6px;'></a>"
 
 articles:
   - title: "New to R? Start Here"
