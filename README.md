@@ -11,7 +11,6 @@
 [![GitHub issues](https://img.shields.io/github/issues/jurjoroa/ggpop)](https://github.com/jurjoroa/ggpop/issues)
 [![GitHub last commit](https://img.shields.io/github/last-commit/jurjoroa/ggpop)](https://github.com/jurjoroa/ggpop/commits/main)
 [![pkgdown](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://jurjoroa.github.io/ggpop/)
-[![codecov](https://app.codecov.io/gh/jurjoroa/ggpop/branch/main/graph/badge.svg)](https://app.codecov.io/gh/jurjoroa/ggpop)
 <!-- badges: end -->
 
 > **Turn numbers into people. Turn data into stories.**
@@ -355,12 +354,13 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 
 ![Tech Brand Revenue vs. Market Cap](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/tech_brands_revenue_marketcap.png)
 
-### Featured Example: More Spending ≠ Longer Lives
+### Featured Example: Cost-Effectiveness of Health Spending
 
-`geom_icon_point()` combined with `geom_smooth()`, reference lines, country labels, and quadrant annotations.
+`geom_icon_point()` combined with `calculate_icers()`, reference lines, and annotations.
 
+**[Code available in ggpop package website](https://jurjoroa.github.io/ggpop/articles/examples-geom-icon-point.html#example-5-combined-geoms-in-cost-effectiveness-analysis)**.
 
-![Health Spending vs Life Expectancy](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/health_spending_life_exp.png)
+![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/cea_icon_plot.png)
 
 ---
 
@@ -369,6 +369,7 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 ### Animated Markov simulation model example
 
 Sick-Sicker cohort animation (ages 40 to 100) built with `ggpop` and `gganimate`:
+
 **[Code available in ggpop package website](https://jurjoroa.github.io/ggpop/articles/examples-markov-sick-sicker.html)**.
 
 ![Markov Model Simulation](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/sick_sicker_animation.gif)
