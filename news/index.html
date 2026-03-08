@@ -788,7 +788,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p><a href="https://jurjoroa.github.io/ggpop/"><img src="https://jurjoroa.github.io/ggpop/inst/figures/shp.png" height="40" alt="ggpop" style="vertical-align: middle; margin-right: 6px;"></a> Developed by <a href="https://github.com/jurjoroa" class="external-link">Jorge A. Roa-Contreras</a>, <a href="https://orcid.org/0009-0000-9324-5653" class="external-link">Ralitza Soultanova</a>, <a href="https://orcid.org/0000-0001-5076-1172" class="external-link">Fernando Alarid-Escudero</a>, <a href="https://orcid.org/0000-0002-8352-7080" class="external-link">Carlos Pineda-Antunez</a>.</p>
+  <p><a href="https://jurjoroa.github.io/ggpop/"><img id="footer-logo" src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/shp.png" height="25" alt="ggpop" style="vertical-align: middle; margin-right: 6px;"></a> Developed by <a href="https://github.com/jurjoroa" class="external-link">Jorge A. Roa-Contreras</a>, <a href="https://orcid.org/0009-0000-9324-5653" class="external-link">Ralitza Soultanova</a>, <a href="https://orcid.org/0000-0001-5076-1172" class="external-link">Fernando Alarid-Escudero</a>, <a href="https://orcid.org/0000-0002-8352-7080" class="external-link">Carlos Pineda-Antunez</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
@@ -812,12 +812,17 @@
     });
   });
 
+  var LOGO_LIGHT = 'https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/shp.png';
+  var LOGO_DARK  = 'https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/shp-dark.png';
+
   function updateBtn(t) {
     var icon = document.querySelector('#ggpop-theme-btn .theme-icon');
     if (!icon) return;
     /* t='light' = dark mode active → show sun (click to go light)
        t='dark'  = light mode active → show moon (click to go dark) */
     icon.className = 'fa theme-icon ' + (t === 'light' ? 'fa-sun' : 'fa-moon');
+    var logo = document.getElementById('footer-logo');
+    if (logo) logo.src = t === 'dark' ? LOGO_DARK : LOGO_LIGHT;
   }
 
   function inject() {
@@ -842,9 +847,14 @@
     });
   }
 
+  function initLogo() {
+    var logo = document.getElementById('footer-logo');
+    if (logo) logo.src = theme === 'dark' ? LOGO_DARK : LOGO_LIGHT;
+  }
+
   document.readyState === 'loading'
-    ? document.addEventListener('DOMContentLoaded', inject)
-    : inject();
+    ? document.addEventListener('DOMContentLoaded', function () { inject(); initLogo(); })
+    : (inject(), initLogo());
 })();
 </script></body></html>
 
