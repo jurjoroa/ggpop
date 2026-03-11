@@ -111,7 +111,7 @@ geom_icon_point uses standard ggplot2 scatter plot aesthetics:
 }
 
 \examples{
-\dontrun{
+\donttest{
 library(ggplot2)
 data <- data.frame(
   x = rnorm(20),

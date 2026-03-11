@@ -13,15 +13,15 @@
 #' @return A ggplot2 theme object that can be added to a plot.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' library(ggplot2)
+#' df <- data.frame(
+#'   type = rep(c("A", "B"), each = 10),
+#'   icon = rep(c("circle", "square"), each = 10)
+#' )
 #' ggplot(df, aes(icon = icon, color = type)) +
 #'   geom_pop() +
 #'   scale_legend_icon(size = 20)
-#'
-#' # Equivalent to:
-#' ggplot(df, aes(icon = icon, color = type)) +
-#'   geom_pop() +
-#'   theme(legend.key.size = unit(20, "mm"))
 #' }
 #'
 #' @export

@@ -20,16 +20,15 @@
 #' @return A ggplot2 theme object.
 #'
 #' @examples
-#' \dontrun{
-#' # Basic usage
+#' \donttest{
+#' library(ggplot2)
+#' df <- data.frame(
+#'   type = rep(c("A", "B"), each = 10),
+#'   icon = rep(c("circle", "square"), each = 10)
+#' )
 #' ggplot(data = df, aes(icon = icon, color = type)) +
 #'   geom_pop(size = 1) +
 #'   theme_pop()
-#'
-#' # Large text with bottom legend
-#' ggplot(data = df, aes(icon = icon, color = type)) +
-#'   geom_pop(size = 1) +
-#'   theme_pop(base_size = 40, legend_position = "bottom")
 #' }
 #'
 #' @export
@@ -180,7 +179,12 @@ theme_pop <- function(
 #' @return A ggplot2 theme object.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' library(ggplot2)
+#' df <- data.frame(
+#'   type = rep(c("A", "B"), each = 10),
+#'   icon = rep(c("circle", "square"), each = 10)
+#' )
 #' ggplot(data = df, aes(icon = icon, color = type)) +
 #'   geom_pop(size = 1) +
 #'   theme_pop_dark(base_size = 40)
@@ -234,7 +238,12 @@ theme_pop_dark <- function(
 #' @return A ggplot2 theme object.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' library(ggplot2)
+#' df <- data.frame(
+#'   type = rep(c("A", "B"), each = 10),
+#'   icon = rep(c("circle", "square"), each = 10)
+#' )
 #' ggplot(data = df, aes(icon = icon, color = type)) +
 #'   geom_pop(size = 1) +
 #'   theme_pop_minimal()

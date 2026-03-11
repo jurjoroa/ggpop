@@ -26,7 +26,7 @@
 #' @return A ggplot layer.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(ggplot2)
 #' data <- data.frame(
 #'   x = rnorm(20),

@@ -70,7 +70,7 @@ key_glyph_icon_point <- function(
   if (!is.na(lbl) && nzchar(lbl) &&
       !is.null(icon_by_legend) && length(icon_by_legend) > 0 &&
       !(lbl %in% names(icon_by_legend))) {
-    return(grid::zeroGrob())
+    return(ggplot2::zeroGrob())
   }
 
   ic <- NA_character_
@@ -132,7 +132,7 @@ key_glyph_icon_point <- function(
       # (e.g. fill legend bleeding through).  Return blank rather than rendering
       # a generic fallback icon that would confuse the user.
       if (!is.null(icon_by_legend) && length(icon_by_legend) > 0) {
-        return(grid::zeroGrob())
+        return(ggplot2::zeroGrob())
       }
       ic <- legend_fallback_icon
       break
@@ -201,6 +201,7 @@ key_glyph_icon_point <- function(
 #' @return A grid grob containing the image icons with the specified colors and transparency.
 #' @importFrom magick image_read image_quantize image_colorize image_info
 #' @importFrom grid rasterGrob gTree unit convertUnit
+#' @importFrom ggplot2 zeroGrob
 #' @importFrom grDevices as.raster
 #' @keywords internal
 #' @noRd
