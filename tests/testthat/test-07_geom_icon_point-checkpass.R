@@ -1861,7 +1861,7 @@ testthat::test_that("geom_icon_point dual legend dummy pattern two icon groups",
 
   suppressWarnings(
     expect_doppelganger(
-      title = "geom_icon_point dual legend dummy two groups no icon bleed",
+      title = "dual legend no icon bleed",
       fig   = p
     )
   )
@@ -1947,7 +1947,7 @@ testthat::test_that("geom_icon_point dual legend dummy pattern reordered icons",
 
   suppressWarnings(
     expect_doppelganger(
-      title = "geom_icon_point dual legend dummy reordered icons no bleed",
+      title = "dual legend reordered icons",
       fig   = p
     )
   )
