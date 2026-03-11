@@ -22,6 +22,31 @@ a, a:visited {
   color: white !important;
 }
 
+/* Dropdown toggle button */
+.navbar-nav .nav-item.dropdown > .nav-link,
+.navbar-nav .nav-item.dropdown > .nav-link:visited,
+.navbar-nav .dropdown-toggle,
+.navbar-nav .dropdown-toggle:visited {
+  color: white !important;
+}
+
+.navbar-nav .nav-item.dropdown > .nav-link:hover,
+.navbar-nav .dropdown-toggle:hover {
+  color: #FF6B6B !important;
+}
+
+/* Dropdown menu items */
+.dropdown-menu .dropdown-item,
+.dropdown-menu .dropdown-item:visited {
+  color: white !important;
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+  color: #FF6B6B !important;
+  background-color: transparent !important;
+}
+
 /* ── Navbar tab animation — smooth coral hover + glow ───────────── */
 /* Override Bootstrap's active-color variable so it uses coral instead
    of full-white emphasis, removing the built-in brightness "shadow". */

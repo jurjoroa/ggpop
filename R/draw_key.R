@@ -62,6 +62,17 @@ key_glyph_icon_point <- function(
   icon_by_legend <- params$icon_by_legend
   plot_obj <- params$plot_obj
 
+  # Guard: if the key has a meaningful label that does not match any mapped
+  # icon group, this draw_key call originates from an unrelated legend (e.g.
+  # a fill or linetype legend that ggplot2 routes through geom_image because
+  # that geom lists the aesthetic in its aesthetics()). Return a blank grob
+  # to prevent icon bleed-through into unrelated legend keys.
+  if (!is.na(lbl) && nzchar(lbl) &&
+      !is.null(icon_by_legend) && length(icon_by_legend) > 0 &&
+      !(lbl %in% names(icon_by_legend))) {
+    return(grid::zeroGrob())
+  }
+
   ic <- NA_character_
 
   for (mode in legend_resolution_order) {
@@ -116,6 +127,13 @@ key_glyph_icon_point <- function(
     }
 
     if (mode == "fallback") {
+      # If icon_by_legend is defined (this IS an icon layer) but nothing matched,
+      # the most likely cause is that draw_key was called for an unrelated guide
+      # (e.g. fill legend bleeding through).  Return blank rather than rendering
+      # a generic fallback icon that would confuse the user.
+      if (!is.null(icon_by_legend) && length(icon_by_legend) > 0) {
+        return(grid::zeroGrob())
+      }
       ic <- legend_fallback_icon
       break
     }
