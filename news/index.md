@@ -51,6 +51,25 @@ been removed and the package has been finalized.
   ensuring legend icons follow factor level order rather than data row
   order ([\#294](https://github.com/jurjoroa/ggpop/issues/294)).
 
+- Fixed icon bleed into unrelated legends in
+  [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md).
+  Icons were rendered behind fill legend keys because `geom_image` lists
+  `fill` in its default aesthetics, causing ggplot2 to invoke
+  `key_glyph_icon_point` for fill guide keys. Fixed by setting
+  `show.legend = c(colour = ..., fill = FALSE)` to exclude the layer
+  from fill guides, with a fallback guard in `key_glyph_icon_point`
+  returning a blank grob when no icon label matches
+  ([\#371](https://github.com/jurjoroa/ggpop/issues/371)).
+
+- Fixed icon-label mismatch in
+  [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
+  when using a dummy data frame with `inherit.aes = FALSE`. Inherited
+  plot-level mappings were overriding the layer’s own mappings in
+  `combined_mapping`, causing icons to resolve alphabetically by icon
+  name instead of by group label. Fixed by giving layer mappings
+  priority over inherited ones
+  ([\#371](https://github.com/jurjoroa/ggpop/issues/371)).
+
 ### Improvements
 
 - Refactored internal geom functions to be fully ggplot-native, using
@@ -152,6 +171,7 @@ Issues are listed in chronological merge order.
 - \#341
 - \#346
 - \#353
+- \#371
 
 ### Version
 

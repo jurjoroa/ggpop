@@ -75,6 +75,8 @@
 <li><p>Fixed false “Facet / grouping caution” warning and incorrect per-group icon positioning triggered when a user-provided data frame happened to contain a column named <code>group</code>. Both the warning and the auto-facet detection are now gated on whether the data was produced by <code><a href="../reference/process_data.html">process_data()</a></code>, so raw data frames work correctly regardless of column names (<a href="https://github.com/jurjoroa/ggpop/issues/346" class="external-link">#346</a>).</p></li>
 <li><p>Fixed icon size inconsistency across different ggplot2 themes and corrected <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> to properly reflect theme settings (<a href="https://github.com/jurjoroa/ggpop/issues/287" class="external-link">#287</a>).</p></li>
 <li><p>Fixed legend icon ordering for factor variables mapped to <code>colour</code>, ensuring legend icons follow factor level order rather than data row order (<a href="https://github.com/jurjoroa/ggpop/issues/294" class="external-link">#294</a>).</p></li>
+<li><p>Fixed icon bleed into unrelated legends in <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>. Icons were rendered behind fill legend keys because <code>geom_image</code> lists <code>fill</code> in its default aesthetics, causing ggplot2 to invoke <code>key_glyph_icon_point</code> for fill guide keys. Fixed by setting <code>show.legend = c(colour = ..., fill = FALSE)</code> to exclude the layer from fill guides, with a fallback guard in <code>key_glyph_icon_point</code> returning a blank grob when no icon label matches (<a href="https://github.com/jurjoroa/ggpop/issues/371" class="external-link">#371</a>).</p></li>
+<li><p>Fixed icon-label mismatch in <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> when using a dummy data frame with <code>inherit.aes = FALSE</code>. Inherited plot-level mappings were overriding the layer’s own mappings in <code>combined_mapping</code>, causing icons to resolve alphabetically by icon name instead of by group label. Fixed by giving layer mappings priority over inherited ones (<a href="https://github.com/jurjoroa/ggpop/issues/371" class="external-link">#371</a>).</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-1-7-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-1-7-0"></a></h3>
@@ -121,6 +123,7 @@
 <li>#341</li>
 <li>#346</li>
 <li>#353</li>
+<li>#371</li>
 </ul></div>
 <div class="section level3">
 <h3 id="version-1-7-0">Version<a class="anchor" aria-label="anchor" href="#version-1-7-0"></a></h3>
