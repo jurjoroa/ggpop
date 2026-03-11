@@ -186,7 +186,20 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # ggimage::geom_image() does not honour show.legend, so we set it directly
   # on the layer object — ggplot2 reads this field during legend construction.
-  ggpop_layer$show.legend <- show.legend
+  #
+  # Use a named logical vector (ggplot2 >= 3.3.0) to restrict participation to
+  # the colour guide only.  geom_image lists fill in its default_aes, which
+  # causes ggplot2 to route it through the fill guide and call key_glyph_icon_point
+  # for fill legend keys — producing icon bleed.  Explicitly setting fill = FALSE
+  # prevents this regardless of what ggplot2 version infers from Geom$aesthetics().
+  if (isFALSE(show.legend)) {
+    ggpop_layer$show.legend <- FALSE
+  } else {
+    ggpop_layer$show.legend <- c(
+      colour = if (is.na(show.legend)) NA else isTRUE(show.legend),
+      fill   = FALSE
+    )
+  }
 
   ggpop_layer$geom_params$icon_by_legend <- icon_by_legend
   ggpop_layer$geom_params$plot_obj <- plot_obj
