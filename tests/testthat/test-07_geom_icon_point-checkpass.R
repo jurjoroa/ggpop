@@ -1785,5 +1785,175 @@ testthat::test_that("geom_icon_point alpha literal in aes builds without error",
 })
 
 # ******************************************************************************
+## Dual-legend dummy-data pattern (icon legend + fill legend) ------------------
+# ******************************************************************************
+
+testthat::test_that("geom_icon_point dual legend dummy pattern two icon groups", {
+  # Two treatment arms (A=circle, B=star) x two statuses (ND, D)
+  # Main data drives the plot; dummy layers drive the two separate legends.
+  df_main <- data.frame(
+    x         = c(1, 2, 3, 4),
+    y         = c(2, 4, 1, 3),
+    icon_type = c("circle", "star", "circle", "star"),
+    status    = factor(c("ND", "ND", "D", "D"), levels = c("ND", "D")),
+    stringsAsFactors = FALSE
+  )
+
+  dummy_icons <- data.frame(
+    x         = c(NA_real_, NA_real_),
+    y         = c(NA_real_, NA_real_),
+    icon_type = c("circle", "star"),
+    group     = factor(c("A", "B"), levels = c("A", "B")),
+    stringsAsFactors = FALSE
+  )
+
+  dummy_status <- data.frame(
+    x      = c(NA_real_, NA_real_),
+    y      = c(NA_real_, NA_real_),
+    status = factor(c("ND", "D"), levels = c("ND", "D")),
+    stringsAsFactors = FALSE
+  )
+
+  status_cols <- c("ND" = "#06D6A0", "D" = "#E69F00")
+
+  p <- suppressWarnings(
+    ggplot2::ggplot(
+      df_main,
+      ggplot2::aes(x = x, y = y, icon = icon_type, color = status)
+    ) +
+      geom_icon_point(size = 1, dpi = 50, show.legend = FALSE) +
+      geom_icon_point(
+        data        = dummy_icons,
+        ggplot2::aes(x = x, y = y, icon = icon_type, color = group),
+        size        = 1,
+        dpi         = 50,
+        inherit.aes = FALSE,
+        show.legend = TRUE
+      ) +
+      ggplot2::geom_point(
+        data        = dummy_status,
+        ggplot2::aes(x = x, y = y, fill = status),
+        shape       = 22,
+        size        = 0,
+        inherit.aes = FALSE,
+        show.legend = TRUE
+      ) +
+      ggplot2::scale_color_manual(
+        name   = "Arm",
+        values = c(status_cols, "A" = "black", "B" = "black"),
+        breaks = c("A", "B"),
+        guide  = ggplot2::guide_legend(
+          order        = 1,
+          override.aes = list(alpha = 1, size = 3, color = "black",
+                              fill = NA, shape = NA)
+        )
+      ) +
+      ggplot2::scale_fill_manual(
+        name   = "Status",
+        values = status_cols,
+        guide  = ggplot2::guide_legend(
+          order        = 2,
+          override.aes = list(alpha = 1, size = 4, shape = 22)
+        )
+      ) +
+      ggplot2::theme_void()
+  )
+
+  suppressWarnings(
+    expect_doppelganger(
+      title = "geom_icon_point dual legend dummy two groups no icon bleed",
+      fig   = p
+    )
+  )
+})
+
+
+testthat::test_that("geom_icon_point dual legend dummy pattern reordered icons", {
+  # Three arms in non-alphabetical factor order to verify icon-label matching
+  # by label (not by alphabetical position of icon names).
+  # icon names alphabetically: circle < heart < star
+  # factor levels: Zeta->star, Alpha->circle, Mu->heart
+  # If resolved by index the mapping would be wrong (Zeta would get circle).
+  df_main <- data.frame(
+    x         = c(1, 2, 3, 4, 5, 6),
+    y         = c(2, 3, 1, 4, 2, 3),
+    icon_type = c("star", "circle", "heart", "star", "circle", "heart"),
+    status    = factor(c("ND", "ED", "D", "ND", "ED", "D"),
+                       levels = c("ND", "ED", "D")),
+    stringsAsFactors = FALSE
+  )
+
+  dummy_icons <- data.frame(
+    x         = c(NA_real_, NA_real_, NA_real_),
+    y         = c(NA_real_, NA_real_, NA_real_),
+    icon_type = c("star", "circle", "heart"),
+    group     = factor(c("Zeta", "Alpha", "Mu"),
+                       levels = c("Zeta", "Alpha", "Mu")),
+    stringsAsFactors = FALSE
+  )
+
+  dummy_status <- data.frame(
+    x      = c(NA_real_, NA_real_, NA_real_),
+    y      = c(NA_real_, NA_real_, NA_real_),
+    status = factor(c("ND", "ED", "D"), levels = c("ND", "ED", "D")),
+    stringsAsFactors = FALSE
+  )
+
+  status_cols <- c("ND" = "#06D6A0", "ED" = "#1A78C2", "D" = "#E69F00")
+
+  p <- suppressWarnings(
+    ggplot2::ggplot(
+      df_main,
+      ggplot2::aes(x = x, y = y, icon = icon_type, color = status)
+    ) +
+      geom_icon_point(size = 1, dpi = 50, show.legend = FALSE) +
+      geom_icon_point(
+        data        = dummy_icons,
+        ggplot2::aes(x = x, y = y, icon = icon_type, color = group),
+        size        = 1,
+        dpi         = 50,
+        inherit.aes = FALSE,
+        show.legend = TRUE
+      ) +
+      ggplot2::geom_point(
+        data        = dummy_status,
+        ggplot2::aes(x = x, y = y, fill = status),
+        shape       = 22,
+        size        = 0,
+        inherit.aes = FALSE,
+        show.legend = TRUE
+      ) +
+      ggplot2::scale_color_manual(
+        name   = "Arm",
+        values = c(status_cols, "Zeta" = "black", "Alpha" = "black",
+                   "Mu" = "black"),
+        breaks = c("Zeta", "Alpha", "Mu"),
+        guide  = ggplot2::guide_legend(
+          order        = 1,
+          override.aes = list(alpha = 1, size = 3, color = "black",
+                              fill = NA, shape = NA)
+        )
+      ) +
+      ggplot2::scale_fill_manual(
+        name   = "Status",
+        values = status_cols,
+        guide  = ggplot2::guide_legend(
+          order        = 2,
+          override.aes = list(alpha = 1, size = 4, shape = 22)
+        )
+      ) +
+      ggplot2::theme_void()
+  )
+
+  suppressWarnings(
+    expect_doppelganger(
+      title = "geom_icon_point dual legend dummy reordered icons no bleed",
+      fig   = p
+    )
+  )
+})
+
+
+# ******************************************************************************
 # END --------------------------------------------------------------------------
 # ******************************************************************************
