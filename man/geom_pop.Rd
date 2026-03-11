@@ -135,7 +135,7 @@ geom_pop understands the following aesthetics:
 }
 
 \examples{
-\dontrun{
+\donttest{
 library(ggplot2)
 
 df <- data.frame(

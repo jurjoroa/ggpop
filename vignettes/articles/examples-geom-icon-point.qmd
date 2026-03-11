@@ -1102,7 +1102,7 @@ Cost-effectiveness plane for HIV screening strategies (Paltiel et al. 2006, *Ann
 ```{r}
 #| label: hiv-cea-eval
 #| fig-width: 10
-#| fig-height: 8
+#| fig-height: 9
 #| eval: false
 
 library(ggpop)
@@ -1203,7 +1203,7 @@ suppressWarnings(
 ```{r}
 #| label: hiv-cea
 #| fig-width: 10
-#| fig-height: 7
+#| fig-height: 9
 #| message: false
 #| warning: false
 #| echo: false
@@ -1288,14 +1288,15 @@ suppressWarnings(
                               alpha     = 1
                             ))
     ) +
-    theme_minimal(base_size = 13) +
+    theme_minimal(base_size = 16) +
     theme(legend.position = "bottom", legend.box = "vertical",
           panel.grid.minor = element_blank()) +
-    scale_legend_icon(size = 4, which = "HIV Screening") +
+    scale_legend_icon(size = 6, which = "HIV Screening") +
     scale_x_continuous(name = "Effectiveness (QALYs)",
                        labels = scales::number_format(accuracy = 0.01),
-                       expand = expansion(mult = c(0.05, 0.25))) +
-    scale_y_continuous(name = "Cost (USD)", labels = scales::dollar) +
+                       expand = expansion(mult = c(0.05, 0.18))) +
+    scale_y_continuous(name = "Cost (USD)", labels = scales::dollar,
+                       expand = expansion(mult = c(0.05, 0.18))) +
     labs(title = "Cost-Effectiveness of HIV Screening Strategies",
          subtitle = "Paltiel et al. (2006) Ann Intern Med -- High-risk population")
 )
