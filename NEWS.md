@@ -10,6 +10,8 @@ This release of `ggpop` delivers new theming support, expanded icon customizatio
 - Fixed false "Facet / grouping caution" warning and incorrect per-group icon positioning triggered when a user-provided data frame happened to contain a column named `group`. Both the warning and the auto-facet detection are now gated on whether the data was produced by `process_data()`, so raw data frames work correctly regardless of column names (#346).
 - Fixed icon size inconsistency across different ggplot2 themes and corrected `scale_legend_icon()` to properly reflect theme settings (#287).
 - Fixed legend icon ordering for factor variables mapped to `colour`, ensuring legend icons follow factor level order rather than data row order (#294).
+- Fixed icon bleed into unrelated legends in `geom_icon_point()`. Icons were rendered behind fill legend keys because `geom_image` lists `fill` in its default aesthetics, causing ggplot2 to invoke `key_glyph_icon_point` for fill guide keys. Fixed by setting `show.legend = c(colour = ..., fill = FALSE)` to exclude the layer from fill guides, with a fallback guard in `key_glyph_icon_point` returning a blank grob when no icon label matches (#371).
+- Fixed icon-label mismatch in `geom_icon_point()` when using a dummy data frame with `inherit.aes = FALSE`. Inherited plot-level mappings were overriding the layer's own mappings in `combined_mapping`, causing icons to resolve alphabetically by icon name instead of by group label. Fixed by giving layer mappings priority over inherited ones (#371).
 
 ## Improvements
 
@@ -56,6 +58,7 @@ Issues are listed in chronological merge order.
 - #341
 - #346
 - #353
+- #371
 
 ## Version
 
