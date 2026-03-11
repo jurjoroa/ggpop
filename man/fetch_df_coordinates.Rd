@@ -22,7 +22,7 @@ using \code{\link[tools]{R_user_dir}}. If the dataset is already cached, it will
 be loaded directly from the cache instead of downloading again.
 }
 \examples{
-\dontrun{
+\donttest{
 df <- fetch_df_coordinates()
 head(df)
 }

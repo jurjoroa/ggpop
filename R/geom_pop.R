@@ -38,7 +38,7 @@
 #'   \code{\link[ggimage]{geom_image}}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(ggplot2)
 #'
 #' df <- data.frame(
