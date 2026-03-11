@@ -157,7 +157,7 @@ geom_icon_point uses standard ggplot2 scatter plot aesthetics:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 library(ggplot2)
 data <- data.frame(
   x = rnorm(20),
@@ -169,9 +169,40 @@ data <- data.frame(
 # Map icon to a column
 ggplot(data, aes(x = x, y = y, icon = icon, color = category)) +
   geom_icon_point()
+#> Warning: Multiple icons per color/group detected.
+#>   
+#> ! Why you are seeing this warning:
+#>   The legend can only display ONE icon per group, but some groups have
+#>   multiple:
+#>   
+#> - A: 2 icons (circle, heart)
+#> - B: 3 icons (star, heart, circle)
+#> - C: 2 icons (circle, heart)
+#>   
+#> ℹ What happens:
+#>   - The most frequent icon for each group will be shown in the legend
+#>   - Other icons in that group will still appear in the plot
+#>   - This may confuse viewers if icons have different meanings
+#>   
+#> ℹ Recommended fixes:
+#>   
+#>   Option 1: Use consistent icons per group
+#>   `df <- df %>% mutate(icon = case_when(`
+#>   `sex == 'A' ~ 'male',`
+#>   `sex == 'B' ~ 'female'`
+#>   `))`
+#>   
+#>   Option 2: Create a separate grouping variable
+#>   `df <- df %>% mutate(group = paste(sex, icon, sep = '_'))`
+#>   `ggplot() + geom_pop(aes(icon = icon, color = group))`
+#>   
+#>   Option 3: Set legend_icons = FALSE to use point markers
+#>   `geom_pop(..., legend_icons = FALSE)`
+
 
 # Use a fixed icon
 ggplot(data, aes(x = x, y = y, color = category)) +
   geom_icon_point(icon = "star")
-} # }
+
+# }
 ```

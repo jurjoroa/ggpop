@@ -197,7 +197,7 @@ geom_pop understands the following aesthetics:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 library(ggplot2)
 
 df <- data.frame(
@@ -212,5 +212,6 @@ ggplot() +
     size = 3,
     dpi = 80
   )
-} # }
+
+# }
 ```

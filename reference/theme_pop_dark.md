@@ -72,9 +72,15 @@ A ggplot2 theme object.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
+library(ggplot2)
+df <- data.frame(
+  type = rep(c("A", "B"), each = 10),
+  icon = rep(c("circle", "square"), each = 10)
+)
 ggplot(data = df, aes(icon = icon, color = type)) +
   geom_pop(size = 1) +
   theme_pop_dark(base_size = 40)
-} # }
+
+# }
 ```

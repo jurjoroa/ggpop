@@ -126,8 +126,6 @@ ggplot() +
   scale_color_manual(values = c(Female = "#C0392B", Male = "#2980B9")) +
   theme_pop() +
   labs(title = "Population by sex", color = NULL)
-#> ggpop: downloading coordinate data from GitHub (~2 MB) and caching it locally.
-#> This happens once. Future calls will load from cache.
 
 
 ## -------------------------------------------------------

@@ -27,8 +27,17 @@ downloading again.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 df <- fetch_df_coordinates()
+#> ggpop: downloading coordinate data from GitHub (~2 MB) and caching it locally.
+#> This happens once. Future calls will load from cache.
 head(df)
-} # }
+#>   X pos         x1         y1 size
+#> 1 1   1  0.0000000  0.0000000    1
+#> 2 2   1 -0.2622589 -0.6895521   10
+#> 3 3   2  0.2622589 -0.6895521   10
+#> 4 4   3 -0.6542075 -0.3409904   10
+#> 5 5   4  0.6542075 -0.3409904   10
+#> 6 6   5  0.0000000 -0.2353064   10
+# }
 ```
