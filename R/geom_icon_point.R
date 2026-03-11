@@ -77,7 +77,12 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # 04 Prepare mappings + validate inputs ----
 
   mapping_list <- if (!is.null(mapping)) as.list(mapping) else list()
-  combined_mapping <- c(inherited_mapping_list, mapping_list)
+  # Layer mapping takes priority: drop inherited keys already set by the layer
+  # so that e.g. color = group_label overrides inherited color = Status.
+  unique_inherited <- inherited_mapping_list[
+    !names(inherited_mapping_list) %in% names(mapping_list)
+  ]
+  combined_mapping <- c(mapping_list, unique_inherited)
 
   validate_geom_icon_point(
     data, dpi, size, .missing_size, legend_icons, extra_args, mapping_list,
