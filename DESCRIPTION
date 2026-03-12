@@ -24,7 +24,7 @@ Authors@R: c(
              role = c("aut"),
              email = "cpinedaa@uw.edu",
              comment = c(ORCID = "0000-0002-8352-7080")))
-Description: Create visually engaging and informative population charts in R. 'ggpop' allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts. Icon rendering builds on the layered grammar of graphics described in Wickham (2010) <doi:10.1198/jcgs.2009.07098>.
+Description: Create visually engaging and informative population charts in R. 'ggpop' allows users to represent population data proportionally using customizable icons, facilitating the creation of circular representative population charts.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
