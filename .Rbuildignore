@@ -11,3 +11,5 @@
 ^vignettes/\.quarto$
 ^vignettes/articles$
 ^CITATION\.cff$
+^doc$
+^Meta$
