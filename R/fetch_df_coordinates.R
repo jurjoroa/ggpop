@@ -23,8 +23,12 @@
 #' @export
 
 fetch_df_coordinates <- function() {
-  cache_dir <- tools::R_user_dir("ggpop", which = "cache")
-  dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+  if (identical(Sys.getenv("NOT_CRAN"), "true")) {
+    cache_dir <- tools::R_user_dir("ggpop", which = "cache")
+    dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+  } else {
+    cache_dir <- tempdir()
+  }
   cache_file <- file.path(cache_dir, "df_coordinates_final_10_1000.rda")
 
   if (!file.exists(cache_file)) {
