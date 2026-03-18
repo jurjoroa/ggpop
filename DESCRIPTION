@@ -1,8 +1,8 @@
 Type: Package
 Package: ggpop
 Title: Icon-Based Population Charts and Plots for 'ggplot2'
-Version: 1.7.1
-Date: 2026-03-18
+Version: 1.7.0
+Date: 2026-03-06
 Authors@R: c(
     person(given = "Jorge A.",
              family = "Roa-Contreras",
@@ -40,7 +40,7 @@ Suggests:
     ggtext,
     scales,
     reactable
-Config/Needs/website: sf, geofacet, ggtext, quarto
+Config/Needs/website: sf, geofacet, ggtext, quarto, kcuilla/reactablefmtr
 Config/testthat/edition: 3
 Depends:
     R (>= 4.0.5)
