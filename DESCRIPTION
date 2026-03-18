@@ -39,9 +39,8 @@ Suggests:
     ggrepel,
     ggtext,
     scales,
-    reactable,
-    reactablefmtr
-Config/Needs/website: sf, geofacet, ggtext, quarto
+    reactable
+Config/Needs/website: sf, geofacet, ggtext, quarto, kcuilla/reactablefmtr
 Config/testthat/edition: 3
 Depends:
     R (>= 4.0.5)

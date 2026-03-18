@@ -114,6 +114,7 @@ fa_icons(query = "person")
 #| echo: false
 #| message: false
 #| warning: false
+#| eval: requireNamespace("reactablefmtr", quietly = TRUE)
 
 library(reactable)
 library(reactablefmtr)
@@ -319,6 +320,7 @@ fa_icons(query = "bed")
 #| echo: false
 #| message: false
 #| warning: false
+#| eval: requireNamespace("reactablefmtr", quietly = TRUE)
 
 library(reactable)
 library(reactablefmtr)
