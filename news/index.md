@@ -2,6 +2,8 @@
 
 ## ggpop 1.7.1
 
+CRAN release: 2026-03-19
+
 ### Bug Fixes
 
 - Fixed a CRAN NOTE caused by
