@@ -1,6 +1,19 @@
 # Changelog
 
+## ggpop 1.7.1
+
+### Bug Fixes
+
+- Fixed a CRAN NOTE caused by
+  [`fetch_df_coordinates()`](https://jurjoroa.github.io/ggpop/reference/fetch_df_coordinates.md)
+  writing a cache file to `~/.cache/R/ggpop/` during package checks. The
+  function now uses [`tempdir()`](https://rdrr.io/r/base/tempfile.html)
+  when running on CRAN and the persistent user cache only when
+  `NOT_CRAN=true`.
+
 ## ggpop 1.7.0
+
+CRAN release: 2026-03-17
 
 This release of `ggpop` delivers new theming support, expanded icon
 customization, critical bug fixes, and significant internal refactoring
