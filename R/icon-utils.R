@@ -170,6 +170,87 @@ normalize_icon_png <- function(png_path,
   invisible(TRUE)
 }
 
+#' Resolve an icon string to a render source
+#'
+#' Classifies an icon value as a Font Awesome name, a bundled ggpop SVG marker
+#' (shipped under \code{inst/icons}), or a user-supplied local \code{.svg} path.
+#'
+#' @param icon Icon value (Font Awesome name, bundled marker name, or SVG path).
+#'
+#' @return A list with \code{type} (\code{"fa"}, \code{"svg"}, or \code{"none"})
+#'   and \code{path} (the SVG file path, or \code{NA_character_} for FA names).
+#' @keywords internal
+#' @noRd
+resolve_icon_source <- function(icon) {
+  icon <- as.character(icon)
+
+  if (is.na(icon) || !nzchar(icon)) {
+    return(list(type = "none", path = NA_character_))
+  }
+
+  # User-supplied local SVG file
+  if (grepl("\\.svg$", icon, ignore.case = TRUE) && file.exists(icon)) {
+    return(list(type = "svg", path = icon))
+  }
+
+  # Bundled ggpop marker shipped under inst/icons
+  bundled <- system.file("icons", paste0(icon, ".svg"), package = "ggpop")
+  if (nzchar(bundled) && file.exists(bundled)) {
+    return(list(type = "svg", path = bundled))
+  }
+
+  # Otherwise treat as a Font Awesome name
+  list(type = "fa", path = NA_character_)
+}
+
+#' Render an SVG icon to a single-colour PNG
+#'
+#' Reads an SVG, recolours its single fill colour to \code{hex_color} (monochrome
+#' markers only; multi-colour SVGs render unchanged), and rasterizes to PNG. Alpha
+#' is applied with \code{magick::image_fx} - never baked into the SVG fill, which
+#' mirrors the legend's safe transparency path.
+#'
+#' @param svg_path Path to the source SVG.
+#' @param png_path Destination PNG path.
+#' @param hex_color Target hex colour for monochrome recolouring.
+#' @param alpha Numeric transparency value in \code{[0, 1]}.
+#' @param dpi Height (pixels) of the rendered PNG.
+#'
+#' @return The destination PNG path, invisibly.
+#' @importFrom rsvg rsvg_png
+#' @keywords internal
+#' @noRd
+render_svg_icon_png <- function(svg_path, png_path, hex_color, alpha, dpi) {
+  svg_txt <- paste(readLines(svg_path, warn = FALSE), collapse = "\n")
+
+  # Recolour the single fill colour used by bundled markers. Multi-colour
+  # user SVGs have no match and render unchanged.
+  svg_txt <- gsub("#000000", hex_color, svg_txt, ignore.case = TRUE)
+  svg_txt <- gsub("#000\\b", hex_color, svg_txt, ignore.case = TRUE)
+
+  tmp_svg <- tempfile(fileext = ".svg")
+  writeLines(svg_txt, tmp_svg)
+
+  # Supersample: an SVG's artwork may not fill its viewBox (markers have
+  # margins), so rendering at exactly `dpi` and then trimming + scaling to
+  # `dpi` would upscale the smaller content and blur the edges. Render well
+  # above the target so the downstream trim/scale always downsamples - giving
+  # dpi-faithful sharpness like fontawesome, for bundled and user SVGs alike.
+  render_h <- min(max(as.integer(dpi) * 3L, 300L), 4000L)
+  rsvg::rsvg_png(tmp_svg, file = png_path, height = render_h)
+
+  if (is.finite(alpha) && alpha < 1) {
+    img <- magick::image_fx(
+      magick::image_read(png_path),
+      expression = paste0("a*", alpha),
+      channel = "Alpha"
+    )
+    magick::image_write(img, png_path)
+  }
+
+  invisible(png_path)
+}
+
 #' Generate and cache icon PNG
 #'
 #' Renders a Font Awesome icon to a PNG, caches it by appearance settings,
@@ -214,8 +295,21 @@ generate_icon_png <- function(icon,
 
   hex_color <- normalize_color(color, fallback_hex = fallback_hex)
   rgba_color <- create_rgba_color(hex_color, alpha)
+
+  # Resolve to a Font Awesome name or an SVG source (bundled marker or
+  # user-supplied .svg). SVG sources use a content hash in the cache key so
+  # different files sharing a basename do not collide.
+  source <- resolve_icon_source(icon)
+  cache_icon <- icon
+  if (source$type == "svg") {
+    cache_icon <- paste0(
+      gsub("[^A-Za-z0-9]+", "-", tools::file_path_sans_ext(basename(source$path))),
+      "-", substr(unname(tools::md5sum(source$path)), 1, 8)
+    )
+  }
+
   png_path <- generate_icon_cache_path(
-    icon,
+    cache_icon,
     hex_color,
     alpha,
     dpi,
@@ -228,8 +322,11 @@ generate_icon_png <- function(icon,
   )
 
   if (!file.exists(png_path)) {
-    if (!is.null(stroke_width) && stroke_width > 0) {
-      # With stroke (stroke color same as fill)
+    if (source$type == "svg") {
+      # Bundled marker or user SVG: recolour + rasterize (no ggimage tint).
+      render_svg_icon_png(source$path, png_path, hex_color, alpha, dpi)
+    } else if (!is.null(stroke_width) && stroke_width > 0) {
+      # Font Awesome with stroke (stroke color same as fill)
       fontawesome::fa_png(
         icon,
         file = png_path,
@@ -239,7 +336,7 @@ generate_icon_png <- function(icon,
         stroke_width = stroke_width
       )
     } else {
-      # No stroke (solid fill only)
+      # Font Awesome, no stroke (solid fill only)
       fontawesome::fa_png(
         icon,
         file = png_path,
