@@ -1,3 +1,9 @@
+# ggpop 1.7.2
+
+## Bug Fixes
+
+- `geom_pop()` and `geom_icon_point()` now bake the mapped colour directly into each icon at draw time instead of relying on `ggimage`'s tinting. The previous approach depended on the installed `magick`/ImageMagick build producing an RGBA bitmap; when it did not, icons rendered black even though the legend showed the correct colours. Colours (including custom `scale_colour_*()` scales) and per-group transparency are now applied deterministically (#380).
+
 # ggpop 1.7.1
 
 ## Bug Fixes
