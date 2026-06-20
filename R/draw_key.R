@@ -164,7 +164,8 @@ key_glyph_icon_point <- function(
 
   stroke_width <- params$stroke_width
 
-  draw_key_pop_image(key_data, params, size, stroke_width = stroke_width)
+  draw_key_pop_image(key_data, params, size, stroke_width = stroke_width,
+    icon_path = params$icon_path)
 }
 
 #' Key drawing function for population-based image keys
@@ -210,6 +211,7 @@ draw_key_pop_image <- function(
   params,
   size,
   stroke_width = NULL,
+  icon_path = NULL,
   cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
   png_px = 480L,
   max_fill = 0.9,
@@ -256,7 +258,7 @@ draw_key_pop_image <- function(
     this_alpha <- data$alpha[i]
     if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- fallback_alpha
 
-    source <- resolve_icon_source(this_icon)
+    source <- resolve_icon_source(this_icon, icon_path)
 
     # Bundled marker or user SVG: recolour + rasterize the vector directly.
     if (source$type == "svg") {

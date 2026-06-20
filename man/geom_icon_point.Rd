@@ -17,6 +17,7 @@ geom_icon_point(
   dpi = 50,
   legend_icons = TRUE,
   stroke_width = NULL,
+  icon_path = NULL,
   ...
 )
 }
@@ -91,6 +92,12 @@ the mapped colour aesthetic.}
 \item{legend_icons}{Show icons in legend (default: TRUE).}
 
 \item{stroke_width}{Numeric. Width of the icon outline/stroke.}
+
+\item{icon_path}{Optional path to a folder of your own SVG icons, referenced
+by file name (without \code{.svg}) through the \code{icon} aesthetic - just
+like a Font Awesome name. Defaults to \code{getOption("ggpop.icon_path")}.
+Monochrome SVGs (\code{fill="#000000"} or \code{currentColor}) are recoloured
+by the mapped colour. See \code{\link{ggpop_markers}}.}
 
 \item{...}{additional parameters}
 }

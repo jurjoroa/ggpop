@@ -26,6 +26,11 @@
 #'   `FALSE` suppresses the layer's legend entries entirely.
 #' @param legend_icons Show icons in legend (default: TRUE).
 #' @param stroke_width Numeric. Width of the icon outline/stroke.
+#' @param icon_path Optional path to a folder of your own SVG icons, referenced
+#'   by file name (without \code{.svg}) through the \code{icon} aesthetic - just
+#'   like a Font Awesome name. Defaults to \code{getOption("ggpop.icon_path")}.
+#'   Monochrome SVGs (\code{fill="#000000"} or \code{currentColor}) are recoloured
+#'   by the mapped colour. See \code{\link{ggpop_markers}}.
 #'
 #' @return A ggplot layer.
 #'
@@ -55,6 +60,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             show.legend = NA, inherit.aes = TRUE, icon = NULL,
                             size = 1, dpi = 50, legend_icons = TRUE,
                             stroke_width = NULL,
+                            icon_path = NULL,
                             ...) {
   # 01 Capture extra args + handle swapped inputs ----
 
@@ -127,7 +133,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 08 Generate icon images  ----
 
-  data <- add_icon_images(data, dpi, stroke_width)
+  data <- add_icon_images(data, dpi, stroke_width, icon_path = icon_path)
 
 
   # 09 Legend setup + warnings ----
@@ -197,7 +203,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # Recolor icons at draw time from the scale-trained colour instead of relying
   # on ggimage's tinting, which renders black on some magick builds (#380).
-  ggpop_layer$geom <- make_geom_pop_image(ggpop_layer$geom, dpi, stroke_width)
+  ggpop_layer$geom <- make_geom_pop_image(ggpop_layer$geom, dpi, stroke_width, icon_path = icon_path)
 
   # ggimage::geom_image() does not honour show.legend, so we set it directly
   # on the layer object — ggplot2 reads this field during legend construction.
@@ -221,6 +227,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   ggpop_layer$geom_params$dpi <- dpi
   ggpop_layer$geom_params$stroke_width <- stroke_width
   ggpop_layer$geom_params$alpha_by_legend <- alpha_by_legend
+  ggpop_layer$geom_params$icon_path <- icon_path
 
   ggpop_layer$ggpop_layer_type <- "icon_point"
   ggpop_layer$ggpop_legend_icons <- isTRUE(legend_icons)

@@ -181,14 +181,25 @@ normalize_icon_png <- function(png_path,
 #'   and \code{path} (the SVG file path, or \code{NA_character_} for FA names).
 #' @keywords internal
 #' @noRd
-resolve_icon_source <- function(icon) {
+# Cached Font Awesome icon-name set, built once per session.
+.ggpop_cache <- new.env(parent = emptyenv())
+fa_icon_names <- function() {
+  if (is.null(.ggpop_cache$fa_names)) {
+    .ggpop_cache$fa_names <- fontawesome::fa_metadata()$icon_names
+  }
+  .ggpop_cache$fa_names
+}
+
+resolve_icon_source <- function(icon, icon_path = NULL) {
   icon <- as.character(icon)
 
   if (is.na(icon) || !nzchar(icon)) {
     return(list(type = "none", path = NA_character_))
   }
 
-  # User-supplied local SVG file
+  if (is.null(icon_path)) icon_path <- getOption("ggpop.icon_path", NULL)
+
+  # 1. Explicit local .svg path
   if (grepl("\\.svg$", icon, ignore.case = TRUE)) {
     if (!file.exists(icon)) {
       cli::cli_abort(
@@ -203,14 +214,73 @@ resolve_icon_source <- function(icon) {
     return(list(type = "svg", path = icon))
   }
 
-  # Bundled ggpop marker shipped under inst/icons
+  # 2. User icon directory (icon_path argument or ggpop.icon_path option)
+  if (!is.null(icon_path) && nzchar(icon_path)) {
+    user_svg <- file.path(icon_path, paste0(icon, ".svg"))
+    if (file.exists(user_svg)) {
+      return(list(type = "svg", path = user_svg))
+    }
+  }
+
+  # 3. Bundled ggpop marker shipped under inst/icons
   bundled <- system.file("icons", paste0(icon, ".svg"), package = "ggpop")
   if (nzchar(bundled) && file.exists(bundled)) {
     return(list(type = "svg", path = bundled))
   }
 
-  # Otherwise treat as a Font Awesome name
-  list(type = "fa", path = NA_character_)
+  # 4. Valid Font Awesome name (validated, not assumed)
+  if (icon %in% fa_icon_names() ||
+    isTRUE(tryCatch({
+      fontawesome::fa(icon)
+      TRUE
+    }, error = function(e) FALSE))) {
+    return(list(type = "fa", path = NA_character_))
+  }
+
+  # 5. Nothing matched - clear error listing every source.
+  cli::cli_abort(
+    c(
+      "Icon {.val {icon}} not found.",
+      "x" = "It is not a bundled ggpop marker, a Font Awesome name, or a readable {.file .svg} path.",
+      "i" = "List markers with {.code ggpop::ggpop_markers()}; Font Awesome names with {.fn fa_icons}.",
+      "i" = "For your own SVGs, set {.arg icon_path} (or {.code options(ggpop.icon_path = \"<dir>\")}) to the folder."
+    ),
+    call = NULL
+  )
+}
+
+#' List the icon markers ggpop can render by name
+#'
+#' Returns the bundled ggpop marker names and, if an icon directory is given,
+#' the names of the user SVGs found there. These names (plus any Font Awesome
+#' name) are valid values for the \code{icon} aesthetic of \code{geom_pop()} and
+#' \code{geom_icon_point()}.
+#'
+#' @param icon_path Optional path to a folder of user SVG icons. Defaults to
+#'   \code{getOption("ggpop.icon_path")}.
+#'
+#' @return A list with element \code{bundled} (character vector of marker names)
+#'   and, when \code{icon_path} resolves to a directory, \code{user}.
+#'
+#' @examples
+#' ggpop_markers()
+#'
+#' @export
+ggpop_markers <- function(icon_path = getOption("ggpop.icon_path")) {
+  bundled <- sort(sub(
+    "\\.svg$", "",
+    list.files(system.file("icons", package = "ggpop"), pattern = "\\.svg$")
+  ))
+  out <- list(bundled = bundled)
+
+  if (!is.null(icon_path) && nzchar(icon_path) && dir.exists(icon_path)) {
+    out$user <- sort(sub(
+      "\\.svg$", "",
+      list.files(icon_path, pattern = "\\.svg$", ignore.case = TRUE)
+    ))
+  }
+
+  out
 }
 
 #' Render an SVG icon to a single-colour PNG
@@ -298,6 +368,7 @@ generate_icon_png <- function(icon,
                               alpha,
                               dpi,
                               stroke_width = NULL,
+                              icon_path = NULL,
                               fallback_hex = "#000000",
                               cache_dir_name = "ggpop-icons",
                               alpha_format = "%.2f",
@@ -314,10 +385,10 @@ generate_icon_png <- function(icon,
   hex_color <- normalize_color(color, fallback_hex = fallback_hex)
   rgba_color <- create_rgba_color(hex_color, alpha)
 
-  # Resolve to a Font Awesome name or an SVG source (bundled marker or
-  # user-supplied .svg). SVG sources use a content hash in the cache key so
+  # Resolve to a Font Awesome name or an SVG source (user icon_path, bundled
+  # marker, or .svg path). SVG sources use a content hash in the cache key so
   # different files sharing a basename do not collide.
-  source <- resolve_icon_source(icon)
+  source <- resolve_icon_source(icon, icon_path)
   cache_icon <- icon
   if (source$type == "svg") {
     cache_icon <- paste0(
@@ -402,6 +473,7 @@ generate_icon_png <- function(icon,
 add_icon_images <- function(data,
                             dpi,
                             stroke_width = NULL,
+                            icon_path = NULL,
                             default_color = "black",
                             default_alpha = 1.0,
                             fallback_hex = "#000000",
@@ -426,6 +498,7 @@ add_icon_images <- function(data,
           this_alpha,
           dpi,
           stroke_width = stroke_width,
+          icon_path = icon_path,
           fallback_hex = fallback_hex,
           cache_dir_name = cache_dir_name,
           alpha_format = alpha_format,

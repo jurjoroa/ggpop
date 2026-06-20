@@ -23,6 +23,7 @@ geom_pop(
   dpi = 50,
   legend_icons = TRUE,
   stroke_width = NULL,
+  icon_path = NULL,
   ...
 )
 }
@@ -115,6 +116,12 @@ with ggplot2 (use \code{validate_geom_pop_faceting(p)}).}
 \item{legend_icons}{Logical; if TRUE, legend displays the selected icons.}
 
 \item{stroke_width}{Numeric. Width of the icon outline in pixels (single value).}
+
+\item{icon_path}{Optional path to a folder of your own SVG icons, referenced
+by file name (without \code{.svg}) through the \code{icon} aesthetic - just
+like a Font Awesome name. Defaults to \code{getOption("ggpop.icon_path")}.
+Monochrome SVGs (\code{fill="#000000"} or \code{currentColor}) are recoloured
+by the mapped colour. See \code{\link{ggpop_markers}}.}
 
 \item{...}{additional parameters}
 }
