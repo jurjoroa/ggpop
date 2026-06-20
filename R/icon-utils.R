@@ -189,7 +189,17 @@ resolve_icon_source <- function(icon) {
   }
 
   # User-supplied local SVG file
-  if (grepl("\\.svg$", icon, ignore.case = TRUE) && file.exists(icon)) {
+  if (grepl("\\.svg$", icon, ignore.case = TRUE)) {
+    if (!file.exists(icon)) {
+      cli::cli_abort(
+        c(
+          "SVG icon file not found.",
+          "x" = "{.path {icon}} does not exist.",
+          "i" = "Check the path, or use a bundled marker name (e.g. {.val square-inset}) or a Font Awesome name."
+        ),
+        call = NULL
+      )
+    }
     return(list(type = "svg", path = icon))
   }
 
@@ -223,10 +233,18 @@ resolve_icon_source <- function(icon) {
 render_svg_icon_png <- function(svg_path, png_path, hex_color, alpha, dpi) {
   svg_txt <- paste(readLines(svg_path, warn = FALSE), collapse = "\n")
 
-  # Recolour the single fill colour used by bundled markers. Multi-colour
+  # Recolour the single fill colour used by monochrome markers: hex black,
+  # currentColor, or the word "black" in a fill/stroke value. Multi-colour
   # user SVGs have no match and render unchanged.
   svg_txt <- gsub("#000000", hex_color, svg_txt, ignore.case = TRUE)
   svg_txt <- gsub("#000\\b", hex_color, svg_txt, ignore.case = TRUE)
+  svg_txt <- gsub("currentColor", hex_color, svg_txt, ignore.case = TRUE)
+  svg_txt <- gsub(
+    "(fill|stroke)(\\s*[:=]\\s*[\"']?)black\\b",
+    paste0("\\1\\2", hex_color),
+    svg_txt,
+    ignore.case = TRUE
+  )
 
   tmp_svg <- tempfile(fileext = ".svg")
   writeLines(svg_txt, tmp_svg)
