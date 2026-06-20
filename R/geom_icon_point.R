@@ -169,7 +169,9 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # 10 Final mapping + layer creation  ----
 
   mapping_list[["image"]] <- as.name("image")
-  mapping_list[["icon"]] <- NULL
+  # Keep `icon` mapped (to the normalized icon column) so the draw-time geom can
+  # re-bake each PNG with the resolved colour - see make_geom_pop_image().
+  mapping_list[["icon"]] <- as.name("icon")
   final_mapping <- do.call(ggplot2::aes, mapping_list)
 
   ggpop_layer <- ggimage::geom_image(
@@ -188,6 +190,10 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
 
   # 11 Attach metadata + return layer  ----
+
+  # Recolor icons at draw time from the scale-trained colour instead of relying
+  # on ggimage's tinting, which renders black on some magick builds (#380).
+  ggpop_layer$geom <- make_geom_pop_image(ggpop_layer$geom, dpi, stroke_width)
 
   # ggimage::geom_image() does not honour show.legend, so we set it directly
   # on the layer object — ggplot2 reads this field during legend construction.
