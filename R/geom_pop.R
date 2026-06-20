@@ -18,7 +18,11 @@
 #' @inheritParams ggimage::geom_image
 #' @inheritParams fontawesome::fa
 #' @param size Icon size. If mapped in \code{aes(size = ...)} the parameter is ignored.
-#' @param icon Default icon to use when no icon column is mapped.
+#' @param icon Default icon used when no \code{icon} column is mapped. Accepts a
+#'   Font Awesome name, a bundled ggpop marker name (e.g. \code{"square-inset"},
+#'   \code{"circle-plus"}, \code{"diamond-hollow"}), or a path to a local
+#'   \code{.svg} file. The same sources are valid in \code{aes(icon = ...)};
+#'   SVG markers are recoloured by the mapped colour aesthetic.
 #' @param dpi Height (in \strong{pixels}) of the rendered PNG when using
 #'   \code{fontawesome::fa_png()}. Higher values produce sharper icons.
 #' @param group_var (Deprecated) Use \code{aes(group = ...)} instead.

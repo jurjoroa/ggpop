@@ -14,7 +14,11 @@
 #'
 #' @inheritParams ggplot2::layer
 #' @inheritParams ggimage::geom_image
-#' @param icon Default Font Awesome icon (default: NULL).
+#' @param icon Default icon (default: NULL). Accepts a Font Awesome name, a
+#'   bundled ggpop marker name (e.g. \code{"square-inset"}, \code{"circle-plus"},
+#'   \code{"diamond-hollow"}), or a path to a local \code{.svg} file. The same
+#'   sources are valid in \code{aes(icon = ...)}; SVG markers are recoloured by
+#'   the mapped colour aesthetic.
 #' @param size Default icon size (default: 1).
 #' @param dpi Icon resolution (default: 50).
 #' @param show.legend Logical. Should this layer be included in the legends?
