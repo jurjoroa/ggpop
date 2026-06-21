@@ -134,3 +134,43 @@ testthat::test_that("ggpop_markers lists bundled and user markers", {
   writeLines("<svg/>", file.path(udir, "userico.svg"))
   testthat::expect_true("userico" %in% ggpop_markers(udir)$user)
 })
+
+# ******************************************************************************
+# 04 visual snapshot of every bundled marker ----------------------------------
+# ******************************************************************************
+
+testthat::test_that("all bundled SVG markers render (snapshot)", {
+  testthat::skip_on_cran()
+  testthat::skip_if_not_installed("ggplot2")
+
+  markers <- ggpop_markers()$bundled
+  n <- length(markers)
+  ncol <- 4L
+
+  df <- data.frame(
+    icon = markers,
+    x = ((seq_len(n) - 1L) %% ncol) + 1L,
+    y = -((seq_len(n) - 1L) %/% ncol) * 2.0,
+    stringsAsFactors = FALSE
+  )
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = y, icon = icon, colour = icon)) +
+    geom_icon_point(
+      size = 5, dpi = 120, legend_icons = FALSE, show.legend = FALSE
+    ) +
+    ggplot2::geom_text(
+      ggplot2::aes(label = icon), nudge_y = -0.95, size = 2.6, colour = "grey20"
+    ) +
+    ggplot2::scale_colour_viridis_d() +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(add = 0.8)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(add = 1)) +
+    ggplot2::coord_cartesian(clip = "off") +
+    ggplot2::theme_void() +
+    ggplot2::theme(legend.position = "none")
+
+  # Save a PNG snapshot so the gallery of every bundled marker can be opened
+  # and eyeballed directly (under tests/testthat/_snaps/12_svg-icons/).
+  path <- tempfile(fileext = ".png")
+  ggplot2::ggsave(path, p, width = 8, height = 9, dpi = 120, bg = "white")
+  testthat::expect_snapshot_file(path, "all-bundled-markers.png")
+})
