@@ -18,7 +18,11 @@
 #' @inheritParams ggimage::geom_image
 #' @inheritParams fontawesome::fa
 #' @param size Icon size. If mapped in \code{aes(size = ...)} the parameter is ignored.
-#' @param icon Default icon to use when no icon column is mapped.
+#' @param icon Default icon used when no \code{icon} column is mapped. Accepts a
+#'   Font Awesome name, a bundled ggpop marker name (e.g. \code{"square-inset"},
+#'   \code{"circle-plus"}, \code{"diamond-hollow"}), or a path to a local
+#'   \code{.svg} file. The same sources are valid in \code{aes(icon = ...)};
+#'   SVG markers are recoloured by the mapped colour aesthetic.
 #' @param dpi Height (in \strong{pixels}) of the rendered PNG when using
 #'   \code{fontawesome::fa_png()}. Higher values produce sharper icons.
 #' @param group_var (Deprecated) Use \code{aes(group = ...)} instead.
@@ -30,6 +34,11 @@
 #'   with ggplot2 (use \code{validate_geom_pop_faceting(p)}).
 #' @param legend_icons Logical; if TRUE, legend displays the selected icons.
 #' @param stroke_width Numeric. Width of the icon outline in pixels (single value).
+#' @param icon_path Optional path to a folder of your own SVG icons, referenced
+#'   by file name (without \code{.svg}) through the \code{icon} aesthetic - just
+#'   like a Font Awesome name. Defaults to \code{getOption("ggpop.icon_path")}.
+#'   Monochrome SVGs (\code{fill="#000000"} or \code{currentColor}) are recoloured
+#'   by the mapped colour. See \code{\link{ggpop_markers}}.
 #'
 #' @return A ggplot layer that renders a circular population chart with icons.
 #'
@@ -70,6 +79,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
                      dpi = 50,
                      legend_icons = TRUE,
                      stroke_width = NULL,
+                     icon_path = NULL,
                      ...) {
   # 01 Setup: plot context + inherited mappings ----
 
@@ -224,7 +234,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 14 Icon rendering: PNG generation + caching (shared) ----
 
-  df_final <- add_icon_images(df_final, dpi, stroke_width)
+  df_final <- add_icon_images(df_final, dpi, stroke_width, icon_path = icon_path)
 
   # 15 Legend setup (shared) ----
 
@@ -263,7 +273,8 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 16 Legend key glyph: custom icon rendering ----
 
-  key_glyph_pop <- make_pop_key_glyph(icon_by_legend, plot_obj, stroke_width, alpha_by_legend)
+  key_glyph_pop <- make_pop_key_glyph(icon_by_legend, plot_obj, stroke_width, alpha_by_legend,
+                                      icon_path = icon_path)
 
   # 17 Final mapping + layer construction ----
 
@@ -301,7 +312,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # Recolor icons at draw time from the scale-trained colour instead of relying
   # on ggimage's tinting, which renders black on some magick builds (#380).
-  layer_out$geom <- make_geom_pop_image(layer_out$geom, dpi, stroke_width)
+  layer_out$geom <- make_geom_pop_image(layer_out$geom, dpi, stroke_width, icon_path = icon_path)
 
   # ggimage::geom_image() does not honour show.legend, so we set it directly
   # on the layer object — ggplot2 reads this field during legend construction.

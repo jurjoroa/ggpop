@@ -17,6 +17,7 @@ geom_icon_point(
   dpi = 50,
   legend_icons = TRUE,
   stroke_width = NULL,
+  icon_path = NULL,
   ...
 )
 }
@@ -78,7 +79,11 @@ rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
 
-\item{icon}{Default Font Awesome icon (default: NULL).}
+\item{icon}{Default icon (default: NULL). Accepts a Font Awesome name, a
+bundled ggpop marker name (e.g. \code{"square-inset"}, \code{"circle-plus"},
+\code{"diamond-hollow"}), or a path to a local \code{.svg} file. The same
+sources are valid in \code{aes(icon = ...)}; SVG markers are recoloured by
+the mapped colour aesthetic.}
 
 \item{size}{Default icon size (default: 1).}
 
@@ -87,6 +92,12 @@ the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{ann
 \item{legend_icons}{Show icons in legend (default: TRUE).}
 
 \item{stroke_width}{Numeric. Width of the icon outline/stroke.}
+
+\item{icon_path}{Optional path to a folder of your own SVG icons, referenced
+by file name (without \code{.svg}) through the \code{icon} aesthetic - just
+like a Font Awesome name. Defaults to \code{getOption("ggpop.icon_path")}.
+Monochrome SVGs (\code{fill="#000000"} or \code{currentColor}) are recoloured
+by the mapped colour. See \code{\link{ggpop_markers}}.}
 
 \item{...}{additional parameters}
 }

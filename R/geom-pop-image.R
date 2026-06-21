@@ -18,13 +18,15 @@
 #'   missing.
 #' @keywords internal
 #' @noRd
-recolor_icon_for_draw <- function(icon, color, alpha, dpi, stroke_width = NULL) {
+recolor_icon_for_draw <- function(icon, color, alpha, dpi, stroke_width = NULL,
+                                  icon_path = NULL) {
   base_path <- generate_icon_png(
     icon,
     color,
     alpha = 1,
     dpi,
-    stroke_width = stroke_width
+    stroke_width = stroke_width,
+    icon_path = icon_path
   )
 
   if (is.na(base_path)) {
@@ -48,7 +50,7 @@ recolor_icon_for_draw <- function(icon, color, alpha, dpi, stroke_width = NULL) 
   alpha_path <- file.path(
     cache_dir,
     paste0(
-      icon, "_c", hex_color,
+      gsub("[^A-Za-z0-9]+", "-", icon), "_c", hex_color,
       "_a", sprintf("%.2f", alpha),
       "_d", sprintf("%.0f", dpi),
       stroke_tag, "_draw.png"
@@ -87,7 +89,8 @@ recolor_icon_for_draw <- function(icon, color, alpha, dpi, stroke_width = NULL) 
 #' @return A \code{ggproto} \code{Geom} object inheriting from \code{parent_geom}.
 #' @keywords internal
 #' @noRd
-make_geom_pop_image <- function(parent_geom, dpi, stroke_width = NULL) {
+make_geom_pop_image <- function(parent_geom, dpi, stroke_width = NULL,
+                                icon_path = NULL) {
   # Declare `icon` as a known aesthetic so ggplot2 carries the icon-name column
   # through to draw_panel instead of dropping it as "unknown".
   icon_aware_aes <- parent_geom$default_aes
@@ -114,7 +117,8 @@ make_geom_pop_image <- function(parent_geom, dpi, stroke_width = NULL) {
           if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- 1
 
           recolored <- recolor_icon_for_draw(
-            as.character(this_icon), this_color, this_alpha, dpi, stroke_width
+            as.character(this_icon), this_color, this_alpha, dpi, stroke_width,
+            icon_path = icon_path
           )
           if (!is.na(recolored)) data$image[i] <- recolored
         }

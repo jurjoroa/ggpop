@@ -1,3 +1,10 @@
+# ggpop 1.8.0
+
+## New features
+
+- `geom_pop()` and `geom_icon_point()` now accept custom SVG icons in addition to Font Awesome names. The `icon` aesthetic (or the `icon` parameter) resolves, in priority order, to: a local `.svg` path; a file in your own icon folder (via the new `icon_path` argument or `options(ggpop.icon_path = "<dir>")`), referenced by name just like a Font Awesome icon; a bundled ggpop marker (e.g. `"square-inset"`, `"circle-cross"`, `"diamond-hollow"`); or a Font Awesome name. Monochrome SVGs are recoloured by the mapped colour aesthetic, content-hash cached, and rendered crisply at any `dpi` in both the plot body and the legend keys. An unrecognised name now raises a clear error instead of a cryptic Font Awesome failure (#383).
+- `ggpop_markers()` lists the bundled marker names (and the names found in an `icon_path` folder) - the companion to `fa_icons()` (#383).
+
 # ggpop 1.7.2
 
 ## Bug Fixes
