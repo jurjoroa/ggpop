@@ -102,6 +102,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 05 Warnings for potential conflicts ----
 
+  warn_icon_path_shadows_fa(icon_path %||% getOption("ggpop.icon_path", NULL))
   validate_stroke_width_not_aesthetic(combined_mapping)
   validate_literal_alpha_in_aes(combined_mapping, data = data)
   warn_size_conflict(combined_mapping, .missing_size, size)

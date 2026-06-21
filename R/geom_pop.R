@@ -178,6 +178,7 @@ geom_pop <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 07 Warnings (shared) ----
 
+  warn_icon_path_shadows_fa(icon_path %||% getOption("ggpop.icon_path", NULL))
   warn_all_geom_pop(
     combined_mapping = combined_mapping,
     missing_size = .missing_size,
