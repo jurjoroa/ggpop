@@ -65,6 +65,8 @@ remotes::install_github("jurjoroa/ggpop")
 | `fa_icons()` | Search 2,000+ Font Awesome icons from your R console |
 | `theme_pop()` | Built-in minimal theme (also `theme_pop_dark()`, `theme_pop_minimal()`) |
 | `scale_legend_icon()` | Resize legend icons independently of the plot icons |
+| `ggpop_markers()` | List bundled SVG markers (and your own via `icon_path`) usable as icons |
+| `marker_legend()` | Build a standalone composite legend of icon markers (multi-column, mixed sources) |
 | `arrange` | `geom_pop()` parameter — cluster icons by group (`TRUE`) or scatter randomly (`FALSE`, default) |
 | `stroke_width` | `geom_pop()` parameter — add an outline to every icon, in pixels (e.g. `stroke_width = 1`) |
 | `seed` | `geom_pop()` parameter — fix the random icon layout for reproducible charts (e.g. `seed = 42`) |
