@@ -190,6 +190,23 @@ fa_icon_names <- function() {
   .ggpop_cache$fa_names
 }
 
+warn_icon_path_shadows_fa <- function(icon_path) {
+  if (is.null(icon_path) || !nzchar(icon_path) || !dir.exists(icon_path)) {
+    return(invisible(NULL))
+  }
+  svgs <- tools::file_path_sans_ext(
+    basename(list.files(icon_path, pattern = "\\.svg$", ignore.case = TRUE))
+  )
+  shadowed <- intersect(svgs, fa_icon_names())
+  if (length(shadowed) == 0L) return(invisible(NULL))
+  cli::cli_warn(c(
+    "{length(shadowed)} icon name{?s} in {.arg icon_path} shadow Font Awesome name{?s}.",
+    "x" = "Shadowed: {.val {shadowed}}.",
+    "i" = "These will resolve to your SVG files, not Font Awesome icons.",
+    "i" = "Rename the file{?s} (e.g. {.val my-{shadowed[[1]]}.svg}) to avoid the conflict."
+  ))
+}
+
 resolve_icon_source <- function(icon, icon_path = NULL) {
   icon <- as.character(icon)
 

@@ -2,24 +2,22 @@
 
 0 errors | 0 warnings | 0 notes
 
-## Patch notes (1.7.1)
+## Release notes (1.8.0)
 
-This is a patch release addressing a NOTE raised by CRAN after the 1.7.0 submission.
+This is a minor feature release adding custom SVG icon support and a new
+composite legend function.
 
-### NOTE fixed
+### New features
 
-`fetch_df_coordinates()` was writing a cache file to `~/.cache/R/ggpop/` during
-package checks, triggering:
-
-```
-* checking for new files in some other directories ... NOTE
-Found the following files/directories:
-  '~/.cache/R/ggpop'
-  '~/.cache/R/ggpop/df_coordinates_final_10_1000.rda'
-```
-
-The function now uses `tempdir()` when running on CRAN (`NOT_CRAN != "true"`) and
-the persistent user cache only in interactive/local sessions.
+- `geom_pop()` and `geom_icon_point()` now accept custom SVG files via the
+  new `icon_path` argument (or `options(ggpop.icon_path)`). Icons resolve in
+  priority order: local `.svg` path → `icon_path` folder → bundled ggpop
+  marker → Font Awesome name.
+- 14 bundled solid/outline markers (`square-*`, `circle-*`, `diamond-*`,
+  `plus-bold`, `triangle-down`) are available by name with no folder needed.
+- `ggpop_markers()` lists bundled and user-provided marker names.
+- `marker_legend()` builds standalone composite legends for cases that
+  ggplot2's built-in guides cannot express.
 
 ## Test environments
 

@@ -1,8 +1,8 @@
 Type: Package
 Package: ggpop
 Title: Icon-Based Population Charts and Plots for 'ggplot2'
-Version: 1.7.1
-Date: 2026-03-18
+Version: 1.8.0
+Date: 2026-06-21
 Authors@R: c(
     person(given = "Jorge A.",
              family = "Roa-Contreras",
@@ -24,7 +24,7 @@ Authors@R: c(
              role = c("aut"),
              email = "cpinedaa@uw.edu",
              comment = c(ORCID = "0000-0002-8352-7080")))
-Description: Create engaging population and point plots charts in R. 'ggpop' allows users to represent population data and points proportionally using customizable icons, facilitating the creation of circular representative population charts as well as any point-plots.
+Description: Create engaging population charts and point plots in R. 'ggpop' allows users to represent population data and points proportionally using customizable icons, facilitating the creation of circular representative population charts as well as any point-plots.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
