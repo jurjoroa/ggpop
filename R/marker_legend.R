@@ -39,6 +39,7 @@
 #' @param col_spacing Horizontal distance between columns.
 #' @param row_spacing Vertical distance between rows.
 #' @param label_gap Horizontal gap between a marker and its label.
+#' @param label_colour Text colour for the labels (default: \code{"black"}).
 #' @param default_color Marker colour used for rows with no \code{colour} value.
 #'
 #' @return A \code{ggplot} object with \code{theme_void()} applied.
@@ -74,6 +75,7 @@ marker_legend <- function(entries,
                           col_spacing = 10,
                           row_spacing = 1,
                           label_gap = 0.6,
+                          label_colour = "black",
                           default_color = "black") {
   layout <- match.arg(layout)
   validate_marker_legend_entries(entries, layout)
@@ -101,7 +103,8 @@ marker_legend <- function(entries,
       data = df_pos,
       mapping = ggplot2::aes(x = x + label_gap, y = y, label = label),
       hjust = 0,
-      size = label_size
+      size = label_size,
+      colour = label_colour
     ) +
     ggplot2::scale_colour_identity() +
     ggplot2::theme_void()
@@ -130,7 +133,8 @@ marker_legend <- function(entries,
         label = title,
         hjust = 0,
         fontface = "bold",
-        size = label_size * 1.3
+        size = label_size * 1.3,
+        colour = label_colour
       )
   }
 
