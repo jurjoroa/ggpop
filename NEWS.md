@@ -1,3 +1,17 @@
+# ggpop 1.8.0
+
+## New features
+
+- `geom_pop()` and `geom_icon_point()` now accept custom SVG icons in addition to Font Awesome names. The `icon` aesthetic (or the `icon` parameter) resolves, in priority order, to: a local `.svg` path; a file in your own icon folder (via the new `icon_path` argument or `options(ggpop.icon_path = "<dir>")`), referenced by name just like a Font Awesome icon; a bundled ggpop marker (e.g. `"square-inset"`, `"circle-cross"`, `"diamond-hollow"`); or a Font Awesome name. Monochrome SVGs are recoloured by the mapped colour aesthetic, content-hash cached, and rendered crisply at any `dpi` in both the plot body and the legend keys. An unrecognised name now raises a clear error instead of a cryptic Font Awesome failure (#383).
+- `geom_pop()` and `geom_icon_point()` now warn at construction time when any SVG file in `icon_path` shares a name with a Font Awesome icon, listing the shadowed names and suggesting a rename to avoid silent conflicts (#383).
+- `ggpop_markers()` lists the bundled marker names (and the names found in an `icon_path` folder) - the companion to `fa_icons()` (#383).
+- `marker_legend()` builds a standalone composite legend of icon markers - multiple columns, mixed icon sources (Font Awesome, bundled markers, or your own SVGs), and room for extra annotations - for cases that ggplot2's built-in guides cannot express. For an ordinary data-driven legend, keep using `legend_icons = TRUE` with `scale_legend_icon()` (#385).
+- `marker_legend()` gains a `label_colour` argument (default `"black"`) to control the text colour of both entry labels and the title (#385).
+
+## Bug Fixes
+
+- `geom_pop()` and `geom_icon_point()` now bake the mapped colour directly into each icon at draw time instead of relying on `ggimage`'s tinting. The previous approach depended on the installed `magick`/ImageMagick build producing an RGBA bitmap; when it did not, icons rendered black even though the legend showed the correct colours. Colours (including custom `scale_colour_*()` scales) and per-group transparency are now applied deterministically (#380).
+
 # ggpop 1.7.1
 
 ## Bug Fixes

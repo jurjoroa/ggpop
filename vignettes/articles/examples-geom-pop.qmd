@@ -1090,6 +1090,112 @@ p_anim <- ggplot(df_icons, aes(icon = icon, color = state)) +
 ![Markov Model Simulation](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/sick_sicker_animation.gif)
 
 
+## Example 8: Bundled Markers — Global Renewable Energy Mix
+<div style="line-height: 0.6;"><br></div>
+
+Use bundled geometric markers instead of Font Awesome icons — perfect when no suitable FA icon exists. Each energy source gets its own shape and colour; no `fa_icons()` search needed.
+
+```{r}
+#| label: bundled-markers-pop-show
+#| eval: false
+
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
+# List all 14 bundled markers:
+ggpop_markers()$bundled
+
+df_energy <- data.frame(
+  source = c("Solar PV", "Wind", "Hydro", "Biomass"),
+  gw     = c(450, 380, 200, 70)
+)
+
+set.seed(7)
+df_proc <- process_data(
+  data        = df_energy,
+  group_var   = source,
+  sum_var     = gw,
+  sample_size = 50
+) %>%
+  mutate(icon = case_when(
+    type == "Solar PV" ~ "circle-inset",
+    type == "Wind"     ~ "diamond-hollow",
+    type == "Hydro"    ~ "square-cross",
+    type == "Biomass"  ~ "plus-bold"
+  ))
+
+ggplot(df_proc, aes(icon = icon, colour = type)) +
+  geom_pop(size = 2, dpi = 120, legend_icons = TRUE, arrange = TRUE) +
+  scale_colour_manual(values = c(
+    "Solar PV" = "#FFB703",
+    "Wind"     = "#219EBC",
+    "Hydro"    = "#1D3557",
+    "Biomass"  = "#2D6A4F"
+  )) +
+  scale_legend_icon(size = 7) +
+  theme_pop() +
+  labs(
+    title    = "Global Renewable Energy Capacity Mix",
+    subtitle = "Each icon represents 2% of total installed capacity  ·  Sample of 50",
+    colour   = "Energy Source",
+    caption  = "Markers: circle-inset, diamond-hollow, square-cross, plus-bold"
+  )
+```
+
+```{r}
+#| label: bundled-markers-pop
+#| echo: false
+#| fig-width: 11
+#| fig-height: 9
+#| message: false
+#| warning: false
+
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
+df_energy <- data.frame(
+  source = c("Solar PV", "Wind", "Hydro", "Biomass"),
+  gw     = c(450, 380, 200, 70)
+)
+
+set.seed(7)
+df_proc <- process_data(
+  data        = df_energy,
+  group_var   = source,
+  sum_var     = gw,
+  sample_size = 50
+) %>%
+  mutate(icon = case_when(
+    type == "Solar PV" ~ "circle-inset",
+    type == "Wind"     ~ "diamond-hollow",
+    type == "Hydro"    ~ "square-cross",
+    type == "Biomass"  ~ "plus-bold"
+  ))
+
+ggplot(df_proc, aes(icon = icon, colour = type)) +
+  geom_pop(size = 2, dpi = 120, legend_icons = TRUE, arrange = TRUE) +
+  scale_colour_manual(values = c(
+    "Solar PV" = "#FFB703",
+    "Wind"     = "#219EBC",
+    "Hydro"    = "#1D3557",
+    "Biomass"  = "#2D6A4F"
+  )) +
+  scale_legend_icon(size = 7) +
+  theme_pop() +
+  labs(
+    title    = "Global Renewable Energy Capacity Mix",
+    subtitle = "Each icon represents 2% of total installed capacity  ·  Sample of 50",
+    colour   = "Energy Source",
+    caption  = "Markers: circle-inset, diamond-hollow, square-cross, plus-bold"
+  )
+```
+
+<div style="line-height: 0.6;"><br></div>
+
+---
+
 ## `cowplot` — Health Survey Dashboard
 <div style="line-height: 0.6;"><br></div>
 
@@ -1363,8 +1469,6 @@ plot_grid(top_row, bottom_row, nrow = 2)
 ```
 
 <div style="line-height: 0.6;"><br></div>
-
----
 
 ## `facet_wrap` — Transportation Methods Across US Cities
 <div style="line-height: 0.6;"><br></div>

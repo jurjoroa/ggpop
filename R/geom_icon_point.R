@@ -14,7 +14,11 @@
 #'
 #' @inheritParams ggplot2::layer
 #' @inheritParams ggimage::geom_image
-#' @param icon Default Font Awesome icon (default: NULL).
+#' @param icon Default icon (default: NULL). Accepts a Font Awesome name, a
+#'   bundled ggpop marker name (e.g. \code{"square-inset"}, \code{"circle-plus"},
+#'   \code{"diamond-hollow"}), or a path to a local \code{.svg} file. The same
+#'   sources are valid in \code{aes(icon = ...)}; SVG markers are recoloured by
+#'   the mapped colour aesthetic.
 #' @param size Default icon size (default: 1).
 #' @param dpi Icon resolution (default: 50).
 #' @param show.legend Logical. Should this layer be included in the legends?
@@ -22,6 +26,11 @@
 #'   `FALSE` suppresses the layer's legend entries entirely.
 #' @param legend_icons Show icons in legend (default: TRUE).
 #' @param stroke_width Numeric. Width of the icon outline/stroke.
+#' @param icon_path Optional path to a folder of your own SVG icons, referenced
+#'   by file name (without \code{.svg}) through the \code{icon} aesthetic - just
+#'   like a Font Awesome name. Defaults to \code{getOption("ggpop.icon_path")}.
+#'   Monochrome SVGs (\code{fill="#000000"} or \code{currentColor}) are recoloured
+#'   by the mapped colour. See \code{\link{ggpop_markers}}.
 #'
 #' @return A ggplot layer.
 #'
@@ -51,6 +60,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
                             show.legend = NA, inherit.aes = TRUE, icon = NULL,
                             size = 1, dpi = 50, legend_icons = TRUE,
                             stroke_width = NULL,
+                            icon_path = NULL,
                             ...) {
   # 01 Capture extra args + handle swapped inputs ----
 
@@ -92,6 +102,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 05 Warnings for potential conflicts ----
 
+  warn_icon_path_shadows_fa(icon_path %||% getOption("ggpop.icon_path", NULL))
   validate_stroke_width_not_aesthetic(combined_mapping)
   validate_literal_alpha_in_aes(combined_mapping, data = data)
   warn_size_conflict(combined_mapping, .missing_size, size)
@@ -123,7 +134,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
   # 08 Generate icon images  ----
 
-  data <- add_icon_images(data, dpi, stroke_width)
+  data <- add_icon_images(data, dpi, stroke_width, icon_path = icon_path)
 
 
   # 09 Legend setup + warnings ----
@@ -169,7 +180,9 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   # 10 Final mapping + layer creation  ----
 
   mapping_list[["image"]] <- as.name("image")
-  mapping_list[["icon"]] <- NULL
+  # Keep `icon` mapped (to the normalized icon column) so the draw-time geom can
+  # re-bake each PNG with the resolved colour - see make_geom_pop_image().
+  mapping_list[["icon"]] <- as.name("icon")
   final_mapping <- do.call(ggplot2::aes, mapping_list)
 
   ggpop_layer <- ggimage::geom_image(
@@ -188,6 +201,10 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
 
 
   # 11 Attach metadata + return layer  ----
+
+  # Recolor icons at draw time from the scale-trained colour instead of relying
+  # on ggimage's tinting, which renders black on some magick builds (#380).
+  ggpop_layer$geom <- make_geom_pop_image(ggpop_layer$geom, dpi, stroke_width, icon_path = icon_path)
 
   # ggimage::geom_image() does not honour show.legend, so we set it directly
   # on the layer object — ggplot2 reads this field during legend construction.
@@ -211,6 +228,7 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
   ggpop_layer$geom_params$dpi <- dpi
   ggpop_layer$geom_params$stroke_width <- stroke_width
   ggpop_layer$geom_params$alpha_by_legend <- alpha_by_legend
+  ggpop_layer$geom_params$icon_path <- icon_path
 
   ggpop_layer$ggpop_layer_type <- "icon_point"
   ggpop_layer$ggpop_legend_icons <- isTRUE(legend_icons)

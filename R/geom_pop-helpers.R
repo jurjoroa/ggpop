@@ -122,9 +122,11 @@ assign_pop_positions <- function(data, has_facet, facet_col) {
 #' @noRd
 make_pop_key_glyph <- function(icon_by_legend, plot_obj, stroke_width,
                                alpha_by_legend = NULL,
-                               fallback_icon = "user") {
+                               fallback_icon = "user",
+                               icon_path = NULL) {
   local_stroke_width_for_legend <- stroke_width
   local_alpha_by_legend <- alpha_by_legend
+  local_icon_path <- icon_path
 
   function(key_data, params, size) {
     if (!("colour" %in% names(key_data)) && ("color" %in% names(key_data))) {
@@ -188,7 +190,8 @@ make_pop_key_glyph <- function(icon_by_legend, plot_obj, stroke_width,
 
     key_data$icon <- ic
 
-    draw_key_pop_image(key_data, params, size, stroke_width = local_stroke_width_for_legend)
+    draw_key_pop_image(key_data, params, size, stroke_width = local_stroke_width_for_legend,
+      icon_path = local_icon_path)
   }
 }
 

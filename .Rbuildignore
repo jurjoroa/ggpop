@@ -13,3 +13,9 @@
 ^CITATION\.cff$
 ^doc$
 ^Meta$
+^\.claude$
+^memory$
+^CLAUDE\.md$
+^AGENTS\.md$
+^STRUCTURE\.md$
+^scratch$

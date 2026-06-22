@@ -12,3 +12,5 @@ docs
 
 /doc/
 /Meta/
+.claude/settings.local.json
+AGENTS.md

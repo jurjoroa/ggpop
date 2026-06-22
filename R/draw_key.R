@@ -164,7 +164,8 @@ key_glyph_icon_point <- function(
 
   stroke_width <- params$stroke_width
 
-  draw_key_pop_image(key_data, params, size, stroke_width = stroke_width)
+  draw_key_pop_image(key_data, params, size, stroke_width = stroke_width,
+    icon_path = params$icon_path)
 }
 
 #' Key drawing function for population-based image keys
@@ -210,6 +211,7 @@ draw_key_pop_image <- function(
   params,
   size,
   stroke_width = NULL,
+  icon_path = NULL,
   cache_dir = file.path(tempdir(), "ggpop-legend-icons"),
   png_px = 480L,
   max_fill = 0.9,
@@ -256,8 +258,49 @@ draw_key_pop_image <- function(
     this_alpha <- data$alpha[i]
     if (is.na(this_alpha) || !is.finite(this_alpha)) this_alpha <- fallback_alpha
 
-    # Render with stroke (uses FontAwesome directly)
-    if (use_stroke) {
+    source <- resolve_icon_source(this_icon, icon_path)
+
+    # Bundled marker or user SVG: recolour + rasterize the vector directly.
+    if (source$type == "svg") {
+      this_col_hex <- tryCatch(
+        {
+          rgb_vals <- grDevices::col2rgb(this_col) / 255
+          grDevices::rgb(rgb_vals[1], rgb_vals[2], rgb_vals[3], maxColorValue = 1)
+        },
+        error = function(e) "#000000"
+      )
+      color_hex <- gsub("#", "", this_col_hex)
+      cache_tok <- paste0(
+        gsub("[^A-Za-z0-9]+", "-", tools::file_path_sans_ext(basename(source$path))),
+        "-", substr(unname(tools::md5sum(source$path)), 1, 8)
+      )
+      png_path <- file.path(
+        cache_dir,
+        paste0(cache_tok, "_c", color_hex, "_", png_px, "px.png")
+      )
+
+      if (!file.exists(png_path)) {
+        render_svg_icon_png(source$path, png_path, this_col_hex, 1, png_px)
+      }
+
+      img <- magick::image_read(png_path)
+      # Trim the SVG viewBox margins so the marker fills the legend key at full
+      # resolution (the body path normalizes; the key must match or curved
+      # edges look soft).
+      img <- magick::image_trim(img)
+
+      if (is.finite(this_alpha) && this_alpha < 1) {
+        img <- magick::image_fx(
+          img,
+          expression = paste0("a*", this_alpha),
+          channel = "Alpha"
+        )
+      }
+
+      ras <- as.raster(img)
+
+      # Render with stroke (uses FontAwesome directly)
+    } else if (use_stroke) {
       this_col_hex <- tryCatch(
         {
           rgb_vals <- grDevices::col2rgb(this_col) / 255
