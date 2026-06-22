@@ -2,7 +2,7 @@
 title: "Icon Legends: Native Guides and Standalone Composites"
 format:
   html:
-    code-fold: false
+    code-fold: true
     code-summary: "Show the code"
 ---
 
@@ -59,6 +59,7 @@ col_map <- c(
 ggplot(df_modes, aes(x = x, y = y, icon = icon, colour = group)) +
   geom_icon_point(size = 6, dpi = 120, legend_icons = TRUE) +
   scale_colour_manual(values = col_map) +
+  coord_cartesian(ylim = c(0.5, 2.6), clip = "off") +
   scale_legend_icon(size = 6) +
   theme_minimal()
 ```
@@ -81,6 +82,7 @@ what is available with `ggpop_markers()`:
 
 ```{r}
 #| label: markers
+#| code-fold: false
 ggpop_markers()$bundled
 ```
 
@@ -124,53 +126,55 @@ marker_legend(
 )
 ```
 
-### Reproducing a screening-strategy legend
+### Multi-column composite legend
 
-This is the use case `marker_legend()` exists for: a multi-column legend of
-bundled markers in two semantic colours, extended with `annotate()` for the
-frontier and near-efficient symbols, and exported at a fixed size.
+This is the use case `marker_legend()` exists for: a multi-column legend that
+encodes two semantic dimensions simultaneously — here, region type (colour) and
+indicator domain (column) — using bundled markers to distinguish subcategories.
 
 ```{r}
-#| label: fig-composite-sda
+#| label: fig-composite-health
 #| message: false
 #| warning: false
-#| fig-width: 10.8
-#| fig-height: 1.4
-#| fig-cap: "A standalone screening-strategy legend, reproduced in ggplot + ggpop."
+#| fig-width: 9.5
+#| fig-height: 2.2
+#| fig-cap: "A standalone composite legend encoding region type and health indicator domain."
 
-pink  <- "#FF1493"
-green <- "#006400"
+blue <- "#1E88E5"
+teal <- "#2A9D8F"
 
-df_sda <- rbind(
+df_legend <- rbind(
   data.frame(
-    column = 1, colour = pink,
-    icon  = c("square-inset", "circle-hollow", "square-cross", "circle-solid"),
-    label = c("FIT 45-49y, COL 50-70y", "FIT 50-54y, COL 55-75y",
-              "FIT 45-49y, COL 50-80y", "FIT 50-54y, COL 55-85y")
-  ),
-  data.frame(
-    column = 2, colour = green,
+    column = 1, colour = blue,
     icon  = c("square-inset", "square-hollow", "square-cross", "square-solid"),
-    label = c("COL 45y, FIT 55-70y", "COL 45y, FIT 55-75y",
-              "COL 45y, FIT 55-80y", "COL 45y, FIT 55-85y")
+    label = c("Urban — Excellent", "Urban — Good",
+              "Urban — Fair",     "Urban — Poor")
   ),
   data.frame(
-    column = 3, colour = green,
+    column = 2, colour = teal,
     icon  = c("circle-inset", "circle-hollow", "circle-cross", "circle-solid"),
-    label = c("COL 50y, FIT 60-70y", "COL 50y, FIT 60-75y",
-              "COL 50y, FIT 60-80y", "COL 50y, FIT 60-85y")
+    label = c("Rural — Excellent", "Rural — Good",
+              "Rural — Fair",     "Rural — Poor")
+  ),
+  data.frame(
+    column = 3, colour = teal,
+    icon  = c("diamond-inset", "diamond-hollow", "diamond-cross", "diamond-solid"),
+    label = c("Remote — Excellent", "Remote — Good",
+              "Remote — Fair",      "Remote — Poor")
   ),
   stringsAsFactors = FALSE
 )
 
 marker_legend(
-  df_sda,
-  marker_size = 3, label_size = 2.4, dpi = 200, col_spacing = 13
-)
+  df_legend,
+  marker_size = 5, label_size = 4, dpi = 200,
+  col_spacing = 3, row_spacing = 0.8, label_gap = 0.4
+) +
+  coord_cartesian(xlim = c(-0.6, 8.5), ylim = c(-3.2, 0.48), clip = "off")
 ```
 
 ::: {.callout-note}
 `marker_legend()` returns a plain `ggplot`. Add `ggplot2::annotate()` layers for
-extra symbols (frontier segments, grey bands, asterisks), then export at exact
-pixel dimensions with `ggplot2::ggsave(width = W / 300, height = H / 300, dpi = 300)`.
+extra symbols or labels, then export at exact pixel dimensions with
+`ggplot2::ggsave(width = W / 300, height = H / 300, dpi = 300)`.
 :::
