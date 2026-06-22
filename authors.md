@@ -17,7 +17,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/jurjoroa/ggpop/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/jurjoroa/ggpop/blob/v1.8.0/inst/CITATION)
 
 Roa-Contreras J, Soultanova R, Alarid-Escudero F, Pineda-Antunez C
 (2026). *ggpop: Icon-Based Population Charts and Plots for 'ggplot2'*. R
