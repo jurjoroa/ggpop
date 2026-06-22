@@ -20,6 +20,7 @@ tibble or character vector ready to use in your plot.
 with no arguments returns all icons with their primary category.
 
 ``` r
+
 fa_icons()
 ```
 
@@ -40,10 +41,10 @@ fa_icons()
 
 Each row contains:
 
-| Column          | Description                                                                                                                                                                        |
-|:----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `icon`          | Icon name to pass to [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) / [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) |
-| `primary_class` | The first matching semantic category, or `NA` if unclassified                                                                                                                      |
+| Column | Description |
+|:---|:---|
+| `icon` | Icon name to pass to [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) / [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) |
+| `primary_class` | The first matching semantic category, or `NA` if unclassified |
 
   
 
@@ -57,6 +58,7 @@ Pass a string to `query` to filter icons whose names contain that
 substring.
 
 ``` r
+
 fa_icons(query = "person")
 ```
 
@@ -76,6 +78,7 @@ fa_icons(query = "person")
     # ℹ 38 more rows
 
 ``` r
+
 fa_icons(query = "heart")
 ```
 
@@ -108,6 +111,7 @@ Set `regex = TRUE` to use a Perl-compatible regular expression instead
 of a fixed string.
 
 ``` r
+
 # All icons whose name starts with "arrow"
 fa_icons(query = "^arrow", regex = TRUE)
 ```
@@ -128,6 +132,7 @@ fa_icons(query = "^arrow", regex = TRUE)
     # ℹ 43 more rows
 
 ``` r
+
 # Exact match for two specific icons
 fa_icons(query = "^(star|circle)$", regex = TRUE)
 ```
@@ -149,6 +154,7 @@ fa_icons(query = "^(star|circle)$", regex = TRUE)
 Use `category` to return only icons that belong to a semantic group.
 
 ``` r
+
 fa_icons(category = "people_users")
 ```
 
@@ -170,6 +176,7 @@ fa_icons(category = "people_users")
 Combine `query` and `category` to narrow results further.
 
 ``` r
+
 fa_icons(query = "person", category = "people_users")
 ```
 
@@ -199,6 +206,7 @@ fa_icons(query = "person", category = "people_users")
 Set `as_vector = TRUE` for a plain character vector.
 
 ``` r
+
 fa_icons(query = "house", as_vector = TRUE)
 ```
 
@@ -229,6 +237,7 @@ fa_icons(query = "house", as_vector = TRUE)
     [25] "warehouse"                           
 
 ``` r
+
 fa_icons(category = "animals", as_vector = TRUE)
 ```
 
@@ -248,6 +257,7 @@ fa_icons(category = "animals", as_vector = TRUE)
 Set `primary_only = FALSE` to get all category matches.
 
 ``` r
+
 fa_icons(query = "heart", primary_only = FALSE)
 ```
 
@@ -279,6 +289,7 @@ fa_icons(query = "heart", primary_only = FALSE)
 Set `include_unclassified = FALSE` to exclude unclassified icons.
 
 ``` r
+
 fa_icons(query = "user", include_unclassified = FALSE)
 ```
 
@@ -309,6 +320,7 @@ Supply your own named list of `category = regex` pairs to `class_map`
 for domain-specific classification.
 
 ``` r
+
 my_map <- list(
   health   = "^(heart|lungs|brain|virus|syringe|stethoscope|bandage|dna)(-|$)",
   mobility = "^(wheelchair|person-walking|bicycle|car|bus)(-|$)"
@@ -343,6 +355,7 @@ fa_icons(class_map = my_map, include_unclassified = FALSE)
 Common workflow: search, select, use:
 
 ``` r
+
 # 1. Find candidate icons
 fa_icons(query = "person", category = "people_users", as_vector = TRUE)
 ```
@@ -397,6 +410,7 @@ fa_icons(query = "person", category = "people_users", as_vector = TRUE)
 Show the code
 
 ``` r
+
 # 2. Use the chosen icons in a population chart
 df_pop <- data.frame(
   status = c(rep("Healthy", 70), rep("At Risk", 30)),
@@ -438,16 +452,16 @@ ggplot() +
 
   
 
-| Parameter              | Default  | Description                                                   |
-|:-----------------------|:---------|:--------------------------------------------------------------|
-| `query`                | `NULL`   | Fixed string or regex to filter icon names                    |
-| `category`             | `NULL`   | One or more category names to filter by                       |
-| `regex`                | `FALSE`  | Treat `query` as a Perl-compatible regular expression         |
-| `classify`             | `TRUE`   | Add a `primary_class` column to the output                    |
-| `include_unclassified` | `TRUE`   | Keep icons with no matching category (`NA`)                   |
-| `class_map`            | internal | Named list mapping category labels to regex patterns          |
-| `primary_only`         | `TRUE`   | Return only `primary_class`; set `FALSE` to add `all_classes` |
-| `as_vector`            | `FALSE`  | Return a plain sorted character vector instead of a tibble    |
+| Parameter | Default | Description |
+|:---|:---|:---|
+| `query` | `NULL` | Fixed string or regex to filter icon names |
+| `category` | `NULL` | One or more category names to filter by |
+| `regex` | `FALSE` | Treat `query` as a Perl-compatible regular expression |
+| `classify` | `TRUE` | Add a `primary_class` column to the output |
+| `include_unclassified` | `TRUE` | Keep icons with no matching category (`NA`) |
+| `class_map` | internal | Named list mapping category labels to regex patterns |
+| `primary_only` | `TRUE` | Return only `primary_class`; set `FALSE` to add `all_classes` |
+| `as_vector` | `FALSE` | Return a plain sorted character vector instead of a tibble |
 
   
 

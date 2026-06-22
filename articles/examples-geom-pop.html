@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="examples-geom-pop_files/libs/quarto-html/popper.min.js"></script><script src="examples-geom-pop_files/libs/quarto-html/tippy.umd.min.js"></script><link href="examples-geom-pop_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="examples-geom-pop_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -60,7 +60,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggpop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,7 +101,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/v1.7.1/vignettes/articles/examples-geom-pop.qmd" class="external-link"><code>vignettes/articles/examples-geom-pop.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/articles/examples-geom-pop.qmd" class="external-link"><code>vignettes/articles/examples-geom-pop.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -806,7 +806,70 @@ document.addEventListener('DOMContentLoaded', function () {
 <figure><p><img src="https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/sick_sicker_animation.gif"></p>
 <figcaption>Markov Model Simulation</figcaption></figure>
 </div>
-</section><section class="level2"><h2 id="cowplot-health-survey-dashboard">
+</section><section class="level2"><h2 id="example-8-bundled-markers-global-renewable-energy-mix">Example 8: Bundled Markers — Global Renewable Energy Mix<a class="anchor" aria-label="anchor" href="#example-8-bundled-markers-global-renewable-energy-mix"></a>
+</h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<p>Use bundled geometric markers instead of Font Awesome icons — perfect when no suitable FA icon exists. Each energy source gets its own shape and colour; no <code><a href="../reference/fa_icons.html">fa_icons()</a></code> search needed.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># List all 14 bundled markers:</span></span>
+<span><span class="fu"><a href="../reference/ggpop_markers.html">ggpop_markers</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">bundled</span></span>
+<span></span>
+<span><span class="va">df_energy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Solar PV"</span>, <span class="st">"Wind"</span>, <span class="st">"Hydro"</span>, <span class="st">"Biomass"</span><span class="op">)</span>,</span>
+<span>  gw     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">450</span>, <span class="fl">380</span>, <span class="fl">200</span>, <span class="fl">70</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
+<span><span class="va">df_proc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_data.html">process_data</a></span><span class="op">(</span></span>
+<span>  data        <span class="op">=</span> <span class="va">df_energy</span>,</span>
+<span>  group_var   <span class="op">=</span> <span class="va">source</span>,</span>
+<span>  sum_var     <span class="op">=</span> <span class="va">gw</span>,</span>
+<span>  sample_size <span class="op">=</span> <span class="fl">50</span></span>
+<span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Solar PV"</span> <span class="op">~</span> <span class="st">"circle-inset"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Wind"</span>     <span class="op">~</span> <span class="st">"diamond-hollow"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Hydro"</span>    <span class="op">~</span> <span class="st">"square-cross"</span>,</span>
+<span>    <span class="va">type</span> <span class="op">==</span> <span class="st">"Biomass"</span>  <span class="op">~</span> <span class="st">"plus-bold"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_proc</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, colour <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">120</span>, legend_icons <span class="op">=</span> <span class="cn">TRUE</span>, arrange <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Solar PV"</span> <span class="op">=</span> <span class="st">"#FFB703"</span>,</span>
+<span>    <span class="st">"Wind"</span>     <span class="op">=</span> <span class="st">"#219EBC"</span>,</span>
+<span>    <span class="st">"Hydro"</span>    <span class="op">=</span> <span class="st">"#1D3557"</span>,</span>
+<span>    <span class="st">"Biomass"</span>  <span class="op">=</span> <span class="st">"#2D6A4F"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_pop.html">theme_pop</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Global Renewable Energy Capacity Mix"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents 2% of total installed capacity  ·  Sample of 50"</span>,</span>
+<span>    colour   <span class="op">=</span> <span class="st">"Energy Source"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Markers: circle-inset, diamond-hollow, square-cross, plus-bold"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-pop_files/figure-html/bundled-markers-pop-1.png" width="1056"></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<hr></section><section class="level2"><h2 id="cowplot-health-survey-dashboard">
 <code>cowplot</code> — Health Survey Dashboard<a class="anchor" aria-label="anchor" href="#cowplot-health-survey-dashboard"></a>
 </h2>
 <div style="line-height: 0.6;">
@@ -814,7 +877,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 <p>Combining multiple <code><a href="../reference/geom_pop.html">geom_pop()</a></code> panels with <code>cowplot</code>: two charts on top (sex, age groups), one centered below (vaccination).</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -950,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<hr></section><section class="level2"><h2 id="facet_wrap-transportation-methods-across-us-cities">
+</section><section class="level2"><h2 id="facet_wrap-transportation-methods-across-us-cities">
 <code>facet_wrap</code> — Transportation Methods Across US Cities<a class="anchor" aria-label="anchor" href="#facet_wrap-transportation-methods-across-us-cities"></a>
 </h2>
 <div style="line-height: 0.6;">
@@ -958,7 +1021,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 <p>Transportation methods across cities using <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap()</a></code>: each panel shows one city’s distribution of commute modes.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example: Transportation Methods Across Cities with 7 Icon Groups</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -1088,13 +1151,13 @@ document.addEventListener('DOMContentLoaded', function () {
 <p>Note: According to issue #488 from geofacet package</p>
 <p>“You may want to install ggplot2 v3.5.2 until it is fixed so the plot can work. Note that this is the case for all grids, not the US states grid alone (so if possible, please update the issue title).”.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_version</span><span class="op">(</span>package <span class="op">=</span> <span class="st">"ggplot2"</span>,</span>
 <span>                          version <span class="op">=</span> <span class="st">"3.5.2"</span>,</span>
 <span>                          repos <span class="op">=</span> <span class="st">"http://cran.us.r-project.org"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>; <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hafen/geofacet" class="external-link">geofacet</a></span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -1185,7 +1248,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 <p>Age structure changes across Japan, the United States, and Nigeria animated with <code>patchwork</code> and <code>gifski</code>.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>

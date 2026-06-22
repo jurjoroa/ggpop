@@ -22,6 +22,7 @@ or
 and will error.
 
 ``` r
+
 # Wrong
 aes(icon = icon, fill = sex)
 
@@ -36,6 +37,7 @@ aes(icon = icon, color = sex)
 alpha legend with `guides(alpha = "none")`.
 
 ``` r
+
 # Wrong -- alpha is reserved internally
 df$alpha <- c(1.0, 0.6, 0.3)
 aes(alpha = alpha)
@@ -63,6 +65,7 @@ Layout is computed internally. Mapping `x` or `y` raises a warning and
 is silently ignored.
 
 ``` r
+
 # Wrong
 geom_pop(data = df, aes(icon = icon, color = sex, x = sex, y = sex))
 
@@ -82,6 +85,7 @@ placed after
 resets the legend key size.
 
 ``` r
+
 # Correct order
 ggplot(...) +
   geom_pop(..., legend_icons = TRUE) +
@@ -102,6 +106,7 @@ icons mapped to the same color group will raise a warning.
 identical icon placement across runs.
 
 ``` r
+
 geom_pop(..., seed = 42)
 ```
 
@@ -111,6 +116,7 @@ geom_pop(..., seed = 42)
 function**
 
 ``` r
+
 # Wrong
 process_data(data = df, group_var = sex, sum_var = n,
              high_group_var = region)

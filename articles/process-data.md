@@ -16,6 +16,7 @@ It handles:
 - Supporting hierarchical grouping via `high_group_var`
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -33,6 +34,7 @@ Required: `data`, `group_var`, `sum_var`. `sample_size` sets icon count
 (max 1,000).
 
 ``` r
+
 df_sex <- data.frame(
   sex = c("male", "female"),
   n   = c(63459580, 67401427)
@@ -52,9 +54,9 @@ head(df_sex_proc)
     1 female 67401427 0.5150612
     2   male 63459580 0.4849388
     3   male 63459580 0.4849388
-    4 female 67401427 0.5150612
+    4   male 63459580 0.4849388
     5   male 63459580 0.4849388
-    6 female 67401427 0.5150612
+    6   male 63459580 0.4849388
 
 The output contains:
 
@@ -75,6 +77,7 @@ With `sample_size = 100`, a group with 48% of the population gets ~48
 icons.
 
 ``` r
+
 df_sex_proc %>%
   group_by(type) %>%
   summarise(
@@ -86,8 +89,8 @@ df_sex_proc %>%
     # A tibble: 2 × 3
       type   icons proportion
       <chr>  <int>      <dbl>
-    1 female    50       51.5
-    2 male      50       48.5
+    1 female    52       51.5
+    2 male      48       48.5
 
   
 
@@ -100,6 +103,7 @@ df_sex_proc %>%
 Works with any number of groups — not just two.
 
 ``` r
+
 df_regions <- data.frame(
   region = c("North", "South", "East", "West"),
   n      = c(12000, 8000, 15000, 5000)
@@ -120,10 +124,10 @@ df_regions_processed %>%
     # A tibble: 4 × 2
       type  icons
       <chr> <int>
-    1 East     29
-    2 North    33
-    3 South    28
-    4 West     10
+    1 East     48
+    2 North    20
+    3 South    21
+    4 West     11
 
   
 
@@ -137,6 +141,7 @@ Use `high_group_var` to nest groups under a parent category for faceted
 plots.
 
 ``` r
+
 df_health <- data.frame(
   region    = c("North", "South", "East", "West",
                 "North", "South", "East", "West"),
@@ -161,14 +166,14 @@ df_health_processed %>%
     # A tibble: 8 × 3
       group type    icons
       <chr> <chr>   <int>
-    1 East  At Risk    43
-    2 East  Healthy    57
-    3 North At Risk    40
-    4 North Healthy    60
+    1 East  At Risk    38
+    2 East  Healthy    62
+    3 North At Risk    32
+    4 North Healthy    68
     5 South At Risk    24
     6 South Healthy    76
-    7 West  At Risk    14
-    8 West  Healthy    86
+    7 West  At Risk    15
+    8 West  Healthy    85
 
   
 
@@ -183,6 +188,7 @@ Optional — pass data directly to
 if it already has one row per icon (max 1,000 rows per plot or facet).
 
 ``` r
+
 df_direct <- data.frame(
   activity = c(
     rep("Walking",  35),

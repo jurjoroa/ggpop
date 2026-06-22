@@ -32,6 +32,7 @@ icons.
 Converts count data to one row per icon. `group_var` and `sum_var` are
 unquoted; `high_group_var` takes a character string for faceted charts.
 
+
     df_plot <- process_data(
       data        = data.frame(sex = c("Female", "Male"), n = c(55, 45)),
       group_var   = sex,
@@ -45,6 +46,7 @@ Draws icon grids. Add an `icon` column, map `icon` and `color` in
 [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html). Do not map
 `x` or `y`.
 
+
     ggplot() +
       geom_pop(data = df_plot, aes(icon = icon, color = type), size = 2) +
       scale_color_manual(values = c(Female = "#C0392B", Male = "#2980B9")) +
@@ -56,12 +58,14 @@ Drop-in replacement for
 [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
 using Font Awesome icons.
 
+
     ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
       geom_icon_point(icon = "seedling", size = 1)
 
 ## fa_icons()
 
 Search the bundled Font Awesome icon list by keyword.
+
 
     fa_icons(query = "person")
 

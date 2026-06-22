@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="examples-geom-icon-point_files/libs/quarto-html/popper.min.js"></script><script src="examples-geom-icon-point_files/libs/quarto-html/tippy.umd.min.js"></script><link href="examples-geom-icon-point_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="examples-geom-icon-point_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -60,7 +60,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggpop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,7 +101,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/v1.7.1/vignettes/articles/examples-geom-icon-point.qmd" class="external-link"><code>vignettes/articles/examples-geom-icon-point.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/articles/examples-geom-icon-point.qmd" class="external-link"><code>vignettes/articles/examples-geom-icon-point.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -870,6 +870,72 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
+<hr></section><section class="level2"><h2 id="example-8-bundled-markers-drug-efficacy-by-evidence-tier">Example 8: Bundled Markers — Drug Efficacy by Evidence Tier<a class="anchor" aria-label="anchor" href="#example-8-bundled-markers-drug-efficacy-by-evidence-tier"></a>
+</h2>
+<div style="line-height: 0.6;">
+<br>
+</div>
+<p>Map bundled marker variants to an ordinal quality tier — no Font Awesome search needed. Both <code>icon</code> and <code>colour</code> encode the same variable so the legend shows the actual marker shape for each level.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jurjoroa.github.io/ggpop/">ggpop</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># All 14 bundled markers:</span></span>
+<span><span class="fu"><a href="../reference/ggpop_markers.html">ggpop_markers</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">bundled</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">24</span></span>
+<span><span class="va">df_trials</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  trial       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Trial"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  sample_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">200</span><span class="op">:</span><span class="fl">5000</span>, <span class="va">n</span><span class="op">)</span>,</span>
+<span>  effect_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">0.6</span>, <span class="fl">0.95</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">0.40</span>, <span class="fl">0.70</span><span class="op">)</span>,</span>
+<span>                  <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">0.20</span>, <span class="fl">0.50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">0.05</span>, <span class="fl">0.35</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  evidence    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"High"</span>, <span class="st">"Moderate"</span>, <span class="st">"Low"</span>, <span class="st">"Very Low"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">df_trials</span><span class="op">$</span><span class="va">icon</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"High"</span>     <span class="op">=</span> <span class="st">"circle-solid"</span>,</span>
+<span>  <span class="st">"Moderate"</span> <span class="op">=</span> <span class="st">"circle-inset"</span>,</span>
+<span>  <span class="st">"Low"</span>      <span class="op">=</span> <span class="st">"circle-hollow"</span>,</span>
+<span>  <span class="st">"Very Low"</span> <span class="op">=</span> <span class="st">"circle-cross"</span></span>
+<span><span class="op">)</span><span class="op">[</span><span class="va">df_trials</span><span class="op">$</span><span class="va">evidence</span><span class="op">]</span></span>
+<span><span class="va">df_trials</span><span class="op">$</span><span class="va">evidence</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">df_trials</span><span class="op">$</span><span class="va">evidence</span>,</span>
+<span>  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"High"</span>, <span class="st">"Moderate"</span>, <span class="st">"Low"</span>, <span class="st">"Very Low"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_trials</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">sample_size</span>, y <span class="op">=</span> <span class="va">effect_size</span>,</span>
+<span>                      icon <span class="op">=</span> <span class="va">icon</span>, colour <span class="op">=</span> <span class="va">evidence</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">4</span>, dpi <span class="op">=</span> <span class="fl">120</span>, legend_icons <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"High"</span>     <span class="op">=</span> <span class="st">"#2A9D8F"</span>,</span>
+<span>    <span class="st">"Moderate"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>,</span>
+<span>    <span class="st">"Low"</span>      <span class="op">=</span> <span class="st">"#FF9F1C"</span>,</span>
+<span>    <span class="st">"Very Low"</span> <span class="op">=</span> <span class="st">"#E63946"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/scale_legend_icon.html">scale_legend_icon</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/comma.html" class="external-link">comma</a></span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Drug Efficacy by Evidence Quality"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Marker shape + colour both encode evidence tier"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="st">"Sample Size"</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Effect Size"</span>,</span>
+<span>    colour   <span class="op">=</span> <span class="st">"Evidence"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"Markers: circle-solid / circle-inset / circle-hollow / circle-cross"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure><p><img src="examples-geom-icon-point_files/figure-html/bundled-markers-icon-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="line-height: 0.6;">
+<br>
+</div>
 <hr></section><section class="level2"><h2 id="ggrepel-the-green-energy-divide">
 <code>ggrepel</code> — The Green Energy Divide<a class="anchor" aria-label="anchor" href="#ggrepel-the-green-energy-divide"></a>
 </h2>
@@ -878,7 +944,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 <p>Energy consumption vs. renewable share with <code><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">geom_label_repel()</a></code>: icon = energy source, color = continent.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
 <span></span>
@@ -1064,7 +1130,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 <p>Battery life vs. performance for 17 devices using <code><a href="https://ggforce.data-imaginist.com/reference/geom_mark_ellipse.html" class="external-link">geom_mark_ellipse()</a></code> to highlight category clusters.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggforce.data-imaginist.com" class="external-link">ggforce</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>
 <span></span>
@@ -1202,7 +1268,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 <p>Animated Gapminder-style: life expectancy vs. GDP per capita across five decades, with earth icons by region.</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggrepel.slowkow.com/" class="external-link">ggrepel</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gganimate.com" class="external-link">gganimate</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a></span><span class="op">)</span></span>

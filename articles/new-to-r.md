@@ -53,6 +53,7 @@ Click inside the Console and type the following. Press **Enter** after
 each line.
 
 ``` r
+
 # R can be used as a calculator
 2 + 2
 10 * 5
@@ -75,6 +76,7 @@ Instead of re-typing numbers every time, you can save them into a
 **variable** using the arrow `<-`:
 
 ``` r
+
 my_number <- 42
 my_name   <- "Jorge"
 
@@ -84,6 +86,7 @@ my_number
     [1] 42
 
 ``` r
+
 my_name
 ```
 
@@ -92,6 +95,7 @@ my_name
 Now `my_number` holds the value `42`. You can use it anywhere:
 
 ``` r
+
 my_number * 2
 ```
 
@@ -116,6 +120,7 @@ rows and columns. Each column is a variable (like “city” or
 Here’s how to create a simple data frame:
 
 ``` r
+
 df_cities <- data.frame(
   city       = c("Paris", "Tokyo", "Cairo", "Lagos"),
   population = c(2161000, 13960000, 22183000, 15387639)
@@ -137,12 +142,14 @@ column. Commas separate columns.
 You can access a single column using `$`:
 
 ``` r
+
 df_cities$city
 ```
 
     [1] "Paris" "Tokyo" "Cairo" "Lagos"
 
 ``` r
+
 df_cities$population
 ```
 
@@ -158,6 +165,7 @@ R’s power comes from **packages** — collections of extra functions.
 Install once, load every session.
 
 ``` r
+
 # Install packages (do this once)
 install.packages("ggplot2")
 install.packages("ggpop")
@@ -185,6 +193,7 @@ We’ll use data about how people in a city get to work. Imagine we
 surveyed 100 commuters:
 
 ``` r
+
 df_transport <- data.frame(
   transport = c("Car", "Subway", "Bike", "Walk"),
   count     = c(45, 30, 15, 10)
@@ -202,6 +211,7 @@ df_transport
 Now let’s make a bar chart:
 
 ``` r
+
 library(ggplot2)
 
 ggplot(data = df_transport, aes(x = transport, y = count, fill = transport)) +
@@ -220,13 +230,13 @@ ggplot(data = df_transport, aes(x = transport, y = count, fill = transport)) +
 
 Let’s read the code line by line:
 
-| Code                                                                      | What it does                                                            |
-|:--------------------------------------------------------------------------|:------------------------------------------------------------------------|
-| `ggplot(data = ..., aes(...))`                                            | Creates the canvas and maps columns to visual properties                |
-| `aes(x = transport, y = count, fill = transport)`                         | `x` = horizontal axis, `y` = bar height, `fill` = bar color             |
-| `geom_bar(stat = "identity")`                                             | Draws the bars (use `"identity"` when your data already has the counts) |
-| `labs(...)`                                                               | Adds titles and axis labels                                             |
-| [`theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html) | Applies a clean, minimal style                                          |
+| Code | What it does |
+|:---|:---|
+| `ggplot(data = ..., aes(...))` | Creates the canvas and maps columns to visual properties |
+| `aes(x = transport, y = count, fill = transport)` | `x` = horizontal axis, `y` = bar height, `fill` = bar color |
+| `geom_bar(stat = "identity")` | Draws the bars (use `"identity"` when your data already has the counts) |
+| `labs(...)` | Adds titles and axis labels |
+| [`theme_minimal()`](https://ggplot2.tidyverse.org/reference/ggtheme.html) | Applies a clean, minimal style |
 
 ggplot2 builds charts by layering pieces with `+`.
 
@@ -243,6 +253,7 @@ First, we build a data frame with **one row per person** (instead of one
 row per group):
 
 ``` r
+
 df_commuters <- data.frame(
   transport = c(
     rep("Car",    45),
@@ -265,6 +276,7 @@ Font Awesome name.
 Now the chart:
 
 ``` r
+
 library(ggpop)
 
 ggplot(data = df_commuters, aes(icon = icon, color = transport)) +
@@ -295,6 +307,7 @@ Same structure as ggplot2, but each data point is visible as an icon.
 > to search the library of 2,000+ free icons:
 >
 > ``` r
+>
 > fa_icons(query = "person")
 > fa_icons(query = "car")
 > fa_icons(query = "heart")
@@ -314,6 +327,7 @@ how many hours they slept and their exam score, grouped by their
 preferred study method:
 
 ``` r
+
 df_weather <- data.frame(
   temperature = c(15, 18, 22, 25, 28, 30, 32, 30, 27, 24, 20, 16,
                   10, 12, 15, 18, 20, 22, 24, 22, 19, 16, 13, 11,
@@ -342,6 +356,7 @@ Now plot it with
 [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html):
 
 ``` r
+
 ggplot(
   data = df_weather,
   aes(x = temperature, y = ice_cream_sales, icon = icon, color = season)
@@ -370,6 +385,7 @@ Now with
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md):
 
 ``` r
+
 ggplot(
   data = df_weather,
   aes(x = temperature, y = ice_cream_sales, icon = icon, color = season)
@@ -403,13 +419,13 @@ ggplot(
 You went from zero to four real charts in R. Here’s what to explore
 next:
 
-| Topic                                                                                              | Where to look                                                                                        |
-|:---------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------|
-| More [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) examples               | [Getting Started](https://jurjoroa.github.io/ggpop/articles/getting-started.md) vignette             |
-| Icon search                                                                                        | [Font Awesome Icons](https://jurjoroa.github.io/ggpop/articles/fa-icons.md) vignette                 |
-| More [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) examples | [geom_icon_point()](https://jurjoroa.github.io/ggpop/articles/geom-icon-point.md) vignette           |
-| Colors & themes                                                                                    | [Themes & Customization](https://jurjoroa.github.io/ggpop/articles/themes-customization.md) vignette |
-| Common pitfalls                                                                                    | [Tips & Best Practices](https://jurjoroa.github.io/ggpop/articles/tips.md) vignette                  |
+| Topic | Where to look |
+|:---|:---|
+| More [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) examples | [Getting Started](https://jurjoroa.github.io/ggpop/articles/getting-started.md) vignette |
+| Icon search | [Font Awesome Icons](https://jurjoroa.github.io/ggpop/articles/fa-icons.md) vignette |
+| More [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) examples | [geom_icon_point()](https://jurjoroa.github.io/ggpop/articles/geom-icon-point.md) vignette |
+| Colors & themes | [Themes & Customization](https://jurjoroa.github.io/ggpop/articles/themes-customization.md) vignette |
+| Common pitfalls | [Tips & Best Practices](https://jurjoroa.github.io/ggpop/articles/tips.md) vignette |
 
 > **Keep learning R**
 >

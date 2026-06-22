@@ -36,6 +36,16 @@ Use geom_icon_point() to build icon-based scatter plots.
 - [Icon Scatter Plots with
   geom_icon_point()](https://jurjoroa.github.io/ggpop/articles/geom-icon-point.md):
 
+### Legends & Custom Icons
+
+Native icon legends, custom SVG markers, bundled markers, and standalone
+composite legends.
+
+- [Icon Legends: Native Guides and Standalone
+  Composites](https://jurjoroa.github.io/ggpop/articles/marker-legend.md):
+- [Custom SVG
+  Icons](https://jurjoroa.github.io/ggpop/articles/custom-svg-icons.md):
+
 ### Themes & Customization
 
 Customize your plots with themes, colors, legend options, and stroke.

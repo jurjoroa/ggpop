@@ -9,6 +9,7 @@ Out of every 100 people on Earth, how many come from each continent?
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -101,6 +102,7 @@ Population distribution by sex (Mexico 2024).
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -163,6 +165,7 @@ Education attainment across four levels.
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -282,6 +285,7 @@ Disease burden by category (dark theme).
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -352,6 +356,7 @@ type.
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -420,6 +425,7 @@ and `check_overlap = TRUE` to prevent overlap.
 Show the code
 
 ``` r
+
 df_labeled <- data.frame(
   name = c(
     # Female names (50)
@@ -491,6 +497,7 @@ Animated Sick-Sicker model tracking disease progression from age 40 to
 Show the code
 
 ``` r
+
 # Load package functions
 
 library(ggpop)
@@ -629,6 +636,70 @@ p_anim <- ggplot(df_icons, aes(icon = icon, color = state)) +
 
 Markov Model Simulation
 
+## Example 8: Bundled Markers — Global Renewable Energy Mix
+
+  
+
+Use bundled geometric markers instead of Font Awesome icons — perfect
+when no suitable FA icon exists. Each energy source gets its own shape
+and colour; no
+[`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
+search needed.
+
+Show the code
+
+``` r
+
+library(ggpop)
+library(ggplot2)
+library(dplyr)
+
+# List all 14 bundled markers:
+ggpop_markers()$bundled
+
+df_energy <- data.frame(
+  source = c("Solar PV", "Wind", "Hydro", "Biomass"),
+  gw     = c(450, 380, 200, 70)
+)
+
+set.seed(7)
+df_proc <- process_data(
+  data        = df_energy,
+  group_var   = source,
+  sum_var     = gw,
+  sample_size = 50
+) %>%
+  mutate(icon = case_when(
+    type == "Solar PV" ~ "circle-inset",
+    type == "Wind"     ~ "diamond-hollow",
+    type == "Hydro"    ~ "square-cross",
+    type == "Biomass"  ~ "plus-bold"
+  ))
+
+ggplot(df_proc, aes(icon = icon, colour = type)) +
+  geom_pop(size = 2, dpi = 120, legend_icons = TRUE, arrange = TRUE) +
+  scale_colour_manual(values = c(
+    "Solar PV" = "#FFB703",
+    "Wind"     = "#219EBC",
+    "Hydro"    = "#1D3557",
+    "Biomass"  = "#2D6A4F"
+  )) +
+  scale_legend_icon(size = 7) +
+  theme_pop() +
+  labs(
+    title    = "Global Renewable Energy Capacity Mix",
+    subtitle = "Each icon represents 2% of total installed capacity  ·  Sample of 50",
+    colour   = "Energy Source",
+    caption  = "Markers: circle-inset, diamond-hollow, square-cross, plus-bold"
+  )
+```
+
+![](examples-geom-pop_files/figure-html/bundled-markers-pop-1.png)
+
+  
+
+------------------------------------------------------------------------
+
 ## `cowplot` — Health Survey Dashboard
 
   
@@ -641,6 +712,7 @@ below (vaccination).
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -769,8 +841,6 @@ plot_grid(top_row, bottom_row, nrow = 2)
 
   
 
-------------------------------------------------------------------------
-
 ## `facet_wrap` — Transportation Methods Across US Cities
 
   
@@ -782,6 +852,7 @@ each panel shows one city’s distribution of commute modes.
 Show the code
 
 ``` r
+
 # Example: Transportation Methods Across Cities with 7 Icon Groups
 library(ggplot2)
 library(dplyr)
@@ -916,6 +987,7 @@ can work. Note that this is the case for all grids, not the US states
 grid alone (so if possible, please update the issue title).”.
 
 ``` r
+
 devtools::install_version(package = "ggplot2",
                           version = "3.5.2",
                           repos = "http://cran.us.r-project.org")
@@ -924,6 +996,7 @@ devtools::install_version(package = "ggplot2",
 Show the code
 
 ``` r
+
 library(sf); library(dplyr); library(geofacet)
 
 
@@ -1017,6 +1090,7 @@ animated with `patchwork` and `gifski`.
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)

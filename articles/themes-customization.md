@@ -7,10 +7,10 @@
 `ggpop` ships with three built-in themes, all optimized for icon-based
 charts:
 
-| Theme                                                                                    | Description                        |
-|:-----------------------------------------------------------------------------------------|:-----------------------------------|
-| [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md)                 | Default — clean, minimal, no axes  |
-| [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md)       | Dark background variant            |
+| Theme | Description |
+|:---|:---|
+| [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md) | Default — clean, minimal, no axes |
+| [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md) | Dark background variant |
 | [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md) | Ultra-minimal, no legend or titles |
 
   
@@ -26,6 +26,7 @@ Default theme — removes axes and gridlines. Layer standard
 top to customize.
 
 ``` r
+
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -57,6 +58,7 @@ ggplot() +
   object
 
 ``` r
+
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -90,6 +92,7 @@ Dark variant of
 with `bg_color` and `text_color` parameters.
 
 ``` r
+
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -114,6 +117,7 @@ ggplot() +
 Custom background and text colors:
 
 ``` r
+
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -146,6 +150,7 @@ ggplot() +
 No title, legend, or margins. Best for embedding in dashboards.
 
 ``` r
+
 ggplot() +
   geom_pop(
     data = df_sex_proc,
@@ -170,6 +175,7 @@ ggplot() +
 Controls legend icon size when `legend_icons = TRUE`.
 
 ``` r
+
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -199,6 +205,7 @@ Add outlines to icons with `stroke_width`, useful for light icons on
 light backgrounds.
 
 ``` r
+
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -229,6 +236,7 @@ Layer [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html)
 calls on top of any `theme_pop*()` to override specific elements.
 
 ``` r
+
 ggplot() +
   geom_pop(
     data         = df_sex_proc,
@@ -265,13 +273,13 @@ ggplot() +
 
   
 
-| Function                                                                                 | Purpose                                                                                                                                                                               |
-|:-----------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md)                 | Default clean theme for icon charts                                                                                                                                                   |
-| [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md)       | Dark background variant                                                                                                                                                               |
-| [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md) | No legend, no titles, no margins                                                                                                                                                      |
-| `scale_legend_icon(size)`                                                                | Control legend icon size                                                                                                                                                              |
-| `stroke_width`                                                                           | Add outline to icons in [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) / [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) |
+| Function | Purpose |
+|:---|:---|
+| [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md) | Default clean theme for icon charts |
+| [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md) | Dark background variant |
+| [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md) | No legend, no titles, no margins |
+| `scale_legend_icon(size)` | Control legend icon size |
+| `stroke_width` | Add outline to icons in [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) / [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) |
 
 Visit the [ggpop website](https://jurjoroa.github.io/ggpop/) for the
 full function reference.

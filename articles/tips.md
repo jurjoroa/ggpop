@@ -16,6 +16,7 @@ to search.
 > **How to find valid icon names**
 >
 > ``` r
+>
 > # Search by keyword
 > fa_icons(query = "person")
 > fa_icons(query = "car")
@@ -23,6 +24,7 @@ to search.
 > ```
 
 ``` r
+
 df_tip1 <- data.frame(
   transport = rep(c("Car", "Bicycle", "Plane"), each = 10),
   icon      = rep(c("car", "bicycle", "plane"), each = 10),
@@ -79,6 +81,7 @@ or
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md).**
 
 ``` r
+
 # Safe column names — no conflict with internal reserved names
 df_tip2 <- data.frame(
   sex      = rep(c("Male", "Female"), each = 20),
@@ -125,11 +128,13 @@ renders icons as raster images. This means:
 > **What NOT to do**
 >
 > ``` r
+>
 > # fill will error in geom_pop():
 > aes(icon = icon, group = sex, fill = sex)   # Error
 > ```
 
 ``` r
+
 df_tip3 <- data.frame(
   region = rep(c("North", "South", "East", "West"), each = 15),
   icon   = rep(c("compass", "arrow-down", "arrow-right", "arrow-left"), each = 15),
@@ -168,6 +173,7 @@ Max **1,000 icons** per facet panel — exceeding this raises an error.
 Use `process_data(sample_size = ...)` to stay within limits.
 
 ``` r
+
 df_tip4_raw <- data.frame(
   group = c("Group A", "Group B", "Group C"),
   n     = c(4500000, 3200000, 2100000)
@@ -226,10 +232,12 @@ computes positions internally and will warn if you do.
 > **This will warn (and x/y are silently ignored)**
 >
 > ``` r
+>
 > geom_pop(data = df, aes(icon = icon, group = sex, x = sex, y = sex))
 > ```
 
 ``` r
+
 df_tip5 <- data.frame(
   type = rep(c("Urban", "Rural"), each = 25),
   icon = rep(c("building", "tree"), each = 25),
@@ -266,6 +274,7 @@ Each `color` group must map to exactly one icon name when
 `legend_icons = TRUE`.
 
 ``` r
+
 # Each group maps to exactly one icon — clean legend
 df_tip6 <- data.frame(
   species = rep(c("Birds", "Fish", "Trees"), each = 20),
@@ -311,6 +320,7 @@ All [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html) and
 > **Wrong order — theme() after scale_legend_icon() resets key size**
 >
 > ``` r
+>
 > ggplot(...) +
 >   geom_pop(...) +
 >   scale_legend_icon(size = 10) +   # ← scale_legend_icon first
@@ -318,6 +328,7 @@ All [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html) and
 > ```
 
 ``` r
+
 df_tip7 <- data.frame(
   status = rep(c("Active", "Inactive"), each = 25),
   icon   = rep(c("circle-check", "circle-xmark"), each = 25),
@@ -357,6 +368,7 @@ If your data has one row per group with a count column, use
 to expand it to one row per icon.
 
 ``` r
+
 # Your raw count data
 df_counts_raw <- data.frame(
   education = c("No degree", "High school", "Bachelor's", "Graduate"),
@@ -422,6 +434,7 @@ pipelines.
 > runs. A fixed seed guarantees that.
 
 ``` r
+
 df_tip9_raw <- data.frame(
   source     = c("Coal", "Natural Gas", "Nuclear", "Renewables"),
   generation = c(800000, 1600000, 700000, 900000)
@@ -475,6 +488,7 @@ Use `arrange = FALSE` (default) for a scattered effect. Use
 groups visible.
 
 ``` r
+
 df_tip12 <- data.frame(
   outcome = c(rep("Recovered", 65), rep("Ongoing", 25), rep("Worsened", 10)),
   icon    = c(rep("circle-check", 65), rep("arrow-right", 25), rep("circle-xmark", 10)),
@@ -531,12 +545,14 @@ an error.
 > **What NOT to do**
 >
 > ``` r
+>
 > # Error — alpha is a reserved internal column name in ggpop
 > df$alpha <- c(1.0, 0.6, 0.3)
 > aes(alpha = alpha)   # Error
 > ```
 
 ``` r
+
 df_tip13 <- data.frame(
   status  = c(rep("Confirmed", 60), rep("Probable", 25), rep("Suspected", 15)),
   icon    = c(rep("circle-check", 60), rep("clock", 25), rep("circle-question", 15)),
@@ -594,6 +610,7 @@ which column drives the faceting by passing `facet = group`.
 > every panel.
 
 ``` r
+
 df_tip14_raw <- data.frame(
   region = rep(c("North", "South", "East", "West"), each = 2),
   sex    = rep(c("Male", "Female"), times = 4),
@@ -660,6 +677,7 @@ bleeding into the fill legend keys.
 >   the dummy layers.
 
 ``` r
+
 status_cols <- c("ND" = "#06D6A0", "ED" = "#1A78C2", "D" = "#E69F00")
 
 df_cea <- data.frame(

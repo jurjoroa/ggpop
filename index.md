@@ -9,6 +9,20 @@ using customizable icons arranged in circular layouts. Designed
 primarily for visual storytelling, ggpop helps users communicate
 population statistics in an appealing manner.
 
+![geom_pop(): Mexico population by sex, drawn as
+icons](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/example_plot2.png)![geom_icon_point():
+calories vs protein by food group, drawn as
+icons](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/food_calories_protein.png)
+
+_([`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) — proportional population charts  ·  [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) — icon scatter plots)
+
+> **New in 1.8.0** — custom SVG icons beyond Font Awesome
+> ([`ggpop_markers()`](https://jurjoroa.github.io/ggpop/reference/ggpop_markers.md),
+> `icon_path`) and
+> [`marker_legend()`](https://jurjoroa.github.io/ggpop/reference/marker_legend.md)
+> for standalone composite legends. See the [Legends
+> article](https://jurjoroa.github.io/ggpop/articles/marker-legend.html).
+
 ## An Alternative Approach to Visualization
 
 `ggpop` makes population data easier to remember, allowing users to tell
@@ -28,19 +42,20 @@ more compelling stories.
 
 Two geoms for different visualization problems:
 
-|                         | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)                                    | [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) |
-|:------------------------|:----------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------|
-| **Best for**            | Population & proportion data                                                                              | Any x / y scatter data                                                               |
-| **Layout**              | Circular proportional grid                                                                                | Free x / y positioning                                                               |
-| **What one icon means** | A fixed share of the total population                                                                     | A single observation                                                                 |
-| **Data prep needed**    | Yes — run [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md) first (optional) | No — plug in any data directly                                                       |
-| **Think of it as**      | A pictogram / isotype chart                                                                               | [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html) with icons |
+|  | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) | [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) |
+|:---|:---|:---|
+| **Best for** | Population & proportion data | Any x / y scatter data |
+| **Layout** | Circular proportional grid | Free x / y positioning |
+| **What one icon means** | A fixed share of the total population | A single observation |
+| **Data prep needed** | Yes — run [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md) first (optional) | No — plug in any data directly |
+| **Think of it as** | A pictogram / isotype chart | [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html) with icons |
 
 ## Installation
 
 You can install `ggpop` from [CRAN](https://cran.r-project.org/) with:
 
 ``` r
+
 install.packages("ggpop")
 ```
 
@@ -48,21 +63,10 @@ Development version of the package can be installed from
 [GitHub](https://github.com/jurjoroa/ggpop) with:
 
 ``` r
+
 install.packages("remotes")
 remotes::install_github("jurjoroa/ggpop")
 ```
-
-## Key Functions & Parameters
-
-| Function / Parameter                                                                     | Purpose                                                                                                                                                                                                    |
-|:-----------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)           | Convert group counts → one row per icon; use `high_group_var` for independent per-group sampling (e.g. for faceted charts)                                                                                 |
-| [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)                   | Search 2,000+ Font Awesome icons from your R console                                                                                                                                                       |
-| [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md)                 | Built-in minimal theme (also [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md), [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md)) |
-| [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md) | Resize legend icons independently of the plot icons                                                                                                                                                        |
-| `arrange`                                                                                | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) parameter — cluster icons by group (`TRUE`) or scatter randomly (`FALSE`, default)                                                  |
-| `stroke_width`                                                                           | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) parameter — add an outline to every icon, in pixels (e.g. `stroke_width = 1`)                                                       |
-| `seed`                                                                                   | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) parameter — fix the random icon layout for reproducible charts (e.g. `seed = 42`)                                                   |
 
 ## `geom_pop()` — Population Charts
 
@@ -83,6 +87,7 @@ population counts by sex in Mexico in 2024.
 - **continent**: A constant value `"America"`
 
 ``` r
+
 library(dplyr)
 library(ggpop)
 
@@ -100,6 +105,7 @@ df_pop_mx <- data.frame(sex = c("male", "female"),
 ### 2.- Process data
 
 ``` r
+
 df_pop_mx_prop <- process_data(data = df_pop_mx, 
                                group_var = sex, 
                                sum_var = n, 
@@ -140,6 +146,7 @@ from the 1,000 samples. Notable columns:
 Assign a Font Awesome icon name to each group:
 
 ``` r
+
 df_pop_mx_prop <- df_pop_mx_prop %>%
   mutate(icon = case_when(
     type == "male" ~ "male",
@@ -148,29 +155,25 @@ df_pop_mx_prop <- df_pop_mx_prop %>%
 
 ### 4.- Icons
 
-![Logo](inst/figures/logo.png)![Fontawesome](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome.svg)
+[TABLE]
 
-Icon names come from the `fontawesome` package. A sample of available
-icons:
-
-`home` · `user` · `envelope` · `bell` · `camera` · `cog` · `heart` ·
-`calendar` · `cart-plus` · `check` · `cloud` · `comment` · `download` ·
-`edit` · `file` · `filter` · `flag` · `folder` · `phone`
-
-![fontawesome table
-preview](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fontawesome_icons.png)
-
-Search from R with
-[`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
-or browse the [Font Awesome gallery](https://fontawesome.com/icons):
+Search from R, or browse the [Font Awesome
+gallery](https://fontawesome.com/icons):
 
 ``` r
-fa_icons(query = "person")
+
+fa_icons(query = "person")   # search Font Awesome names
+ggpop_markers()              # list bundled markers (and your own via icon_path)
 ```
+
+> Custom SVGs and bundled markers are new in 1.8.0 — see the [Legends &
+> custom markers
+> article](https://jurjoroa.github.io/ggpop/articles/marker-legend.html).
 
 ### 5.- Plot population chart
 
 ``` r
+
 library(ggplot2)
 
 ggplot() +
@@ -187,7 +190,10 @@ Example Plot
 
 #### 5.1 Improve the plot
 
+**Show the full styling code**
+
 ``` r
+
 ggplot(data = df_pop_mx_prop, aes(icon = icon, color = type)) +
   geom_pop(size = 1, arrange = TRUE) +
   theme_void(base_size = 40) +
@@ -215,7 +221,10 @@ Example Plot
 
 Multiple icon types in the same plot:
 
+**Show the full styling code**
+
 ``` r
+
 #1.- We load or create the data
 df_pop_dis_mx <- data.frame(sex = c("male", "female", "disabled males", 
                                     "disabled females"),
@@ -302,6 +311,7 @@ Each food item plotted by calorie and protein content, with a matching
 icon and color by category.
 
 ``` r
+
 library(ggplot2)
 library(ggpop)
 
@@ -342,7 +352,10 @@ Diet & Health Outcomes by Food Group
 
 Icon size mapped to number of employees.
 
+**Show the full styling code**
+
 ``` r
+
 library(ggplot2)
 library(ggpop)
 
@@ -399,6 +412,93 @@ website](https://jurjoroa.github.io/ggpop/articles/examples-geom-icon-point.html
 
 ------------------------------------------------------------------------
 
+## Bring Your Own Icons
+
+Font Awesome is just the default. `ggpop` also renders **your own SVG
+files** and a set of **bundled markers** — anywhere an `icon` is
+expected, in both geoms *and* the legend.
+
+### Your own `.svg` files
+
+**1. Put your SVGs in a folder**, each file named however you want to
+reference it:
+
+    energy-icons/
+    ├── solar.svg
+    ├── wind.svg
+    ├── hydro.svg
+    └── bioenergy.svg
+
+**2. Reference each file by its bare name** — no `.svg`, no path,
+exactly like a Font Awesome icon — and point `ggpop` at the folder with
+`icon_path` (per layer) or `options(ggpop.icon_path = "energy-icons")`
+(whole session):
+
+``` r
+
+library(ggplot2)
+library(ggpop)
+
+df_energy <- data.frame(
+  source   = c("Solar", "Wind", "Hydro", "Bioenergy"),
+  icon     = c("solar", "wind", "hydro", "bioenergy"),  # = file names, without .svg
+  capacity = c(1410, 1020, 1400, 150),                  # installed capacity, GW
+  growth   = c(24, 13, 2, 6)                            # annual growth, %
+)
+
+ggplot(df_energy, aes(x = capacity, y = growth, icon = icon, colour = source)) +
+  geom_icon_point(size = 7, icon_path = "energy-icons", legend_icons = TRUE) +
+  scale_colour_manual(values = c(Solar = "#F4A300", Wind = "#2A9D8F",
+                                 Hydro = "#1E88E5", Bioenergy = "#6AA84F")) +
+  scale_legend_icon(size = 6) +
+  labs(title = "Renewable Electricity: Scale vs. Momentum",
+       x = "Installed capacity (GW)", y = "Annual growth (%)", colour = "Source") +
+  theme_minimal()
+```
+
+![Renewable electricity scatter drawn with four custom SVG
+icons](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/readme-byo-icons.png)
+
+Renewable electricity scatter drawn with four custom SVG icons
+
+Your monochrome SVGs are recoloured per group **and** carried into the
+legend keys. For a one-off file you can also pass a **direct path**:
+`aes(icon = "path/to/special.svg")`.
+
+### Bundled markers
+
+`ggpop` ships a family of solid / outline markers (squares, circles,
+diamonds, plus a few extras) — added at the request of Claudia L.
+Seguin. List them and use any by name — no folder needed:
+
+``` r
+
+ggpop_markers()$bundled
+#>  [1] "circle-cross"   "circle-hollow"  "circle-inset"   "circle-solid"
+#>  [5] "diamond-cross"  "diamond-hollow" "diamond-inset"  "diamond-solid"
+#>  [9] "plus-bold"      "square-cross"   "square-hollow"  "square-inset"
+#> [13] "square-solid"   "triangle-down"
+```
+
+![The 14 bundled ggpop markers, grouped by shape family and
+recoloured](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/bundled_markers.png)
+
+The 14 bundled ggpop markers, grouped by shape family and recoloured
+
+### Recolouring
+
+Monochrome SVGs — those drawn in a single colour (`#000000`,
+`currentColor`, or `fill="black"`) — are recoloured to the mapped
+`colour` aesthetic automatically, just like Font Awesome icons.
+Multi-colour SVGs render exactly as drawn.
+
+> **Resolution order** for any `icon` value: a readable `.svg` path → a
+> file in `icon_path` → a bundled marker → a Font Awesome name → a clear
+> error if none match. Full walkthrough in the [Legends & custom markers
+> article](https://jurjoroa.github.io/ggpop/articles/marker-legend.html).
+
+------------------------------------------------------------------------
+
 ## More Examples: Facets & Other Packages
 
 ### Animated Markov simulation model example
@@ -450,6 +550,20 @@ decades, with earth icons by region.
 website](https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html#gganimate-a-world-transformed)**.
 
 ## ![Example gganimate animation](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/world_transformed.gif)
+
+## Key Functions & Parameters
+
+| Function / Parameter | Purpose |
+|:---|:---|
+| [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md) | Convert group counts → one row per icon; use `high_group_var` for independent per-group sampling (e.g. for faceted charts) |
+| [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md) | Search 2,000+ Font Awesome icons from your R console |
+| [`ggpop_markers()`](https://jurjoroa.github.io/ggpop/reference/ggpop_markers.md) | List bundled SVG markers (and your own via `icon_path`) usable as icons |
+| [`marker_legend()`](https://jurjoroa.github.io/ggpop/reference/marker_legend.md) | Build a standalone composite legend of icon markers (multi-column, mixed sources) |
+| [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md) | Built-in minimal theme (also [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md), [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md)) |
+| [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md) | Resize legend icons independently of the plot icons |
+| `arrange` | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) parameter — cluster icons by group (`TRUE`) or scatter randomly (`FALSE`, default) |
+| `stroke_width` | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) parameter — add an outline to every icon, in pixels (e.g. `stroke_width = 1`) |
+| `seed` | [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) parameter — fix the random icon layout for reproducible charts (e.g. `seed = 42`) |
 
 ## Citation
 

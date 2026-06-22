@@ -7,6 +7,7 @@ population proportions visually.
 ## Quick example
 
 ``` r
+
 df_raw <- data.frame(
   sex = c("Female", "Male"),
   n   = c(55, 45)
@@ -39,11 +40,11 @@ ggplot() +
 
 ## Vignettes
 
-| Vignette                                                                             | Description                                                                                                                                                                                                                                            |
-|:-------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)       | Prepare count data for plotting                                                                                                                                                                                                                        |
-| [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md)               | Population icon grids                                                                                                                                                                                                                                  |
-| [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) | Icon scatter plots                                                                                                                                                                                                                                     |
-| [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)               | Search Font Awesome icons                                                                                                                                                                                                                              |
-| `Themes`                                                                             | [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md), [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md), [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md) |
-| `Tips`                                                                               | Rules, gotchas, and best practices                                                                                                                                                                                                                     |
+| Vignette | Description |
+|:---|:---|
+| [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md) | Prepare count data for plotting |
+| [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) | Population icon grids |
+| [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) | Icon scatter plots |
+| [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md) | Search Font Awesome icons |
+| `Themes` | [`theme_pop()`](https://jurjoroa.github.io/ggpop/reference/theme_pop.md), [`theme_pop_dark()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_dark.md), [`theme_pop_minimal()`](https://jurjoroa.github.io/ggpop/reference/theme_pop_minimal.md) |
+| `Tips` | Rules, gotchas, and best practices |

@@ -24,6 +24,7 @@ carrying the grouping information. Use the `icon` parameter (not
 icon across all observations.
 
 ``` r
+
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1.5, dpi = 100) +
   scale_color_manual(values = c(
@@ -56,6 +57,7 @@ Map `icon` inside
 category its own icon.
 
 ``` r
+
 # Search the icons you want to use with fa_icons() and note their names:
 fa_icons(query = "apple")
 fa_icons(query = "drumstick")
@@ -111,6 +113,7 @@ Map a continuous variable to `size`. Use
 to keep sizes readable.
 
 ``` r
+
 # Search the icons you want to use with fa_icons() and note their names:
 fa_icons(query = "apple")
 fa_icons(query = "spotify")
@@ -168,6 +171,7 @@ ggplot(df_brand, aes(x = revenue, y = market_cap,
 When `color` is a factor, icons follow factor level order automatically.
 
 ``` r
+
 # Search the icons you want to use with fa_icons() and note their names:
 fa_icons(query = "mug")
 fa_icons(query = "fire")
@@ -222,6 +226,7 @@ ggplot(df_coffee, aes(x = acidity, y = body, icon = icon, color = roast)) +
 works with all standard ggplot2 geoms:
 
 ``` r
+
 df_health <- data.frame(
   country    = c("Chad", "Mali", "Niger", "Bolivia", "Egypt", "Morocco",
                  "Germany", "France", "Japan"),
@@ -283,10 +288,10 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
   
 
-| Feature         | How                                                                                        |
-|:----------------|:-------------------------------------------------------------------------------------------|
-| Fixed icon      | `geom_icon_point(icon = "circle")`                                                         |
-| Mapped icons    | `aes(icon = icon_column)`                                                                  |
-| Size mapping    | `aes(size = var)` + [`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html) |
-| Factor ordering | `factor(..., levels = ...)` before plotting                                                |
-| Combine geoms   | Add any ggplot2 geom before or after                                                       |
+| Feature | How |
+|:---|:---|
+| Fixed icon | `geom_icon_point(icon = "circle")` |
+| Mapped icons | `aes(icon = icon_column)` |
+| Size mapping | `aes(size = var)` + [`scales::rescale()`](https://scales.r-lib.org/reference/rescale.html) |
+| Factor ordering | `factor(..., levels = ...)` before plotting |
+| Combine geoms | Add any ggplot2 geom before or after |

@@ -26,6 +26,7 @@ geom_pop(
   dpi = 50,
   legend_icons = TRUE,
   stroke_width = NULL,
+  icon_path = NULL,
   ...
 )
 ```
@@ -121,7 +122,11 @@ geom_pop(
 
 - icon:
 
-  Default icon to use when no icon column is mapped.
+  Default icon used when no `icon` column is mapped. Accepts a Font
+  Awesome name, a bundled ggpop marker name (e.g. `"square-inset"`,
+  `"circle-plus"`, `"diamond-hollow"`), or a path to a local `.svg`
+  file. The same sources are valid in `aes(icon = ...)`; SVG markers are
+  recoloured by the mapped colour aesthetic.
 
 - group_var:
 
@@ -165,6 +170,15 @@ geom_pop(
 - stroke_width:
 
   Numeric. Width of the icon outline in pixels (single value).
+
+- icon_path:
+
+  Optional path to a folder of your own SVG icons, referenced by file
+  name (without `.svg`) through the `icon` aesthetic - just like a Font
+  Awesome name. Defaults to `getOption("ggpop.icon_path")`. Monochrome
+  SVGs (`fill="#000000"` or `currentColor`) are recoloured by the mapped
+  colour. See
+  [`ggpop_markers`](https://jurjoroa.github.io/ggpop/reference/ggpop_markers.md).
 
 - ...:
 

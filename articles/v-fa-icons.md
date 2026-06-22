@@ -7,12 +7,14 @@ valid icon names before building your `icon` column.
 ## Search by keyword
 
 ``` r
+
 fa_icons(query = "person")
 fa_icons(query = "car")
 fa_icons(query = "heart")
 ```
 
 ``` r
+
 head(fa_icons(query = "person"), 8)
 #> # A tibble: 8 × 2
 #>   icon                      primary_class

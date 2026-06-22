@@ -4,12 +4,14 @@
 <url><loc>https://jurjoroa.github.io/ggpop/CONTRIBUTING.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/LICENSE-text.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/LICENSE.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/articles/custom-svg-icons.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/articles/examples-geom-icon-point.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/articles/examples-geom-pop.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/articles/fa-icons.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/articles/geom-icon-point.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/articles/getting-started.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/articles/index.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/articles/marker-legend.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/articles/new-to-r.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/articles/process-data.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/articles/themes-customization.html</loc></url>
@@ -29,7 +31,9 @@
 <url><loc>https://jurjoroa.github.io/ggpop/reference/geom_icon_point.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/geom_pop.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/ggpop-package.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/reference/ggpop_markers.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/index.html</loc></url>
+<url><loc>https://jurjoroa.github.io/ggpop/reference/marker_legend.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/process_data.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.html</loc></url>
 <url><loc>https://jurjoroa.github.io/ggpop/reference/theme_pop.html</loc></url>

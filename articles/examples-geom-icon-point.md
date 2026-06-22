@@ -9,6 +9,7 @@ Fixed icon for all points; color encodes the grouping variable.
 Show the code
 
 ``` r
+
 fa_icons(query = "seedling")
 
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species, alpha = Petal.Width)) +
@@ -43,6 +44,7 @@ Each food item maps to its own icon; no legend needed.
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -100,6 +102,7 @@ Map a continuous variable to icon size with
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggrepel)
 library(ggtext)
@@ -279,6 +282,7 @@ existing disciplines in gold.
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -399,6 +403,7 @@ combined with `calculate_icers()`, reference lines, and annotations.
 Show the code
 
 ``` r
+
 library(ggplot2) # For plotting
 library(ggrepel) # For better label placement
 library(dampack) # For cost-effectiveness analysis functions and data
@@ -531,6 +536,7 @@ for a dark-themed scatter plot.
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -596,6 +602,7 @@ non-dominated strategies.
 Show the code
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -696,6 +703,71 @@ suppressWarnings(
 
 ------------------------------------------------------------------------
 
+## Example 8: Bundled Markers — Drug Efficacy by Evidence Tier
+
+  
+
+Map bundled marker variants to an ordinal quality tier — no Font Awesome
+search needed. Both `icon` and `colour` encode the same variable so the
+legend shows the actual marker shape for each level.
+
+Show the code
+
+``` r
+
+library(ggpop)
+library(ggplot2)
+
+# All 14 bundled markers:
+ggpop_markers()$bundled
+
+set.seed(42)
+n <- 24
+df_trials <- data.frame(
+  trial       = paste("Trial", seq_len(n)),
+  sample_size = sample(200:5000, n),
+  effect_size = c(runif(6, 0.6, 0.95), runif(6, 0.40, 0.70),
+                  runif(6, 0.20, 0.50), runif(6, 0.05, 0.35)),
+  evidence    = rep(c("High", "Moderate", "Low", "Very Low"), each = 6)
+)
+df_trials$icon <- c(
+  "High"     = "circle-solid",
+  "Moderate" = "circle-inset",
+  "Low"      = "circle-hollow",
+  "Very Low" = "circle-cross"
+)[df_trials$evidence]
+df_trials$evidence <- factor(df_trials$evidence,
+  levels = c("High", "Moderate", "Low", "Very Low"))
+
+ggplot(df_trials, aes(x = sample_size, y = effect_size,
+                      icon = icon, colour = evidence)) +
+  geom_icon_point(size = 4, dpi = 120, legend_icons = TRUE) +
+  scale_colour_manual(values = c(
+    "High"     = "#2A9D8F",
+    "Moderate" = "#1E88E5",
+    "Low"      = "#FF9F1C",
+    "Very Low" = "#E63946"
+  )) +
+  scale_legend_icon(size = 6) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(labels = scales::comma) +
+  theme_minimal(base_size = 13) +
+  labs(
+    title    = "Drug Efficacy by Evidence Quality",
+    subtitle = "Marker shape + colour both encode evidence tier",
+    x        = "Sample Size",
+    y        = "Effect Size",
+    colour   = "Evidence",
+    caption  = "Markers: circle-solid / circle-inset / circle-hollow / circle-cross"
+  )
+```
+
+![](examples-geom-icon-point_files/figure-html/bundled-markers-icon-1.png)
+
+  
+
+------------------------------------------------------------------------
+
 ## `ggrepel` — The Green Energy Divide
 
   
@@ -707,6 +779,7 @@ icon = energy source, color = continent.
 Show the code
 
 ``` r
+
 library(ggrepel)
 library(ggtext)
 
@@ -890,6 +963,7 @@ to highlight category clusters.
 Show the code
 
 ``` r
+
 library(ggforce)
 library(ggtext)
 
@@ -1024,6 +1098,7 @@ decades, with earth icons by region.
 Show the code
 
 ``` r
+
 library(ggrepel)
 library(gganimate)
 library(ggtext)

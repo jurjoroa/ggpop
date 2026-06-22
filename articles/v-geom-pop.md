@@ -10,6 +10,7 @@ then map `icon` and `color` in
 
 ``` r
 
+
 df_raw <- data.frame(
   activity = c("Running", "Cycling", "Swimming", "Walking"),
   n        = c(28, 22, 18, 32)
@@ -58,6 +59,7 @@ the color/icon variable within each panel. Icons from different groups
 scatter and mix across each panel by default (`arrange = FALSE`).
 
 ``` r
+
 df_raw <- data.frame(
   region    = c("North", "North", "North",
                 "South", "South", "South",
@@ -111,6 +113,7 @@ ggplot() +
 `arrange = TRUE` groups icons by category instead of scattering them.
 
 ``` r
+
 df_browser <- data.frame(
   browser = c("Chrome", "Firefox", "Safari"),
   n       = c(45, 20, 25)

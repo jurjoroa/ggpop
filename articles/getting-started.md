@@ -20,6 +20,7 @@ the main function for building proportional population grids.
   
 
 ``` r
+
 # From CRAN
 install.packages("ggpop")
 
@@ -58,6 +59,7 @@ follows a simple three-step workflow:
 A data frame with population counts by sex:
 
 ``` r
+
 library(ggpop)
 library(ggplot2)
 library(dplyr)
@@ -89,6 +91,7 @@ represents one icon. It calculates group proportions and allocates icons
 accordingly.
 
 ``` r
+
 df_processed <- process_data(
   data        = df_pop_mx,
   group_var   = sex,
@@ -101,9 +104,9 @@ head(df_processed)
 
         type        n      prop
     1   male 63459580 0.4849388
-    2   male 63459580 0.4849388
-    3 female 67401427 0.5150612
-    4 female 67401427 0.5150612
+    2 female 67401427 0.5150612
+    3   male 63459580 0.4849388
+    4   male 63459580 0.4849388
     5 female 67401427 0.5150612
     6   male 63459580 0.4849388
 
@@ -125,12 +128,14 @@ Add an `icon` column to your processed data. Icon names come from Font
 Awesome — use any of the 2,000+ free icons.
 
 ``` r
+
 fa_icons(query = "person")
 ```
 
 Assign an icon to each group:
 
 ``` r
+
 df_processed <- df_processed %>%
   mutate(icon = case_when(
     type == "male"   ~ "male",
@@ -153,6 +158,7 @@ add
 Map `icon` and `color` to your grouping variable.
 
 ``` r
+
 ggplot() +
   geom_pop(
     data = df_processed,
@@ -192,6 +198,7 @@ to control the legend icon size. You can also turn off legend icons with
 if you prefer a text-only legend with dots
 
 ``` r
+
 ggplot(data = df_processed, aes(icon = icon, color = type)) +
   geom_pop(size = 2, dpi = 100, legend_icons = TRUE) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
@@ -221,6 +228,7 @@ By default, icons are scattered randomly. Set `arrange = TRUE` to
 cluster icons by group.
 
 ``` r
+
 ggplot(data = df_processed, aes(icon = icon, color = type)) +
   geom_pop(size = 2, dpi = 100, legend_icons = TRUE, arrange = TRUE) +
   scale_color_manual(values = c("male" = "#1E88E5", "female" = "#D81B60")) +
@@ -261,6 +269,7 @@ Use transparency to emphasize one group or convey certainty.
 > example `opacity`.
 
 ``` r
+
 df_trial <- data.frame(
   status  = c(rep("Recovered", 55), rep("Improving", 30), rep("No change", 15)),
   icon    = c(rep("circle-check", 55), rep("arrow-trend-up", 30), rep("circle-minus", 15)),
@@ -311,12 +320,14 @@ no
 needed:
 
 ``` r
+
 fa_icons(query = "bed")
 ```
 
 100 patients across three health statuses, each mapped to an icon:
 
 ``` r
+
 # Our own data frame with one row per icon
 df_simple <- data.frame(
   group = c(rep("Healthy", 70), rep("At Risk", 20), rep("Ill", 10)),
@@ -367,6 +378,7 @@ relying on a legend. Set `show.legend = FALSE` in
 [`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md).
 
 ``` r
+
 df_labeled <- data.frame(
   name = c(
     # Female names (50)
