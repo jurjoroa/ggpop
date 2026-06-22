@@ -217,3 +217,31 @@ articles:
       - matches("^v-fa-icons$")
       - matches("^v-themes$")
       - matches("^v-tips$")
+
+reference:
+  - title: "Core geoms"
+    desc: "The two main plot layers."
+    contents:
+      - geom_pop
+      - geom_icon_point
+  - title: "Data preparation"
+    desc: "Prepare your data for ggpop."
+    contents:
+      - process_data
+      - fetch_df_coordinates
+  - title: "Legends & icons"
+    desc: "Control legend appearance and discover available icons."
+    contents:
+      - scale_legend_icon
+      - marker_legend
+      - fa_icons
+      - ggpop_markers
+  - title: "Themes"
+    desc: "Built-in ggpop themes."
+    contents:
+      - theme_pop
+      - theme_pop_dark
+      - theme_pop_minimal
+  - title: internal
+    contents:
+      - ggpop-package

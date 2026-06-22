@@ -16,6 +16,7 @@ marker_legend(
   col_spacing = 10,
   row_spacing = 1,
   label_gap = 0.6,
+  label_colour = "black",
   default_color = "black"
 )
 }
@@ -49,6 +50,8 @@ bare name in the \code{icon} column. See \code{\link{geom_icon_point}}.}
 \item{row_spacing}{Vertical distance between rows.}
 
 \item{label_gap}{Horizontal gap between a marker and its label.}
+
+\item{label_colour}{Text colour for the labels (default: \code{"black"}).}
 
 \item{default_color}{Marker colour used for rows with no \code{colour} value.}
 }
