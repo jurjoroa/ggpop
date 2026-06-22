@@ -188,10 +188,11 @@ articles:
     desc: "Use geom_icon_point() to build icon-based scatter plots."
     contents:
       - articles/geom-icon-point
-  - title: "Legends"
-    desc: "Native icon legends, custom SVG markers, and standalone composite legends."
+  - title: "Legends & Custom Icons"
+    desc: "Native icon legends, custom SVG markers, bundled markers, and standalone composite legends."
     contents:
       - articles/marker-legend
+      - articles/custom-svg-icons
   - title: "Themes & Customization"
     desc: "Customize your plots with themes, colors, legend options, and stroke."
     contents:
