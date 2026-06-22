@@ -6,6 +6,7 @@
 - `geom_pop()` and `geom_icon_point()` now warn at construction time when any SVG file in `icon_path` shares a name with a Font Awesome icon, listing the shadowed names and suggesting a rename to avoid silent conflicts (#383).
 - `ggpop_markers()` lists the bundled marker names (and the names found in an `icon_path` folder) - the companion to `fa_icons()` (#383).
 - `marker_legend()` builds a standalone composite legend of icon markers - multiple columns, mixed icon sources (Font Awesome, bundled markers, or your own SVGs), and room for extra annotations - for cases that ggplot2's built-in guides cannot express. For an ordinary data-driven legend, keep using `legend_icons = TRUE` with `scale_legend_icon()` (#385).
+- `marker_legend()` gains a `label_colour` argument (default `"black"`) to control the text colour of both entry labels and the title (#385).
 
 # ggpop 1.7.2
 
