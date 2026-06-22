@@ -8,8 +8,6 @@
 - `marker_legend()` builds a standalone composite legend of icon markers - multiple columns, mixed icon sources (Font Awesome, bundled markers, or your own SVGs), and room for extra annotations - for cases that ggplot2's built-in guides cannot express. For an ordinary data-driven legend, keep using `legend_icons = TRUE` with `scale_legend_icon()` (#385).
 - `marker_legend()` gains a `label_colour` argument (default `"black"`) to control the text colour of both entry labels and the title (#385).
 
-# ggpop 1.7.2
-
 ## Bug Fixes
 
 - `geom_pop()` and `geom_icon_point()` now bake the mapped colour directly into each icon at draw time instead of relying on `ggimage`'s tinting. The previous approach depended on the installed `magick`/ImageMagick build producing an RGBA bitmap; when it did not, icons rendered black even though the legend showed the correct colours. Colours (including custom `scale_colour_*()` scales) and per-group transparency are now applied deterministically (#380).
