@@ -2,5 +2,5 @@
 <rect x="0" y="0" width="1" height="1" fill="#000000" fill-opacity="0.005"/>
 <rect x="99" y="99" width="1" height="1" fill="#000000" fill-opacity="0.005"/>
 <circle cx="50" cy="50" r="41" fill="none" stroke="#000000" stroke-width="14"/>
-<circle cx="50" cy="50" r="22" fill="#000000"/>
+<circle cx="50" cy="50" r="23" fill="#000000"/>
 </svg>
