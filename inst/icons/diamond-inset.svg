@@ -4,5 +4,5 @@
 <path fill="#000000" fill-rule="evenodd" d="
   M50 0 L100 50 L50 100 L0 50 Z
   M50 17 L83 50 L50 83 L17 50 Z"/>
-<polygon points="50,28 72,50 50,72 28,50" fill="#000000"/>
+<polygon points="50,26 74,50 50,74 26,50" fill="#000000"/>
 </svg>
