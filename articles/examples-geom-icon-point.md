@@ -398,7 +398,9 @@ ggplot(df_grid, aes(x = x, y = y)) +
   
 
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md)
-combined with `calculate_icers()`, reference lines, and annotations.
+combined with
+[`calculate_icers()`](https://rdrr.io/pkg/dampack/man/calculate_icers.html),
+reference lines, and annotations.
 
 Show the code
 

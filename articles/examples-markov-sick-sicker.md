@@ -17,6 +17,7 @@ four states: `Healthy`, `Sick`, `Sicker`, and `Death`.
 Show the code
 
 ``` r
+
 # #* Load package functions
 devtools::load_all(".")
 library(ggpop)

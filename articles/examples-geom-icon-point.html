@@ -101,7 +101,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/v1.8.0/vignettes/articles/examples-geom-icon-point.qmd" class="external-link"><code>vignettes/articles/examples-geom-icon-point.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/HEAD/vignettes/articles/examples-geom-icon-point.qmd" class="external-link"><code>vignettes/articles/examples-geom-icon-point.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -570,7 +570,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <div style="line-height: 0.6;">
 <br>
 </div>
-<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> combined with <code>calculate_icers()</code>, reference lines, and annotations.</p>
+<p><code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> combined with <code><a href="https://rdrr.io/pkg/dampack/man/calculate_icers.html" class="external-link">calculate_icers()</a></code>, reference lines, and annotations.</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co"># For plotting</span></span>
@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"psa_cdiff"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">df_cea</span> <span class="op">&lt;-</span> <span class="fu">calculate_icers</span><span class="op">(</span>cost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">psa_cdiff</span><span class="op">)</span><span class="op">$</span><span class="va">meanCost</span>,</span>
+<span><span class="va">df_cea</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dampack/man/calculate_icers.html" class="external-link">calculate_icers</a></span><span class="op">(</span>cost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">psa_cdiff</span><span class="op">)</span><span class="op">$</span><span class="va">meanCost</span>,</span>
 <span>                          effect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">psa_cdiff</span><span class="op">)</span><span class="op">$</span><span class="va">meanEffect</span>,</span>
 <span>                          strategies <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">psa_cdiff</span><span class="op">)</span><span class="op">$</span><span class="va">Strategy</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>

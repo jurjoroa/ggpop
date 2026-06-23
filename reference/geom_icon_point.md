@@ -189,9 +189,9 @@ ggplot(data, aes(x = x, y = y, icon = icon, color = category)) +
 #>   The legend can only display ONE icon per group, but some groups have
 #>   multiple:
 #>   
-#> - A: 2 icons (circle, heart)
-#> - B: 3 icons (star, heart, circle)
-#> - C: 2 icons (circle, heart)
+#> - A: 2 icons (heart, circle)
+#> - B: 3 icons (heart, star, circle)
+#> - C: 2 icons (heart, circle)
 #>   
 #> ℹ What happens:
 #>   - The most frequent icon for each group will be shown in the legend

@@ -18,8 +18,8 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="getting-started_files/libs/quarto-html/popper.min.js"></script><script src="getting-started_files/libs/quarto-html/tippy.umd.min.js"></script><link href="getting-started_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="getting-started_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <script src="getting-started_files/libs/core-js-2.5.3/shim.min.js"></script><script src="getting-started_files/libs/react-18.2.0/react.min.js"></script><script src="getting-started_files/libs/react-18.2.0/react-dom.min.js"></script><script src="getting-started_files/libs/reactwidget-2.0.0/react-tools.js"></script><link href="getting-started_files/libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
-<script src="getting-started_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="getting-started_files/libs/reactable-0.4.5/reactable.css" rel="stylesheet">
-<script src="getting-started_files/libs/reactable-binding-0.4.5/reactable.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="getting-started_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="getting-started_files/libs/reactable-0.4.4/reactable.css" rel="stylesheet">
+<script src="getting-started_files/libs/reactable-binding-0.4.4/reactable.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Getting Started with ggpop (geom_pop)">
 <meta property="og:image" content="https://jurjoroa.github.io/ggpop/inst/figures/shp.png">
 <meta property="og:image:alt" content="ggpop - icon-based population charts for R">
@@ -103,7 +103,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/v1.8.0/vignettes/articles/getting-started.qmd" class="external-link"><code>vignettes/articles/getting-started.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/HEAD/vignettes/articles/getting-started.qmd" class="external-link"><code>vignettes/articles/getting-started.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -133,7 +133,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggpop"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Development version from GitHub</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jurjoroa/ggpop"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"jurjoroa/ggpop"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div style="line-height: 0.6;">
 <br>
@@ -203,9 +203,9 @@
 <div class="cell-output cell-output-stdout">
 <pre><code>    type        n      prop
 1   male 63459580 0.4849388
-2   male 63459580 0.4849388
+2 female 67401427 0.5150612
 3 female 67401427 0.5150612
-4 female 67401427 0.5150612
+4   male 63459580 0.4849388
 5 female 67401427 0.5150612
 6   male 63459580 0.4849388</code></pre>
 </div>
@@ -228,8 +228,8 @@
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div class="reactable html-widget html-fill-item" id="htmlwidget-9bc1600618b0247c00f3" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-9bc1600618b0247c00f3">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["hot-tub-person","person","person-arrow-down-to-line","person-arrow-up-from-line","person-biking","person-booth","person-breastfeeding","person-burst","person-cane","person-chalkboard","person-circle-check","person-circle-exclamation","person-circle-minus","person-circle-plus","person-circle-question","person-circle-xmark","person-digging","person-dots-from-line","person-dress","person-dress-burst","person-drowning","person-falling","person-falling-burst","person-half-dress","person-harassing","person-hiking","person-military-pointing","person-military-rifle","person-military-to-person","person-praying","person-pregnant","person-rays","person-rifle","person-running","person-shelter","person-skating","person-skiing","person-skiing-nordic","person-snowboarding","person-swimming","person-through-window","person-walking","person-walking-arrow-loop-left","person-walking-arrow-right","person-walking-dashed-line-arrow-right","person-walking-luggage","person-walking-with-cane","square-person-confined"],"primary_class":["people_social","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","shapes_symbols"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"38742b52e812dd4e4359d88da4e06bfc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-3a2457ec2dba5114468f" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-3a2457ec2dba5114468f">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["hot-tub-person","person","person-arrow-down-to-line","person-arrow-up-from-line","person-biking","person-booth","person-breastfeeding","person-burst","person-cane","person-chalkboard","person-circle-check","person-circle-exclamation","person-circle-minus","person-circle-plus","person-circle-question","person-circle-xmark","person-digging","person-dots-from-line","person-dress","person-dress-burst","person-drowning","person-falling","person-falling-burst","person-half-dress","person-harassing","person-hiking","person-military-pointing","person-military-rifle","person-military-to-person","person-praying","person-pregnant","person-rays","person-rifle","person-running","person-shelter","person-skating","person-skiing","person-skiing-nordic","person-snowboarding","person-swimming","person-through-window","person-walking","person-walking-arrow-loop-left","person-walking-arrow-right","person-walking-dashed-line-arrow-right","person-walking-luggage","person-walking-with-cane","square-person-confined"],"primary_class":["people_social","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","people_users","shapes_symbols"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"38742b52e812dd4e4359d88da4e06bfc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Assign an icon to each group:</p>
@@ -271,6 +271,10 @@
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents ~1% of the total population"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Sex"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ggpop: downloading coordinate data from GitHub (~2 MB) and caching it locally.
+This happens once. Future calls will load from cache.</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="getting-started_files/figure-html/basic-plot-1.png" width="960"></p>
@@ -288,7 +292,7 @@
 </div>
 <p>Use <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> to control the legend icon size. You can also turn off legend icons with <code>legend_icons = FALSE</code> in <code><a href="../reference/geom_pop.html">geom_pop()</a></code> if you prefer a text-only legend with dots</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_processed</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span>, legend_icons <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>, <span class="st">"female"</span> <span class="op">=</span> <span class="st">"#D81B60"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -319,7 +323,7 @@
 </div>
 <p>By default, icons are scattered randomly. Set <code>arrange = TRUE</code> to cluster icons by group.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_processed</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_pop.html">geom_pop</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span>, dpi <span class="op">=</span> <span class="fl">100</span>, legend_icons <span class="op">=</span> <span class="cn">TRUE</span>, arrange <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>, <span class="st">"female"</span> <span class="op">=</span> <span class="st">"#D81B60"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -355,7 +359,7 @@
 <p><strong>Note:</strong> <code>alpha</code> is a reserved column name in ggpop. If you want to map transparency per group, name your column something else — for example <code>opacity</code>.</p>
 </blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_trial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  status  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Recovered"</span>, <span class="fl">55</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Improving"</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"No change"</span>, <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  icon    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"circle-check"</span>, <span class="fl">55</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"arrow-trend-up"</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"circle-minus"</span>, <span class="fl">15</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -405,18 +409,18 @@
 </div>
 <p>Any data frame with one row per icon (max 1,000 rows) works directly — no <code><a href="../reference/process_data.html">process_data()</a></code> needed:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fa_icons.html">fa_icons</a></span><span class="op">(</span>query <span class="op">=</span> <span class="st">"bed"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div class="reactable html-widget html-fill-item" id="htmlwidget-8a35aef29f6b1d07e77f" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-8a35aef29f6b1d07e77f">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["bed","bed-pulse","cart-flatbed","cart-flatbed-suitcase"],"primary_class":["buildings_extra","buildings_extra","shopping_commerce","shopping_commerce"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"4581162a367297874b1a8d5a308758f7"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-3d6517f4d09ae4c780fe" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-3d6517f4d09ae4c780fe">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"icon":["bed","bed-pulse","cart-flatbed","cart-flatbed-suitcase"],"primary_class":["buildings_extra","buildings_extra","shopping_commerce","shopping_commerce"]},"columns":[{"id":"icon","name":"icon","type":"character"},{"id":"primary_class","name":"primary_class","type":"character"}],"filterable":true,"searchable":true,"defaultPageSize":10,"dataKey":"4581162a367297874b1a8d5a308758f7"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>100 patients across three health statuses, each mapped to an icon:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Our own data frame with one row per icon</span></span>
 <span><span class="va">df_simple</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Healthy"</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"At Risk"</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Ill"</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -461,7 +465,7 @@
 <p><code><a href="../reference/geom_pop.html">geom_pop()</a></code> exposes its internally computed icon coordinates to downstream layers. This means you can add <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text()</a></code> — or any ggplot2 geom — <strong>without specifying <code>x</code> or <code>y</code></strong>: they are inherited automatically from the icon grid.</p>
 <p>This is useful when you want labels to float over the icons instead of relying on a legend. Set <code>show.legend = FALSE</code> in <code><a href="../reference/geom_pop.html">geom_pop()</a></code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="co"># Female names (50)</span></span>

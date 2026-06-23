@@ -13,6 +13,7 @@ Use the `icon` parameter (not
 one icon across all points.
 
 ``` r
+
 ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
   geom_icon_point(icon = "seedling", size = 1, dpi = 72) +
   scale_color_manual(values = c(
@@ -32,6 +33,7 @@ Map `icon` inside
 different icon to each group.
 
 ``` r
+
 library(ggplot2)
 library(ggpop)
 

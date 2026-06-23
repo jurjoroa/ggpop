@@ -6,6 +6,7 @@ converts a count-based data frame to one row per icon. `group_var` and
 string.
 
 ``` r
+
 df_raw <- data.frame(
   sex = c("Female", "Male"),
   n   = c(55, 45)
@@ -36,6 +37,7 @@ Use `high_group_var` when your data has a faceting variable. It samples
 independently within each panel so proportions are correct per group.
 
 ``` r
+
 df_region_raw <- data.frame(
   region = c("North", "North", "South", "South"),
   sex    = c("Female", "Male", "Female", "Male"),
