@@ -1,3 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-<polygon points="50,14 86,50 50,86 14,50" fill="none" stroke="#000000" stroke-width="9"/><polygon points="50,32 68,50 50,68 32,50" fill="#000000"/>
+<rect x="0" y="0" width="1" height="1" fill="#000000" fill-opacity="0.005"/>
+<rect x="99" y="99" width="1" height="1" fill="#000000" fill-opacity="0.005"/>
+<path fill="#000000" fill-rule="evenodd" d="
+  M50 0 L100 50 L50 100 L0 50 Z
+  M50 17 L83 50 L50 83 L17 50 Z"/>
+<polygon points="50,28 72,50 50,72 28,50" fill="#000000"/>
 </svg>
