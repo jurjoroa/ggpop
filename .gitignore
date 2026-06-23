@@ -14,3 +14,5 @@ docs
 /Meta/
 .claude/settings.local.json
 AGENTS.md
+R/example.R
+Rplots.pdf
