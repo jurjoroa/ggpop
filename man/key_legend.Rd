@@ -50,6 +50,13 @@ places entry\,1 at \code{row_spacing * title_frac}.}
 
 \item{label_color}{Colour of label text.}
 
+\item{label_inside}{When \code{TRUE}, centres the label inside the key
+symbol instead of beside it.  Only takes effect for \code{swatch} rows
+(default \code{FALSE}).}
+
+\item{title_color}{Colour of the section title.  Inherits
+\code{label_color} when \code{NULL} (the default).}
+
 \item{swatch_height}{Height of swatch rectangles as a fraction of
 \code{row_spacing} (default \code{0.45}).}
 

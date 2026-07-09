@@ -45,6 +45,11 @@
 #' @param label_gap Gap between the key symbol and the label text.
 #' @param label_size Text size (passed to \code{ggplot2::annotate()}).
 #' @param label_color Colour of label text.
+#' @param label_inside When \code{TRUE}, centres the label inside the key
+#'   symbol instead of beside it.  Only takes effect for \code{swatch} rows
+#'   (default \code{FALSE}).
+#' @param title_color Colour of the section title.  Inherits
+#'   \code{label_color} when \code{NULL} (the default).
 #' @param swatch_height Height of swatch rectangles as a fraction of
 #'   \code{row_spacing} (default \code{0.45}).
 #' @param point_size Size multiplier for point glyphs relative to
@@ -120,7 +125,7 @@ key_legend <- function(
 }
 
 #' @export
-ggplot_add.ggpop_key_legend <- function(object, plot, object_name) {
+ggplot_add.ggpop_key_legend <- function(object, plot, object_name, ...) {
   layers <- build_key_legend_layers(object)
   Reduce(function(p, l) p + l, layers, init = plot)
 }

@@ -30,7 +30,7 @@ legend_strip <- function(strip_plot, height) {
 }
 
 #' @export
-ggplot_add.ggpop_legend_strip <- function(object, plot, object_name) {
+ggplot_add.ggpop_legend_strip <- function(object, plot, object_name, ...) {
   structure(
     list(main = plot, strip = object$strip_plot, strip_height = object$height),
     class = "ggpop_composite"
