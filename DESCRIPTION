@@ -55,7 +55,8 @@ Imports:
     fontawesome,
     rsvg,
     cli,
-    tibble
+    tibble,
+    grid
 VignetteBuilder: knitr
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues

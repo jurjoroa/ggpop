@@ -218,8 +218,12 @@ geom_icon_point <- function(mapping = NULL, data = NULL, stat = "identity",
     ggpop_layer$show.legend <- FALSE
   } else {
     ggpop_layer$show.legend <- c(
-      colour = if (is.na(show.legend)) NA else isTRUE(show.legend),
-      fill   = FALSE
+      colour   = if (is.na(show.legend)) NA else isTRUE(show.legend),
+      fill     = FALSE,
+      linetype = FALSE,
+      shape    = FALSE,
+      size     = FALSE,
+      alpha    = FALSE
     )
   }
 
