@@ -61,6 +61,10 @@ jobs:
           # HTML page (no .Rbuildignore or _pkgdown.yml override for this) - strip
           # the AI-tooling docs before they ever reach gh-pages.
           rm -f docs/CLAUDE.html docs/AGENTS.html docs/STRUCTURE.html
+          # sitemap.xml is written during the Build site step above and already
+          # lists those pages - drop the matching <url> entries too, or the
+          # deployed sitemap points crawlers at 404s.
+          sed -i -e '/CLAUDE\.html/d' -e '/AGENTS\.html/d' -e '/STRUCTURE\.html/d' docs/sitemap.xml
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
