@@ -33,7 +33,7 @@ template:
         "name": "ggpop",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "R",
-        "softwareVersion": "1.7.0",
+        "softwareVersion": "1.8.0",
         "description": "R package for creating icon-based population charts and pictogram plots with ggplot2. Visualize proportion and population data in R",
         "url": "https://jurjoroa.github.io/ggpop/",
         "downloadUrl": "https://cran.r-project.org/package=ggpop",
@@ -149,6 +149,7 @@ navbar:
     github:
       icon: fa-github
       href: https://github.com/jurjoroa/ggpop
+      aria-label: "ggpop on GitHub"
 
 authors:
   "Jorge A. Roa-Contreras":
