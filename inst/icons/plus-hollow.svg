@@ -2,7 +2,6 @@
 <rect x="0" y="0" width="1" height="1" fill="#000000" fill-opacity="0.005"/>
 <rect x="99" y="99" width="1" height="1" fill="#000000" fill-opacity="0.005"/>
 <path fill="#000000" fill-rule="evenodd" d="
-  M10 10 H90 V90 H10 Z
-  M24 24 H76 V76 H24 Z"/>
-<rect x="32" y="32" width="36" height="36" fill="#000000"/>
+  M40 0 H60 V40 H100 V60 H60 V100 H40 V60 H0 V40 H40 Z
+  M45 30 H55 V45 H70 V55 H55 V70 H45 V55 H30 V45 H45 Z"/>
 </svg>

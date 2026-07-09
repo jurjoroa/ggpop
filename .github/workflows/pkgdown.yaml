@@ -55,6 +55,17 @@ jobs:
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE, quiet = FALSE)
         shell: Rscript {0}
 
+      - name: Remove internal tooling pages from the public site
+        run: |
+          # pkgdown::build_home_md() renders every root-level *.md file into an
+          # HTML page (no .Rbuildignore or _pkgdown.yml override for this) - strip
+          # the AI-tooling docs before they ever reach gh-pages.
+          rm -f docs/CLAUDE.html docs/AGENTS.html docs/STRUCTURE.html
+          # sitemap.xml is written during the Build site step above and already
+          # lists those pages - drop the matching <url> entries too, or the
+          # deployed sitemap points crawlers at 404s.
+          sed -i -e '/CLAUDE\.html/d' -e '/AGENTS\.html/d' -e '/STRUCTURE\.html/d' docs/sitemap.xml
+
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4.5.0

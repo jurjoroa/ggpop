@@ -40,6 +40,8 @@
 #' @param row_spacing Vertical distance between rows.
 #' @param label_gap Horizontal gap between a marker and its label.
 #' @param label_colour Text colour for the labels (default: \code{"black"}).
+#' @param label_fontface Font face for the labels (default: \code{"plain"}).
+#'   Common values: \code{"plain"}, \code{"bold"}, \code{"italic"}.
 #' @param default_color Marker colour used for rows with no \code{colour} value.
 #'
 #' @return A \code{ggplot} object with \code{theme_void()} applied.
@@ -76,6 +78,7 @@ marker_legend <- function(entries,
                           row_spacing = 1,
                           label_gap = 0.6,
                           label_colour = "black",
+                          label_fontface = "plain",
                           default_color = "black") {
   layout <- match.arg(layout)
   validate_marker_legend_entries(entries, layout)
@@ -104,7 +107,8 @@ marker_legend <- function(entries,
       mapping = ggplot2::aes(x = x + label_gap, y = y, label = label),
       hjust = 0,
       size = label_size,
-      colour = label_colour
+      colour = label_colour,
+      fontface = label_fontface
     ) +
     ggplot2::scale_colour_identity() +
     ggplot2::theme_void()
@@ -120,7 +124,7 @@ marker_legend <- function(entries,
   p <- p +
     ggplot2::coord_cartesian(
       xlim = c(x_min - col_spacing * 0.2, x_max + col_spacing),
-      ylim = c(y_min - row_spacing, y_max + row_spacing * (if (has_title) 1.8 else 0.6)),
+      ylim = c(y_min - row_spacing, y_max + row_spacing * (if (has_title) 1.5 else 0.6)),
       clip = "off"
     )
 
@@ -128,12 +132,12 @@ marker_legend <- function(entries,
     p <- p +
       ggplot2::annotate(
         "text",
-        x = x_min,
-        y = y_max + row_spacing * 1.4,
+        x = (x_min + x_max + col_spacing * 0.8) / 2,
+        y = y_max + row_spacing * 0.85,
         label = title,
-        hjust = 0,
-        fontface = "bold",
-        size = label_size * 1.3,
+        hjust = 0.5,
+        fontface = "plain",
+        size = label_size,
         colour = label_colour
       )
   }
