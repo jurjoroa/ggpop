@@ -5,7 +5,7 @@ ggpop resolves every icon name through a four-step priority chain:
 1.  **Local `.svg` path** — a bare file path ending in `.svg`
 2.  **`icon_path` folder** — bare name looked up inside a user-supplied
     directory
-3.  **Bundled ggpop marker** — one of the 14 solid/outline markers
+3.  **Bundled ggpop marker** — one of the 16 solid/outline markers
     shipped with the package
 4.  **Font Awesome** — any valid FA name (the default for most icons)
 
@@ -14,7 +14,7 @@ over Font Awesome names.
 
 ## Bundled markers
 
-ggpop ships 14 geometric markers you can use by name with no folder
+ggpop ships 16 geometric markers you can use by name with no folder
 needed. List them with
 [`ggpop_markers()`](https://jurjoroa.github.io/ggpop/reference/ggpop_markers.md):
 
@@ -23,10 +23,12 @@ needed. List them with
 ggpop_markers()$bundled
 ```
 
-     [1] "circle-cross"   "circle-hollow"  "circle-inset"   "circle-solid"
-     [5] "diamond-cross"  "diamond-hollow" "diamond-inset"  "diamond-solid"
-     [9] "plus-bold"      "square-cross"   "square-hollow"  "square-inset"
-    [13] "square-solid"   "triangle-down" 
+     [1] "circle-cross"        "circle-hollow"       "circle-inset"
+     [4] "circle-solid"        "diamond-cross"       "diamond-hollow"
+     [7] "diamond-inset"       "diamond-solid"       "plus-bold"
+    [10] "plus-hollow"         "square-cross"        "square-hollow"
+    [13] "square-inset"        "square-solid"        "triangle-down"
+    [16] "triangle-down-inset"
 
 They work anywhere an icon name is expected — in
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md),
@@ -44,21 +46,21 @@ pal <- c(square = "#1E88E5", circle = "#2A9D8F", diamond = "#E76F51")
 
 icons <- paste(rep(families, each = 4), variants, sep = "-")
 df_markers <- data.frame(
-  icon   = c(icons, "plus-bold", "triangle-down"),
-  x      = seq_len(14),
+  icon   = c(icons, "plus-bold", "plus-hollow", "triangle-down", "triangle-down-inset"),
+  x      = seq_len(16),
   y      = 1,
   colour = c(
     rep(pal["square"],  4),
     rep(pal["circle"],  4),
     rep(pal["diamond"], 4),
-    "#6D6875", "#6D6875"
+    "#6D6875", "#6D6875", "#6D6875", "#6D6875"
   ),
   stringsAsFactors = FALSE
 )
 
 ggplot(df_markers, aes(x = x, y = y, icon = icon, colour = colour)) +
   geom_icon_point(size = 8, dpi = 150, legend_icons = FALSE) +
-  geom_text(aes(label = icon), y = 0.55, angle = 50,
+  geom_text(aes(label = icon), y = 0.72, angle = 50,
             hjust = 1, size = 3, colour = "grey30") +
   scale_colour_identity() +
   scale_x_continuous(expand = expansion(add = c(0.8, 0.5))) +
@@ -68,7 +70,7 @@ ggplot(df_markers, aes(x = x, y = y, icon = icon, colour = colour)) +
 
 ![](custom-svg-icons_files/figure-html/fig-bundled-1.png)
 
-Figure 1: All 14 bundled markers rendered with
+Figure 1: All 16 bundled markers rendered with
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md).
 
 ## Using your own SVG files

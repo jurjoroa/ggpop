@@ -26,6 +26,7 @@ marker_legend(
   row_spacing = 1,
   label_gap = 0.6,
   label_colour = "black",
+  label_fontface = "plain",
   default_color = "black"
 )
 ```
@@ -90,6 +91,11 @@ marker_legend(
 - label_colour:
 
   Text colour for the labels (default: `"black"`).
+
+- label_fontface:
+
+  Font face for the labels (default: `"plain"`). Common values:
+  `"plain"`, `"bold"`, `"italic"`.
 
 - default_color:
 

@@ -52,11 +52,11 @@ head(df_sex_proc)
 
         type        n      prop
     1 female 67401427 0.5150612
-    2   male 63459580 0.4849388
-    3   male 63459580 0.4849388
-    4 female 67401427 0.5150612
+    2 female 67401427 0.5150612
+    3 female 67401427 0.5150612
+    4   male 63459580 0.4849388
     5 female 67401427 0.5150612
-    6   male 63459580 0.4849388
+    6 female 67401427 0.5150612
 
 The output contains:
 
@@ -89,8 +89,8 @@ df_sex_proc %>%
     # A tibble: 2 × 3
       type   icons proportion
       <chr>  <int>      <dbl>
-    1 female    52       51.5
-    2 male      48       48.5
+    1 female    58       51.5
+    2 male      42       48.5
 
   
 
@@ -124,10 +124,10 @@ df_regions_processed %>%
     # A tibble: 4 × 2
       type  icons
       <chr> <int>
-    1 East     42
-    2 North    26
+    1 East     38
+    2 North    28
     3 South    21
-    4 West     11
+    4 West     13
 
   
 
@@ -166,14 +166,14 @@ df_health_processed %>%
     # A tibble: 8 × 3
       group type    icons
       <chr> <chr>   <int>
-    1 East  At Risk    38
-    2 East  Healthy    62
-    3 North At Risk    33
-    4 North Healthy    67
-    5 South At Risk    34
-    6 South Healthy    66
-    7 West  At Risk    22
-    8 West  Healthy    78
+    1 East  At Risk    41
+    2 East  Healthy    59
+    3 North At Risk    25
+    4 North Healthy    75
+    5 South At Risk    25
+    6 South Healthy    75
+    7 West  At Risk    20
+    8 West  Healthy    80
 
   
 
@@ -233,9 +233,6 @@ ggplot() +
     color    = "Activity"
   )
 ```
-
-    ggpop: downloading coordinate data from GitHub (~2 MB) and caching it locally.
-    This happens once. Future calls will load from cache.
 
 ![](process-data_files/figure-html/skip-1.png)
 

@@ -408,7 +408,12 @@ combined with `calculate_icers()`, reference lines, and annotations.
 **[Code available in ggpop package
 website](https://jurjoroa.github.io/ggpop/articles/examples-geom-icon-point.html#example-5-combined-geoms-in-cost-effectiveness-analysis)**.
 
-![](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/cea_icon_plot.png)
+![Cost-effectiveness analysis plot: geom_icon_point() with
+calculate_icers() reference lines and
+annotations](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/cea_icon_plot.png)
+
+Cost-effectiveness analysis plot: geom_icon_point() with
+calculate_icers() reference lines and annotations
 
 ------------------------------------------------------------------------
 

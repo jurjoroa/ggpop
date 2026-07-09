@@ -81,10 +81,12 @@ files. List what is available with
 ggpop_markers()$bundled
 ```
 
-     [1] "circle-cross"   "circle-hollow"  "circle-inset"   "circle-solid"
-     [5] "diamond-cross"  "diamond-hollow" "diamond-inset"  "diamond-solid"
-     [9] "plus-bold"      "square-cross"   "square-hollow"  "square-inset"
-    [13] "square-solid"   "triangle-down" 
+     [1] "circle-cross"        "circle-hollow"       "circle-inset"
+     [4] "circle-solid"        "diamond-cross"       "diamond-hollow"
+     [7] "diamond-inset"       "diamond-solid"       "plus-bold"
+    [10] "plus-hollow"         "square-cross"        "square-hollow"
+    [13] "square-inset"        "square-solid"        "triangle-down"
+    [16] "triangle-down-inset"
 
 These names work anywhere an icon is expected - in the geoms above and
 in the composite legends below. To use your own SVGs, pass a folder via
@@ -187,3 +189,171 @@ indicator domain.
 > layers for extra symbols or labels, then export at exact pixel
 > dimensions with
 > `ggplot2::ggsave(width = W / 300, height = H / 300, dpi = 300)`.
+
+## Composite legends built from a data frame: `legend_canvas()`
+
+[`marker_legend()`](https://jurjoroa.github.io/ggpop/reference/marker_legend.md)
+above lays out one flat list of icon + label rows. Some legends need
+more structure than that - an icon grid crossed by two dimensions, a
+block of colour tiles for a grouping variable, and a small key for extra
+symbols (a trend line, a shaded band, a flagged point) - all in one
+figure.
+[`legend_canvas()`](https://jurjoroa.github.io/ggpop/reference/legend_canvas.md)
+builds exactly that from a single tidy data frame, `df_legend`, where a
+`type` column tells it what to draw:
+
+| `type`   | Renders as                    | Lives in                            |
+|:---------|:------------------------------|:------------------------------------|
+| `icon`   | An icon marker at `row`/`col` | `grid_section`                      |
+| `swatch` | A filled rectangle            | `group_section` or `symbol_section` |
+| `line`   | A short line segment          | `symbol_section`                    |
+| `point`  | A bold glyph (default `"*"`)  | `symbol_section`                    |
+
+`icon`-typed rows always render as icons no matter what `type` says -
+the value is a bookkeeping label there, not a switch.
+`swatch`/`line`/`point` are the only values
+[`key_legend()`](https://jurjoroa.github.io/ggpop/reference/key_legend.md)
+actually dispatches on, and that dispatch is the only place a new type
+could be added.
+
+### Deriving the icon grid from data with `icon_grid()`
+
+If your icon-grid combinations already exist in a data frame - say, one
+row per package-size / distance-zone combination -
+[`icon_grid()`](https://jurjoroa.github.io/ggpop/reference/icon_grid.md)
+derives the unique `row`/`col` positions for you instead of typing them
+by hand. Factor columns keep a deliberate row/col order; unordered
+columns sort automatically.
+
+``` r
+
+df_plans <- data.frame(
+  size     = factor(c("Small", "Small", "Large", "Large"), levels = c("Small", "Large")),
+  distance = factor(c("Local", "National", "Local", "National"), levels = c("Local", "National")),
+  icon     = c("square-hollow", "square-solid", "circle-hollow", "circle-solid"),
+  stringsAsFactors = FALSE
+)
+df_plans$cell_label <- paste0(
+  substr(df_plans$size, 1, 1), "-",
+  c(Local = "Loc", National = "Natl")[as.character(df_plans$distance)]
+)
+
+df_grid <- icon_grid(
+  df_plans, icon = "icon", label = "cell_label",
+  row = "size", col = "distance"
+)
+df_grid
+```
+
+      section type  label color          icon row col
+    1    grid icon  S-Loc  <NA> square-hollow   1   1
+    2    grid icon S-Natl  <NA>  square-solid   1   2
+    3    grid icon  L-Loc  <NA> circle-hollow   2   1
+    4    grid icon L-Natl  <NA>  circle-solid   2   2
+
+### Assembling grid + group + symbol sections
+
+Combine that grid with a colour-tile group (`group_section`) and a small
+symbol key (`symbol_section`) by
+[`rbind()`](https://rdrr.io/r/base/cbind.html)-ing three data frames
+that share `section`/`type`/`label`/`color` columns:
+
+Show the code
+
+``` r
+
+plan_colours <- c(Standard = "#8D99AE", Express = "#EF476F")
+
+df_legend <- rbind(
+  df_grid,
+  data.frame(
+    section = "plan", type = "swatch",
+    label = names(plan_colours), color = unname(plan_colours),
+    icon = NA, row = NA, col = NA
+  ),
+  data.frame(
+    section = "value", type = c("line", "swatch", "point"),
+    label   = c("Best-value frontier", "Acceptable range", "Best pick"),
+    color   = c("black", "grey75", "black"),
+    icon = NA, row = NA, col = NA
+  )
+)
+
+legend_canvas(
+  df_legend,
+  grid_title       = "Package size × distance zone",
+  group_section    = "plan", group_title = "Plan", group_width = 0.9, group_gap = 0.3,
+  symbol_section   = "value", symbol_right_gap = 0.8, symbol_key_width = 0.5,
+  col_spacing = 2.2, row_spacing = 1.2, label_gap = 0.15,
+  marker_size = 5, label_size = 3.6, dpi = 150
+)
+```
+
+![](marker-legend_files/figure-html/fig-legend-canvas-1.png)
+
+Figure 4: A grid + group + symbol composite legend built from one
+df_legend data frame.
+
+> **Tip**
+>
+> `group_title` lets the displayed heading differ from the `section`
+> value used to match rows - keep `section` values plain and lowercase
+> (`"plan"`) while the on-plot title stays capitalised (`"Plan"`).
+> `grid_section` and `grid_title` work the same way for the icon grid.
+
+Column spacing has to leave room for your longest label in that column
+before the next section starts - if sections start overlapping, widen
+`col_spacing`, `group_width`, or `symbol_right_gap` rather than
+shortening labels first.
+
+## Stacking a plot and its legend with `legend_strip()`
+
+The composite above is a self-contained `ggplot`. To pin it under a real
+plot in one exported figure - rather than a standalone panel - add it
+with `legend_strip(strip_plot, height)`:
+
+Show the code
+
+``` r
+
+df_points <- data.frame(
+  cost = c(4, 6, 9, 14, 7, 11, 16, 22),
+  days = c(6, 4, 2, 1, 5, 3, 1.5, 1),
+  plan = c("Standard", "Standard", "Express", "Express",
+           "Standard", "Standard", "Express", "Express")
+)
+
+p_main <- ggplot(df_points, aes(x = cost, y = days, colour = plan)) +
+  geom_point(size = 3) +
+  scale_colour_manual(values = plan_colours, guide = "none") +
+  scale_x_continuous("Cost ($)") +
+  scale_y_continuous("Delivery time (days)") +
+  ggtitle("Cost vs. delivery time") +
+  theme_classic(base_size = 13) +
+  theme(axis.line.x = element_blank())
+
+p_legend <- legend_canvas(
+  df_legend,
+  grid_title       = "Package size × distance zone",
+  group_section    = "plan", group_title = "Plan", group_width = 0.9, group_gap = 0.3,
+  symbol_section   = "value", symbol_right_gap = 0.8, symbol_key_width = 0.5,
+  col_spacing = 2.2, row_spacing = 1.2, label_gap = 0.15,
+  marker_size = 5, label_size = 3.6, dpi = 150
+)
+
+p_main + legend_strip(p_legend, height = 1.4)
+```
+
+![](marker-legend_files/figure-html/fig-legend-strip-1.png)
+
+Figure 5: A scatter plot with its legend_canvas() legend stacked
+directly below it.
+
+> **Tip**
+>
+> `height` is a physical size in inches, independent of the main plot’s
+> own aspect ratio - set it once and `ggsave(width =, height =)` on the
+> combined figure exactly like any other `ggplot`. Dropping
+> [`theme_classic()`](https://ggplot2.tidyverse.org/reference/ggtheme.html)’s
+> bottom `axis.line` (as above) avoids a redundant rule sitting right
+> above the legend - keep the left axis line, drop only `axis.line.x`.

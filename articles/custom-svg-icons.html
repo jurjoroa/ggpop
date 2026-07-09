@@ -38,7 +38,7 @@
   "name": "ggpop",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "R",
-  "softwareVersion": "1.7.0",
+  "softwareVersion": "1.8.0",
   "description": "R package for creating icon-based population charts and pictogram plots with ggplot2. Visualize proportion and population data in R",
   "url": "https://jurjoroa.github.io/ggpop/",
   "downloadUrl": "https://cran.r-project.org/package=ggpop",
@@ -87,7 +87,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jurjoroa/ggpop"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jurjoroa/ggpop" aria-label="ggpop on GitHub"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -101,7 +101,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/HEAD/vignettes/articles/custom-svg-icons.qmd" class="external-link"><code>vignettes/articles/custom-svg-icons.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/articles/custom-svg-icons.qmd" class="external-link"><code>vignettes/articles/custom-svg-icons.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -118,22 +118,24 @@
 <li>
 <strong><code>icon_path</code> folder</strong> — bare name looked up inside a user-supplied directory</li>
 <li>
-<strong>Bundled ggpop marker</strong> — one of the 14 solid/outline markers shipped with the package</li>
+<strong>Bundled ggpop marker</strong> — one of the 16 solid/outline markers shipped with the package</li>
 <li>
 <strong>Font Awesome</strong> — any valid FA name (the default for most icons)</li>
 </ol>
 <p>The chain stops at the first match, so your files always take priority over Font Awesome names.</p>
 <section class="level2"><h2 id="bundled-markers">Bundled markers<a class="anchor" aria-label="anchor" href="#bundled-markers"></a>
 </h2>
-<p>ggpop ships 14 geometric markers you can use by name with no folder needed. List them with <code><a href="../reference/ggpop_markers.html">ggpop_markers()</a></code>:</p>
+<p>ggpop ships 16 geometric markers you can use by name with no folder needed. List them with <code><a href="../reference/ggpop_markers.html">ggpop_markers()</a></code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ggpop_markers.html">ggpop_markers</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">bundled</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] "circle-cross"   "circle-hollow"  "circle-inset"   "circle-solid"
- [5] "diamond-cross"  "diamond-hollow" "diamond-inset"  "diamond-solid"
- [9] "plus-bold"      "square-cross"   "square-hollow"  "square-inset"
-[13] "square-solid"   "triangle-down" </code></pre>
+<pre><code> [1] "circle-cross"        "circle-hollow"       "circle-inset"
+ [4] "circle-solid"        "diamond-cross"       "diamond-hollow"
+ [7] "diamond-inset"       "diamond-solid"       "plus-bold"
+[10] "plus-hollow"         "square-cross"        "square-hollow"
+[13] "square-inset"        "square-solid"        "triangle-down"
+[16] "triangle-down-inset"</code></pre>
 </div>
 </div>
 <p>They work anywhere an icon name is expected — in <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>, <code><a href="../reference/geom_pop.html">geom_pop()</a></code>, and <code><a href="../reference/marker_legend.html">marker_legend()</a></code>.</p>
@@ -145,21 +147,21 @@
 <span></span>
 <span><span class="va">icons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">families</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>, <span class="va">variants</span>, sep <span class="op">=</span> <span class="st">"-"</span><span class="op">)</span></span>
 <span><span class="va">df_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  icon   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">icons</span>, <span class="st">"plus-bold"</span>, <span class="st">"triangle-down"</span><span class="op">)</span>,</span>
-<span>  x      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">14</span><span class="op">)</span>,</span>
+<span>  icon   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">icons</span>, <span class="st">"plus-bold"</span>, <span class="st">"plus-hollow"</span>, <span class="st">"triangle-down"</span>, <span class="st">"triangle-down-inset"</span><span class="op">)</span>,</span>
+<span>  x      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">16</span><span class="op">)</span>,</span>
 <span>  y      <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">pal</span><span class="op">[</span><span class="st">"square"</span><span class="op">]</span>,  <span class="fl">4</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">pal</span><span class="op">[</span><span class="st">"circle"</span><span class="op">]</span>,  <span class="fl">4</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">pal</span><span class="op">[</span><span class="st">"diamond"</span><span class="op">]</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span>    <span class="st">"#6D6875"</span>, <span class="st">"#6D6875"</span></span>
+<span>    <span class="st">"#6D6875"</span>, <span class="st">"#6D6875"</span>, <span class="st">"#6D6875"</span>, <span class="st">"#6D6875"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_markers</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, icon <span class="op">=</span> <span class="va">icon</span>, colour <span class="op">=</span> <span class="va">colour</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span>, dpi <span class="op">=</span> <span class="fl">150</span>, legend_icons <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">icon</span><span class="op">)</span>, y <span class="op">=</span> <span class="fl">0.55</span>, angle <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">icon</span><span class="op">)</span>, y <span class="op">=</span> <span class="fl">0.72</span>, angle <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>            hjust <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">3</span>, colour <span class="op">=</span> <span class="st">"grey30"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_identity.html" class="external-link">scale_colour_identity</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>add <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -168,10 +170,10 @@
 </details><div class="cell-output-display">
 <div id="fig-bundled" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-bundled-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="custom-svg-icons_files/figure-html/fig-bundled-1.png" width="864">
+<img src="custom-svg-icons_files/figure-html/fig-bundled-1.png" width="1056">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bundled-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 1: All 14 bundled markers rendered with <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>.
+Figure 1: All 16 bundled markers rendered with <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code>.
 </figcaption></figure>
 </div>
 </div>
@@ -334,7 +336,7 @@ Figure 1: All 14 bundled markers rendered with <code><a href="../reference/geom
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

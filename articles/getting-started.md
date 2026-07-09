@@ -103,12 +103,12 @@ head(df_processed)
 ```
 
         type        n      prop
-    1   male 63459580 0.4849388
+    1 female 67401427 0.5150612
     2 female 67401427 0.5150612
     3 female 67401427 0.5150612
     4   male 63459580 0.4849388
-    5 female 67401427 0.5150612
-    6   male 63459580 0.4849388
+    5   male 63459580 0.4849388
+    6 female 67401427 0.5150612
 
 > **Note:**
 > [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
@@ -179,9 +179,6 @@ ggplot() +
     color    = "Sex"
   )
 ```
-
-    ggpop: downloading coordinate data from GitHub (~2 MB) and caching it locally.
-    This happens once. Future calls will load from cache.
 
 ![](getting-started_files/figure-html/basic-plot-1.png)
 

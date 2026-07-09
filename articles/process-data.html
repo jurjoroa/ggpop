@@ -38,7 +38,7 @@
   "name": "ggpop",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "R",
-  "softwareVersion": "1.7.0",
+  "softwareVersion": "1.8.0",
   "description": "R package for creating icon-based population charts and pictogram plots with ggplot2. Visualize proportion and population data in R",
   "url": "https://jurjoroa.github.io/ggpop/",
   "downloadUrl": "https://cran.r-project.org/package=ggpop",
@@ -87,7 +87,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jurjoroa/ggpop"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jurjoroa/ggpop" aria-label="ggpop on GitHub"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -101,7 +101,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/HEAD/vignettes/articles/process-data.qmd" class="external-link"><code>vignettes/articles/process-data.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/articles/process-data.qmd" class="external-link"><code>vignettes/articles/process-data.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -156,11 +156,11 @@
 <div class="cell-output cell-output-stdout">
 <pre><code>    type        n      prop
 1 female 67401427 0.5150612
-2   male 63459580 0.4849388
-3   male 63459580 0.4849388
-4 female 67401427 0.5150612
+2 female 67401427 0.5150612
+3 female 67401427 0.5150612
+4   male 63459580 0.4849388
 5 female 67401427 0.5150612
-6   male 63459580 0.4849388</code></pre>
+6 female 67401427 0.5150612</code></pre>
 </div>
 </div>
 <p>The output contains:</p>
@@ -194,8 +194,8 @@
 <pre><code># A tibble: 2 × 3
   type   icons proportion
   &lt;chr&gt;  &lt;int&gt;      &lt;dbl&gt;
-1 female    52       51.5
-2 male      48       48.5</code></pre>
+1 female    58       51.5
+2 male      42       48.5</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -228,10 +228,10 @@
 <pre><code># A tibble: 4 × 2
   type  icons
   &lt;chr&gt; &lt;int&gt;
-1 East     42
-2 North    26
+1 East     38
+2 North    28
 3 South    21
-4 West     11</code></pre>
+4 West     13</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -269,14 +269,14 @@
 <pre><code># A tibble: 8 × 3
   group type    icons
   &lt;chr&gt; &lt;chr&gt;   &lt;int&gt;
-1 East  At Risk    38
-2 East  Healthy    62
-3 North At Risk    33
-4 North Healthy    67
-5 South At Risk    34
-6 South Healthy    66
-7 West  At Risk    22
-8 West  Healthy    78</code></pre>
+1 East  At Risk    41
+2 East  Healthy    59
+3 North At Risk    25
+4 North Healthy    75
+5 South At Risk    25
+6 South Healthy    75
+7 West  At Risk    20
+8 West  Healthy    80</code></pre>
 </div>
 </div>
 <div style="line-height: 0.6;">
@@ -334,10 +334,6 @@
 <span>    subtitle <span class="op">=</span> <span class="st">"Each icon represents one survey participant"</span>,</span>
 <span>    color    <span class="op">=</span> <span class="st">"Activity"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>ggpop: downloading coordinate data from GitHub (~2 MB) and caching it locally.
-This happens once. Future calls will load from cache.</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="process-data_files/figure-html/skip-1.png" width="960"></p>
@@ -473,7 +469,7 @@ This happens once. Future calls will load from cache.</code></pre>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
