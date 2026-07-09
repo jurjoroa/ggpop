@@ -230,10 +230,14 @@ reference:
       - process_data
       - fetch_df_coordinates
   - title: "Legends & icons"
-    desc: "Control legend appearance and discover available icons."
+    desc: "Control legend appearance, discover available icons, and build composite legends."
     contents:
       - scale_legend_icon
       - marker_legend
+      - icon_grid
+      - legend_canvas
+      - key_legend
+      - legend_strip
       - fa_icons
       - ggpop_markers
   - title: "Themes"
