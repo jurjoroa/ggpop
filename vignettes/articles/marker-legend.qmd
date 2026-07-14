@@ -281,6 +281,63 @@ Column spacing has to leave room for your longest label in that column before
 the next section starts - if sections start overlapping, widen `col_spacing`,
 `group_width`, or `symbol_right_gap` rather than shortening labels first.
 
+## One call for the whole thing: `legend_composite()`
+
+`legend_canvas()` gives you every knob, but for the standard grid + group +
+symbol legend you end up repeating the same spacing, sizing, and centring
+numbers on every figure. `legend_composite()` is the opinionated wrapper: hand
+it the same `df_legend` and the physical strip size, and it applies a fixed
+proportion ladder (`legend_ratios()`), centres the content, and fits a tight
+border with `legend_box()` - the whole legend from one call.
+
+```{r}
+#| label: fig-legend-composite
+#| message: false
+#| warning: false
+#| fig-width: 11
+#| fig-height: 1.7
+#| fig-cap: "The same three-section df_legend, rendered in one legend_composite() call with a fitted border."
+
+legend_composite(
+  df_legend,
+  width = 11, height = 1.7,
+  grid_title     = "Size and zone",
+  group_section  = "plan", group_title = "Plan",
+  symbol_section = "value",
+  ratios = modifyList(legend_ratios(), list(col_spacing = 1.5, symbol_right_gap = 1.4))
+)
+```
+
+Instead of hand-setting `col_spacing`, `group_width`, `marker_size`,
+`label_size`, and the rest, you give `legend_composite()` the physical
+`width`/`height` and it derives every length from three base sizes and the
+ratio ladder. You usually touch nothing but the titles; when a section needs
+more room - here the two-column grid's title and the wide symbol labels -
+override a single rung with `ratios = modifyList(legend_ratios(), ...)`.
+
+### The same proportions at any figure width
+
+The base sizes are calibrated for a `base_width`-inch strip (default 27) and
+multiplied by `width / base_width`, so passing your actual `width` reproduces
+the identical legend at that physical size - no per-figure retuning. Halve the
+width and text, markers, spacing, and border all scale together. Set
+`base_width = width` to opt out and size in absolute units instead.
+
+::: {.callout-tip}
+Keep sparse legends compact - do not stretch them. `content_range` sets how
+much horizontal room the content is centred in. A dense legend (many columns,
+long labels) fills a wide strip on its own; a sparse one should stay compact.
+Leave `content_range` at its default rather than shrinking it to force the
+content to fill the width - the colour swatches are drawn in data coordinates,
+so a small `content_range` stretches them into wide banners while the
+fixed-size icons stay put. `legend_composite()` warns when the swatches get
+that lopsided so you catch it early.
+:::
+
+The grid's `icon` column resolves per row, so one grid can mix Font Awesome
+names, bundled ggpop markers, and your own `.svg` files in a single legend -
+see [Custom SVG icons](custom-svg-icons.html).
+
 ## Stacking a plot and its legend with `legend_strip()`
 
 The composite above is a self-contained `ggplot`. To pin it under a real plot
