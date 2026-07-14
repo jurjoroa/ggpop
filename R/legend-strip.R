@@ -3,7 +3,10 @@
 #' Returns a \code{ggpop_legend_strip} object. When added to a \code{ggplot}
 #' with \code{+}, produces a \code{ggpop_composite} that stacks the main plot
 #' above the strip at the specified physical height.  The composite works with
-#' \code{ggplot2::ggsave()} and \code{print()}.
+#' \code{ggplot2::ggsave()} and \code{print()}.  The main plot (the object
+#' \code{legend_strip()} is added to) may itself be a \code{patchwork} object
+#' (e.g. several panels combined with \code{+}/\code{\link[patchwork]{plot_layout}})
+#' - this requires the \pkg{patchwork} package to be installed.
 #'
 #' @param strip_plot A \code{ggplot} to render as the bottom strip (e.g. the
 #'   output of \code{\link{marker_legend}}).
@@ -53,8 +56,8 @@ grid.draw.ggpop_composite <- function(x, recording = TRUE) {
 # ---- Internal ---------------------------------------------------------------
 
 draw_composite <- function(x) {
-  g_main  <- ggplot2::ggplotGrob(x$main)
-  g_strip <- ggplot2::ggplotGrob(x$strip)
+  g_main  <- composite_grob(x$main)
+  g_strip <- composite_grob(x$strip)
 
   grid::pushViewport(grid::viewport(
     layout = grid::grid.layout(
@@ -73,4 +76,19 @@ draw_composite <- function(x) {
   grid::grid.draw(g_strip)
   grid::popViewport()
   grid::popViewport()
+}
+
+composite_grob <- function(p) {
+  if (!inherits(p, "patchwork")) return(ggplot2::ggplotGrob(p))
+
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    cli::cli_abort(c(
+      "A {.cls patchwork} object was passed to {.fn legend_strip}, which requires the {.pkg patchwork} package.",
+      i = "Install it with {.code install.packages(\"patchwork\")}."
+    ))
+  }
+  # ggplot2::ggplotGrob() only sees a patchwork object's base ggplot fields
+  # and silently renders just the last panel, stretched full-width - the
+  # patchwork-aware grob converter is required to capture every panel.
+  patchwork::patchworkGrob(p)
 }
