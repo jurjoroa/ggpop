@@ -47,34 +47,6 @@ text_labels <- function(p) {
 x_range <- function(p) p$coordinates$limits$x
 y_range <- function(p) p$coordinates$limits$y
 
-# Deterministic geometry summary of a composite legend - every layer's geom,
-# its data positions, and any size/position aes_params, plus the canvas limits.
-# Rendering-derived output (the fitted border, which depends on the graphics
-# device) is excluded on purpose; this locks the layout maths only.
-legend_geometry <- function(p) {
-  num <- function(v) round(as.numeric(v), 4)
-  layers <- lapply(p$layers, function(l) {
-    out <- list(geom = class(l$geom)[1])
-    d <- l$data
-    if (is.data.frame(d) && nrow(d) > 0) {
-      for (col in intersect(c("x", "y", "xmin", "xmax", "ymin", "ymax", "xend", "yend"), names(d))) {
-        out[[col]] <- num(d[[col]])
-      }
-    }
-    ap <- l$aes_params
-    for (nm in intersect(c("size", "x", "y", "xmin", "xmax", "ymin", "ymax"), names(ap))) {
-      out[[paste0("p_", nm)]] <- num(ap[[nm]])
-    }
-    out
-  })
-  list(
-    xlim = num(p$coordinates$limits$x),
-    ylim = num(p$coordinates$limits$y),
-    n_layers = length(p$layers),
-    layers = layers
-  )
-}
-
 grid_rows <- function(type = "icon") {
   data.frame(
     section = "grid", type = type,
@@ -578,17 +550,20 @@ testthat::test_that("legend_canvas encloses a symbol key taller than the grid", 
 })
 
 # ******************************************************************************
-# 12 GOLD STANDARD - AllModels frontier compact legend geometry ---------------
+# 12 GOLD STANDARD - AllModels frontier compact legend (snapshot) -------------
 # ******************************************************************************
-# Locks the exact layout of the AllModels composite legend (the reference
-# figure). The scatter reads external sda2028 data so it cannot live here, but
-# the legend is built from inline content and IS the gold standard. Any drift
-# in the layout maths (base_width scaling, section placement, sizes, limits)
-# changes this snapshot. Record once with testthat::snapshot_accept(); after
+# Locks the rendered AllModels composite legend (the reference figure). The
+# scatter reads external sda2028 data so it cannot live here, but the legend is
+# built from inline content and IS the gold standard. Any drift in the layout
+# or rendering changes this PNG. Record with testthat::snapshot_accept(); after
 # that, an unreviewed change fails the test.
 
-testthat::test_that("AllModels frontier compact legend geometry is locked", {
+testthat::test_that("AllModels frontier compact legend renders (snapshot)", {
+  testthat::skip_on_cran()
+  testthat::skip_if_not_installed("rsvg")
+  testthat::skip_if_not_installed("magick")
   testthat::skip_if_not_installed("dplyr")
+
   df_legend <- dplyr::bind_rows(
     data.frame(
       section = "grid", type = "icon",
@@ -615,11 +590,12 @@ testthat::test_that("AllModels frontier compact legend geometry is locked", {
       stringsAsFactors = FALSE
     )
   )
-  # border = NA -> deterministic layout only (the fitted border is device-dependent)
   p <- legend_composite(
     df_legend, width = 27, height = 2.73175,
-    grid_title = "Age to begin-age to end screening",
-    group_title = "Modality", border = NA
+    grid_title = "Age to begin-age to end screening", group_title = "Modality"
   )
-  testthat::expect_snapshot_value(legend_geometry(p), style = "json2")
+
+  path <- tempfile(fileext = ".png")
+  ggplot2::ggsave(path, p, width = 27, height = 2.73175, dpi = 120, bg = "white")
+  testthat::expect_snapshot_file(path, "allmodels-frontier-compact-legend.png")
 })
