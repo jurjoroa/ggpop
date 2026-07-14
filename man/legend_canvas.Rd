@@ -24,12 +24,16 @@ legend_canvas(
   label_gap,
   marker_size,
   label_size,
+  label_fontface = "plain",
   scale = 1,
+  label_scale = 1,
   dpi = 300,
   xlim = NULL,
   ylim = NULL,
-  x_margin = c(0.1, 1),
-  y_margin = c(0.6, 1.1),
+  x_margin = c(1, 1),
+  align = NULL,
+  y_margin = c(1.1, 1.1),
+  valign = NULL,
   clip = "off"
 )
 }
@@ -64,9 +68,11 @@ rows go through \code{\link{marker_legend}} instead, a separate path.}
 \item{group_title}{Title drawn above the colour tiles.  Inherits
 \code{group_section} when \code{NULL}.}
 
-\item{group_width}{Width of the colour tile section.}
+\item{group_width}{Width of the colour tile section (scaled by
+\code{scale}).}
 
-\item{group_gap}{Gap between the tile right edge and \code{x = 0}.}
+\item{group_gap}{Gap between the tile right edge and \code{x = 0}
+(scaled by \code{scale}).}
 
 \item{group_label_size}{Label size inside tiles; inherits \code{label_size}
 (after scaling) when \code{NA}.}
@@ -80,9 +86,10 @@ rows go through \code{\link{marker_legend}} instead, a separate path.}
 \code{NULL} skips the symbol section.}
 
 \item{symbol_right_gap}{Gap between icon grid right edge and symbol section
-(default \code{0.30}).}
+(default \code{0.30}; scaled by \code{scale}).}
 
-\item{symbol_key_width}{Width of the key symbol area (default \code{0.20}).}
+\item{symbol_key_width}{Width of the key symbol area (default \code{0.20};
+scaled by \code{scale}).}
 
 \item{symbol_label_gap}{Gap between key symbol and label; inherits
 \code{label_gap} (after scaling) when \code{NULL}.}
@@ -97,11 +104,26 @@ rows go through \code{\link{marker_legend}} instead, a separate path.}
 
 \item{label_size}{Default label text size.}
 
-\item{scale}{Multiplier applied to \code{col_spacing},
-\code{row_spacing}, \code{label_gap}, \code{marker_size},
-\code{label_size}, and the \code{label_size} column in \code{df_legend}.
-Use to scale the whole legend without touching individual values (default
-\code{1}).}
+\item{label_fontface}{Font face for every title and label in the legend
+(grid title, group title/tile labels, symbol title/labels) - default
+\code{"plain"}.  Common values: \code{"plain"}, \code{"bold"},
+\code{"italic"}.  Does not affect the \code{"point"}-type \code{"*"}
+glyph, which is always bold.}
+
+\item{scale}{Multiplier applied to every length and size:
+\code{col_spacing}, \code{row_spacing}, \code{label_gap},
+\code{marker_size}, \code{label_size} (and its \code{df_legend} column),
+\code{group_width}, \code{group_gap}, \code{group_label_size},
+\code{symbol_right_gap}, \code{symbol_key_width}, and
+\code{symbol_label_gap}.  Because it scales the whole legend uniformly,
+every length can be written as a plain multiple of one base module and
+\code{scale} sizes the result (default \code{1}).}
+
+\item{label_scale}{Extra multiplier applied on top of \code{scale} to the
+text sizes only - \code{label_size}, \code{group_label_size}, and the
+\code{label_size} column in \code{df_legend} - leaving marker and spacing
+sizes untouched.  Use to enlarge/shrink every label relative to the
+markers from one place (default \code{1}).}
 
 \item{dpi}{Icon render resolution (default \code{300}).}
 
@@ -109,13 +131,36 @@ Use to scale the whole legend without touching individual values (default
 when \code{NULL}.}
 
 \item{ylim}{Length-2 numeric; y limits of the canvas.  Auto-computed
-when \code{NULL}.}
+when \code{NULL} to enclose whichever section reaches deepest - the grid
+rows, the group tiles, or the symbol keys - so a group/symbol block with
+more entries than the grid has rows is not clipped.}
 
 \item{x_margin}{Length-2 numeric: left/right padding added to auto x range
-(default \code{c(0.10, 1.00)}).}
+(default \code{c(1.00, 1.00)}, i.e. centred).  Ignored when \code{xlim}
+is supplied directly; overridden when \code{align} is set.  A
+\code{symbol_section}'s labels extend right of \code{x_right} with no
+accounting for label width, so the default is sized generously enough
+to hold typical labels without clipping - not the smallest margin that
+centres the nominal content bounds.}
+
+\item{align}{Optional convenience for biasing \code{x_margin}: one of
+\code{"center"} (equal left/right padding), \code{"left"} (small left /
+large right padding), or \code{"right"} (large left / small right
+padding).  Redistributes \code{sum(x_margin)} between the two sides -
+the total padding is unchanged, only its left/right split.  \code{NULL}
+(default) leaves \code{x_margin} untouched.}
 
 \item{y_margin}{Length-2 numeric: top/bottom padding as multiples of
-(scaled) \code{row_spacing} (default \code{c(0.6, 1.1)}).}
+(scaled) \code{row_spacing} (default \code{c(1.1, 1.1)}, i.e. centred).
+Ignored when \code{ylim} is supplied directly; overridden when
+\code{valign} is set.}
+
+\item{valign}{Optional convenience for biasing \code{y_margin}: one of
+\code{"center"} (equal top/bottom padding), \code{"top"} (small top /
+large bottom padding), or \code{"bottom"} (large top / small bottom
+padding).  Redistributes \code{sum(y_margin)} between the two sides,
+the same way \code{align} redistributes \code{x_margin}.  \code{NULL}
+(default) leaves \code{y_margin} untouched.}
 
 \item{clip}{Passed to \code{coord_cartesian} (default \code{"off"}).}
 }

@@ -16,6 +16,7 @@ key_legend(
   label_size = 2.8,
   label_color = "black",
   label_inside = FALSE,
+  label_fontface = "plain",
   title_color = NULL,
   swatch_height = 0.45,
   point_size = 1.6
@@ -53,6 +54,11 @@ places entry\,1 at \code{row_spacing * title_frac}.}
 \item{label_inside}{When \code{TRUE}, centres the label inside the key
 symbol instead of beside it.  Only takes effect for \code{swatch} rows
 (default \code{FALSE}).}
+
+\item{label_fontface}{Font face for the title and entry labels (default
+\code{"plain"}).  Common values: \code{"plain"}, \code{"bold"},
+\code{"italic"}.  Does not affect the \code{"point"}-type \code{"*"}
+glyph, which is always bold.}
 
 \item{title_color}{Colour of the section title.  Inherits
 \code{label_color} when \code{NULL} (the default).}
