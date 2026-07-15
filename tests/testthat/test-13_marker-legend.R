@@ -166,13 +166,13 @@ testthat::test_that("label_fontface is applied to the label layer", {
   testthat::expect_equal(p$layers[[2]]$aes_params$fontface, "bold")
 })
 
-testthat::test_that("the title stays plain regardless of label_fontface", {
+testthat::test_that("the title follows label_fontface, matching the entry labels", {
   df <- data.frame(icon = "star", label = "A", stringsAsFactors = FALSE)
   p <- marker_legend(df, title = "Groups", label_fontface = "bold")
 
   title_layer <- p$layers[[which(vapply(
-    p$layers, function(l) inherits(l$geom, "GeomText") && identical(l$data$label, "Groups"),
+    p$layers, function(l) inherits(l$geom, "GeomText") && identical(l$aes_params$label, "Groups"),
     logical(1)
   ))]]
-  testthat::expect_equal(title_layer$aes_params$fontface, "plain")
+  testthat::expect_equal(title_layer$aes_params$fontface, "bold")
 })
