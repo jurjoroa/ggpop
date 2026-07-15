@@ -107,22 +107,26 @@ one legend.
 #| label: fig-composite-fa
 #| message: false
 #| warning: false
-#| fig-width: 7
-#| fig-height: 2.6
+#| fig-width: 4
+#| fig-height: 2.2
 #| fig-cap: "A two-column composite legend built entirely from Font Awesome icons."
 
 df_legend <- data.frame(
   column = c(1, 1, 1, 2, 2, 2),
   icon   = c("car", "bus", "bicycle", "plane", "ship", "truck"),
-  label  = c("Car", "Bus", "Bicycle", "Plane", "Ferry", "Truck"),
+  label  = c("Car", "Bus", "Bike", "Plane", "Ferry", "Truck"),
   colour = c("#E41A1C", "#377EB8", "#984EA3", "#FF7F00", "#009E9E", "#A65628"),
   stringsAsFactors = FALSE
 )
 
+# Keep col_spacing and label_gap small: marker_legend()'s coordinate range
+# grows with col_spacing, so a large value spreads the columns apart and leaves
+# a wide empty margin. Small values pack the two columns close and keep each
+# icon tight to its label.
 marker_legend(
   df_legend,
   title = "Transport modes",
-  marker_size = 5, label_size = 4, col_spacing = 14, label_gap = 1.6
+  marker_size = 5, label_size = 4, col_spacing = 0.6, label_gap = 0.15
 )
 ```
 
@@ -203,28 +207,29 @@ the only place a new type could be added.
 ### Deriving the icon grid from data with `icon_grid()`
 
 If your icon-grid combinations already exist in a data frame - say, one row
-per package-size / distance-zone combination - `icon_grid()` derives the
+per temperature / precipitation combination - `icon_grid()` derives the
 unique `row`/`col` positions for you instead of typing them by hand. Factor
 columns keep a deliberate row/col order; unordered columns sort automatically.
+Each combination gets a Font Awesome weather icon, so the grid reads as a
+legend of conditions rather than abstract shapes.
 
 ```{r}
 #| label: icon-grid-derive
 #| code-fold: false
 
-df_plans <- data.frame(
-  size     = factor(c("Small", "Small", "Large", "Large"), levels = c("Small", "Large")),
-  distance = factor(c("Local", "National", "Local", "National"), levels = c("Local", "National")),
-  icon     = c("square-hollow", "square-solid", "circle-hollow", "circle-solid"),
+df_cond <- data.frame(
+  temp   = factor(c("Warm", "Warm", "Cold", "Cold"), levels = c("Warm", "Cold")),
+  precip = factor(c("Dry", "Wet", "Dry", "Wet"), levels = c("Dry", "Wet")),
+  icon   = c("sun", "cloud-rain", "wind", "snowflake"),
   stringsAsFactors = FALSE
 )
-df_plans$cell_label <- paste0(
-  substr(df_plans$size, 1, 1), "-",
-  c(Local = "Loc", National = "Natl")[as.character(df_plans$distance)]
+df_cond$cell_label <- paste0(
+  substr(df_cond$temp, 1, 1), "-", df_cond$precip
 )
 
 df_grid <- icon_grid(
-  df_plans, icon = "icon", label = "cell_label",
-  row = "size", col = "distance"
+  df_cond, icon = "icon", label = "cell_label",
+  row = "temp", col = "precip"
 )
 df_grid
 ```
@@ -239,41 +244,42 @@ symbol key (`symbol_section`) by `rbind()`-ing three data frames that share
 #| label: fig-legend-canvas
 #| message: false
 #| warning: false
-#| fig-width: 9.5
+#| fig-width: 9
 #| fig-height: 2
 #| fig-cap: "A grid + group + symbol composite legend built from one df_legend data frame."
 
-plan_colours <- c(Standard = "#8D99AE", Express = "#EF476F")
+alert_col <- c(Advisory = "#F4C542", Warning = "#C0392B")
 
 df_legend <- rbind(
   df_grid,
   data.frame(
-    section = "plan", type = "swatch",
-    label = names(plan_colours), color = unname(plan_colours),
+    section = "alert", type = "swatch",
+    label = names(alert_col), color = unname(alert_col),
     icon = NA, row = NA, col = NA
   ),
   data.frame(
-    section = "value", type = c("line", "swatch", "point"),
-    label   = c("Best-value frontier", "Acceptable range", "Best pick"),
-    color   = c("black", "grey75", "black"),
+    section = "mark", type = c("line", "swatch", "point"),
+    label   = c("Seasonal", "Typical", "Warmest"),
+    color   = c("grey35", "grey80", "black"),
     icon = NA, row = NA, col = NA
   )
 )
 
 legend_canvas(
   df_legend,
-  grid_title       = "Package size × distance zone",
-  group_section    = "plan", group_title = "Plan", group_width = 0.9, group_gap = 0.3,
-  symbol_section   = "value", symbol_right_gap = 0.8, symbol_key_width = 0.5,
-  col_spacing = 2.2, row_spacing = 1.2, label_gap = 0.15,
-  marker_size = 5, label_size = 3.6, dpi = 150
+  grid_title       = "Temp and precip",
+  group_section    = "alert", group_title = "Alert", group_width = 0.85, group_gap = 0.18,
+  symbol_section   = "mark", symbol_right_gap = 0.75, symbol_key_width = 0.45,
+  col_spacing = 0.95, row_spacing = 1.2, label_gap = 0.12,
+  marker_size = 5, label_size = 3.6, dpi = 150,
+  x_margin = c(1.6, 1.6)
 )
 ```
 
 ::: {.callout-tip}
 `group_title` lets the displayed heading differ from the `section` value used
-to match rows - keep `section` values plain and lowercase (`"plan"`) while the
-on-plot title stays capitalised (`"Plan"`). `grid_section` and `grid_title`
+to match rows - keep `section` values plain and lowercase (`"alert"`) while the
+on-plot title stays capitalised (`"Alert"`). `grid_section` and `grid_title`
 work the same way for the icon grid.
 :::
 
@@ -301,9 +307,9 @@ border with `legend_box()` - the whole legend from one call.
 legend_composite(
   df_legend,
   width = 11, height = 1.7,
-  grid_title     = "Size and zone",
-  group_section  = "plan", group_title = "Plan",
-  symbol_section = "value",
+  grid_title     = "Temp and precip",
+  group_section  = "alert", group_title = "Alert",
+  symbol_section = "mark",
   ratios = modifyList(legend_ratios(), list(col_spacing = 1.5, symbol_right_gap = 1.4))
 )
 ```
@@ -340,41 +346,78 @@ see [Custom SVG icons](custom-svg-icons.html).
 
 ## Stacking a plot and its legend with `legend_strip()`
 
-The composite above is a self-contained `ggplot`. To pin it under a real plot
-in one exported figure - rather than a standalone panel - add it with
-`legend_strip(strip_plot, height)`:
+A composite legend earns its keep only when the plot uses every key it
+advertises. Here the forecast draws each day with `geom_icon_point()` -
+marker shape for the temperature/precipitation condition, colour for the
+alert level - over a seasonal-average line, a typical-range band, and a
+flagged warmest day: exactly the sections the legend describes. To pin that
+legend under the plot in one exported figure - rather than a standalone panel -
+add it with `legend_strip(strip_plot, height)`:
 
 ```{r}
 #| label: fig-legend-strip
 #| message: false
 #| warning: false
-#| fig-width: 9.5
-#| fig-height: 5.5
-#| fig-cap: "A scatter plot with its legend_canvas() legend stacked directly below it."
+#| fig-width: 9
+#| fig-height: 5.8
+#| fig-cap: "An icon forecast answering a real question - marker shape shows the temperature/precipitation condition, colour shows the alert level - with its legend_canvas() legend stacked below, so every legend key is something you read off the plot."
 
-df_points <- data.frame(
-  cost = c(4, 6, 9, 14, 7, 11, 16, 22),
-  days = c(6, 4, 2, 1, 5, 3, 1.5, 1),
-  plan = c("Standard", "Standard", "Express", "Express",
-           "Standard", "Standard", "Express", "Express")
+icon_map <- c(
+  "Warm.Dry" = "sun",
+  "Warm.Wet" = "cloud-rain",
+  "Cold.Dry" = "wind",
+  "Cold.Wet" = "snowflake"
 )
 
-p_main <- ggplot(df_points, aes(x = cost, y = days, colour = plan)) +
-  geom_point(size = 3) +
-  scale_colour_manual(values = plan_colours, guide = "none") +
-  scale_x_continuous("Cost ($)") +
-  scale_y_continuous("Delivery time (days)") +
-  ggtitle("Cost vs. delivery time") +
+df_fc <- data.frame(
+  day      = 1:8,
+  temp     = c(18, 20, 15, 12, 10, 9, 13, 17),
+  temp_cat = c("Warm", "Warm", "Warm", "Cold", "Cold", "Cold", "Cold", "Warm"),
+  precip   = c("Dry", "Dry", "Wet", "Dry", "Wet", "Wet", "Dry", "Wet"),
+  alert    = c("Advisory", "Advisory", "Advisory", "Warning",
+               "Warning", "Warning", "Advisory", "Advisory"),
+  avg      = c(14, 14, 13.5, 13, 13, 13, 13.5, 14),
+  stringsAsFactors = FALSE
+)
+df_fc$icon <- icon_map[paste(df_fc$temp_cat, df_fc$precip, sep = ".")]
+
+# the warmest day in the outlook is flagged as the pick
+warmest <- df_fc[which.max(df_fc$temp), ]
+
+p_main <- ggplot(df_fc, aes(x = day, y = temp)) +
+  geom_ribbon(aes(ymin = avg - 4, ymax = avg + 4), fill = "grey88") +
+  geom_line(aes(y = avg), colour = "grey35", linewidth = 0.7) +
+  # a soft ring highlights the warmest day so the * is unambiguous
+  geom_point(data = warmest, shape = 21, size = 10, colour = "#D9A441",
+             fill = NA, stroke = 1.3) +
+  geom_icon_point(
+    aes(icon = icon, colour = alert),
+    size = 3, dpi = 150, legend_icons = FALSE, show.legend = FALSE
+  ) +
+  annotate("text", x = warmest$day + 0.35, y = warmest$temp + 1.3, label = "*",
+           size = 6, fontface = "bold") +
+  scale_colour_manual(values = alert_col, guide = "none") +
+  scale_x_continuous("Forecast day", breaks = 1:8) +
+  scale_y_continuous("High temperature (C)", limits = c(4, 22), breaks = seq(4, 20, 4)) +
+  labs(
+    title = "8-day temperature outlook",
+    subtitle = "Marker shape = temperature and precipitation; colour = alert level; the * is the warmest day"
+  ) +
   theme_classic(base_size = 13) +
-  theme(axis.line.x = element_blank())
+  theme(
+    axis.line.x = element_blank(),
+    plot.subtitle = element_text(size = 9.5, colour = "grey30"),
+    panel.grid.major.y = element_line(colour = "grey93", linewidth = 0.3)
+  )
 
 p_legend <- legend_canvas(
   df_legend,
-  grid_title       = "Package size × distance zone",
-  group_section    = "plan", group_title = "Plan", group_width = 0.9, group_gap = 0.3,
-  symbol_section   = "value", symbol_right_gap = 0.8, symbol_key_width = 0.5,
-  col_spacing = 2.2, row_spacing = 1.2, label_gap = 0.15,
-  marker_size = 5, label_size = 3.6, dpi = 150
+  grid_title       = "Temp and precip",
+  group_section    = "alert", group_title = "Alert", group_width = 0.85, group_gap = 0.18,
+  symbol_section   = "mark", symbol_right_gap = 0.75, symbol_key_width = 0.45,
+  col_spacing = 0.95, row_spacing = 1.2, label_gap = 0.12,
+  marker_size = 5, label_size = 3.6, dpi = 150,
+  x_margin = c(1.6, 1.6)
 )
 
 p_main + legend_strip(p_legend, height = 1.4)
