@@ -18,12 +18,12 @@
 #'
 #' \strong{Two y-placement modes:}
 #' \itemize{
-#'   \item \code{y_start = NULL} (default) — first entry is placed at the
+#'   \item \code{y_start = NULL} (default) - first entry is placed at the
 #'     section-title row (\code{row_spacing * title_frac}), matching the
 #'     position where \code{marker_legend()} puts section headers.  Use this
 #'     when entry\,1 is both the title and its own symbol (e.g. the
 #'     "Efficient frontier" line entry).
-#'   \item \code{y_start = 0} — first entry at row\,1, second at
+#'   \item \code{y_start = 0} - first entry at row\,1, second at
 #'     \code{-row_spacing}, etc.  Use this with a text-only \code{title}.
 #' }
 #'
@@ -31,7 +31,7 @@
 #'   \code{"line"}, or \code{"point"}), \code{label}, and \code{color}
 #'   (or \code{colour}).  Optional columns: \code{linetype} (default
 #'   \code{"solid"}), \code{linewidth} (default \code{0.8}), \code{pch}
-#'   (default \code{NA} → draws \code{"*"} for \code{type = "point"}).
+#'   (default \code{NA} -> draws \code{"*"} for \code{type = "point"}).
 #' @param x Left edge of the key-symbol column in plot coordinates.
 #' @param y_start Y coordinate of the first entry.  \code{NULL} (default)
 #'   places entry\,1 at \code{row_spacing * title_frac}.
