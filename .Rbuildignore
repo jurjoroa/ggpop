@@ -5,8 +5,7 @@
 ^docs$
 ^pkgdown$
 ^\.github$
-^\.DS_Store$
-^man/\.DS_Store$
+\.DS_Store$
 ^LICENSE\.md$
 ^vignettes/\.quarto$
 ^vignettes/articles$
