@@ -1,21 +1,6 @@
 # ggpop 1.8.0
 
-## New features
-
-- `geom_pop()` and `geom_icon_point()` now accept custom SVG icons in addition to Font Awesome names. The `icon` aesthetic (or the `icon` parameter) resolves, in priority order, to: a local `.svg` path; a file in your own icon folder (via the new `icon_path` argument or `options(ggpop.icon_path = "<dir>")`), referenced by name just like a Font Awesome icon; a bundled ggpop marker (e.g. `"square-inset"`, `"circle-cross"`, `"diamond-hollow"`); or a Font Awesome name. Monochrome SVGs are recoloured by the mapped colour aesthetic, content-hash cached, and rendered crisply at any `dpi` in both the plot body and the legend keys. An unrecognised name now raises a clear error instead of a cryptic Font Awesome failure (#383).
-- `geom_pop()` and `geom_icon_point()` now warn at construction time when any SVG file in `icon_path` shares a name with a Font Awesome icon, listing the shadowed names and suggesting a rename to avoid silent conflicts (#383).
-- `ggpop_markers()` lists the bundled marker names (and the names found in an `icon_path` folder) - the companion to `fa_icons()` (#383).
-- `marker_legend()` builds a standalone composite legend of icon markers - multiple columns, mixed icon sources (Font Awesome, bundled markers, or your own SVGs), and room for extra annotations - for cases that ggplot2's built-in guides cannot express. For an ordinary data-driven legend, keep using `legend_icons = TRUE` with `scale_legend_icon()` (#385).
-- `marker_legend()` gains a `label_colour` argument (default `"black"`) to control the text colour of both entry labels and the title (#385).
-- `key_legend()` gains a `label_fontface` argument (default `"plain"`) controlling the title and entry-label font face; does not affect the `"point"`-type `"*"` glyph, which stays bold regardless (#393).
-- `legend_canvas()` gains a `label_fontface` argument, passed through to both the grid (`marker_legend()`) and group/symbol (`key_legend()`) sections so the whole composite legend can be set bold/italic/plain from one place (#393).
-- `legend_canvas()` gains a `label_scale` argument - an extra multiplier applied on top of `scale` to the label text sizes only (grid, group, and symbol labels), leaving marker and spacing sizes untouched. Use it to enlarge or shrink every label relative to the markers from one place (#393).
-- `legend_canvas()`'s `scale` now multiplies **every** length uniformly, including `group_width`, `group_gap`, `symbol_right_gap`, and `symbol_key_width` (previously these four were the only lengths left unscaled). This lets the whole legend be written as plain multiples of one base module with `scale` sizing the result. Note: this changes the rendered size of those sections when `scale` is not `1` - divide those four values by your `scale` to reproduce earlier output (#393).
-- `legend_box()` draws a border tightly around a composite legend's actual rendered content. `legend_canvas()` positions sections from nominal geometry, but text labels overflow their anchor points by a font/output-size-dependent amount, so a geometry-derived box clips them; `legend_box()` renders the legend once at the intended output size, measures the true content extent, and fits the border to it (#393).
-- `legend_composite()` builds a bordered three-section legend (icon grid + colour tiles + typed-symbol key) in one call, wrapping `legend_canvas()` + `legend_box()`. Every layout length is a multiple of one `module`, every text size a multiple of one `text` base, and icons one `marker` size; the fixed proportion ladder is `legend_ratios()` (overridable). Supply the content and strip size and it applies the ladder, centres the content, and fits the border (#393).
-- `legend_composite()` gains a `base_width` argument (default `27`): its base sizes are calibrated for a `base_width`-inch strip and multiplied by `width / base_width`, so passing any `width` reproduces the same legend proportions at that physical size - the template now generalises to any figure width, not just the 27-inch one it was tuned on. Set `base_width = width` to size in absolute units instead (#393).
-- `legend_composite()` now warns (class `"ggpop_swatch_aspect_warning"`) when a small `content_range` relative to `width` stretches the group colour swatches into wide banners while the fixed-size icons stay put. The message points to raising `content_range` or reducing `width` so sparse legends stay compact instead of stretched (#393).
-- `legend_ratios()` returns the default proportion ladder used by `legend_composite()` as a named list, for inspection or partial override (#393).
+This release adds custom SVG icon support to both geoms, a composite-legend system for legends that ggplot2's own guides cannot express, and a draw-time recolouring fix that removes the long-standing black-icon rendering bug.
 
 ## Bug Fixes
 
@@ -24,6 +9,43 @@
 - `legend_canvas()` sized the canvas height from the grid's row count alone, so a `group_section` or `symbol_section` with more entries than the grid has rows extended below the fitted border and was clipped. The auto `ylim` now encloses whichever section runs deepest, so taller colour-tile or symbol blocks are always contained (#393).
 - `legend_strip()` silently rendered only the last panel (stretched to the full width) when the main plot was a `patchwork` combination of several `ggplot`s, because `ggplot2::ggplotGrob()` cannot see a patchwork's individual panels. It now detects `patchwork` mains and converts them with `patchwork::patchworkGrob()` instead, rendering every panel correctly (requires the `patchwork` package, now listed in `Suggests`).
 - `marker_legend()`'s title was always drawn `"plain"` regardless of `label_fontface`, so a bold-labelled legend still showed a plain title. The title now follows `label_fontface`, matching the entry labels (#393).
+
+## New Features
+
+- `geom_pop()` and `geom_icon_point()` now accept custom SVG icons in addition to Font Awesome names. The `icon` aesthetic (or the `icon` parameter) resolves, in priority order, to: a local `.svg` path; a file in your own icon folder (via the new `icon_path` argument or `options(ggpop.icon_path = "<dir>")`), referenced by name just like a Font Awesome icon; a bundled ggpop marker (e.g. `"square-inset"`, `"circle-cross"`, `"diamond-hollow"`); or a Font Awesome name. Monochrome SVGs are recoloured by the mapped colour aesthetic, content-hash cached, and rendered crisply at any `dpi` in both the plot body and the legend keys. An unrecognised name now raises a clear error instead of a cryptic Font Awesome failure (#383).
+- `geom_pop()` and `geom_icon_point()` now warn at construction time when any SVG file in `icon_path` shares a name with a Font Awesome icon, listing the shadowed names and suggesting a rename to avoid silent conflicts (#383).
+- `ggpop_markers()` lists the bundled marker names (and the names found in an `icon_path` folder) - the companion to `fa_icons()` (#383).
+- `marker_legend()` builds a standalone composite legend of icon markers - multiple columns, mixed icon sources (Font Awesome, bundled markers, or your own SVGs), and room for extra annotations - for cases that ggplot2's built-in guides cannot express. For an ordinary data-driven legend, keep using `legend_icons = TRUE` with `scale_legend_icon()` (#385).
+- `marker_legend()` takes a `label_colour` argument (default `"black"`) controlling the text colour of both entry labels and the title (#385).
+- `icon_grid()` derives icon row/column positions from the unique combinations in a data frame, returning a plain data frame ready to `rbind()` with colour-tile and typed-symbol rows before passing to `legend_canvas()` (#393).
+- `legend_canvas()` renders a composite legend from a single plain data frame combining icon grid rows (from `icon_grid()`), colour tile rows, and typed-symbol rows. Layout parameters place each section, and `scale` multiplies every size and spacing value so the data frame can be written in round numbers (#393).
+- `key_legend()` adds a column of symbol + label entries to an existing legend canvas, sharing the base plot's coordinate system so entries integrate with the rest of the legend. Three entry types are supported: `"swatch"` (a filled rectangle), `"line"` (a horizontal segment), and `"point"` (a bold `"*"` glyph) (#393).
+- `legend_strip()` attaches a composite legend below a `ggplot`, stacking the plot above the strip at a specified physical height. The result works with `ggplot2::ggsave()` and `print()`, and the main plot may itself be a `patchwork` combination of several panels (#393).
+- `key_legend()` takes a `label_fontface` argument (default `"plain"`) controlling the title and entry-label font face; does not affect the `"point"`-type `"*"` glyph, which stays bold regardless (#393).
+- `legend_canvas()` takes a `label_fontface` argument, passed through to both the grid (`marker_legend()`) and group/symbol (`key_legend()`) sections so the whole composite legend can be set bold/italic/plain from one place (#393).
+- `legend_canvas()` takes a `label_scale` argument - an extra multiplier applied on top of `scale` to the label text sizes only (grid, group, and symbol labels), leaving marker and spacing sizes untouched. Use it to enlarge or shrink every label relative to the markers from one place (#393).
+- `legend_canvas()`'s `scale` now multiplies **every** length uniformly, including `group_width`, `group_gap`, `symbol_right_gap`, and `symbol_key_width` (previously these four were the only lengths left unscaled). This lets the whole legend be written as plain multiples of one base module with `scale` sizing the result. (#393).
+- `legend_box()` draws a border tightly around a composite legend's actual rendered content. `legend_canvas()` positions sections from nominal geometry, but text labels overflow their anchor points by a font/output-size-dependent amount, so a geometry-derived box clips them; `legend_box()` renders the legend once at the intended output size, measures the true content extent, and fits the border to it (#393).
+- `legend_composite()` builds a bordered three-section legend (icon grid + colour tiles + typed-symbol key) in one call, wrapping `legend_canvas()` + `legend_box()`. Every layout length is a multiple of one `module`, every text size a multiple of one `text` base, and icons one `marker` size; the fixed proportion ladder is `legend_ratios()` (overridable). Supply the content and strip size and it applies the ladder, centres the content, and fits the border (#393).
+- `legend_composite()` takes a `base_width` argument (default `27`): its base sizes are calibrated for a `base_width`-inch strip and multiplied by `width / base_width`, so passing any `width` reproduces the same legend proportions at that physical size - the template now generalises to any figure width, not just the 27-inch one it was tuned on. Set `base_width = width` to size in absolute units instead (#393).
+- `legend_composite()` now warns (class `"ggpop_swatch_aspect_warning"`) when a small `content_range` relative to `width` stretches the group colour swatches into wide banners while the fixed-size icons stay put. The message points to raising `content_range` or reducing `width` so sparse legends stay compact instead of stretched (#393).
+- `legend_ratios()` returns the default proportion ladder used by `legend_composite()` as a named list, for inspection or partial override (#393).
+
+## Issues Resolved in v1.8.0
+
+- #380
+- #383
+- #385
+- #387
+- #393
+
+## Version
+
+- #381
+
+
+**Full Changelog**: https://github.com/jurjoroa/ggpop/compare/v1.7.1...v1.8.0
+
 
 # ggpop 1.7.1
 
