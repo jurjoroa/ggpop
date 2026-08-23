@@ -107,8 +107,8 @@ head(df_processed)
     2   male 63459580 0.4849388
     3   male 63459580 0.4849388
     4 female 67401427 0.5150612
-    5   male 63459580 0.4849388
-    6   male 63459580 0.4849388
+    5 female 67401427 0.5150612
+    6 female 67401427 0.5150612
 
 > **Note:**
 > [`process_data()`](https://jurjoroa.github.io/ggpop/reference/process_data.md)
