@@ -18,12 +18,12 @@ A fourth entry kind, icon, exists in legend_canvas's
 df_legend vocabulary but is not a key_legend() type - icon
 rows are rendered separately via marker_legend.
 Two y-placement modes:
-y_start = NULL (default) — first entry is placed at the
+y_start = NULL (default) - first entry is placed at the
 section-title row (row_spacing * title_frac), matching the
 position where marker_legend() puts section headers.  Use this
 when entry\,1 is both the title and its own symbol (e.g. the
 &quot;Efficient frontier&quot; line entry).
-y_start = 0 — first entry at row\,1, second at
+y_start = 0 - first entry at row\,1, second at
 -row_spacing, etc.  Use this with a text-only title.
 
 "><meta property="og:description" content="Adds a column of symbol + label entries to an existing ggplot canvas
@@ -45,12 +45,12 @@ A fourth entry kind, icon, exists in legend_canvas's
 df_legend vocabulary but is not a key_legend() type - icon
 rows are rendered separately via marker_legend.
 Two y-placement modes:
-y_start = NULL (default) — first entry is placed at the
+y_start = NULL (default) - first entry is placed at the
 section-title row (row_spacing * title_frac), matching the
 position where marker_legend() puts section headers.  Use this
 when entry\,1 is both the title and its own symbol (e.g. the
 &quot;Efficient frontier&quot; line entry).
-y_start = 0 — first entry at row\,1, second at
+y_start = 0 - first entry at row\,1, second at
 -row_spacing, etc.  Use this with a text-only title.
 
 "><meta property="og:image" content="https://jurjoroa.github.io/ggpop/inst/figures/shp.png"><meta property="og:image:alt" content="ggpop - icon-based population charts for R"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@jorgeroac"><meta name="twitter:site" content="@jorgeroac"><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-CX1ZY99J1P"></script><script>
@@ -138,12 +138,12 @@ the base plot, so positions integrate seamlessly with the rest of the legend.</p
 </dl><p>A fourth entry kind, <code>icon</code>, exists in <code><a href="legend_canvas.html">legend_canvas</a></code>'s
 <code>df_legend</code> vocabulary but is not a <code>key_legend()</code> type - icon
 rows are rendered separately via <code><a href="marker_legend.html">marker_legend</a></code>.</p>
-<p><strong>Two y-placement modes:</strong></p><ul><li><p><code>y_start = NULL</code> (default) — first entry is placed at the
+<p><strong>Two y-placement modes:</strong></p><ul><li><p><code>y_start = NULL</code> (default) - first entry is placed at the
 section-title row (<code>row_spacing * title_frac</code>), matching the
 position where <code><a href="marker_legend.html">marker_legend()</a></code> puts section headers.  Use this
 when entry\,1 is both the title and its own symbol (e.g. the
 "Efficient frontier" line entry).</p></li>
-<li><p><code>y_start = 0</code> — first entry at row\,1, second at
+<li><p><code>y_start = 0</code> - first entry at row\,1, second at
 <code>-row_spacing</code>, etc.  Use this with a text-only <code>title</code>.</p></li>
 </ul></div>
 
@@ -161,6 +161,7 @@ when entry\,1 is both the title and its own symbol (e.g. the
 <span>  label_size <span class="op">=</span> <span class="fl">2.8</span>,</span>
 <span>  label_color <span class="op">=</span> <span class="st">"black"</span>,</span>
 <span>  label_inside <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  label_fontface <span class="op">=</span> <span class="st">"plain"</span>,</span>
 <span>  title_color <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  swatch_height <span class="op">=</span> <span class="fl">0.45</span>,</span>
 <span>  point_size <span class="op">=</span> <span class="fl">1.6</span></span>
@@ -176,7 +177,7 @@ when entry\,1 is both the title and its own symbol (e.g. the
 <code>"line"</code>, or <code>"point"</code>), <code>label</code>, and <code>color</code>
 (or <code>colour</code>).  Optional columns: <code>linetype</code> (default
 <code>"solid"</code>), <code>linewidth</code> (default <code>0.8</code>), <code>pch</code>
-(default <code>NA</code> → draws <code>"*"</code> for <code>type = "point"</code>).</p></dd>
+(default <code>NA</code> -&gt; draws <code>"*"</code> for <code>type = "point"</code>).</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
@@ -223,6 +224,13 @@ places entry\,1 at <code>row_spacing * title_frac</code>.</p></dd>
 <dd><p>When <code>TRUE</code>, centres the label inside the key
 symbol instead of beside it.  Only takes effect for <code>swatch</code> rows
 (default <code>FALSE</code>).</p></dd>
+
+
+<dt id="arg-label-fontface">label_fontface<a class="anchor" aria-label="anchor" href="#arg-label-fontface"></a></dt>
+<dd><p>Font face for the title and entry labels (default
+<code>"plain"</code>).  Common values: <code>"plain"</code>, <code>"bold"</code>,
+<code>"italic"</code>.  Does not affect the <code>"point"</code>-type <code>"*"</code>
+glyph, which is always bold.</p></dd>
 
 
 <dt id="arg-title-color">title_color<a class="anchor" aria-label="anchor" href="#arg-title-color"></a></dt>

@@ -104,12 +104,16 @@ values so the data frame can be written in round numbers.</p>
 <span>  <span class="va">label_gap</span>,</span>
 <span>  <span class="va">marker_size</span>,</span>
 <span>  <span class="va">label_size</span>,</span>
+<span>  label_fontface <span class="op">=</span> <span class="st">"plain"</span>,</span>
 <span>  scale <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  label_scale <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  dpi <span class="op">=</span> <span class="fl">300</span>,</span>
 <span>  xlim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  x_margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  y_margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">1.1</span><span class="op">)</span>,</span>
+<span>  x_margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  align <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  y_margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.1</span>, <span class="fl">1.1</span><span class="op">)</span>,</span>
+<span>  valign <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  clip <span class="op">=</span> <span class="st">"off"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -165,11 +169,13 @@ rows go through <code><a href="marker_legend.html">marker_legend</a></code> inst
 
 
 <dt id="arg-group-width">group_width<a class="anchor" aria-label="anchor" href="#arg-group-width"></a></dt>
-<dd><p>Width of the colour tile section.</p></dd>
+<dd><p>Width of the colour tile section (scaled by
+<code>scale</code>).</p></dd>
 
 
 <dt id="arg-group-gap">group_gap<a class="anchor" aria-label="anchor" href="#arg-group-gap"></a></dt>
-<dd><p>Gap between the tile right edge and <code>x = 0</code>.</p></dd>
+<dd><p>Gap between the tile right edge and <code>x = 0</code>
+(scaled by <code>scale</code>).</p></dd>
 
 
 <dt id="arg-group-label-size">group_label_size<a class="anchor" aria-label="anchor" href="#arg-group-label-size"></a></dt>
@@ -193,11 +199,12 @@ rows go through <code><a href="marker_legend.html">marker_legend</a></code> inst
 
 <dt id="arg-symbol-right-gap">symbol_right_gap<a class="anchor" aria-label="anchor" href="#arg-symbol-right-gap"></a></dt>
 <dd><p>Gap between icon grid right edge and symbol section
-(default <code>0.30</code>).</p></dd>
+(default <code>0.30</code>; scaled by <code>scale</code>).</p></dd>
 
 
 <dt id="arg-symbol-key-width">symbol_key_width<a class="anchor" aria-label="anchor" href="#arg-symbol-key-width"></a></dt>
-<dd><p>Width of the key symbol area (default <code>0.20</code>).</p></dd>
+<dd><p>Width of the key symbol area (default <code>0.20</code>;
+scaled by <code>scale</code>).</p></dd>
 
 
 <dt id="arg-symbol-label-gap">symbol_label_gap<a class="anchor" aria-label="anchor" href="#arg-symbol-label-gap"></a></dt>
@@ -225,12 +232,31 @@ rows go through <code><a href="marker_legend.html">marker_legend</a></code> inst
 <dd><p>Default label text size.</p></dd>
 
 
+<dt id="arg-label-fontface">label_fontface<a class="anchor" aria-label="anchor" href="#arg-label-fontface"></a></dt>
+<dd><p>Font face for every title and label in the legend
+(grid title, group title/tile labels, symbol title/labels) - default
+<code>"plain"</code>.  Common values: <code>"plain"</code>, <code>"bold"</code>,
+<code>"italic"</code>.  Does not affect the <code>"point"</code>-type <code>"*"</code>
+glyph, which is always bold.</p></dd>
+
+
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>Multiplier applied to <code>col_spacing</code>,
-<code>row_spacing</code>, <code>label_gap</code>, <code>marker_size</code>,
-<code>label_size</code>, and the <code>label_size</code> column in <code>df_legend</code>.
-Use to scale the whole legend without touching individual values (default
-<code>1</code>).</p></dd>
+<dd><p>Multiplier applied to every length and size:
+<code>col_spacing</code>, <code>row_spacing</code>, <code>label_gap</code>,
+<code>marker_size</code>, <code>label_size</code> (and its <code>df_legend</code> column),
+<code>group_width</code>, <code>group_gap</code>, <code>group_label_size</code>,
+<code>symbol_right_gap</code>, <code>symbol_key_width</code>, and
+<code>symbol_label_gap</code>.  Because it scales the whole legend uniformly,
+every length can be written as a plain multiple of one base module and
+<code>scale</code> sizes the result (default <code>1</code>).</p></dd>
+
+
+<dt id="arg-label-scale">label_scale<a class="anchor" aria-label="anchor" href="#arg-label-scale"></a></dt>
+<dd><p>Extra multiplier applied on top of <code>scale</code> to the
+text sizes only - <code>label_size</code>, <code>group_label_size</code>, and the
+<code>label_size</code> column in <code>df_legend</code> - leaving marker and spacing
+sizes untouched.  Use to enlarge/shrink every label relative to the
+markers from one place (default <code>1</code>).</p></dd>
 
 
 <dt id="arg-dpi">dpi<a class="anchor" aria-label="anchor" href="#arg-dpi"></a></dt>
@@ -244,17 +270,44 @@ when <code>NULL</code>.</p></dd>
 
 <dt id="arg-ylim">ylim<a class="anchor" aria-label="anchor" href="#arg-ylim"></a></dt>
 <dd><p>Length-2 numeric; y limits of the canvas.  Auto-computed
-when <code>NULL</code>.</p></dd>
+when <code>NULL</code> to enclose whichever section reaches deepest - the grid
+rows, the group tiles, or the symbol keys - so a group/symbol block with
+more entries than the grid has rows is not clipped.</p></dd>
 
 
 <dt id="arg-x-margin">x_margin<a class="anchor" aria-label="anchor" href="#arg-x-margin"></a></dt>
 <dd><p>Length-2 numeric: left/right padding added to auto x range
-(default <code>c(0.10, 1.00)</code>).</p></dd>
+(default <code>c(1.00, 1.00)</code>, i.e. centred).  Ignored when <code>xlim</code>
+is supplied directly; overridden when <code>align</code> is set.  A
+<code>symbol_section</code>'s labels extend right of <code>x_right</code> with no
+accounting for label width, so the default is sized generously enough
+to hold typical labels without clipping - not the smallest margin that
+centres the nominal content bounds.</p></dd>
+
+
+<dt id="arg-align">align<a class="anchor" aria-label="anchor" href="#arg-align"></a></dt>
+<dd><p>Optional convenience for biasing <code>x_margin</code>: one of
+<code>"center"</code> (equal left/right padding), <code>"left"</code> (small left /
+large right padding), or <code>"right"</code> (large left / small right
+padding).  Redistributes <code>sum(x_margin)</code> between the two sides -
+the total padding is unchanged, only its left/right split.  <code>NULL</code>
+(default) leaves <code>x_margin</code> untouched.</p></dd>
 
 
 <dt id="arg-y-margin">y_margin<a class="anchor" aria-label="anchor" href="#arg-y-margin"></a></dt>
 <dd><p>Length-2 numeric: top/bottom padding as multiples of
-(scaled) <code>row_spacing</code> (default <code>c(0.6, 1.1)</code>).</p></dd>
+(scaled) <code>row_spacing</code> (default <code>c(1.1, 1.1)</code>, i.e. centred).
+Ignored when <code>ylim</code> is supplied directly; overridden when
+<code>valign</code> is set.</p></dd>
+
+
+<dt id="arg-valign">valign<a class="anchor" aria-label="anchor" href="#arg-valign"></a></dt>
+<dd><p>Optional convenience for biasing <code>y_margin</code>: one of
+<code>"center"</code> (equal top/bottom padding), <code>"top"</code> (small top /
+large bottom padding), or <code>"bottom"</code> (large top / small bottom
+padding).  Redistributes <code>sum(y_margin)</code> between the two sides,
+the same way <code>align</code> redistributes <code>x_margin</code>.  <code>NULL</code>
+(default) leaves <code>y_margin</code> untouched.</p></dd>
 
 
 <dt id="arg-clip">clip<a class="anchor" aria-label="anchor" href="#arg-clip"></a></dt>

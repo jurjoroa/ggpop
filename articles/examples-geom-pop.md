@@ -262,9 +262,7 @@ ggplot() +
 scale_legend_icon(size = 7) +
 labs(
   title    = "Educational Attainment",
-  subtitle = "Each icon = 2% of the population &nbsp;·&nbsp;
-              <span style='color:#42A5F5'>**42%**</span> reached secondary,
-              only <span style='color:#66BB6A'>**28%**</span> completed university",
+  subtitle = "Each icon = 2% of the population &nbsp;·&nbsp; <span style='color:#42A5F5'>**42%**</span> reached secondary, only <span style='color:#66BB6A'>**28%**</span> completed university",
   caption  = "Hypothetical survey data · Visualization: ggpop",
   color    = "Education Level"
 )

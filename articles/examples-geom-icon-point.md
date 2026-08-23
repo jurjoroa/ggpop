@@ -351,15 +351,13 @@ ggplot(df_grid, aes(x = x, y = y)) +
   annotate(
     "richtext",
     x = 5, y = 7.8,
-    label = "<span style='color:#4DEEEA; font-size:28pt'><b>4 NEW SPORTS</b></span><br>
-             <span style='color:#E8C84A; font-size:18pt'>JOIN THE PARIS 2024 OLYMPICS</span>",
+    label = "<span style='color:#4DEEEA; font-size:28pt'><b>4 NEW SPORTS</b></span><br><span style='color:#E8C84A; font-size:18pt'>JOIN THE PARIS 2024 OLYMPICS</span>",
     fill = NA, label.size = 0, lineheight = 1.2
   ) +
   annotate(
     "richtext",
     x = 5, y = 6.75,
-    label = "<span style='color:#4DEEEA; font-size:9pt'><b>BREAKING &nbsp;\u00b7&nbsp;
-             SKATEBOARDING &nbsp;\u00b7&nbsp; SPORT CLIMBING &nbsp;\u00b7&nbsp; SURFING</b></span>",
+    label = "<span style='color:#4DEEEA; font-size:9pt'><b>BREAKING &nbsp;\u00b7&nbsp; SKATEBOARDING &nbsp;\u00b7&nbsp; SPORT CLIMBING &nbsp;\u00b7&nbsp; SURFING</b></span>",
     fill = NA, label.size = 0
   ) +
   annotate("point", x = 2.6, y = -0.55, color = "#E8C84A", size = 3.5) +
@@ -373,10 +371,7 @@ ggplot(df_grid, aes(x = x, y = y)) +
   annotate(
     "richtext",
     x = 5, y = -1.15,
-    label = "<span style='color:#E8C84A'>Source: IOC / Paris 2024 &nbsp;\u00b7&nbsp;
-             Original concept: <span style='color:#4DEEEA'>G. Karamanis</span>
-             &nbsp; github.com/gkaramanis/30DayChartChallenge &nbsp;\u00b7&nbsp;
-             Remake: ggpop</span>",
+    label = "<span style='color:#E8C84A'>Source: IOC / Paris 2024 &nbsp;\u00b7&nbsp; Original concept: <span style='color:#4DEEEA'>G. Karamanis</span> &nbsp; github.com/gkaramanis/30DayChartChallenge &nbsp;\u00b7&nbsp; Remake: ggpop</span>",
     fill = NA, label.size = 0, size = 2.5, lineheight = 1.2
   ) +
   coord_fixed(clip = "off", xlim = c(0.5, 9.5), ylim = c(-1.6, 9.2)) +

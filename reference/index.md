@@ -28,18 +28,36 @@ legends.
 
 - [`scale_legend_icon()`](https://jurjoroa.github.io/ggpop/reference/scale_legend_icon.md)
   : Legend helper for geom_pop/geom_icon_point legends
+
 - [`marker_legend()`](https://jurjoroa.github.io/ggpop/reference/marker_legend.md)
   : Build a standalone composite legend of icon markers
+
 - [`icon_grid()`](https://jurjoroa.github.io/ggpop/reference/icon_grid.md)
   : Build icon grid rows from plot data
+
 - [`legend_canvas()`](https://jurjoroa.github.io/ggpop/reference/legend_canvas.md)
   : Build a composite legend from a plain data frame
+
+- [`legend_box()`](https://jurjoroa.github.io/ggpop/reference/legend_box.md)
+  : Draw a border tightly around a composite legend's rendered content
+
+- [`legend_composite()`](https://jurjoroa.github.io/ggpop/reference/legend_composite.md)
+  : Build a bordered composite legend in one call
+
+- [`legend_ratios()`](https://jurjoroa.github.io/ggpop/reference/legend_ratios.md)
+  :
+
+  Default proportion ladder for `legend_composite`
+
 - [`key_legend()`](https://jurjoroa.github.io/ggpop/reference/key_legend.md)
   : Add typed symbol entries to a legend canvas
+
 - [`legend_strip()`](https://jurjoroa.github.io/ggpop/reference/legend_strip.md)
   : Attach a legend strip below a ggplot
+
 - [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
   : Search and list Font Awesome icons
+
 - [`ggpop_markers()`](https://jurjoroa.github.io/ggpop/reference/ggpop_markers.md)
   : List the icon markers ggpop can render by name
 

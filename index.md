@@ -479,16 +479,18 @@ Seguin. List them and use any by name — no folder needed:
 ``` r
 
 ggpop_markers()$bundled
-#>  [1] "circle-cross"   "circle-hollow"  "circle-inset"   "circle-solid"
-#>  [5] "diamond-cross"  "diamond-hollow" "diamond-inset"  "diamond-solid"
-#>  [9] "plus-bold"      "square-cross"   "square-hollow"  "square-inset"
-#> [13] "square-solid"   "triangle-down"
+#>  [1] "circle-cross"        "circle-hollow"       "circle-inset"
+#>  [4] "circle-solid"        "diamond-cross"       "diamond-hollow"
+#>  [7] "diamond-inset"       "diamond-solid"       "plus-bold"
+#> [10] "plus-hollow"         "square-cross"        "square-hollow"
+#> [13] "square-inset"        "square-solid"        "triangle-down"
+#> [16] "triangle-down-inset"
 ```
 
-![The 14 bundled ggpop markers, grouped by shape family and
+![The 16 bundled ggpop markers, grouped by shape family and
 recoloured](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/bundled_markers.png)
 
-The 14 bundled ggpop markers, grouped by shape family and recoloured
+The 16 bundled ggpop markers, grouped by shape family and recoloured
 
 ### Recolouring
 

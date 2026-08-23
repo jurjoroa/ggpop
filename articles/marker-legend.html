@@ -188,20 +188,24 @@ Figure 1: A native icon legend - ggplot2 builds the guide, ggpop draws the keys
 <code class="sourceCode R"><span><span class="va">df_legend</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  column <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  icon   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"car"</span>, <span class="st">"bus"</span>, <span class="st">"bicycle"</span>, <span class="st">"plane"</span>, <span class="st">"ship"</span>, <span class="st">"truck"</span><span class="op">)</span>,</span>
-<span>  label  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Car"</span>, <span class="st">"Bus"</span>, <span class="st">"Bicycle"</span>, <span class="st">"Plane"</span>, <span class="st">"Ferry"</span>, <span class="st">"Truck"</span><span class="op">)</span>,</span>
+<span>  label  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Car"</span>, <span class="st">"Bus"</span>, <span class="st">"Bike"</span>, <span class="st">"Plane"</span>, <span class="st">"Ferry"</span>, <span class="st">"Truck"</span><span class="op">)</span>,</span>
 <span>  colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#E41A1C"</span>, <span class="st">"#377EB8"</span>, <span class="st">"#984EA3"</span>, <span class="st">"#FF7F00"</span>, <span class="st">"#009E9E"</span>, <span class="st">"#A65628"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Keep col_spacing and label_gap small: marker_legend()'s coordinate range</span></span>
+<span><span class="co"># grows with col_spacing, so a large value spreads the columns apart and leaves</span></span>
+<span><span class="co"># a wide empty margin. Small values pack the two columns close and keep each</span></span>
+<span><span class="co"># icon tight to its label.</span></span>
 <span><span class="fu"><a href="../reference/marker_legend.html">marker_legend</a></span><span class="op">(</span></span>
 <span>  <span class="va">df_legend</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"Transport modes"</span>,</span>
-<span>  marker_size <span class="op">=</span> <span class="fl">5</span>, label_size <span class="op">=</span> <span class="fl">4</span>, col_spacing <span class="op">=</span> <span class="fl">14</span>, label_gap <span class="op">=</span> <span class="fl">1.6</span></span>
+<span>  marker_size <span class="op">=</span> <span class="fl">5</span>, label_size <span class="op">=</span> <span class="fl">4</span>, col_spacing <span class="op">=</span> <span class="fl">0.6</span>, label_gap <span class="op">=</span> <span class="fl">0.15</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </details><div class="cell-output-display">
 <div id="fig-composite-fa" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-composite-fa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="marker-legend_files/figure-html/fig-composite-fa-1.png" width="672">
+<img src="marker-legend_files/figure-html/fig-composite-fa-1.png" width="384">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-composite-fa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure 2: A two-column composite legend built entirely from Font Awesome icons.
@@ -307,31 +311,30 @@ Figure 3: A standalone composite legend encoding region type and health indicat
 <section class="level3"><h3 id="deriving-the-icon-grid-from-data-with-icon_grid">Deriving the icon grid from data with <code>icon_grid()</code>
 <a class="anchor" aria-label="anchor" href="#deriving-the-icon-grid-from-data-with-icon_grid"></a>
 </h3>
-<p>If your icon-grid combinations already exist in a data frame - say, one row per package-size / distance-zone combination - <code><a href="../reference/icon_grid.html">icon_grid()</a></code> derives the unique <code>row</code>/<code>col</code> positions for you instead of typing them by hand. Factor columns keep a deliberate row/col order; unordered columns sort automatically.</p>
+<p>If your icon-grid combinations already exist in a data frame - say, one row per temperature / precipitation combination - <code><a href="../reference/icon_grid.html">icon_grid()</a></code> derives the unique <code>row</code>/<code>col</code> positions for you instead of typing them by hand. Factor columns keep a deliberate row/col order; unordered columns sort automatically. Each combination gets a Font Awesome weather icon, so the grid reads as a legend of conditions rather than abstract shapes.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_plans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  size     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Small"</span>, <span class="st">"Small"</span>, <span class="st">"Large"</span>, <span class="st">"Large"</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Small"</span>, <span class="st">"Large"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  distance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Local"</span>, <span class="st">"National"</span>, <span class="st">"Local"</span>, <span class="st">"National"</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Local"</span>, <span class="st">"National"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  icon     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"square-hollow"</span>, <span class="st">"square-solid"</span>, <span class="st">"circle-hollow"</span>, <span class="st">"circle-solid"</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">df_cond</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  temp   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Warm"</span>, <span class="st">"Warm"</span>, <span class="st">"Cold"</span>, <span class="st">"Cold"</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Warm"</span>, <span class="st">"Cold"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  precip <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dry"</span>, <span class="st">"Wet"</span>, <span class="st">"Dry"</span>, <span class="st">"Wet"</span><span class="op">)</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dry"</span>, <span class="st">"Wet"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  icon   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sun"</span>, <span class="st">"cloud-rain"</span>, <span class="st">"wind"</span>, <span class="st">"snowflake"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">df_plans</span><span class="op">$</span><span class="va">cell_label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">df_plans</span><span class="op">$</span><span class="va">size</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"-"</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Local <span class="op">=</span> <span class="st">"Loc"</span>, National <span class="op">=</span> <span class="st">"Natl"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">df_plans</span><span class="op">$</span><span class="va">distance</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">df_cond</span><span class="op">$</span><span class="va">cell_label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">df_cond</span><span class="op">$</span><span class="va">temp</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="st">"-"</span>, <span class="va">df_cond</span><span class="op">$</span><span class="va">precip</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/icon_grid.html">icon_grid</a></span><span class="op">(</span></span>
-<span>  <span class="va">df_plans</span>, icon <span class="op">=</span> <span class="st">"icon"</span>, label <span class="op">=</span> <span class="st">"cell_label"</span>,</span>
-<span>  row <span class="op">=</span> <span class="st">"size"</span>, col <span class="op">=</span> <span class="st">"distance"</span></span>
+<span>  <span class="va">df_cond</span>, icon <span class="op">=</span> <span class="st">"icon"</span>, label <span class="op">=</span> <span class="st">"cell_label"</span>,</span>
+<span>  row <span class="op">=</span> <span class="st">"temp"</span>, col <span class="op">=</span> <span class="st">"precip"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">df_grid</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  section type  label color          icon row col
-1    grid icon  S-Loc  &lt;NA&gt; square-hollow   1   1
-2    grid icon S-Natl  &lt;NA&gt;  square-solid   1   2
-3    grid icon  L-Loc  &lt;NA&gt; circle-hollow   2   1
-4    grid icon L-Natl  &lt;NA&gt;  circle-solid   2   2</code></pre>
+<pre><code>  section type label color       icon row col
+1    grid icon W-Dry  &lt;NA&gt;        sun   1   1
+2    grid icon W-Wet  &lt;NA&gt; cloud-rain   1   2
+3    grid icon C-Dry  &lt;NA&gt;       wind   2   1
+4    grid icon C-Wet  &lt;NA&gt;  snowflake   2   2</code></pre>
 </div>
 </div>
 </section><section class="level3"><h3 id="assembling-grid-group-symbol-sections">Assembling grid + group + symbol sections<a class="anchor" aria-label="anchor" href="#assembling-grid-group-symbol-sections"></a>
@@ -339,35 +342,36 @@ Figure 3: A standalone composite legend encoding region type and health indicat
 <p>Combine that grid with a colour-tile group (<code>group_section</code>) and a small symbol key (<code>symbol_section</code>) by <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code>-ing three data frames that share <code>section</code>/<code>type</code>/<code>label</code>/<code>color</code> columns:</p>
 <div class="cell">
 <details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">plan_colours</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Standard <span class="op">=</span> <span class="st">"#8D99AE"</span>, Express <span class="op">=</span> <span class="st">"#EF476F"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">alert_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Advisory <span class="op">=</span> <span class="st">"#F4C542"</span>, Warning <span class="op">=</span> <span class="st">"#C0392B"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df_legend</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
 <span>  <span class="va">df_grid</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    section <span class="op">=</span> <span class="st">"plan"</span>, type <span class="op">=</span> <span class="st">"swatch"</span>,</span>
-<span>    label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">plan_colours</span><span class="op">)</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">plan_colours</span><span class="op">)</span>,</span>
+<span>    section <span class="op">=</span> <span class="st">"alert"</span>, type <span class="op">=</span> <span class="st">"swatch"</span>,</span>
+<span>    label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">alert_col</span><span class="op">)</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">alert_col</span><span class="op">)</span>,</span>
 <span>    icon <span class="op">=</span> <span class="cn">NA</span>, row <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="cn">NA</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    section <span class="op">=</span> <span class="st">"value"</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"line"</span>, <span class="st">"swatch"</span>, <span class="st">"point"</span><span class="op">)</span>,</span>
-<span>    label   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Best-value frontier"</span>, <span class="st">"Acceptable range"</span>, <span class="st">"Best pick"</span><span class="op">)</span>,</span>
-<span>    color   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"grey75"</span>, <span class="st">"black"</span><span class="op">)</span>,</span>
+<span>    section <span class="op">=</span> <span class="st">"mark"</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"line"</span>, <span class="st">"swatch"</span>, <span class="st">"point"</span><span class="op">)</span>,</span>
+<span>    label   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Seasonal"</span>, <span class="st">"Typical"</span>, <span class="st">"Warmest"</span><span class="op">)</span>,</span>
+<span>    color   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grey35"</span>, <span class="st">"grey80"</span>, <span class="st">"black"</span><span class="op">)</span>,</span>
 <span>    icon <span class="op">=</span> <span class="cn">NA</span>, row <span class="op">=</span> <span class="cn">NA</span>, col <span class="op">=</span> <span class="cn">NA</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/legend_canvas.html">legend_canvas</a></span><span class="op">(</span></span>
 <span>  <span class="va">df_legend</span>,</span>
-<span>  grid_title       <span class="op">=</span> <span class="st">"Package size × distance zone"</span>,</span>
-<span>  group_section    <span class="op">=</span> <span class="st">"plan"</span>, group_title <span class="op">=</span> <span class="st">"Plan"</span>, group_width <span class="op">=</span> <span class="fl">0.9</span>, group_gap <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>  symbol_section   <span class="op">=</span> <span class="st">"value"</span>, symbol_right_gap <span class="op">=</span> <span class="fl">0.8</span>, symbol_key_width <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>  col_spacing <span class="op">=</span> <span class="fl">2.2</span>, row_spacing <span class="op">=</span> <span class="fl">1.2</span>, label_gap <span class="op">=</span> <span class="fl">0.15</span>,</span>
-<span>  marker_size <span class="op">=</span> <span class="fl">5</span>, label_size <span class="op">=</span> <span class="fl">3.6</span>, dpi <span class="op">=</span> <span class="fl">150</span></span>
+<span>  grid_title       <span class="op">=</span> <span class="st">"Temp and precip"</span>,</span>
+<span>  group_section    <span class="op">=</span> <span class="st">"alert"</span>, group_title <span class="op">=</span> <span class="st">"Alert"</span>, group_width <span class="op">=</span> <span class="fl">0.85</span>, group_gap <span class="op">=</span> <span class="fl">0.18</span>,</span>
+<span>  symbol_section   <span class="op">=</span> <span class="st">"mark"</span>, symbol_right_gap <span class="op">=</span> <span class="fl">0.75</span>, symbol_key_width <span class="op">=</span> <span class="fl">0.45</span>,</span>
+<span>  col_spacing <span class="op">=</span> <span class="fl">0.95</span>, row_spacing <span class="op">=</span> <span class="fl">1.2</span>, label_gap <span class="op">=</span> <span class="fl">0.12</span>,</span>
+<span>  marker_size <span class="op">=</span> <span class="fl">5</span>, label_size <span class="op">=</span> <span class="fl">3.6</span>, dpi <span class="op">=</span> <span class="fl">150</span>,</span>
+<span>  x_margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.6</span>, <span class="fl">1.6</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </details><div class="cell-output-display">
 <div id="fig-legend-canvas" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-legend-canvas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="marker-legend_files/figure-html/fig-legend-canvas-1.png" width="912">
+<img src="marker-legend_files/figure-html/fig-legend-canvas-1.png" width="864">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-legend-canvas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure 4: A grid + group + symbol composite legend built from one df_legend data frame.
@@ -378,49 +382,118 @@ Figure 4: A grid + group + symbol composite legend built from one df_legend dat
 <div>
 <blockquote>
 <p><strong>Tip</strong></p>
-<p><code>group_title</code> lets the displayed heading differ from the <code>section</code> value used to match rows - keep <code>section</code> values plain and lowercase (<code>"plan"</code>) while the on-plot title stays capitalised (<code>"Plan"</code>). <code>grid_section</code> and <code>grid_title</code> work the same way for the icon grid.</p>
+<p><code>group_title</code> lets the displayed heading differ from the <code>section</code> value used to match rows - keep <code>section</code> values plain and lowercase (<code>"alert"</code>) while the on-plot title stays capitalised (<code>"Alert"</code>). <code>grid_section</code> and <code>grid_title</code> work the same way for the icon grid.</p>
 </blockquote>
 </div>
 <p>Column spacing has to leave room for your longest label in that column before the next section starts - if sections start overlapping, widen <code>col_spacing</code>, <code>group_width</code>, or <code>symbol_right_gap</code> rather than shortening labels first.</p>
+</section></section><section class="level2"><h2 id="one-call-for-the-whole-thing-legend_composite">One call for the whole thing: <code>legend_composite()</code>
+<a class="anchor" aria-label="anchor" href="#one-call-for-the-whole-thing-legend_composite"></a>
+</h2>
+<p><code><a href="../reference/legend_canvas.html">legend_canvas()</a></code> gives you every knob, but for the standard grid + group + symbol legend you end up repeating the same spacing, sizing, and centring numbers on every figure. <code><a href="../reference/legend_composite.html">legend_composite()</a></code> is the opinionated wrapper: hand it the same <code>df_legend</code> and the physical strip size, and it applies a fixed proportion ladder (<code><a href="../reference/legend_ratios.html">legend_ratios()</a></code>), centres the content, and fits a tight border with <code><a href="../reference/legend_box.html">legend_box()</a></code> - the whole legend from one call.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/legend_composite.html">legend_composite</a></span><span class="op">(</span></span>
+<span>  <span class="va">df_legend</span>,</span>
+<span>  width <span class="op">=</span> <span class="fl">11</span>, height <span class="op">=</span> <span class="fl">1.7</span>,</span>
+<span>  grid_title     <span class="op">=</span> <span class="st">"Temp and precip"</span>,</span>
+<span>  group_section  <span class="op">=</span> <span class="st">"alert"</span>, group_title <span class="op">=</span> <span class="st">"Alert"</span>,</span>
+<span>  symbol_section <span class="op">=</span> <span class="st">"mark"</span>,</span>
+<span>  ratios <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/modifyList.html" class="external-link">modifyList</a></span><span class="op">(</span><span class="fu"><a href="../reference/legend_ratios.html">legend_ratios</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col_spacing <span class="op">=</span> <span class="fl">1.5</span>, symbol_right_gap <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-legend-composite" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-legend-composite-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="marker-legend_files/figure-html/fig-legend-composite-1.png" width="1056">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-legend-composite-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 5: The same three-section df_legend, rendered in one legend_composite() call with a fitted border.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Instead of hand-setting <code>col_spacing</code>, <code>group_width</code>, <code>marker_size</code>, <code>label_size</code>, and the rest, you give <code><a href="../reference/legend_composite.html">legend_composite()</a></code> the physical <code>width</code>/<code>height</code> and it derives every length from three base sizes and the ratio ladder. You usually touch nothing but the titles; when a section needs more room - here the two-column grid’s title and the wide symbol labels - override a single rung with <code>ratios = modifyList(legend_ratios(), ...)</code>.</p>
+<section class="level3"><h3 id="the-same-proportions-at-any-figure-width">The same proportions at any figure width<a class="anchor" aria-label="anchor" href="#the-same-proportions-at-any-figure-width"></a>
+</h3>
+<p>The base sizes are calibrated for a <code>base_width</code>-inch strip (default 27) and multiplied by <code>width / base_width</code>, so passing your actual <code>width</code> reproduces the identical legend at that physical size - no per-figure retuning. Halve the width and text, markers, spacing, and border all scale together. Set <code>base_width = width</code> to opt out and size in absolute units instead.</p>
+<div>
+<blockquote>
+<p><strong>Tip</strong></p>
+<p>Keep sparse legends compact - do not stretch them. <code>content_range</code> sets how much horizontal room the content is centred in. A dense legend (many columns, long labels) fills a wide strip on its own; a sparse one should stay compact. Leave <code>content_range</code> at its default rather than shrinking it to force the content to fill the width - the colour swatches are drawn in data coordinates, so a small <code>content_range</code> stretches them into wide banners while the fixed-size icons stay put. <code><a href="../reference/legend_composite.html">legend_composite()</a></code> warns when the swatches get that lopsided so you catch it early.</p>
+</blockquote>
+</div>
+<p>The grid’s <code>icon</code> column resolves per row, so one grid can mix Font Awesome names, bundled ggpop markers, and your own <code>.svg</code> files in a single legend - see <a href="custom-svg-icons.html">Custom SVG icons</a>.</p>
 </section></section><section class="level2"><h2 id="stacking-a-plot-and-its-legend-with-legend_strip">Stacking a plot and its legend with <code>legend_strip()</code>
 <a class="anchor" aria-label="anchor" href="#stacking-a-plot-and-its-legend-with-legend_strip"></a>
 </h2>
-<p>The composite above is a self-contained <code>ggplot</code>. To pin it under a real plot in one exported figure - rather than a standalone panel - add it with <code>legend_strip(strip_plot, height)</code>:</p>
+<p>A composite legend earns its keep only when the plot uses every key it advertises. Here the forecast draws each day with <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> - marker shape for the temperature/precipitation condition, colour for the alert level - over a seasonal-average line, a typical-range band, and a flagged warmest day: exactly the sections the legend describes. To pin that legend under the plot in one exported figure - rather than a standalone panel - add it with <code>legend_strip(strip_plot, height)</code>:</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  cost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">9</span>, <span class="fl">14</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">16</span>, <span class="fl">22</span><span class="op">)</span>,</span>
-<span>  days <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">3</span>, <span class="fl">1.5</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  plan <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Standard"</span>, <span class="st">"Standard"</span>, <span class="st">"Express"</span>, <span class="st">"Express"</span>,</span>
-<span>           <span class="st">"Standard"</span>, <span class="st">"Standard"</span>, <span class="st">"Express"</span>, <span class="st">"Express"</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">icon_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Warm.Dry"</span> <span class="op">=</span> <span class="st">"sun"</span>,</span>
+<span>  <span class="st">"Warm.Wet"</span> <span class="op">=</span> <span class="st">"cloud-rain"</span>,</span>
+<span>  <span class="st">"Cold.Dry"</span> <span class="op">=</span> <span class="st">"wind"</span>,</span>
+<span>  <span class="st">"Cold.Wet"</span> <span class="op">=</span> <span class="st">"snowflake"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p_main</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_points</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cost</span>, y <span class="op">=</span> <span class="va">days</span>, colour <span class="op">=</span> <span class="va">plan</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">plan_colours</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span><span class="st">"Cost ($)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span><span class="st">"Delivery time (days)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Cost vs. delivery time"</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="va">df_fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  day      <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">8</span>,</span>
+<span>  temp     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">20</span>, <span class="fl">15</span>, <span class="fl">12</span>, <span class="fl">10</span>, <span class="fl">9</span>, <span class="fl">13</span>, <span class="fl">17</span><span class="op">)</span>,</span>
+<span>  temp_cat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Warm"</span>, <span class="st">"Warm"</span>, <span class="st">"Warm"</span>, <span class="st">"Cold"</span>, <span class="st">"Cold"</span>, <span class="st">"Cold"</span>, <span class="st">"Cold"</span>, <span class="st">"Warm"</span><span class="op">)</span>,</span>
+<span>  precip   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dry"</span>, <span class="st">"Dry"</span>, <span class="st">"Wet"</span>, <span class="st">"Dry"</span>, <span class="st">"Wet"</span>, <span class="st">"Wet"</span>, <span class="st">"Dry"</span>, <span class="st">"Wet"</span><span class="op">)</span>,</span>
+<span>  alert    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Advisory"</span>, <span class="st">"Advisory"</span>, <span class="st">"Advisory"</span>, <span class="st">"Warning"</span>,</span>
+<span>               <span class="st">"Warning"</span>, <span class="st">"Warning"</span>, <span class="st">"Advisory"</span>, <span class="st">"Advisory"</span><span class="op">)</span>,</span>
+<span>  avg      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">14</span>, <span class="fl">14</span>, <span class="fl">13.5</span>, <span class="fl">13</span>, <span class="fl">13</span>, <span class="fl">13</span>, <span class="fl">13.5</span>, <span class="fl">14</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">df_fc</span><span class="op">$</span><span class="va">icon</span> <span class="op">&lt;-</span> <span class="va">icon_map</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">df_fc</span><span class="op">$</span><span class="va">temp_cat</span>, <span class="va">df_fc</span><span class="op">$</span><span class="va">precip</span>, sep <span class="op">=</span> <span class="st">"."</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># the warmest day in the outlook is flagged as the pick</span></span>
+<span><span class="va">warmest</span> <span class="op">&lt;-</span> <span class="va">df_fc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">df_fc</span><span class="op">$</span><span class="va">temp</span><span class="op">)</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="va">p_main</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df_fc</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">day</span>, y <span class="op">=</span> <span class="va">temp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">avg</span> <span class="op">-</span> <span class="fl">4</span>, ymax <span class="op">=</span> <span class="va">avg</span> <span class="op">+</span> <span class="fl">4</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"grey88"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">avg</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"grey35"</span>, linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># a soft ring highlights the warmest day so the * is unambiguous</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">warmest</span>, shape <span class="op">=</span> <span class="fl">21</span>, size <span class="op">=</span> <span class="fl">10</span>, colour <span class="op">=</span> <span class="st">"#D9A441"</span>,</span>
+<span>             fill <span class="op">=</span> <span class="cn">NA</span>, stroke <span class="op">=</span> <span class="fl">1.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_icon_point.html">geom_icon_point</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>icon <span class="op">=</span> <span class="va">icon</span>, colour <span class="op">=</span> <span class="va">alert</span><span class="op">)</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">3</span>, dpi <span class="op">=</span> <span class="fl">150</span>, legend_icons <span class="op">=</span> <span class="cn">FALSE</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="va">warmest</span><span class="op">$</span><span class="va">day</span> <span class="op">+</span> <span class="fl">0.35</span>, y <span class="op">=</span> <span class="va">warmest</span><span class="op">$</span><span class="va">temp</span> <span class="op">+</span> <span class="fl">1.3</span>, label <span class="op">=</span> <span class="st">"*"</span>,</span>
+<span>           size <span class="op">=</span> <span class="fl">6</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">alert_col</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span><span class="st">"Forecast day"</span>, breaks <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span><span class="st">"High temperature (C)"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">22</span><span class="op">)</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">20</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"8-day temperature outlook"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Marker shape = temperature and precipitation; colour = alert level; the * is the warmest day"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">13</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.line.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    axis.line.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9.5</span>, colour <span class="op">=</span> <span class="st">"grey30"</span><span class="op">)</span>,</span>
+<span>    panel.grid.major.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey93"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">p_legend</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/legend_canvas.html">legend_canvas</a></span><span class="op">(</span></span>
 <span>  <span class="va">df_legend</span>,</span>
-<span>  grid_title       <span class="op">=</span> <span class="st">"Package size × distance zone"</span>,</span>
-<span>  group_section    <span class="op">=</span> <span class="st">"plan"</span>, group_title <span class="op">=</span> <span class="st">"Plan"</span>, group_width <span class="op">=</span> <span class="fl">0.9</span>, group_gap <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>  symbol_section   <span class="op">=</span> <span class="st">"value"</span>, symbol_right_gap <span class="op">=</span> <span class="fl">0.8</span>, symbol_key_width <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>  col_spacing <span class="op">=</span> <span class="fl">2.2</span>, row_spacing <span class="op">=</span> <span class="fl">1.2</span>, label_gap <span class="op">=</span> <span class="fl">0.15</span>,</span>
-<span>  marker_size <span class="op">=</span> <span class="fl">5</span>, label_size <span class="op">=</span> <span class="fl">3.6</span>, dpi <span class="op">=</span> <span class="fl">150</span></span>
+<span>  grid_title       <span class="op">=</span> <span class="st">"Temp and precip"</span>,</span>
+<span>  group_section    <span class="op">=</span> <span class="st">"alert"</span>, group_title <span class="op">=</span> <span class="st">"Alert"</span>, group_width <span class="op">=</span> <span class="fl">0.85</span>, group_gap <span class="op">=</span> <span class="fl">0.18</span>,</span>
+<span>  symbol_section   <span class="op">=</span> <span class="st">"mark"</span>, symbol_right_gap <span class="op">=</span> <span class="fl">0.75</span>, symbol_key_width <span class="op">=</span> <span class="fl">0.45</span>,</span>
+<span>  col_spacing <span class="op">=</span> <span class="fl">0.95</span>, row_spacing <span class="op">=</span> <span class="fl">1.2</span>, label_gap <span class="op">=</span> <span class="fl">0.12</span>,</span>
+<span>  marker_size <span class="op">=</span> <span class="fl">5</span>, label_size <span class="op">=</span> <span class="fl">3.6</span>, dpi <span class="op">=</span> <span class="fl">150</span>,</span>
+<span>  x_margin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.6</span>, <span class="fl">1.6</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p_main</span> <span class="op">+</span> <span class="fu"><a href="../reference/legend_strip.html">legend_strip</a></span><span class="op">(</span><span class="va">p_legend</span>, height <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span></span></code></pre></div>
 </details><div class="cell-output-display">
 <div id="fig-legend-strip" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-legend-strip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="marker-legend_files/figure-html/fig-legend-strip-1.png" width="912">
+<img src="marker-legend_files/figure-html/fig-legend-strip-1.png" width="864">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-legend-strip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 5: A scatter plot with its legend_canvas() legend stacked directly below it.
+Figure 6: An icon forecast answering a real question - marker shape shows the temperature/precipitation condition, colour shows the alert level - with its legend_canvas() legend stacked below, so every legend key is something you read off the plot.
 </figcaption></figure>
 </div>
 </div>

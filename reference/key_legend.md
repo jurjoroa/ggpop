@@ -30,14 +30,14 @@ rendered separately via
 
 **Two y-placement modes:**
 
-- `y_start = NULL` (default) — first entry is placed at the
+- `y_start = NULL` (default) - first entry is placed at the
   section-title row (`row_spacing * title_frac`), matching the position
   where
   [`marker_legend()`](https://jurjoroa.github.io/ggpop/reference/marker_legend.md)
   puts section headers. Use this when entry\\1 is both the title and its
   own symbol (e.g. the "Efficient frontier" line entry).
 
-- `y_start = 0` — first entry at row\\1, second at `-row_spacing`, etc.
+- `y_start = 0` - first entry at row\\1, second at `-row_spacing`, etc.
   Use this with a text-only `title`.
 
 ## Usage
@@ -55,6 +55,7 @@ key_legend(
   label_size = 2.8,
   label_color = "black",
   label_inside = FALSE,
+  label_fontface = "plain",
   title_color = NULL,
   swatch_height = 0.45,
   point_size = 1.6
@@ -68,7 +69,7 @@ key_legend(
   A data frame with columns `type` (`"swatch"`, `"line"`, or `"point"`),
   `label`, and `color` (or `colour`). Optional columns: `linetype`
   (default `"solid"`), `linewidth` (default `0.8`), `pch` (default `NA`
-  → draws `"*"` for `type = "point"`).
+  -\> draws `"*"` for `type = "point"`).
 
 - x:
 
@@ -115,6 +116,12 @@ key_legend(
 
   When `TRUE`, centres the label inside the key symbol instead of beside
   it. Only takes effect for `swatch` rows (default `FALSE`).
+
+- label_fontface:
+
+  Font face for the title and entry labels (default `"plain"`). Common
+  values: `"plain"`, `"bold"`, `"italic"`. Does not affect the
+  `"point"`-type `"*"` glyph, which is always bold.
 
 - title_color:
 

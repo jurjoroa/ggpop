@@ -67,8 +67,22 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.8.0" id="ggpop-180">ggpop 1.8.0<a class="anchor" aria-label="anchor" href="#ggpop-180"></a></h2>
+<p>This release adds custom SVG icon support to both geoms, a composite-legend system for legends that ggplot2’s own guides cannot express, and a draw-time recolouring fix that removes the long-standing black-icon rendering bug.</p>
 <div class="section level3">
-<h3 id="new-features-1-8-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-8-0"></a></h3>
+<h3 id="bug-fixes-1-8-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-0"></a></h3>
+<ul><li>
+<code><a href="../reference/geom_pop.html">geom_pop()</a></code> and <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> now bake the mapped colour directly into each icon at draw time instead of relying on <code>ggimage</code>’s tinting. The previous approach depended on the installed <code>magick</code>/ImageMagick build producing an RGBA bitmap; when it did not, icons rendered black even though the legend showed the correct colours. Colours (including custom <code>scale_colour_*()</code> scales) and per-group transparency are now applied deterministically (<a href="https://github.com/jurjoroa/ggpop/issues/380" class="external-link">#380</a>).</li>
+<li>
+<code><a href="../reference/legend_canvas.html">legend_canvas()</a></code>’s default <code>x_margin</code> and <code>y_margin</code> were asymmetric (<code>c(0.10, 1.00)</code> and <code>c(0.6, 1.1)</code> respectively), pushing composite legend content visibly off-centre. Both defaults are now symmetric (<code>c(1.00, 1.00)</code> and <code>c(1.1, 1.1)</code>), and new <code>align = c("center", "left", "right")</code> and <code>valign = c("center", "top", "bottom")</code> arguments offer a convenient way to bias the padding without hand-tuning <code>x_margin</code>/<code>y_margin</code> directly (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_canvas.html">legend_canvas()</a></code> sized the canvas height from the grid’s row count alone, so a <code>group_section</code> or <code>symbol_section</code> with more entries than the grid has rows extended below the fitted border and was clipped. The auto <code>ylim</code> now encloses whichever section runs deepest, so taller colour-tile or symbol blocks are always contained (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_strip.html">legend_strip()</a></code> silently rendered only the last panel (stretched to the full width) when the main plot was a <code>patchwork</code> combination of several <code>ggplot</code>s, because <code><a href="https://ggplot2.tidyverse.org/reference/ggplotGrob.html" class="external-link">ggplot2::ggplotGrob()</a></code> cannot see a patchwork’s individual panels. It now detects <code>patchwork</code> mains and converts them with <code><a href="https://patchwork.data-imaginist.com/reference/patchworkGrob.html" class="external-link">patchwork::patchworkGrob()</a></code> instead, rendering every panel correctly (requires the <code>patchwork</code> package, now listed in <code>Suggests</code>).</li>
+<li>
+<code><a href="../reference/marker_legend.html">marker_legend()</a></code>’s title was always drawn <code>"plain"</code> regardless of <code>label_fontface</code>, so a bold-labelled legend still showed a plain title. The title now follows <code>label_fontface</code>, matching the entry labels (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-1-8-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-8-0"></a></h3>
 <ul><li>
 <code><a href="../reference/geom_pop.html">geom_pop()</a></code> and <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> now accept custom SVG icons in addition to Font Awesome names. The <code>icon</code> aesthetic (or the <code>icon</code> parameter) resolves, in priority order, to: a local <code>.svg</code> path; a file in your own icon folder (via the new <code>icon_path</code> argument or <code>options(ggpop.icon_path = "&lt;dir&gt;")</code>), referenced by name just like a Font Awesome icon; a bundled ggpop marker (e.g. <code>"square-inset"</code>, <code>"circle-cross"</code>, <code>"diamond-hollow"</code>); or a Font Awesome name. Monochrome SVGs are recoloured by the mapped colour aesthetic, content-hash cached, and rendered crisply at any <code>dpi</code> in both the plot body and the legend keys. An unrecognised name now raises a clear error instead of a cryptic Font Awesome failure (<a href="https://github.com/jurjoroa/ggpop/issues/383" class="external-link">#383</a>).</li>
 <li>
@@ -78,13 +92,47 @@
 <li>
 <code><a href="../reference/marker_legend.html">marker_legend()</a></code> builds a standalone composite legend of icon markers - multiple columns, mixed icon sources (Font Awesome, bundled markers, or your own SVGs), and room for extra annotations - for cases that ggplot2’s built-in guides cannot express. For an ordinary data-driven legend, keep using <code>legend_icons = TRUE</code> with <code><a href="../reference/scale_legend_icon.html">scale_legend_icon()</a></code> (<a href="https://github.com/jurjoroa/ggpop/issues/385" class="external-link">#385</a>).</li>
 <li>
-<code><a href="../reference/marker_legend.html">marker_legend()</a></code> gains a <code>label_colour</code> argument (default <code>"black"</code>) to control the text colour of both entry labels and the title (<a href="https://github.com/jurjoroa/ggpop/issues/385" class="external-link">#385</a>).</li>
+<code><a href="../reference/marker_legend.html">marker_legend()</a></code> takes a <code>label_colour</code> argument (default <code>"black"</code>) controlling the text colour of both entry labels and the title (<a href="https://github.com/jurjoroa/ggpop/issues/385" class="external-link">#385</a>).</li>
+<li>
+<code><a href="../reference/icon_grid.html">icon_grid()</a></code> derives icon row/column positions from the unique combinations in a data frame, returning a plain data frame ready to <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code> with colour-tile and typed-symbol rows before passing to <code><a href="../reference/legend_canvas.html">legend_canvas()</a></code> (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_canvas.html">legend_canvas()</a></code> renders a composite legend from a single plain data frame combining icon grid rows (from <code><a href="../reference/icon_grid.html">icon_grid()</a></code>), colour tile rows, and typed-symbol rows. Layout parameters place each section, and <code>scale</code> multiplies every size and spacing value so the data frame can be written in round numbers (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/key_legend.html">key_legend()</a></code> adds a column of symbol + label entries to an existing legend canvas, sharing the base plot’s coordinate system so entries integrate with the rest of the legend. Three entry types are supported: <code>"swatch"</code> (a filled rectangle), <code>"line"</code> (a horizontal segment), and <code>"point"</code> (a bold <code>"*"</code> glyph) (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_strip.html">legend_strip()</a></code> attaches a composite legend below a <code>ggplot</code>, stacking the plot above the strip at a specified physical height. The result works with <code><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggplot2::ggsave()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, and the main plot may itself be a <code>patchwork</code> combination of several panels (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/key_legend.html">key_legend()</a></code> takes a <code>label_fontface</code> argument (default <code>"plain"</code>) controlling the title and entry-label font face; does not affect the <code>"point"</code>-type <code>"*"</code> glyph, which stays bold regardless (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_canvas.html">legend_canvas()</a></code> takes a <code>label_fontface</code> argument, passed through to both the grid (<code><a href="../reference/marker_legend.html">marker_legend()</a></code>) and group/symbol (<code><a href="../reference/key_legend.html">key_legend()</a></code>) sections so the whole composite legend can be set bold/italic/plain from one place (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_canvas.html">legend_canvas()</a></code> takes a <code>label_scale</code> argument - an extra multiplier applied on top of <code>scale</code> to the label text sizes only (grid, group, and symbol labels), leaving marker and spacing sizes untouched. Use it to enlarge or shrink every label relative to the markers from one place (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_canvas.html">legend_canvas()</a></code>’s <code>scale</code> now multiplies <strong>every</strong> length uniformly, including <code>group_width</code>, <code>group_gap</code>, <code>symbol_right_gap</code>, and <code>symbol_key_width</code> (previously these four were the only lengths left unscaled). This lets the whole legend be written as plain multiples of one base module with <code>scale</code> sizing the result. (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_box.html">legend_box()</a></code> draws a border tightly around a composite legend’s actual rendered content. <code><a href="../reference/legend_canvas.html">legend_canvas()</a></code> positions sections from nominal geometry, but text labels overflow their anchor points by a font/output-size-dependent amount, so a geometry-derived box clips them; <code><a href="../reference/legend_box.html">legend_box()</a></code> renders the legend once at the intended output size, measures the true content extent, and fits the border to it (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_composite.html">legend_composite()</a></code> builds a bordered three-section legend (icon grid + colour tiles + typed-symbol key) in one call, wrapping <code><a href="../reference/legend_canvas.html">legend_canvas()</a></code> + <code><a href="../reference/legend_box.html">legend_box()</a></code>. Every layout length is a multiple of one <code>module</code>, every text size a multiple of one <code>text</code> base, and icons one <code>marker</code> size; the fixed proportion ladder is <code><a href="../reference/legend_ratios.html">legend_ratios()</a></code> (overridable). Supply the content and strip size and it applies the ladder, centres the content, and fits the border (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_composite.html">legend_composite()</a></code> takes a <code>base_width</code> argument (default <code>27</code>): its base sizes are calibrated for a <code>base_width</code>-inch strip and multiplied by <code>width / base_width</code>, so passing any <code>width</code> reproduces the same legend proportions at that physical size - the template now generalises to any figure width, not just the 27-inch one it was tuned on. Set <code>base_width = width</code> to size in absolute units instead (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_composite.html">legend_composite()</a></code> now warns (class <code>"ggpop_swatch_aspect_warning"</code>) when a small <code>content_range</code> relative to <code>width</code> stretches the group colour swatches into wide banners while the fixed-size icons stay put. The message points to raising <code>content_range</code> or reducing <code>width</code> so sparse legends stay compact instead of stretched (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
+<li>
+<code><a href="../reference/legend_ratios.html">legend_ratios()</a></code> returns the default proportion ladder used by <code><a href="../reference/legend_composite.html">legend_composite()</a></code> as a named list, for inspection or partial override (<a href="https://github.com/jurjoroa/ggpop/issues/393" class="external-link">#393</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-1-8-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-0"></a></h3>
-<ul><li>
-<code><a href="../reference/geom_pop.html">geom_pop()</a></code> and <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> now bake the mapped colour directly into each icon at draw time instead of relying on <code>ggimage</code>’s tinting. The previous approach depended on the installed <code>magick</code>/ImageMagick build producing an RGBA bitmap; when it did not, icons rendered black even though the legend showed the correct colours. Colours (including custom <code>scale_colour_*()</code> scales) and per-group transparency are now applied deterministically (<a href="https://github.com/jurjoroa/ggpop/issues/380" class="external-link">#380</a>).</li>
+<h3 id="issues-resolved-in-v180-1-8-0">Issues Resolved in v1.8.0<a class="anchor" aria-label="anchor" href="#issues-resolved-in-v180-1-8-0"></a></h3>
+<ul><li>#380</li>
+<li>#383</li>
+<li>#385</li>
+<li>#387</li>
+<li>#393</li>
 </ul></div>
+<div class="section level3">
+<h3 id="version-1-8-0">Version<a class="anchor" aria-label="anchor" href="#version-1-8-0"></a></h3>
+<ul><li>#381</li>
+</ul><p><strong>Full Changelog</strong>: <a href="https://github.com/jurjoroa/ggpop/compare/v1.7.1" class="external-link uri">https://github.com/jurjoroa/ggpop/compare/v1.7.1</a>…v1.8.0</p>
+</div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.7.1" id="ggpop-171">ggpop 1.7.1<a class="anchor" aria-label="anchor" href="#ggpop-171"></a></h2><p class="text-muted">CRAN release: 2026-03-19</p>

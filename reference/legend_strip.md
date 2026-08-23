@@ -4,7 +4,12 @@ Returns a `ggpop_legend_strip` object. When added to a `ggplot` with
 `+`, produces a `ggpop_composite` that stacks the main plot above the
 strip at the specified physical height. The composite works with
 [`ggplot2::ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html)
-and [`print()`](https://rdrr.io/r/base/print.html).
+and [`print()`](https://rdrr.io/r/base/print.html). The main plot (the
+object `legend_strip()` is added to) may itself be a `patchwork` object
+(e.g. several panels combined with
+`+`/[`plot_layout`](https://patchwork.data-imaginist.com/reference/plot_layout.html))
+
+- this requires the patchwork package to be installed.
 
 ## Usage
 
