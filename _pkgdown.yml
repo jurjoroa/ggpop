@@ -237,6 +237,9 @@ reference:
       - marker_legend
       - icon_grid
       - legend_canvas
+      - legend_box
+      - legend_composite
+      - legend_ratios
       - key_legend
       - legend_strip
       - fa_icons

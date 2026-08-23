@@ -136,7 +136,7 @@ marker_legend <- function(entries,
         y = y_max + row_spacing * 0.85,
         label = title,
         hjust = 0.5,
-        fontface = "plain",
+        fontface = label_fontface,
         size = label_size,
         colour = label_colour
       )

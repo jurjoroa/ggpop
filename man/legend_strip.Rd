@@ -20,7 +20,12 @@ A \code{ggpop_legend_strip} object; add it to a \code{ggplot} with
 Returns a \code{ggpop_legend_strip} object. When added to a \code{ggplot}
 with \code{+}, produces a \code{ggpop_composite} that stacks the main plot
 above the strip at the specified physical height.  The composite works with
-\code{ggplot2::ggsave()} and \code{print()}.
+\code{ggplot2::ggsave()} and \code{print()}.  The main plot (the object
+\code{legend_strip()} is added to) may itself be a \code{patchwork} object
+(e.g. several panels combined with \code{+}/\code{\link[patchwork]{plot_layout}})
+\itemize{
+\item this requires the \pkg{patchwork} package to be installed.
+}
 }
 \examples{
 \donttest{

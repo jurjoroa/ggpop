@@ -104,21 +104,23 @@ testthat::test_that("key_legend returns a ggpop_key_legend object", {
 testthat::test_that("swatch entries render as a filled rect", {
   df <- data.frame(type = "swatch", label = "Grey zone", color = "grey75", stringsAsFactors = FALSE)
   p <- ggplot2::ggplot() + key_legend(df, row_spacing = 1, key_width = 0.3)
-  testthat::expect_equal(geom_classes(p), "GeomRect")
+  # a key entry renders the swatch plus its label, so check for the key geom
+  testthat::expect_true("GeomRect" %in% geom_classes(p))
 })
 
 testthat::test_that("line entries render as a segment", {
   df <- data.frame(type = "line", label = "Efficient frontier", color = "black", stringsAsFactors = FALSE)
   p <- ggplot2::ggplot() + key_legend(df, row_spacing = 1, key_width = 0.3)
-  testthat::expect_equal(geom_classes(p), "GeomSegment")
+  testthat::expect_true("GeomSegment" %in% geom_classes(p))
 })
 
 testthat::test_that("point entries render as text, default glyph is an asterisk", {
   df <- data.frame(type = "point", label = "Near efficient", color = "black", stringsAsFactors = FALSE)
   p <- ggplot2::ggplot() + key_legend(df, row_spacing = 1, key_width = 0.3)
-  testthat::expect_equal(geom_classes(p), "GeomText")
-  # first layer is the point glyph itself (label layer is added second)
-  testthat::expect_equal(p$layers[[1]]$data$label, "*")
+  testthat::expect_true("GeomText" %in% geom_classes(p))
+  # first layer is the point glyph itself (label layer is added second); the
+  # glyph is a literal annotate() value, stored in aes_params, not $data
+  testthat::expect_equal(p$layers[[1]]$aes_params$label, "*")
 })
 
 testthat::test_that("point entries honour a custom pch character", {
@@ -127,7 +129,7 @@ testthat::test_that("point entries honour a custom pch character", {
     stringsAsFactors = FALSE
   )
   p <- ggplot2::ggplot() + key_legend(df, row_spacing = 1, key_width = 0.3)
-  testthat::expect_equal(p$layers[[1]]$data$label, "†")
+  testthat::expect_equal(p$layers[[1]]$aes_params$label, "†")
 })
 
 testthat::test_that("mixed types in one entries data frame each dispatch correctly", {
@@ -180,7 +182,8 @@ testthat::test_that("label_inside has no effect on non-swatch types", {
 testthat::test_that("title is drawn as its own text layer when provided", {
   df <- data.frame(type = "swatch", label = "FIT", color = "pink", stringsAsFactors = FALSE)
   p <- ggplot2::ggplot() + key_legend(df, row_spacing = 1, key_width = 0.3, title = "Modality")
-  labels <- unlist(lapply(p$layers, function(l) if (inherits(l$geom, "GeomText")) l$data$label else NULL))
+  # annotate()'s literal label value lives in aes_params, not $data
+  labels <- unlist(lapply(p$layers, function(l) if (inherits(l$geom, "GeomText")) l$aes_params$label else NULL))
   testthat::expect_true("Modality" %in% labels)
 })
 
@@ -202,4 +205,44 @@ testthat::test_that("print.ggpop_key_legend does not error", {
 
   ef <- data.frame(type = "point", label = "Near efficient", color = "black", stringsAsFactors = FALSE)
   testthat::expect_no_error(print(key_legend(ef, row_spacing = 1, key_width = 0.3)))
+})
+
+# ******************************************************************************
+# 08 label_fontface ---------------------------------------------------------------
+# ******************************************************************************
+
+testthat::test_that("label_fontface defaults to plain for entries and title", {
+  df <- data.frame(type = "swatch", label = "FIT", color = "pink", stringsAsFactors = FALSE)
+  p <- ggplot2::ggplot() + key_legend(df, row_spacing = 1, key_width = 0.3, title = "Modality")
+  label_layer <- p$layers[[which(geom_classes(p) == "GeomText")[1]]]
+  testthat::expect_equal(label_layer$aes_params$fontface, "plain")
+  title_layer <- p$layers[[which(vapply(
+    p$layers, function(l) inherits(l$geom, "GeomText") && identical(l$aes_params$label, "Modality"),
+    logical(1)
+  ))]]
+  testthat::expect_equal(title_layer$aes_params$fontface, "plain")
+})
+
+testthat::test_that("label_fontface is applied to both entry labels and the title", {
+  df <- data.frame(type = "swatch", label = "FIT", color = "pink", stringsAsFactors = FALSE)
+  p <- ggplot2::ggplot() + key_legend(
+    df, row_spacing = 1, key_width = 0.3, title = "Modality", label_fontface = "bold"
+  )
+  label_layer <- p$layers[[which(geom_classes(p) == "GeomText")[1]]]
+  testthat::expect_equal(label_layer$aes_params$fontface, "bold")
+  title_layer <- p$layers[[which(vapply(
+    p$layers, function(l) inherits(l$geom, "GeomText") && identical(l$aes_params$label, "Modality"),
+    logical(1)
+  ))]]
+  testthat::expect_equal(title_layer$aes_params$fontface, "bold")
+})
+
+testthat::test_that("the point-type asterisk glyph stays bold regardless of label_fontface", {
+  df <- data.frame(type = "point", label = "Near efficient", color = "black", stringsAsFactors = FALSE)
+  p <- ggplot2::ggplot() + key_legend(df, row_spacing = 1, key_width = 0.3, label_fontface = "bold")
+  # first layer is the glyph itself; label_fontface should not touch it
+  testthat::expect_equal(p$layers[[1]]$aes_params$fontface, "bold")
+
+  p2 <- ggplot2::ggplot() + key_legend(df, row_spacing = 1, key_width = 0.3, label_fontface = "italic")
+  testthat::expect_equal(p2$layers[[1]]$aes_params$fontface, "bold")
 })

@@ -16,6 +16,7 @@ key_legend(
   label_size = 2.8,
   label_color = "black",
   label_inside = FALSE,
+  label_fontface = "plain",
   title_color = NULL,
   swatch_height = 0.45,
   point_size = 1.6
@@ -26,7 +27,7 @@ key_legend(
 \code{"line"}, or \code{"point"}), \code{label}, and \code{color}
 (or \code{colour}).  Optional columns: \code{linetype} (default
 \code{"solid"}), \code{linewidth} (default \code{0.8}), \code{pch}
-(default \code{NA} → draws \code{"*"} for \code{type = "point"}).}
+(default \code{NA} -> draws \code{"*"} for \code{type = "point"}).}
 
 \item{x}{Left edge of the key-symbol column in plot coordinates.}
 
@@ -53,6 +54,11 @@ places entry\,1 at \code{row_spacing * title_frac}.}
 \item{label_inside}{When \code{TRUE}, centres the label inside the key
 symbol instead of beside it.  Only takes effect for \code{swatch} rows
 (default \code{FALSE}).}
+
+\item{label_fontface}{Font face for the title and entry labels (default
+\code{"plain"}).  Common values: \code{"plain"}, \code{"bold"},
+\code{"italic"}.  Does not affect the \code{"point"}-type \code{"*"}
+glyph, which is always bold.}
 
 \item{title_color}{Colour of the section title.  Inherits
 \code{label_color} when \code{NULL} (the default).}
@@ -86,12 +92,12 @@ rows are rendered separately via \code{\link{marker_legend}}.
 
 \strong{Two y-placement modes:}
 \itemize{
-\item \code{y_start = NULL} (default) — first entry is placed at the
+\item \code{y_start = NULL} (default) - first entry is placed at the
 section-title row (\code{row_spacing * title_frac}), matching the
 position where \code{marker_legend()} puts section headers.  Use this
 when entry\,1 is both the title and its own symbol (e.g. the
 "Efficient frontier" line entry).
-\item \code{y_start = 0} — first entry at row\,1, second at
+\item \code{y_start = 0} - first entry at row\,1, second at
 \code{-row_spacing}, etc.  Use this with a text-only \code{title}.
 }
 }

@@ -13,7 +13,7 @@ authors:
 - family-names: "Pineda-Antunez"
   given-names: "Carlos"
   orcid: "https://orcid.org/0000-0002-8352-7080"
-title: "ggpop: Visualizing Population Data"
-version: 1.7.0
-date-released: 2024-01-01
+title: "ggpop: Icon-Based Population Charts and Plots for 'ggplot2'"
+version: 1.8.0
+date-released: 2026-08-21
 url: "https://jurjoroa.github.io/ggpop/"

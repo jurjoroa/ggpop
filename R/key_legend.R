@@ -18,12 +18,12 @@
 #'
 #' \strong{Two y-placement modes:}
 #' \itemize{
-#'   \item \code{y_start = NULL} (default) — first entry is placed at the
+#'   \item \code{y_start = NULL} (default) - first entry is placed at the
 #'     section-title row (\code{row_spacing * title_frac}), matching the
 #'     position where \code{marker_legend()} puts section headers.  Use this
 #'     when entry\,1 is both the title and its own symbol (e.g. the
 #'     "Efficient frontier" line entry).
-#'   \item \code{y_start = 0} — first entry at row\,1, second at
+#'   \item \code{y_start = 0} - first entry at row\,1, second at
 #'     \code{-row_spacing}, etc.  Use this with a text-only \code{title}.
 #' }
 #'
@@ -31,7 +31,7 @@
 #'   \code{"line"}, or \code{"point"}), \code{label}, and \code{color}
 #'   (or \code{colour}).  Optional columns: \code{linetype} (default
 #'   \code{"solid"}), \code{linewidth} (default \code{0.8}), \code{pch}
-#'   (default \code{NA} → draws \code{"*"} for \code{type = "point"}).
+#'   (default \code{NA} -> draws \code{"*"} for \code{type = "point"}).
 #' @param x Left edge of the key-symbol column in plot coordinates.
 #' @param y_start Y coordinate of the first entry.  \code{NULL} (default)
 #'   places entry\,1 at \code{row_spacing * title_frac}.
@@ -48,6 +48,10 @@
 #' @param label_inside When \code{TRUE}, centres the label inside the key
 #'   symbol instead of beside it.  Only takes effect for \code{swatch} rows
 #'   (default \code{FALSE}).
+#' @param label_fontface Font face for the title and entry labels (default
+#'   \code{"plain"}).  Common values: \code{"plain"}, \code{"bold"},
+#'   \code{"italic"}.  Does not affect the \code{"point"}-type \code{"*"}
+#'   glyph, which is always bold.
 #' @param title_color Colour of the section title.  Inherits
 #'   \code{label_color} when \code{NULL} (the default).
 #' @param swatch_height Height of swatch rectangles as a fraction of
@@ -97,6 +101,7 @@ key_legend <- function(
   label_size    = 2.8,
   label_color   = "black",
   label_inside  = FALSE,
+  label_fontface = "plain",
   title_color   = NULL,
   swatch_height = 0.45,
   point_size    = 1.6
@@ -105,20 +110,21 @@ key_legend <- function(
 
   structure(
     list(
-      entries       = entries,
-      x             = x,
-      y_start       = y_start,
-      title         = title,
-      title_frac    = title_frac,
-      row_spacing   = row_spacing,
-      key_width     = key_width,
-      label_gap     = label_gap,
-      label_size    = label_size,
-      label_color   = label_color,
-      label_inside  = label_inside,
-      title_color   = title_color %||% label_color,
-      swatch_height = swatch_height,
-      point_size    = point_size
+      entries        = entries,
+      x              = x,
+      y_start        = y_start,
+      title          = title,
+      title_frac     = title_frac,
+      row_spacing    = row_spacing,
+      key_width      = key_width,
+      label_gap      = label_gap,
+      label_size     = label_size,
+      label_color    = label_color,
+      label_inside   = label_inside,
+      label_fontface = label_fontface,
+      title_color    = title_color %||% label_color,
+      swatch_height  = swatch_height,
+      point_size     = point_size
     ),
     class = "ggpop_key_legend"
   )
@@ -188,6 +194,7 @@ build_key_legend_layers <- function(obj) {
   layers    <- list()
 
   tc <- obj$title_color %||% lc
+  ff <- obj$label_fontface %||% "plain"
   if (!is.null(obj$title)) {
     layers <- c(layers, list(
       ggplot2::annotate(
@@ -195,7 +202,7 @@ build_key_legend_layers <- function(obj) {
         x = x_sym_mid, y = rs * tf,
         label = obj$title,
         hjust = 0.5, vjust = 0.5,
-        size = ls, colour = tc
+        size = ls, colour = tc, fontface = ff
       )
     ))
   }
@@ -255,14 +262,14 @@ build_key_legend_layers <- function(obj) {
         "text",
         x = x + kw / 2, y = y,
         label = lbl, hjust = 0.5, vjust = 0.5,
-        size = row_ls, colour = lc, lineheight = row_lh
+        size = row_ls, colour = lc, lineheight = row_lh, fontface = ff
       )
     } else {
       ggplot2::annotate(
         "text",
         x = x_label, y = y,
         label = lbl, hjust = 0, vjust = 0.5,
-        size = row_ls, colour = lc, lineheight = row_lh
+        size = row_ls, colour = lc, lineheight = row_lh, fontface = ff
       )
     }
 
