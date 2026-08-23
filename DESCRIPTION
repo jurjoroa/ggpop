@@ -2,7 +2,7 @@ Type: Package
 Package: ggpop
 Title: Icon-Based Population Charts and Plots for 'ggplot2'
 Version: 1.8.0
-Date: 2026-08-21
+Date: 2026-08-23
 Authors@R: c(
     person(given = "Jorge A.",
              family = "Roa-Contreras",
@@ -57,7 +57,11 @@ Imports:
     rsvg,
     cli,
     tibble,
-    grid
+    grid,
+    grDevices,
+    stats,
+    tools,
+    utils
 VignetteBuilder: knitr
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
