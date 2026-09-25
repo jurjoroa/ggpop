@@ -2,7 +2,6 @@
 
 - Add reusable marker encoding with an SDA screening scheme (#399).
 - Add composite legends with external colour keys and reusable variants (#400, #401).
-- Add matching icon frontier and capacity-threshold panel builders (#402, #403).
 
 # ggpop 1.8.0
 
