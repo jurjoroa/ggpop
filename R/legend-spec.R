@@ -249,3 +249,139 @@ legend_render <- function(spec, width, height) {
   legend_box(p, width = width, height = height,
              padding = spec$border_padding, colour = spec$border)
 }
+
+#' Select content from a composite legend specification
+#'
+#' Creates a new specification without changing `spec`. Grid rows are
+#' renumbered from one so the selected grid stays compact. Render the result
+#' with [legend_render()] after selecting its final content.
+#'
+#' @param spec A [legend_spec()] object.
+#' @param grid_rows Grid row positions to keep, in display order. `NULL` keeps
+#'   every row.
+#' @param keys Names of colour keys to keep, in display order. `NULL` keeps all.
+#' @param symbols Symbol labels to keep, in display order. `NULL` keeps all.
+#' @param key_columns Number of colour-key columns in the result. When `keys`
+#'   is supplied, the default is one; otherwise the original count is kept.
+#' @param group_gap,group_title_nudge,xlim Optional layout overrides. Each
+#'   inherits from `spec` when omitted. Set `xlim = NULL` to recompute the
+#'   horizontal limits for the selected content.
+#'
+#' @return A new `ggpop_legend_spec` object.
+#' @examples
+#' grid <- data.frame(row = c(1, 2), col = c(1, 1),
+#'                    icon = c("square-inset", "circle-solid"),
+#'                    label = c("A", "B"))
+#' spec <- legend_spec(grid, keys = c(One = "#1090F3", Two = "#DF4601"))
+#' legend_subset(spec, grid_rows = 1, keys = "One")
+#' @seealso [legend_spec()], [legend_add_key()], [legend_render()]
+#' @export
+legend_subset <- function(spec, grid_rows = NULL, keys = NULL, symbols = NULL,
+                          key_columns = NULL, group_gap = spec$group_gap,
+                          group_title_nudge = spec$group_title_nudge,
+                          xlim = spec$xlim) {
+  if (!inherits(spec, "ggpop_legend_spec")) {
+    cli::cli_abort("{.arg spec} must come from {.fn legend_spec}.")
+  }
+  result <- spec
+
+  if (!is.null(grid_rows)) {
+    available <- unique(spec$grid$row)
+    if (!is.numeric(grid_rows) || !length(grid_rows) || anyNA(grid_rows) ||
+        anyDuplicated(grid_rows) ||
+        any(!grid_rows %in% available)) {
+      cli::cli_abort("{.arg grid_rows} must select existing grid rows once each.")
+    }
+    result$grid <- spec$grid[spec$grid$row %in% grid_rows, , drop = FALSE]
+    result$grid$row <- match(result$grid$row, grid_rows)
+  }
+  if (!is.null(keys)) {
+    if (!is.character(keys) || anyNA(keys) || anyDuplicated(keys) ||
+        any(!keys %in% names(spec$keys))) {
+      cli::cli_abort("{.arg keys} must select existing colour-key names once each.")
+    }
+    result$keys <- spec$keys[keys]
+  }
+  if (!is.null(symbols)) {
+    if (!is.character(symbols) || anyNA(symbols) ||
+        anyDuplicated(symbols) ||
+        any(!symbols %in% spec$symbols$label)) {
+      cli::cli_abort("{.arg symbols} must select existing symbol labels once each.")
+    }
+    result$symbols <- if (is.null(spec$symbols)) NULL else
+      spec$symbols[match(symbols, spec$symbols$label), , drop = FALSE]
+  }
+
+  if (is.null(key_columns)) {
+    key_columns <- if (is.null(keys)) spec$key_columns else 1L
+  }
+  if (!is.numeric(key_columns) || length(key_columns) != 1L ||
+      !is.finite(key_columns) || key_columns < 1 ||
+      key_columns != as.integer(key_columns) ||
+      (length(result$keys) && key_columns > length(result$keys))) {
+    cli::cli_abort("{.arg key_columns} must fit the selected colour keys.")
+  }
+  result$key_columns <- as.integer(key_columns)
+
+  if (!is.numeric(group_gap) || length(group_gap) != 1L ||
+      !is.finite(group_gap) || group_gap <= 0) {
+    cli::cli_abort("{.arg group_gap} must be positive.")
+  }
+  if (!is.numeric(group_title_nudge) || length(group_title_nudge) != 1L ||
+      !is.finite(group_title_nudge)) {
+    cli::cli_abort("{.arg group_title_nudge} must be finite.")
+  }
+  if (!is.null(xlim) && (!is.numeric(xlim) || length(xlim) != 2L ||
+                        anyNA(xlim) || any(!is.finite(xlim)) ||
+                        xlim[1L] >= xlim[2L])) {
+    cli::cli_abort("{.arg xlim} must be two increasing finite numbers.")
+  }
+  result$group_gap <- group_gap
+  result$group_title_nudge <- group_title_nudge
+  result$xlim <- xlim
+  result
+}
+
+#' Add a typed symbol row to a composite legend specification
+#'
+#' The new row is appended to the symbol section without changing `spec`.
+#' Render the returned specification to measure its border after the new row.
+#'
+#' @param spec A [legend_spec()] object.
+#' @param label Text beside the symbol.
+#' @param type One of `"line"`, `"point"`, `"swatch"`, or `"text"`.
+#' @param colour Colour of the symbol.
+#' @param linetype,linewidth Line style and width for a line row.
+#' @param pch Character or numeric point glyph for a point row.
+#'
+#' @return A new `ggpop_legend_spec` object.
+#' @examples
+#' grid <- data.frame(row = 1, col = 1, icon = "square-inset", label = "A")
+#' spec <- legend_spec(grid, symbols = c(Frontier = "line"))
+#' legend_add_key(spec, "Capacity", type = "line", linetype = "dashed")
+#' @seealso [legend_spec()], [legend_subset()], [legend_render()]
+#' @export
+legend_add_key <- function(spec, label, type = "line", colour = "black",
+                           linetype = "solid", linewidth = 0.8, pch = NA) {
+  if (!inherits(spec, "ggpop_legend_spec")) {
+    cli::cli_abort("{.arg spec} must come from {.fn legend_spec}.")
+  }
+  if (!is.character(label) || length(label) != 1L ||
+      is.na(label) || !nzchar(label) ||
+      (!is.null(spec$symbols) && label %in% spec$symbols$label)) {
+    cli::cli_abort("{.arg label} must be a new, nonempty symbol label.")
+  }
+  if (!is.character(colour) || length(colour) != 1L ||
+      is.na(colour) || !nzchar(colour) ||
+      !is.numeric(linewidth) || length(linewidth) != 1L ||
+      !is.finite(linewidth) || linewidth <= 0) {
+    cli::cli_abort("{.arg colour} and {.arg linewidth} must describe a visible key.")
+  }
+  entry <- data.frame(type = type, label = label, color = colour,
+                      linetype = linetype, linewidth = linewidth, pch = pch,
+                      stringsAsFactors = FALSE)
+  entry <- normalize_key_legend_entries(entry)
+  result <- spec
+  result$symbols <- dplyr::bind_rows(spec$symbols, entry)
+  result
+}
