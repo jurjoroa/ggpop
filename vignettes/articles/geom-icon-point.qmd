@@ -606,75 +606,6 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 
 ---
 
-## 6. Matching Frontier Panels
-
-When several datasets need the same frontier styling, `icon_frontiers()`
-returns one named ggplot per dataset. It evaluates frontier membership and
-range-relative label nudges separately in each panel:
-
-```{r}
-#| label: matching-frontier-panels
-#| fig-width: 8
-#| fig-height: 4
-#| message: false
-#| warning: false
-
-df_all <- data.frame(
-  effect = c(1, 2, 3), cost = c(2, 4, 7),
-  icon = c("square-inset", "circle-hollow", "diamond-solid"),
-  group = c("Annual", "Biennial", "Once"),
-  efficient = c(TRUE, TRUE, FALSE),
-  label = c("Annual", "Biennial", "Once"),
-  preferred = c(FALSE, TRUE, FALSE)
-)
-df_fit <- df_all[1:2, ]
-df_fit$cost <- c(2, 5)
-
-plots <- icon_frontiers(
-  list(all = df_all, fit = df_fit),
-  x = effect, y = cost, icon = icon, colour = group,
-  frontier = efficient, label = label, bold = preferred,
-  palette = c(Annual = "#980124", Biennial = "#DF4601", Once = "#08B8A2"),
-  xlab = "Effect", ylab = "Cost", dpi = 120
-)
-plots$all
-```
-
-`plots$fit` uses the same layers and palette with its own frontier and axis
-range. These ggplots can be combined with `patchwork` or a custom legend strip.
-
-## 7. Capacity Thresholds
-
-`icon_capacity_frontier()` adds a shaded deliverable region and a capacity
-threshold behind the same frontier and icon markers. Each label set can use a
-different repulsion direction or nudge:
-
-```{r}
-#| label: capacity-frontier-panel
-#| fig-width: 8
-#| fig-height: 4
-#| message: false
-#| warning: false
-
-icon_capacity_frontier(
-  df_all, x = effect, y = cost, icon = icon, colour = group,
-  frontier = efficient, label = label, bold = preferred,
-  palette = c(Annual = "#980124", Biennial = "#DF4601", Once = "#08B8A2"),
-  capacity = 5,
-  label_sets = list(
-    list(rows = df_all$group == "Annual", nudge_y = -0.5,
-         direction = "both"),
-    list(rows = df_all$group == "Biennial", nudge_x = 0.2,
-         direction = "y")
-  ),
-  capacity_label = "Illustrative capacity", capacity_label_offset = 0.2,
-  deliverable_label = "Deliverable", xlab = "Effect", ylab = "Cost",
-  dpi = 120
-)
-```
-
----
-
 ## Summary
 
 <div style="line-height: 0.6;"><br></div>
@@ -686,5 +617,3 @@ icon_capacity_frontier(
 | Size mapping | `aes(size = var)` + `scales::rescale()` |
 | Factor ordering | `factor(..., levels = ...)` before plotting |
 | Combine geoms | Add any ggplot2 geom before or after |
-| Matching frontier panels | `icon_frontiers()` on named datasets |
-| Capacity threshold | `icon_capacity_frontier()` with label sets |
