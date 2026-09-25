@@ -338,6 +338,23 @@ spec <- legend_spec(
 legend_render(spec, width = 9, height = 2)
 ```
 
+Use `legend_subset()` to make a smaller legend from the same content. It keeps
+the source specification intact and renumbers the selected grid rows. Add a
+symbol row with `legend_add_key()`, then render that variant so its border is
+measured around the final labels:
+
+```{r}
+#| label: legend-variants
+#| code-fold: false
+
+small <- legend_subset(spec, grid_rows = 1, keys = "Advisory",
+                       symbols = "Seasonal")
+capacity <- legend_add_key(spec, "Capacity", type = "line",
+                           linetype = "dashed", colour = "grey30")
+legend_render(small, width = 9, height = 1.5)
+legend_render(capacity, width = 9, height = 2)
+```
+
 Instead of hand-setting `col_spacing`, `group_width`, `marker_size`,
 `label_size`, and the rest, you give `legend_composite()` the physical
 `width`/`height` and it derives every length from three base sizes and the
