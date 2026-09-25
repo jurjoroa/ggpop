@@ -36,7 +36,6 @@ Suggests:
     cowplot,
     ggforce,
     gganimate,
-    ggrepel,
     ggtext,
     reactable,
     patchwork
@@ -46,6 +45,7 @@ Depends:
     R (>= 4.0.5)
 Imports:
     ggplot2,
+    ggrepel,
     scales,
     dplyr,
     ggimage,
