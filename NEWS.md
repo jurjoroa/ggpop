@@ -1,3 +1,9 @@
+# ggpop 1.9.0 (development)
+
+- Add reusable marker encoding with an SDA screening scheme (#399).
+- Add composite legends with external colour keys and reusable variants (#400, #401).
+- Add matching icon frontier and capacity-threshold panel builders (#402, #403).
+
 # ggpop 1.8.0
 
 This release adds custom SVG icon support to both geoms, a composite-legend system for legends that ggplot2's own guides cannot express, and a draw-time recolouring fix that removes the long-standing black-icon rendering bug.
