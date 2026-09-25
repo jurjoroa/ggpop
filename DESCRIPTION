@@ -36,7 +36,9 @@ Suggests:
     cowplot,
     ggforce,
     gganimate,
+    ggrepel,
     ggtext,
+    scales,
     reactable,
     patchwork
 Config/Needs/website: sf, geofacet, ggtext, quarto, kcuilla/reactablefmtr
@@ -45,8 +47,6 @@ Depends:
     R (>= 4.0.5)
 Imports:
     ggplot2,
-    ggrepel,
-    scales,
     dplyr,
     ggimage,
     magick,
