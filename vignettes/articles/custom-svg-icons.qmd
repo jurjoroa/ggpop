@@ -76,6 +76,32 @@ ggplot(df_markers, aes(x = x, y = y, icon = icon, colour = colour)) +
   theme_void()
 ```
 
+## Mapping values to markers
+
+`marker_encode()` turns data values into the marker names that the geoms already
+render. The built-in `"sda2028"` scheme maps screening start and stop ages to
+the bundled shape families and variants. One-time and no-screening rows use
+their own markers:
+
+```{r}
+#| label: marker-encode-example
+#| code-fold: false
+df_screening <- data.frame(
+  start = c(45, 50, 60, NA), stop = c(70, 85, NA, NA),
+  once = c(FALSE, FALSE, TRUE, FALSE),
+  none = c(FALSE, FALSE, FALSE, TRUE)
+)
+df_screening$icon <- marker_encode(
+  df_screening$start, df_screening$stop,
+  once = df_screening$once, none = df_screening$none
+)
+df_screening$icon
+```
+
+For another encoding, pass a list of named `start`, `stop`, and `once` vectors
+plus one `none` marker. Regular rows combine `start` and `stop` values with a
+hyphen; one-time rows use the direct `once` lookup.
+
 ## Using your own SVG files
 
 Place your `.svg` files in a folder and pass the path via `icon_path`. Reference
