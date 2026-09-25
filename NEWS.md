@@ -2,6 +2,7 @@
 
 - Add reusable marker encoding with an SDA screening scheme (#399).
 - Add composite legends with external colour keys and reusable variants (#400, #401).
+- Give the bundled screening circle markers a shared visible diameter across stop-age variants.
 
 # ggpop 1.8.0
 
