@@ -198,9 +198,10 @@ figure. `legend_canvas()` builds exactly that from a single tidy data frame,
 | `swatch` | A filled rectangle              | `group_section` or `symbol_section`     |
 | `line`   | A short line segment            | `symbol_section`                        |
 | `point`  | A bold glyph (default `"*"`)    | `symbol_section`                        |
+| `text`   | A label without a key symbol    | `symbol_section`                        |
 
 `icon`-typed rows always render as icons no matter what `type` says - the
-value is a bookkeeping label there, not a switch. `swatch`/`line`/`point` are
+value is a bookkeeping label there, not a switch. `swatch`/`line`/`point`/`text` are
 the only values `key_legend()` actually dispatches on, and that dispatch is
 the only place a new type could be added.
 
@@ -312,6 +313,29 @@ legend_composite(
   symbol_section = "mark",
   ratios = modifyList(legend_ratios(), list(col_spacing = 1.5, symbol_right_gap = 1.4))
 )
+```
+
+### Small colour keys beside the grid
+
+When colour labels belong beside small square keys, use `legend_spec()` to
+describe the grid, named colours, and typed symbols. `legend_render()` places
+the keys in columns and fits the border after all content is assembled. The
+specification keeps its content for related legend variants.
+
+```{r}
+#| label: fig-legend-external-keys
+#| message: false
+#| warning: false
+#| fig-width: 9
+#| fig-height: 2
+
+spec <- legend_spec(
+  grid = df_grid, keys = alert_col, key_columns = 2,
+  symbols = c(Seasonal = "line", Note = "text"),
+  grid_title = "Temp and precip", group_title = "Alert",
+  marker_size = 5, label_size = 3.6, dpi = 150
+)
+legend_render(spec, width = 9, height = 2)
 ```
 
 Instead of hand-setting `col_spacing`, `group_width`, `marker_size`,
