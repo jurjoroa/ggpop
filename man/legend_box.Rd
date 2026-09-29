@@ -37,8 +37,11 @@ fractions of the measured content width and height
 
 \item{fill}{Border fill (default \code{NA}, i.e. transparent).}
 
-\item{threshold}{Grayscale ink cutoff (0-255) for detecting content;
-pixels darker than this count as content (default \code{150}).}
+\item{threshold}{Colour-channel cutoff (0-255) for detecting content; a
+pixel counts as content when its darkest red, green or blue channel is
+below this value (default \code{150}). Testing the darkest channel, not
+the gray level, keeps light saturated colours such as yellow inside the
+border. Very pale fills (all channels above the cutoff) are not detected.}
 
 \item{dpi}{Resolution of the internal measurement render (default
 \code{150}); higher is more precise but slower.}

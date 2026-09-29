@@ -198,9 +198,10 @@ figure. `legend_canvas()` builds exactly that from a single tidy data frame,
 | `swatch` | A filled rectangle              | `group_section` or `symbol_section`     |
 | `line`   | A short line segment            | `symbol_section`                        |
 | `point`  | A bold glyph (default `"*"`)    | `symbol_section`                        |
+| `text`   | A label without a key symbol    | `symbol_section`                        |
 
 `icon`-typed rows always render as icons no matter what `type` says - the
-value is a bookkeeping label there, not a switch. `swatch`/`line`/`point` are
+value is a bookkeeping label there, not a switch. `swatch`/`line`/`point`/`text` are
 the only values `key_legend()` actually dispatches on, and that dispatch is
 the only place a new type could be added.
 
@@ -313,6 +314,156 @@ legend_composite(
   ratios = modifyList(legend_ratios(), list(col_spacing = 1.5, symbol_right_gap = 1.4))
 )
 ```
+
+### Small colour keys beside the grid
+
+When colour labels belong beside small square keys, use `legend_spec()` to
+describe the grid, named colours, and typed symbols. `legend_render()` places
+the keys in columns and fits the border after all content is assembled. The
+specification keeps its content for related legend variants.
+
+```{r}
+#| label: fig-legend-external-keys
+#| message: false
+#| warning: false
+#| fig-width: 9
+#| fig-height: 2
+
+spec <- legend_spec(
+  grid = df_grid, keys = alert_col, key_columns = 2,
+  symbols = c(Seasonal = "line", Note = "text"),
+  grid_title = "Temp and precip", group_title = "Alert",
+  symbol_title = "Marks",
+  marker_size = 5, label_size = 3.6, dpi = 150
+)
+legend_render(spec, width = 9, height = 2)
+```
+
+Without `symbol_title`, the first symbol row sits on the title line and doubles
+as the column heading, which suits a single reference line such as a frontier.
+With a title, as here, the symbols start on the same rows as the icon grid and
+the colour keys, so all three sections line up.
+
+Use `legend_subset()` to make a smaller legend from the same content. It keeps
+the source specification intact and renumbers the selected grid rows. Add a
+symbol row with `legend_add_key()`, then render that variant so its border is
+measured around the final labels:
+
+::: {.callout-important}
+`legend_render()` measures its border at the `width` and `height` you pass, so
+show or save the result at that same size. In a Quarto chunk, set `fig-width`
+and `fig-height` to match; at any other size the icons drift off their labels
+and the border no longer fits.
+:::
+
+```{r}
+#| label: fig-legend-variant-small
+#| message: false
+#| warning: false
+#| fig-width: 9
+#| fig-height: 1.5
+#| fig-cap: "A subset of the specification: one grid row, one colour key, one symbol."
+
+small <- legend_subset(spec, grid_rows = 1, keys = "Advisory",
+                       symbols = "Seasonal")
+legend_render(small, width = 9, height = 1.5)
+```
+
+```{r}
+#| label: fig-legend-variant-capacity
+#| message: false
+#| warning: false
+#| fig-width: 9
+#| fig-height: 2
+#| fig-cap: "The full specification plus one extra symbol row from `legend_add_key()`."
+
+capacity <- legend_add_key(spec, "Capacity", type = "line",
+                           linetype = "dashed", colour = "grey30")
+legend_render(capacity, width = 9, height = 2)
+```
+
+### A screening legend from `marker_encode()`
+
+The two pieces work together. Encode the start and stop ages into marker names,
+turn the result into a grid with `icon_grid()`, and describe the legend once
+with `legend_spec()`. The colour keys name the start ages, and the grid shows
+which shape and variant each start and stop age gets:
+
+```{r}
+#| label: fig-legend-spec-screening
+#| message: false
+#| warning: false
+#| fig-width: 9
+#| fig-height: 2
+#| fig-cap: "A legend_spec() for the sda2028 scheme: colour keys on the left, the encoded marker grid on the right."
+
+df_sda <- expand.grid(start = c(45, 50, 55), stop = c(70, 75, 80, 85))
+df_sda$icon <- marker_encode(df_sda$start, df_sda$stop)
+df_sda$cell_label <- paste0(df_sda$start, "-", df_sda$stop)
+
+df_sda_grid <- icon_grid(
+  df_sda, icon = "icon", label = "cell_label", row = "start", col = "stop"
+)
+start_col <- c("Start 45" = "#1E88E5", "Start 50" = "#2A9D8F",
+               "Start 55" = "#E76F51")
+
+ratios_spaced <- modifyList(
+  legend_ratios(), list(label_gap = 0.27, col_spacing = 1.2)
+)
+
+spec_sda <- legend_spec(
+  df_sda_grid, keys = start_col,
+  grid_title = "Start-stop", group_title = "Start age",
+  symbol_title = "Reference",
+  marker_size = 5, label_size = 3.4, dpi = 150, ratios = ratios_spaced
+)
+legend_render(spec_sda, width = 9, height = 2)
+```
+
+`label_fontface` sets the font face of every title and label at once. Because
+`legend_render()` measures the text at that face, the border still fits the
+wider bold labels:
+
+```{r}
+#| label: fig-legend-spec-bold
+#| message: false
+#| warning: false
+#| fig-width: 9
+#| fig-height: 2
+#| fig-cap: "The same content with `label_fontface = \"bold\"`; the border is fitted around the bold text."
+
+spec_bold <- legend_spec(
+  df_sda_grid, keys = start_col,
+  grid_title = "Start-stop", group_title = "Start age",
+  marker_size = 5, label_size = 3.4, dpi = 150, ratios = ratios_spaced,
+  label_fontface = "bold"
+)
+legend_render(spec_bold, width = 9, height = 2)
+```
+
+Related legends reuse the specification. `legend_subset()` keeps one start age
+and its grid row, `legend_add_key()` appends a symbol row under the `symbol_title`, and neither
+changes `spec_sda`:
+
+```{r}
+#| label: fig-legend-spec-variant
+#| message: false
+#| warning: false
+#| fig-width: 9
+#| fig-height: 1.2
+#| fig-cap: "A single-start-age variant of the screening legend with one extra symbol row."
+
+first_start <- legend_subset(spec_sda, grid_rows = 1, keys = "Start 45")
+first_start <- legend_add_key(
+  first_start, "Stop-age cut-off", type = "line",
+  linetype = "dashed", colour = "grey30"
+)
+legend_render(first_start, width = 9, height = 1.2)
+```
+
+The colour keys are drawn in plot coordinates, so a one-row legend needs a
+shorter figure than a three-row one to keep its swatches square. Match the
+height to the number of rows rather than reusing one size for every variant.
 
 Instead of hand-setting `col_spacing`, `group_width`, `marker_size`,
 `label_size`, and the rest, you give `legend_composite()` the physical

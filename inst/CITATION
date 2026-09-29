@@ -19,6 +19,6 @@ bibentry(
                         role = "aut",
                         comment = c(ORCID = "0000-0002-8352-7080"))),
   year       = "2026",
-  note       = "R package version 1.8.0",
+  note       = "R package version 1.9.0",
   url        = "https://jurjoroa.github.io/ggpop/"
 )

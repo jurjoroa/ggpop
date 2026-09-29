@@ -617,4 +617,3 @@ ggplot(df_health, aes(x = spend, y = life_exp,
 | Size mapping | `aes(size = var)` + `scales::rescale()` |
 | Factor ordering | `factor(..., levels = ...)` before plotting |
 | Combine geoms | Add any ggplot2 geom before or after |
-

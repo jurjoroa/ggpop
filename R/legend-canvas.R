@@ -370,8 +370,11 @@ legend_canvas <- function(
 #' @param colour Border colour (default \code{"black"}).
 #' @param linewidth Border line width (default \code{0.7}).
 #' @param fill Border fill (default \code{NA}, i.e. transparent).
-#' @param threshold Grayscale ink cutoff (0-255) for detecting content;
-#'   pixels darker than this count as content (default \code{150}).
+#' @param threshold Colour-channel cutoff (0-255) for detecting content; a
+#'   pixel counts as content when its darkest red, green or blue channel is
+#'   below this value (default \code{150}). Testing the darkest channel, not
+#'   the gray level, keeps light saturated colours such as yellow inside the
+#'   border. Very pale fills (all channels above the cutoff) are not detected.
 #' @param dpi Resolution of the internal measurement render (default
 #'   \code{150}); higher is more precise but slower.
 #'
@@ -409,12 +412,13 @@ legend_box <- function(plot, width, height,
   )
   ggplot2::ggsave(tmp, measure_plot, width = width, height = height, dpi = dpi, bg = "white")
 
-  bmp <- magick::image_data(magick::image_read(tmp), channels = "gray")
+  bmp <- magick::image_data(magick::image_read(tmp), channels = "rgb")
   storage.mode(bmp) <- "integer"
   px_w <- dim(bmp)[2]
   px_h <- dim(bmp)[3]
-  col_ink <- which(apply(bmp[1, , ], 1, function(cc) any(cc < threshold)))
-  row_ink <- which(apply(bmp[1, , ], 2, function(rr) any(rr < threshold)))
+  darkest <- pmin(bmp[1, , ], bmp[2, , ], bmp[3, , ])
+  col_ink <- which(apply(darkest, 1, function(cc) any(cc < threshold)))
+  row_ink <- which(apply(darkest, 2, function(rr) any(rr < threshold)))
   if (!length(col_ink) || !length(row_ink)) {
     cli::cli_abort("{.fn legend_box} found no content to enclose.")
   }

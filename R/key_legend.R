@@ -6,11 +6,12 @@
 #' \code{ggplot2::annotate()} approach.  The coordinate system is shared with
 #' the base plot, so positions integrate seamlessly with the rest of the legend.
 #'
-#' Three entry types are supported:
+#' Four entry types are supported:
 #' \describe{
 #'   \item{swatch}{A filled rectangle (colour bands, modality tiles).}
 #'   \item{line}{A horizontal segment (frontier or trend lines).}
 #'   \item{point}{A bold \code{"*"} glyph rendered as text.}
+#'   \item{text}{A label with no visible key symbol.}
 #' }
 #' A fourth entry kind, \code{icon}, exists in \code{\link{legend_canvas}}'s
 #' \code{df_legend} vocabulary but is not a \code{key_legend()} type - icon
@@ -28,7 +29,7 @@
 #' }
 #'
 #' @param entries A data frame with columns \code{type} (\code{"swatch"},
-#'   \code{"line"}, or \code{"point"}), \code{label}, and \code{color}
+#'   \code{"line"}, \code{"point"}, or \code{"text"}), \code{label}, and \code{color}
 #'   (or \code{colour}).  Optional columns: \code{linetype} (default
 #'   \code{"solid"}), \code{linewidth} (default \code{0.8}), \code{pch}
 #'   (default \code{NA} -> draws \code{"*"} for \code{type = "point"}).
@@ -239,10 +240,11 @@ build_key_legend_layers <- function(obj) {
         fontface = "bold",
         colour   = col
       ),
+      text = NULL,
       cli::cli_abort(
         c(
           "{.arg entries$type} contains unsupported value {.val {row$type}}.",
-          i = "Allowed types: {.val swatch}, {.val line}, {.val point}."
+          i = "Allowed types: {.val swatch}, {.val line}, {.val point}, {.val text}."
         ),
         call = rlang::caller_env()
       )
@@ -273,7 +275,8 @@ build_key_legend_layers <- function(obj) {
       )
     }
 
-    layers <- c(layers, list(key_layer, label_layer))
+    if (!is.null(key_layer)) layers <- c(layers, list(key_layer))
+    layers <- c(layers, list(label_layer))
   }
 
   layers
@@ -312,7 +315,7 @@ validate_key_legend_entries <- function(entries, call = rlang::caller_env()) {
       call = call
     )
   }
-  valid_types <- c("swatch", "line", "point")
+  valid_types <- c("swatch", "line", "point", "text")
   bad_types   <- setdiff(entries$type, valid_types)
   if (length(bad_types)) {
     cli::cli_abort(
