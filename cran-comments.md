@@ -1,53 +1,48 @@
 ## R CMD check results
 
-<!-- REGENERATE BEFORE SUBMITTING: the previous 0/0/0 line was measured on the
-     pre-#393 tree (14 icons, 11 exports, no R/legend-canvas.R) and is no longer
-     valid. Run R CMD check --as-cran on the actual submission tarball and paste
-     the real counts here. -->
-
 0 errors | 0 warnings | 0 notes
 
-## Release notes (1.8.0)
+<!-- Measured 2026-09-28: R CMD check --as-cran --no-tests --no-manual on the
+     1.9.0 tarball, local macOS ARM64. Tests were NOT part of that run. Re-run
+     the full check (with tests) on the actual submission tarball before
+     submitting and update this line if the counts change. -->
 
-This is a minor feature release adding custom SVG icon support, a composite
-legend system for legends that ggplot2's own guides cannot express, and a
-draw-time recolouring fix for icon colours.
+## Release notes (1.9.0)
 
-### Bug fixes
-
-- `geom_pop()` and `geom_icon_point()` now bake the mapped colour into each
-  icon at draw time rather than relying on `ggimage`'s tinting, which depended
-  on the installed `magick`/ImageMagick build producing an RGBA bitmap. Icons
-  previously rendered black on some builds even though the legend was correct.
+This is a minor feature release adding a data-to-marker encoder and a reusable
+specification for composite legends with external colour keys, plus two bug
+fixes.
 
 ### New features
 
-- `geom_pop()` and `geom_icon_point()` now accept custom SVG files via the
-  new `icon_path` argument (or `options(ggpop.icon_path)`). Icons resolve in
-  priority order: local `.svg` path -> `icon_path` folder -> bundled ggpop
-  marker -> Font Awesome name. An unrecognised name raises a clear error.
-- 16 bundled solid/outline markers (`square-*`, `circle-*`, `diamond-*`,
-  `plus-bold`, `plus-hollow`, `triangle-down`, `triangle-down-inset`) are
-  available by name with no folder needed.
-- `ggpop_markers()` lists bundled and user-provided marker names.
-- `marker_legend()` builds standalone composite legends for cases that
-  ggplot2's built-in guides cannot express.
-- A composite legend system built from plain data frames: `icon_grid()` derives
-  icon row/column positions, `legend_canvas()` renders grid, colour-tile and
-  typed-symbol sections from one data frame, `key_legend()` adds symbol +
-  label entries, `legend_box()` fits a border to the rendered content,
-  `legend_composite()` wraps the three-section case in one call, and
-  `legend_ratios()` exposes the default proportion ladder.
-- `legend_strip()` attaches a composite legend below a plot, working with
-  `ggplot2::ggsave()` and `print()`.
+- `marker_encode()` turns data values into the icon names the geoms already
+  render, using a marker scheme that maps one value to a shape family and
+  another to a variant. A built-in `"sda2028"` scheme is included; a custom
+  scheme is a plain list.
+- `legend_spec()` stores the content of a composite legend and
+  `legend_render()` lays it out and fits its border at a physical size.
+  `legend_subset()` and `legend_add_key()` derive related legends from one
+  specification without changing it.
+- `legend_spec()` takes `label_fontface` and `symbol_title` arguments.
+
+### Bug fixes
+
+- `legend_box()` located content by gray level, so light saturated colours
+  such as yellow counted as background and could sit outside the fitted
+  border. It now tests each pixel's darkest colour channel.
+- The bundled `"circle-cross"`, `"circle-hollow"` and `"circle-solid"` markers
+  now share one visible diameter with `"circle-inset"`.
 
 ### Dependency changes
 
-- `patchwork` added to `Suggests`. It is used only by `legend_strip()` when the
-  main plot is itself a `patchwork` object, and is guarded by
-  `requireNamespace("patchwork", quietly = TRUE)`.
+None relative to 1.8.0.
 
 ## Test environments
+
+<!-- Fill in before submitting. Verified so far: local macOS ARM64, R release
+     (R CMD check --as-cran, no tests). Not yet verified: GitHub Actions
+     (macos-latest fails on a gdtools/XQuartz runner issue, fix pending),
+     CRAN win-builder (devel and release), R-hub. -->
 
 - macOS ARM64, R release (local)
 - GitHub Actions: macOS-latest, windows-latest, ubuntu-latest (R devel, release, oldrel-1)

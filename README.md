@@ -24,7 +24,7 @@
 </p>
 <p align="center"><sub><code>geom_pop()</code> — proportional population charts&nbsp;&nbsp;·&nbsp;&nbsp;<code>geom_icon_point()</code> — icon scatter plots</sub></p>
 
-> **New in 1.8.0** — custom SVG icons beyond Font Awesome (`ggpop_markers()`, `icon_path`) and `marker_legend()` for standalone composite legends. See the [Legends article](https://jurjoroa.github.io/ggpop/articles/marker-legend.html).
+> **New in 1.9.0** — `marker_encode()` turns data values into marker names, and `legend_spec()` / `legend_render()` build composite legends with external colour keys. Custom SVG icons (`ggpop_markers()`, `icon_path`) and `marker_legend()` arrived in 1.8.0. See the [Legends article](https://jurjoroa.github.io/ggpop/articles/marker-legend.html).
 
 
 ## An Alternative Approach to Visualization
