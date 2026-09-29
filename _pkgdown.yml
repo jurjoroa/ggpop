@@ -242,8 +242,13 @@ reference:
       - legend_ratios
       - key_legend
       - legend_strip
+      - legend_spec
+      - legend_render
+      - legend_subset
+      - legend_add_key
       - fa_icons
       - ggpop_markers
+      - marker_encode
   - title: "Themes"
     desc: "Built-in ggpop themes."
     contents:

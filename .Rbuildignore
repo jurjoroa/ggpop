@@ -18,3 +18,7 @@
 ^AGENTS\.md$
 ^STRUCTURE\.md$
 ^scratch$
+^\.opencode$
+^\.jarc$
+^\.RData$
+^\.Rhistory$
