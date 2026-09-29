@@ -57,7 +57,11 @@ Imports:
     rsvg,
     cli,
     tibble,
-    grid
+    grid,
+    grDevices,
+    stats,
+    tools,
+    utils
 VignetteBuilder: knitr
 ByteCompile: true
 BugReports: https://github.com/jurjoroa/ggpop/issues
