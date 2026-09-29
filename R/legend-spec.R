@@ -12,6 +12,10 @@
 #' @param key_columns Number of colour-key columns, filled from top to bottom.
 #' @param grid_title,group_title Optional titles for the icon grid and colour
 #'   keys.
+#' @param symbol_title Optional title for the symbol column. With no title
+#'   the first symbol row sits on the title line, so it doubles as the column
+#'   heading. With a title, the heading takes that line and the symbols start
+#'   on the same rows as the icon grid and colour keys.
 #' @param group_key_width,group_label_gap,swatch_height Dimensions of the
 #'   external colour keys in grid coordinates. `swatch_height` is a fraction of
 #'   one row.
@@ -21,6 +25,8 @@
 #' @param xlim Optional fixed horizontal canvas limits. `NULL` centres the
 #'   measured content automatically.
 #' @param label_size Text size in millimetres.
+#' @param label_fontface Font face for every title and label: `"plain"`,
+#'   `"bold"`, `"italic"`, or `"bold.italic"`.
 #' @param marker_size Icon size passed to [geom_icon_point()].
 #' @param dpi Icon rendering resolution.
 #' @param ratios Layout proportions from [legend_ratios()].
@@ -41,11 +47,12 @@
 #' @export
 legend_spec <- function(grid, keys = NULL, symbols = NULL, key_columns = 1L,
                         grid_title = NULL, group_title = NULL,
+                        symbol_title = NULL,
                         group_key_width = 0.2375, group_label_gap = 0.1187,
                         group_gap = 0.591, key_column_gap = 0.317,
                         group_title_nudge = 0,
                         swatch_height = 0.56, xlim = NULL,
-                        label_size = 3.634,
+                        label_size = 3.634, label_fontface = "plain",
                         marker_size = 3.717, dpi = 120,
                         ratios = legend_ratios(), border = "#231F20",
                         border_padding = c(0.018, 0.09)) {
@@ -80,6 +87,17 @@ legend_spec <- function(grid, keys = NULL, symbols = NULL, key_columns = 1L,
                         xlim[1L] >= xlim[2L])) {
     cli::cli_abort("{.arg xlim} must be two increasing finite numbers.")
   }
+  if (!is.null(symbol_title) && (!is.character(symbol_title) ||
+                                 length(symbol_title) != 1L ||
+                                 is.na(symbol_title) || !nzchar(symbol_title))) {
+    cli::cli_abort("{.arg symbol_title} must be one nonempty string or {.code NULL}.")
+  }
+  if (!is.character(label_fontface) || length(label_fontface) != 1L ||
+      !label_fontface %in% c("plain", "bold", "italic", "bold.italic")) {
+    cli::cli_abort(
+      "{.arg label_fontface} must be one of {.val plain}, {.val bold}, {.val italic}, or {.val bold.italic}."
+    )
+  }
   if (!is.numeric(group_title_nudge) || length(group_title_nudge) != 1L ||
       !is.finite(group_title_nudge)) {
     cli::cli_abort("{.arg group_title_nudge} must be one finite number.")
@@ -112,10 +130,12 @@ legend_spec <- function(grid, keys = NULL, symbols = NULL, key_columns = 1L,
     grid = grid, keys = keys, symbols = symbols,
     key_columns = as.integer(key_columns),
     grid_title = grid_title, group_title = group_title,
+    symbol_title = symbol_title,
     group_key_width = group_key_width, group_label_gap = group_label_gap,
     group_gap = group_gap, key_column_gap = key_column_gap,
     group_title_nudge = group_title_nudge, xlim = xlim,
     swatch_height = swatch_height, label_size = label_size,
+    label_fontface = label_fontface,
     marker_size = marker_size, dpi = dpi, ratios = ratios,
     border = border, border_padding = border_padding
   ), class = "ggpop_legend_spec")
@@ -161,7 +181,8 @@ legend_render <- function(spec, width, height) {
     if (!length(labels)) return(numeric())
     vapply(as.character(labels), function(label) {
       grob <- grid::textGrob(label, gp = grid::gpar(
-        fontsize = spec$label_size * 72.27 / 25.4
+        fontsize = spec$label_size * 72.27 / 25.4,
+        fontface = spec$label_fontface
       ))
       grid::convertWidth(grid::grobWidth(grob), "in", valueOnly = TRUE) * to_data
     }, numeric(1))
@@ -196,6 +217,12 @@ legend_render <- function(spec, width, height) {
   symbol_right <- if (is.null(symbols) || !nrow(symbols)) 0 else
     symbol_x + ratios$symbol_key_width + ratios$symbol_label_gap +
       max(text_width(symbols$label))
+  if (!is.null(spec$symbol_title) && !is.null(symbols) && nrow(symbols)) {
+    symbol_right <- max(
+      symbol_right,
+      symbol_x + ratios$symbol_key_width / 2 + text_width(spec$symbol_title) / 2
+    )
+  }
   left_bound <- min(0, key_x, group_title_left)
   right_bound <- max(grid_right, symbol_right, group_right)
   x_range <- max(x_range, right_bound - left_bound + 1.2)
@@ -204,15 +231,17 @@ legend_render <- function(spec, width, height) {
 
   n_key_rows <- if (length(key_rows)) max(key_rows) + 1L else 0L
   n_symbol_rows <- if (is.null(symbols)) 0L else nrow(symbols)
-  depth <- max(n_grid_rows - 1L, n_key_rows - 1L, n_symbol_rows - 2L, 0L)
+  symbol_first_row <- if (is.null(spec$symbol_title)) 2L else 1L
+  depth <- max(n_grid_rows - 1L, n_key_rows - 1L,
+               n_symbol_rows - symbol_first_row, 0L)
   ylim <- c(-depth - 1.1, 1.95) * ratios$row_spacing
 
   p <- suppressMessages(legend_canvas(
     grid, grid_title = spec$grid_title,
     col_spacing = ratios$col_spacing, row_spacing = ratios$row_spacing,
     label_gap = ratios$label_gap, marker_size = spec$marker_size,
-    label_size = spec$label_size, dpi = spec$dpi,
-    xlim = xlim, ylim = ylim
+    label_size = spec$label_size, label_fontface = spec$label_fontface,
+    dpi = spec$dpi, xlim = xlim, ylim = ylim
   )) + ggplot2::scale_x_continuous(expand = c(0, 0)) +
     ggplot2::scale_y_continuous(expand = c(0, 0))
 
@@ -220,7 +249,8 @@ legend_render <- function(spec, width, height) {
     if (!is.null(spec$group_title)) {
       p <- p + ggplot2::annotate(
         "text", x = group_title_x, y = 0.85,
-        label = spec$group_title, size = spec$label_size
+        label = spec$group_title, size = spec$label_size,
+        fontface = spec$label_fontface
       )
     }
     for (col in seq_len(spec$key_columns)) {
@@ -233,16 +263,21 @@ legend_render <- function(spec, width, height) {
         key_width = spec$group_key_width,
         label_gap = spec$group_label_gap,
         label_size = spec$label_size,
+        label_fontface = spec$label_fontface,
         swatch_height = spec$swatch_height
       )
     }
   }
   if (!is.null(symbols) && nrow(symbols)) {
     p <- p + key_legend(
-      symbols, x = symbol_x, row_spacing = ratios$row_spacing,
+      symbols, x = symbol_x,
+      y_start = if (is.null(spec$symbol_title)) NULL else 0,
+      title = spec$symbol_title,
+      row_spacing = ratios$row_spacing,
       key_width = ratios$symbol_key_width,
       label_gap = ratios$symbol_label_gap,
-      label_size = spec$label_size
+      label_size = spec$label_size,
+      label_fontface = spec$label_fontface
     )
   }
   if (is.na(spec$border)) return(p)

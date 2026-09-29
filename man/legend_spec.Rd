@@ -11,6 +11,7 @@ legend_spec(
   key_columns = 1L,
   grid_title = NULL,
   group_title = NULL,
+  symbol_title = NULL,
   group_key_width = 0.2375,
   group_label_gap = 0.1187,
   group_gap = 0.591,
@@ -19,6 +20,7 @@ legend_spec(
   swatch_height = 0.56,
   xlim = NULL,
   label_size = 3.634,
+  label_fontface = "plain",
   marker_size = 3.717,
   dpi = 120,
   ratios = legend_ratios(),
@@ -40,6 +42,11 @@ a label but no visible key.}
 \item{grid_title, group_title}{Optional titles for the icon grid and colour
 keys.}
 
+\item{symbol_title}{Optional title for the symbol column. With no title
+the first symbol row sits on the title line, so it doubles as the column
+heading. With a title, the heading takes that line and the symbols start
+on the same rows as the icon grid and colour keys.}
+
 \item{group_key_width, group_label_gap, swatch_height}{Dimensions of the
 external colour keys in grid coordinates. \code{swatch_height} is a fraction of
 one row.}
@@ -54,6 +61,9 @@ one row.}
 measured content automatically.}
 
 \item{label_size}{Text size in millimetres.}
+
+\item{label_fontface}{Font face for every title and label: \code{"plain"},
+\code{"bold"}, \code{"italic"}, or \code{"bold.italic"}.}
 
 \item{marker_size}{Icon size passed to \code{\link[=geom_icon_point]{geom_icon_point()}}.}
 
