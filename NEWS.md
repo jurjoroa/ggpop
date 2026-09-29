@@ -1,4 +1,4 @@
-# ggpop 1.9.0 (development)
+# ggpop 1.9.0
 
 This release adds a data-to-marker encoder and a reusable specification for composite legends with external colour keys, and evens out the visible size of the bundled circle markers.
 
