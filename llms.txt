@@ -16,11 +16,17 @@ icons](https://raw.githubusercontent.com/jurjoroa/ggpopdata/main/inst/figures/fo
 
 _([`geom_pop()`](https://jurjoroa.github.io/ggpop/reference/geom_pop.md) — proportional population charts  ·  [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md) — icon scatter plots)
 
-> **New in 1.8.0** — custom SVG icons beyond Font Awesome
+> **New in 1.9.0** —
+> [`marker_encode()`](https://jurjoroa.github.io/ggpop/reference/marker_encode.md)
+> turns data values into marker names, and
+> [`legend_spec()`](https://jurjoroa.github.io/ggpop/reference/legend_spec.md)
+> /
+> [`legend_render()`](https://jurjoroa.github.io/ggpop/reference/legend_render.md)
+> build composite legends with external colour keys. Custom SVG icons
 > ([`ggpop_markers()`](https://jurjoroa.github.io/ggpop/reference/ggpop_markers.md),
 > `icon_path`) and
 > [`marker_legend()`](https://jurjoroa.github.io/ggpop/reference/marker_legend.md)
-> for standalone composite legends. See the [Legends
+> arrived in 1.8.0. See the [Legends
 > article](https://jurjoroa.github.io/ggpop/articles/marker-legend.html).
 
 ## An Alternative Approach to Visualization
@@ -645,11 +651,26 @@ legends.
 - [`legend_strip()`](https://jurjoroa.github.io/ggpop/reference/legend_strip.md)
   : Attach a legend strip below a ggplot
 
+- [`legend_spec()`](https://jurjoroa.github.io/ggpop/reference/legend_spec.md)
+  : Specify a composite legend with external colour keys
+
+- [`legend_render()`](https://jurjoroa.github.io/ggpop/reference/legend_render.md)
+  : Render a composite legend specification
+
+- [`legend_subset()`](https://jurjoroa.github.io/ggpop/reference/legend_subset.md)
+  : Select content from a composite legend specification
+
+- [`legend_add_key()`](https://jurjoroa.github.io/ggpop/reference/legend_add_key.md)
+  : Add a typed symbol row to a composite legend specification
+
 - [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
   : Search and list Font Awesome icons
 
 - [`ggpop_markers()`](https://jurjoroa.github.io/ggpop/reference/ggpop_markers.md)
   : List the icon markers ggpop can render by name
+
+- [`marker_encode()`](https://jurjoroa.github.io/ggpop/reference/marker_encode.md)
+  : Encode data values as icon marker names
 
 ## Themes
 

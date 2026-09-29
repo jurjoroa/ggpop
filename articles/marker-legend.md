@@ -212,10 +212,11 @@ builds exactly that from a single tidy data frame, `df_legend`, where a
 | `swatch` | A filled rectangle            | `group_section` or `symbol_section` |
 | `line`   | A short line segment          | `symbol_section`                    |
 | `point`  | A bold glyph (default `"*"`)  | `symbol_section`                    |
+| `text`   | A label without a key symbol  | `symbol_section`                    |
 
 `icon`-typed rows always render as icons no matter what `type` says -
 the value is a bookkeeping label there, not a switch.
-`swatch`/`line`/`point` are the only values
+`swatch`/`line`/`point`/`text` are the only values
 [`key_legend()`](https://jurjoroa.github.io/ggpop/reference/key_legend.md)
 actually dispatches on, and that dispatch is the only place a new type
 could be added.
@@ -345,6 +346,179 @@ legend_composite(
 Figure 5: The same three-section df_legend, rendered in one
 legend_composite() call with a fitted border.
 
+### Small colour keys beside the grid
+
+When colour labels belong beside small square keys, use
+[`legend_spec()`](https://jurjoroa.github.io/ggpop/reference/legend_spec.md)
+to describe the grid, named colours, and typed symbols.
+[`legend_render()`](https://jurjoroa.github.io/ggpop/reference/legend_render.md)
+places the keys in columns and fits the border after all content is
+assembled. The specification keeps its content for related legend
+variants.
+
+Show the code
+
+``` r
+
+spec <- legend_spec(
+  grid = df_grid, keys = alert_col, key_columns = 2,
+  symbols = c(Seasonal = "line", Note = "text"),
+  grid_title = "Temp and precip", group_title = "Alert",
+  symbol_title = "Marks",
+  marker_size = 5, label_size = 3.6, dpi = 150
+)
+legend_render(spec, width = 9, height = 2)
+```
+
+![](marker-legend_files/figure-html/fig-legend-external-keys-1.png)
+
+Figure 6
+
+Without `symbol_title`, the first symbol row sits on the title line and
+doubles as the column heading, which suits a single reference line such
+as a frontier. With a title, as here, the symbols start on the same rows
+as the icon grid and the colour keys, so all three sections line up.
+
+Use
+[`legend_subset()`](https://jurjoroa.github.io/ggpop/reference/legend_subset.md)
+to make a smaller legend from the same content. It keeps the source
+specification intact and renumbers the selected grid rows. Add a symbol
+row with
+[`legend_add_key()`](https://jurjoroa.github.io/ggpop/reference/legend_add_key.md),
+then render that variant so its border is measured around the final
+labels:
+
+> **Important**
+>
+> [`legend_render()`](https://jurjoroa.github.io/ggpop/reference/legend_render.md)
+> measures its border at the `width` and `height` you pass, so show or
+> save the result at that same size. In a Quarto chunk, set `fig-width`
+> and `fig-height` to match; at any other size the icons drift off their
+> labels and the border no longer fits.
+
+Show the code
+
+``` r
+
+small <- legend_subset(spec, grid_rows = 1, keys = "Advisory",
+                       symbols = "Seasonal")
+legend_render(small, width = 9, height = 1.5)
+```
+
+![](marker-legend_files/figure-html/fig-legend-variant-small-1.png)
+
+Figure 7: A subset of the specification: one grid row, one colour key,
+one symbol.
+
+Show the code
+
+``` r
+
+capacity <- legend_add_key(spec, "Capacity", type = "line",
+                           linetype = "dashed", colour = "grey30")
+legend_render(capacity, width = 9, height = 2)
+```
+
+![](marker-legend_files/figure-html/fig-legend-variant-capacity-1.png)
+
+Figure 8: The full specification plus one extra symbol row from
+[`legend_add_key()`](https://jurjoroa.github.io/ggpop/reference/legend_add_key.md).
+
+### A screening legend from `marker_encode()`
+
+The two pieces work together. Encode the start and stop ages into marker
+names, turn the result into a grid with
+[`icon_grid()`](https://jurjoroa.github.io/ggpop/reference/icon_grid.md),
+and describe the legend once with
+[`legend_spec()`](https://jurjoroa.github.io/ggpop/reference/legend_spec.md).
+The colour keys name the start ages, and the grid shows which shape and
+variant each start and stop age gets:
+
+Show the code
+
+``` r
+
+df_sda <- expand.grid(start = c(45, 50, 55), stop = c(70, 75, 80, 85))
+df_sda$icon <- marker_encode(df_sda$start, df_sda$stop)
+df_sda$cell_label <- paste0(df_sda$start, "-", df_sda$stop)
+
+df_sda_grid <- icon_grid(
+  df_sda, icon = "icon", label = "cell_label", row = "start", col = "stop"
+)
+start_col <- c("Start 45" = "#1E88E5", "Start 50" = "#2A9D8F",
+               "Start 55" = "#E76F51")
+
+ratios_spaced <- modifyList(
+  legend_ratios(), list(label_gap = 0.27, col_spacing = 1.2)
+)
+
+spec_sda <- legend_spec(
+  df_sda_grid, keys = start_col,
+  grid_title = "Start-stop", group_title = "Start age",
+  symbol_title = "Reference",
+  marker_size = 5, label_size = 3.4, dpi = 150, ratios = ratios_spaced
+)
+legend_render(spec_sda, width = 9, height = 2)
+```
+
+![](marker-legend_files/figure-html/fig-legend-spec-screening-1.png)
+
+Figure 9: A legend_spec() for the sda2028 scheme: colour keys on the
+left, the encoded marker grid on the right.
+
+`label_fontface` sets the font face of every title and label at once.
+Because
+[`legend_render()`](https://jurjoroa.github.io/ggpop/reference/legend_render.md)
+measures the text at that face, the border still fits the wider bold
+labels:
+
+Show the code
+
+``` r
+
+spec_bold <- legend_spec(
+  df_sda_grid, keys = start_col,
+  grid_title = "Start-stop", group_title = "Start age",
+  marker_size = 5, label_size = 3.4, dpi = 150, ratios = ratios_spaced,
+  label_fontface = "bold"
+)
+legend_render(spec_bold, width = 9, height = 2)
+```
+
+![](marker-legend_files/figure-html/fig-legend-spec-bold-1.png)
+
+Figure 10: The same content with `label_fontface = "bold"`; the border
+is fitted around the bold text.
+
+Related legends reuse the specification.
+[`legend_subset()`](https://jurjoroa.github.io/ggpop/reference/legend_subset.md)
+keeps one start age and its grid row,
+[`legend_add_key()`](https://jurjoroa.github.io/ggpop/reference/legend_add_key.md)
+appends a symbol row under the `symbol_title`, and neither changes
+`spec_sda`:
+
+Show the code
+
+``` r
+
+first_start <- legend_subset(spec_sda, grid_rows = 1, keys = "Start 45")
+first_start <- legend_add_key(
+  first_start, "Stop-age cut-off", type = "line",
+  linetype = "dashed", colour = "grey30"
+)
+legend_render(first_start, width = 9, height = 1.2)
+```
+
+![](marker-legend_files/figure-html/fig-legend-spec-variant-1.png)
+
+Figure 11: A single-start-age variant of the screening legend with one
+extra symbol row.
+
+The colour keys are drawn in plot coordinates, so a one-row legend needs
+a shorter figure than a three-row one to keep its swatches square. Match
+the height to the number of rows rather than reusing one size for every
+variant.
+
 Instead of hand-setting `col_spacing`, `group_width`, `marker_size`,
 `label_size`, and the rest, you give
 [`legend_composite()`](https://jurjoroa.github.io/ggpop/reference/legend_composite.md)
@@ -459,7 +633,7 @@ p_main + legend_strip(p_legend, height = 1.4)
 
 ![](marker-legend_files/figure-html/fig-legend-strip-1.png)
 
-Figure 6: An icon forecast answering a real question - marker shape
+Figure 12: An icon forecast answering a real question - marker shape
 shows the temperature/precipitation condition, colour shows the alert
 level - with its legend_canvas() legend stacked below, so every legend
 key is something you read off the plot.

@@ -3,7 +3,7 @@
 (typically the output of marker_legend) using the same
 ggplot2::annotate() approach.  The coordinate system is shared with
 the base plot, so positions integrate seamlessly with the rest of the legend.
-Three entry types are supported:
+Four entry types are supported:
 swatch
 A filled rectangle (colour bands, modality tiles).
 
@@ -12,6 +12,9 @@ A horizontal segment (frontier or trend lines).
 
 point
 A bold &quot;*&quot; glyph rendered as text.
+
+text
+A label with no visible key symbol.
 
 
 A fourth entry kind, icon, exists in legend_canvas's
@@ -30,7 +33,7 @@ y_start = 0 - first entry at row\,1, second at
 (typically the output of marker_legend) using the same
 ggplot2::annotate() approach.  The coordinate system is shared with
 the base plot, so positions integrate seamlessly with the rest of the legend.
-Three entry types are supported:
+Four entry types are supported:
 swatch
 A filled rectangle (colour bands, modality tiles).
 
@@ -39,6 +42,9 @@ A horizontal segment (frontier or trend lines).
 
 point
 A bold &quot;*&quot; glyph rendered as text.
+
+text
+A label with no visible key symbol.
 
 
 A fourth entry kind, icon, exists in legend_canvas's
@@ -66,7 +72,7 @@ y_start = 0 - first entry at row\,1, second at
   "name": "ggpop",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "R",
-  "softwareVersion": "1.8.0",
+  "softwareVersion": "1.9.0",
   "description": "R package for creating icon-based population charts and pictogram plots with ggplot2. Visualize proportion and population data in R",
   "url": "https://jurjoroa.github.io/ggpop/",
   "downloadUrl": "https://cran.r-project.org/package=ggpop",
@@ -86,7 +92,7 @@ y_start = 0 - first entry at row\,1, second at
 
     <a class="navbar-brand me-2" href="../index.html">ggpop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,7 +122,7 @@ y_start = 0 - first entry at row\,1, second at
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Add typed symbol entries to a legend canvas</h1>
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/v1.8.0/R/key_legend.R" class="external-link"><code>R/key_legend.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/R/key_legend.R" class="external-link"><code>R/key_legend.R</code></a></small>
       <div class="d-none name"><code>key_legend.Rd</code></div>
     </div>
 
@@ -125,7 +131,7 @@ y_start = 0 - first entry at row\,1, second at
 (typically the output of <code><a href="marker_legend.html">marker_legend</a></code>) using the same
 <code><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">ggplot2::annotate()</a></code> approach.  The coordinate system is shared with
 the base plot, so positions integrate seamlessly with the rest of the legend.</p>
-<p>Three entry types are supported:</p><dl><dt>swatch</dt>
+<p>Four entry types are supported:</p><dl><dt>swatch</dt>
 <dd><p>A filled rectangle (colour bands, modality tiles).</p></dd>
 
 <dt>line</dt>
@@ -133,6 +139,9 @@ the base plot, so positions integrate seamlessly with the rest of the legend.</p
 
 <dt>point</dt>
 <dd><p>A bold <code>"*"</code> glyph rendered as text.</p></dd>
+
+<dt>text</dt>
+<dd><p>A label with no visible key symbol.</p></dd>
 
 
 </dl><p>A fourth entry kind, <code>icon</code>, exists in <code><a href="legend_canvas.html">legend_canvas</a></code>'s
@@ -174,7 +183,7 @@ when entry\,1 is both the title and its own symbol (e.g. the
 
 <dl><dt id="arg-entries">entries<a class="anchor" aria-label="anchor" href="#arg-entries"></a></dt>
 <dd><p>A data frame with columns <code>type</code> (<code>"swatch"</code>,
-<code>"line"</code>, or <code>"point"</code>), <code>label</code>, and <code>color</code>
+<code>"line"</code>, <code>"point"</code>, or <code>"text"</code>), <code>label</code>, and <code>color</code>
 (or <code>colour</code>).  Optional columns: <code>linetype</code> (default
 <code>"solid"</code>), <code>linewidth</code> (default <code>0.8</code>), <code>pch</code>
 (default <code>NA</code> -&gt; draws <code>"*"</code> for <code>type = "point"</code>).</p></dd>

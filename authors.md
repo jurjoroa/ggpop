@@ -17,16 +17,16 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/jurjoroa/ggpop/blob/v1.8.0/inst/CITATION)
+[`inst/CITATION`](https://github.com/jurjoroa/ggpop/blob/main/inst/CITATION)
 
 Roa-Contreras J, Soultanova R, Alarid-Escudero F, Pineda-Antunez C
 (2026). *ggpop: Icon-Based Population Charts and Plots for 'ggplot2'*. R
-package version 1.8.0, <https://jurjoroa.github.io/ggpop/>.
+package version 1.9.0, <https://jurjoroa.github.io/ggpop/>.
 
     @Manual{,
       title = {ggpop: Icon-Based Population Charts and Plots for 'ggplot2'},
       author = {Jorge A. Roa-Contreras and Ralitza Soultanova and Fernando Alarid-Escudero and Carlos Pineda-Antunez},
       year = {2026},
-      note = {R package version 1.8.0},
+      note = {R package version 1.9.0},
       url = {https://jurjoroa.github.io/ggpop/},
     }

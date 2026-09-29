@@ -1,6 +1,92 @@
 # Changelog
 
+## ggpop 1.9.0
+
+This release adds a data-to-marker encoder and a reusable specification
+for composite legends with external colour keys, and evens out the
+visible size of the bundled circle markers.
+
+### New Features
+
+- [`marker_encode()`](https://jurjoroa.github.io/ggpop/reference/marker_encode.md)
+  turns data values into the icon names the geoms already render. A
+  marker scheme maps one value to a shape family and another to a
+  variant; the built-in `"sda2028"` scheme maps screening start ages
+  45/50/55 to square/circle/diamond and stop ages 70/75/80/85 to
+  inset/hollow/cross/solid, with dedicated markers for one-time and
+  no-screening rows. Pass a list of named `start`, `stop` and `once`
+  vectors plus one `none` marker to define your own scheme
+  ([\#399](https://github.com/jurjoroa/ggpop/issues/399)).
+- [`legend_spec()`](https://jurjoroa.github.io/ggpop/reference/legend_spec.md)
+  stores the content of a composite legend (an
+  [`icon_grid()`](https://jurjoroa.github.io/ggpop/reference/icon_grid.md)
+  grid, named colour keys, and typed symbol rows) and
+  [`legend_render()`](https://jurjoroa.github.io/ggpop/reference/legend_render.md)
+  lays it out and fits its border at a physical size in inches. Colour
+  keys can run in several columns and sit beside the icon grid as small
+  square swatches
+  ([\#400](https://github.com/jurjoroa/ggpop/issues/400)).
+- [`key_legend()`](https://jurjoroa.github.io/ggpop/reference/key_legend.md)
+  accepts a `"text"` entry type: a label with no visible key symbol, for
+  notes that belong in a symbol column without a key
+  ([\#400](https://github.com/jurjoroa/ggpop/issues/400)).
+- [`legend_subset()`](https://jurjoroa.github.io/ggpop/reference/legend_subset.md)
+  selects grid rows, colour keys and symbols from an existing
+  specification, and
+  [`legend_add_key()`](https://jurjoroa.github.io/ggpop/reference/legend_add_key.md)
+  appends a typed symbol row, so related legends reuse one specification
+  instead of rebuilding it. Neither changes the original
+  ([\#401](https://github.com/jurjoroa/ggpop/issues/401)).
+- [`legend_spec()`](https://jurjoroa.github.io/ggpop/reference/legend_spec.md)
+  takes a `symbol_title` argument. By default the first symbol row sits
+  on the title line and doubles as the column heading. With a title, the
+  heading takes that line and the symbol rows start on the same rows as
+  the icon grid and colour keys, so the three sections line up. Existing
+  legends are unchanged.
+- [`legend_spec()`](https://jurjoroa.github.io/ggpop/reference/legend_spec.md)
+  takes a `label_fontface` argument (default `"plain"`) controlling the
+  title and label font face, in step with
+  [`legend_canvas()`](https://jurjoroa.github.io/ggpop/reference/legend_canvas.md)
+  and
+  [`marker_legend()`](https://jurjoroa.github.io/ggpop/reference/marker_legend.md).
+  [`legend_render()`](https://jurjoroa.github.io/ggpop/reference/legend_render.md)
+  measures text at that face so the border still fits bold or italic
+  labels.
+
+### Bug Fixes
+
+- [`legend_box()`](https://jurjoroa.github.io/ggpop/reference/legend_box.md)
+  located the legend’s content by gray level, so light saturated colours
+  such as yellow (gray level about 196) counted as background and a
+  colour key drawn in one could sit outside the fitted border. It now
+  tests each pixel’s darkest colour channel, so yellow and similar keys
+  are enclosed; the `threshold` argument now applies to that channel
+  value. This also fixes the border in
+  [`legend_render()`](https://jurjoroa.github.io/ggpop/reference/legend_render.md)
+  and
+  [`legend_composite()`](https://jurjoroa.github.io/ggpop/reference/legend_composite.md)
+  legends that use light keys.
+- The bundled `"circle-cross"`, `"circle-hollow"` and `"circle-solid"`
+  markers now share one visible diameter with `"circle-inset"`, so a set
+  of circle variants renders at the same size at a given geom size.
+  `"circle-cross"` previously filled its whole viewBox and looked larger
+  than the others, while `"circle-hollow"` and `"circle-solid"` looked
+  smaller ([\#411](https://github.com/jurjoroa/ggpop/issues/411)).
+
+### Issues Resolved in v1.9.0
+
+- \#399
+- \#400
+- \#401
+- \#411
+
+### Version
+
+- \#398
+
 ## ggpop 1.8.0
+
+CRAN release: 2026-08-23
 
 This release adds custom SVG icon support to both geoms, a
 composite-legend system for legends that ggplot2’s own guides cannot

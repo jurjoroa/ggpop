@@ -73,6 +73,106 @@ ggplot(df_markers, aes(x = x, y = y, icon = icon, colour = colour)) +
 Figure 1: All 16 bundled markers rendered with
 [`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md).
 
+## Mapping values to markers
+
+[`marker_encode()`](https://jurjoroa.github.io/ggpop/reference/marker_encode.md)
+turns data values into the marker names that the geoms already render.
+The built-in `"sda2028"` scheme maps screening start and stop ages to
+the bundled shape families and variants. One-time and no-screening rows
+use their own markers:
+
+``` r
+
+df_screening <- data.frame(
+  start = c(45, 50, 60, NA), stop = c(70, 85, NA, NA),
+  once = c(FALSE, FALSE, TRUE, FALSE),
+  none = c(FALSE, FALSE, FALSE, TRUE)
+)
+df_screening$icon <- marker_encode(
+  df_screening$start, df_screening$stop,
+  once = df_screening$once, none = df_screening$none
+)
+df_screening$icon
+```
+
+    [1] "square-inset" "circle-solid" "plus-bold"    "circle-solid"
+
+For another encoding, pass a list of named `start`, `stop`, and `once`
+vectors plus one `none` marker. Regular rows combine `start` and `stop`
+values with a hyphen; one-time rows use the direct `once` lookup.
+
+### Plotting encoded markers
+
+The result is an ordinary `icon` column, so it goes straight into
+[`geom_icon_point()`](https://jurjoroa.github.io/ggpop/reference/geom_icon_point.md).
+Here every start age (rows) and stop age (columns) of the `"sda2028"`
+scheme gets its own marker, and colour repeats the start age so the
+shape family and the colour agree:
+
+Show the code
+
+``` r
+
+df_schedule <- expand.grid(start = c(45, 50, 55), stop = c(70, 75, 80, 85))
+df_schedule$icon <- marker_encode(df_schedule$start, df_schedule$stop)
+
+pal_start <- c("45" = "#1E88E5", "50" = "#2A9D8F", "55" = "#E76F51")
+
+ggplot(df_schedule, aes(x = stop, y = start, icon = icon,
+                        colour = factor(start))) +
+  geom_icon_point(size = 8, dpi = 150, legend_icons = FALSE) +
+  scale_colour_manual(values = pal_start, guide = "none") +
+  scale_x_continuous(breaks = c(70, 75, 80, 85), expand = expansion(add = 3)) +
+  scale_y_continuous(breaks = c(45, 50, 55), expand = expansion(add = 3)) +
+  labs(x = "Stop age", y = "Start age") +
+  theme_minimal()
+```
+
+![](custom-svg-icons_files/figure-html/fig-marker-encode-grid-1.png)
+
+Figure 2: Every start and stop age of the sda2028 scheme, encoded with
+[`marker_encode()`](https://jurjoroa.github.io/ggpop/reference/marker_encode.md).
+
+Rows flagged `once` or `none` skip the start/stop lookup, so their
+`start` and `stop` may be missing. One-time screening uses solid markers
+at ages 45, 50 and 55, `"plus-bold"` at 60 and `"triangle-down"` at 65.
+`none = TRUE` returns the scheme’s fallback marker, which is the same
+`"circle-solid"` as a one-time screen at 50, so colour is what tells
+those two apart:
+
+Show the code
+
+``` r
+
+df_special <- data.frame(
+  label  = c("Once at 45", "Once at 50", "Once at 55",
+             "Once at 60", "Once at 65", "No screening"),
+  start  = c(45, 50, 55, 60, 65, NA),
+  stop   = NA,
+  once   = c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE),
+  none   = c(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE),
+  colour = c(rep("#6D6875", 5), "#B8B4BE")
+)
+df_special$icon <- marker_encode(
+  df_special$start, df_special$stop,
+  once = df_special$once, none = df_special$none
+)
+df_special$x <- seq_len(nrow(df_special))
+
+ggplot(df_special, aes(x = x, y = 1, icon = icon, colour = colour)) +
+  geom_icon_point(size = 8, dpi = 150, legend_icons = FALSE) +
+  geom_text(aes(label = label), y = 0.7, size = 3, colour = "grey30") +
+  scale_colour_identity() +
+  scale_x_continuous(expand = expansion(add = 0.6)) +
+  scale_y_continuous(limits = c(0.5, 1.3)) +
+  theme_void()
+```
+
+![](custom-svg-icons_files/figure-html/fig-marker-encode-special-1.png)
+
+Figure 3: One-time and no-screening rows, encoded with `once` and
+`none`.
+
 ## Using your own SVG files
 
 Place your `.svg` files in a folder and pass the path via `icon_path`.

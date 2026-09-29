@@ -38,7 +38,7 @@
   "name": "ggpop",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "R",
-  "softwareVersion": "1.8.0",
+  "softwareVersion": "1.9.0",
   "description": "R package for creating icon-based population charts and pictogram plots with ggplot2. Visualize proportion and population data in R",
   "url": "https://jurjoroa.github.io/ggpop/",
   "downloadUrl": "https://cran.r-project.org/package=ggpop",
@@ -60,7 +60,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggpop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,7 +101,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/v1.8.0/vignettes/articles/marker-legend.qmd" class="external-link"><code>vignettes/articles/marker-legend.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/vignettes/articles/marker-legend.qmd" class="external-link"><code>vignettes/articles/marker-legend.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -305,9 +305,14 @@ Figure 3: A standalone composite legend encoding region type and health indicat
 <td style="text-align: left;">A bold glyph (default <code>"*"</code>)</td>
 <td style="text-align: left;"><code>symbol_section</code></td>
 </tr>
+<tr class="odd">
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;">A label without a key symbol</td>
+<td style="text-align: left;"><code>symbol_section</code></td>
+</tr>
 </tbody>
 </table>
-<p><code>icon</code>-typed rows always render as icons no matter what <code>type</code> says - the value is a bookkeeping label there, not a switch. <code>swatch</code>/<code>line</code>/<code>point</code> are the only values <code><a href="../reference/key_legend.html">key_legend()</a></code> actually dispatches on, and that dispatch is the only place a new type could be added.</p>
+<p><code>icon</code>-typed rows always render as icons no matter what <code>type</code> says - the value is a bookkeeping label there, not a switch. <code>swatch</code>/<code>line</code>/<code>point</code>/<code>text</code> are the only values <code><a href="../reference/key_legend.html">key_legend()</a></code> actually dispatches on, and that dispatch is the only place a new type could be added.</p>
 <section class="level3"><h3 id="deriving-the-icon-grid-from-data-with-icon_grid">Deriving the icon grid from data with <code>icon_grid()</code>
 <a class="anchor" aria-label="anchor" href="#deriving-the-icon-grid-from-data-with-icon_grid"></a>
 </h3>
@@ -411,8 +416,152 @@ Figure 5: The same three-section df_legend, rendered in one legend_composite() 
 </div>
 </div>
 </div>
+<section class="level3"><h3 id="small-colour-keys-beside-the-grid">Small colour keys beside the grid<a class="anchor" aria-label="anchor" href="#small-colour-keys-beside-the-grid"></a>
+</h3>
+<p>When colour labels belong beside small square keys, use <code><a href="../reference/legend_spec.html">legend_spec()</a></code> to describe the grid, named colours, and typed symbols. <code><a href="../reference/legend_render.html">legend_render()</a></code> places the keys in columns and fits the border after all content is assembled. The specification keeps its content for related legend variants.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/legend_spec.html">legend_spec</a></span><span class="op">(</span></span>
+<span>  grid <span class="op">=</span> <span class="va">df_grid</span>, keys <span class="op">=</span> <span class="va">alert_col</span>, key_columns <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  symbols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Seasonal <span class="op">=</span> <span class="st">"line"</span>, Note <span class="op">=</span> <span class="st">"text"</span><span class="op">)</span>,</span>
+<span>  grid_title <span class="op">=</span> <span class="st">"Temp and precip"</span>, group_title <span class="op">=</span> <span class="st">"Alert"</span>,</span>
+<span>  symbol_title <span class="op">=</span> <span class="st">"Marks"</span>,</span>
+<span>  marker_size <span class="op">=</span> <span class="fl">5</span>, label_size <span class="op">=</span> <span class="fl">3.6</span>, dpi <span class="op">=</span> <span class="fl">150</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/legend_render.html">legend_render</a></span><span class="op">(</span><span class="va">spec</span>, width <span class="op">=</span> <span class="fl">9</span>, height <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-legend-external-keys" class="quarto-float quarto-figure quarto-figure-center" width="864">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-legend-external-keys-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="marker-legend_files/figure-html/fig-legend-external-keys-1.png" id="fig-legend-external-keys" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-legend-external-keys-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 6
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Without <code>symbol_title</code>, the first symbol row sits on the title line and doubles as the column heading, which suits a single reference line such as a frontier. With a title, as here, the symbols start on the same rows as the icon grid and the colour keys, so all three sections line up.</p>
+<p>Use <code><a href="../reference/legend_subset.html">legend_subset()</a></code> to make a smaller legend from the same content. It keeps the source specification intact and renumbers the selected grid rows. Add a symbol row with <code><a href="../reference/legend_add_key.html">legend_add_key()</a></code>, then render that variant so its border is measured around the final labels:</p>
+<div>
+<blockquote>
+<p><strong>Important</strong></p>
+<p><code><a href="../reference/legend_render.html">legend_render()</a></code> measures its border at the <code>width</code> and <code>height</code> you pass, so show or save the result at that same size. In a Quarto chunk, set <code>fig-width</code> and <code>fig-height</code> to match; at any other size the icons drift off their labels and the border no longer fits.</p>
+</blockquote>
+</div>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/legend_subset.html">legend_subset</a></span><span class="op">(</span><span class="va">spec</span>, grid_rows <span class="op">=</span> <span class="fl">1</span>, keys <span class="op">=</span> <span class="st">"Advisory"</span>,</span>
+<span>                       symbols <span class="op">=</span> <span class="st">"Seasonal"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/legend_render.html">legend_render</a></span><span class="op">(</span><span class="va">small</span>, width <span class="op">=</span> <span class="fl">9</span>, height <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-legend-variant-small" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-legend-variant-small-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="marker-legend_files/figure-html/fig-legend-variant-small-1.png" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-legend-variant-small-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 7: A subset of the specification: one grid row, one colour key, one symbol.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">capacity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/legend_add_key.html">legend_add_key</a></span><span class="op">(</span><span class="va">spec</span>, <span class="st">"Capacity"</span>, type <span class="op">=</span> <span class="st">"line"</span>,</span>
+<span>                           linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey30"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/legend_render.html">legend_render</a></span><span class="op">(</span><span class="va">capacity</span>, width <span class="op">=</span> <span class="fl">9</span>, height <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-legend-variant-capacity" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-legend-variant-capacity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="marker-legend_files/figure-html/fig-legend-variant-capacity-1.png" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-legend-variant-capacity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 8: The full specification plus one extra symbol row from <code><a href="../reference/legend_add_key.html">legend_add_key()</a></code>.
+</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section class="level3"><h3 id="a-screening-legend-from-marker_encode">A screening legend from <code>marker_encode()</code>
+<a class="anchor" aria-label="anchor" href="#a-screening-legend-from-marker_encode"></a>
+</h3>
+<p>The two pieces work together. Encode the start and stop ages into marker names, turn the result into a grid with <code><a href="../reference/icon_grid.html">icon_grid()</a></code>, and describe the legend once with <code><a href="../reference/legend_spec.html">legend_spec()</a></code>. The colour keys name the start ages, and the grid shows which shape and variant each start and stop age gets:</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_sda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">55</span><span class="op">)</span>, stop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70</span>, <span class="fl">75</span>, <span class="fl">80</span>, <span class="fl">85</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_sda</span><span class="op">$</span><span class="va">icon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/marker_encode.html">marker_encode</a></span><span class="op">(</span><span class="va">df_sda</span><span class="op">$</span><span class="va">start</span>, <span class="va">df_sda</span><span class="op">$</span><span class="va">stop</span><span class="op">)</span></span>
+<span><span class="va">df_sda</span><span class="op">$</span><span class="va">cell_label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">df_sda</span><span class="op">$</span><span class="va">start</span>, <span class="st">"-"</span>, <span class="va">df_sda</span><span class="op">$</span><span class="va">stop</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df_sda_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/icon_grid.html">icon_grid</a></span><span class="op">(</span></span>
+<span>  <span class="va">df_sda</span>, icon <span class="op">=</span> <span class="st">"icon"</span>, label <span class="op">=</span> <span class="st">"cell_label"</span>, row <span class="op">=</span> <span class="st">"start"</span>, col <span class="op">=</span> <span class="st">"stop"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">start_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Start 45"</span> <span class="op">=</span> <span class="st">"#1E88E5"</span>, <span class="st">"Start 50"</span> <span class="op">=</span> <span class="st">"#2A9D8F"</span>,</span>
+<span>               <span class="st">"Start 55"</span> <span class="op">=</span> <span class="st">"#E76F51"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ratios_spaced</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/modifyList.html" class="external-link">modifyList</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/legend_ratios.html">legend_ratios</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>label_gap <span class="op">=</span> <span class="fl">0.27</span>, col_spacing <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">spec_sda</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/legend_spec.html">legend_spec</a></span><span class="op">(</span></span>
+<span>  <span class="va">df_sda_grid</span>, keys <span class="op">=</span> <span class="va">start_col</span>,</span>
+<span>  grid_title <span class="op">=</span> <span class="st">"Start-stop"</span>, group_title <span class="op">=</span> <span class="st">"Start age"</span>,</span>
+<span>  symbol_title <span class="op">=</span> <span class="st">"Reference"</span>,</span>
+<span>  marker_size <span class="op">=</span> <span class="fl">5</span>, label_size <span class="op">=</span> <span class="fl">3.4</span>, dpi <span class="op">=</span> <span class="fl">150</span>, ratios <span class="op">=</span> <span class="va">ratios_spaced</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/legend_render.html">legend_render</a></span><span class="op">(</span><span class="va">spec_sda</span>, width <span class="op">=</span> <span class="fl">9</span>, height <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-legend-spec-screening" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-legend-spec-screening-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="marker-legend_files/figure-html/fig-legend-spec-screening-1.png" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-legend-spec-screening-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 9: A legend_spec() for the sda2028 scheme: colour keys on the left, the encoded marker grid on the right.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p><code>label_fontface</code> sets the font face of every title and label at once. Because <code><a href="../reference/legend_render.html">legend_render()</a></code> measures the text at that face, the border still fits the wider bold labels:</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spec_bold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/legend_spec.html">legend_spec</a></span><span class="op">(</span></span>
+<span>  <span class="va">df_sda_grid</span>, keys <span class="op">=</span> <span class="va">start_col</span>,</span>
+<span>  grid_title <span class="op">=</span> <span class="st">"Start-stop"</span>, group_title <span class="op">=</span> <span class="st">"Start age"</span>,</span>
+<span>  marker_size <span class="op">=</span> <span class="fl">5</span>, label_size <span class="op">=</span> <span class="fl">3.4</span>, dpi <span class="op">=</span> <span class="fl">150</span>, ratios <span class="op">=</span> <span class="va">ratios_spaced</span>,</span>
+<span>  label_fontface <span class="op">=</span> <span class="st">"bold"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/legend_render.html">legend_render</a></span><span class="op">(</span><span class="va">spec_bold</span>, width <span class="op">=</span> <span class="fl">9</span>, height <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-legend-spec-bold" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-legend-spec-bold-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="marker-legend_files/figure-html/fig-legend-spec-bold-1.png" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-legend-spec-bold-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 10: The same content with <code>label_fontface = "bold"</code>; the border is fitted around the bold text.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Related legends reuse the specification. <code><a href="../reference/legend_subset.html">legend_subset()</a></code> keeps one start age and its grid row, <code><a href="../reference/legend_add_key.html">legend_add_key()</a></code> appends a symbol row under the <code>symbol_title</code>, and neither changes <code>spec_sda</code>:</p>
+<div class="cell">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">first_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/legend_subset.html">legend_subset</a></span><span class="op">(</span><span class="va">spec_sda</span>, grid_rows <span class="op">=</span> <span class="fl">1</span>, keys <span class="op">=</span> <span class="st">"Start 45"</span><span class="op">)</span></span>
+<span><span class="va">first_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/legend_add_key.html">legend_add_key</a></span><span class="op">(</span></span>
+<span>  <span class="va">first_start</span>, <span class="st">"Stop-age cut-off"</span>, type <span class="op">=</span> <span class="st">"line"</span>,</span>
+<span>  linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey30"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/legend_render.html">legend_render</a></span><span class="op">(</span><span class="va">first_start</span>, width <span class="op">=</span> <span class="fl">9</span>, height <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span></code></pre></div>
+</details><div class="cell-output-display">
+<div id="fig-legend-spec-variant" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig"><div aria-describedby="fig-legend-spec-variant-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="marker-legend_files/figure-html/fig-legend-spec-variant-1.png" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-legend-spec-variant-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 11: A single-start-age variant of the screening legend with one extra symbol row.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>The colour keys are drawn in plot coordinates, so a one-row legend needs a shorter figure than a three-row one to keep its swatches square. Match the height to the number of rows rather than reusing one size for every variant.</p>
 <p>Instead of hand-setting <code>col_spacing</code>, <code>group_width</code>, <code>marker_size</code>, <code>label_size</code>, and the rest, you give <code><a href="../reference/legend_composite.html">legend_composite()</a></code> the physical <code>width</code>/<code>height</code> and it derives every length from three base sizes and the ratio ladder. You usually touch nothing but the titles; when a section needs more room - here the two-column grid’s title and the wide symbol labels - override a single rung with <code>ratios = modifyList(legend_ratios(), ...)</code>.</p>
-<section class="level3"><h3 id="the-same-proportions-at-any-figure-width">The same proportions at any figure width<a class="anchor" aria-label="anchor" href="#the-same-proportions-at-any-figure-width"></a>
+</section><section class="level3"><h3 id="the-same-proportions-at-any-figure-width">The same proportions at any figure width<a class="anchor" aria-label="anchor" href="#the-same-proportions-at-any-figure-width"></a>
 </h3>
 <p>The base sizes are calibrated for a <code>base_width</code>-inch strip (default 27) and multiplied by <code>width / base_width</code>, so passing your actual <code>width</code> reproduces the identical legend at that physical size - no per-figure retuning. Halve the width and text, markers, spacing, and border all scale together. Set <code>base_width = width</code> to opt out and size in absolute units instead.</p>
 <div>
@@ -427,7 +576,7 @@ Figure 5: The same three-section df_legend, rendered in one legend_composite() 
 </h2>
 <p>A composite legend earns its keep only when the plot uses every key it advertises. Here the forecast draws each day with <code><a href="../reference/geom_icon_point.html">geom_icon_point()</a></code> - marker shape for the temperature/precipitation condition, colour for the alert level - over a seasonal-average line, a typical-range band, and a flagged warmest day: exactly the sections the legend describes. To pin that legend under the plot in one exported figure - rather than a standalone panel - add it with <code>legend_strip(strip_plot, height)</code>:</p>
 <div class="cell">
-<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<details class="code-fold"><summary>Show the code</summary><div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">icon_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Warm.Dry"</span> <span class="op">=</span> <span class="st">"sun"</span>,</span>
 <span>  <span class="st">"Warm.Wet"</span> <span class="op">=</span> <span class="st">"cloud-rain"</span>,</span>
@@ -493,7 +642,7 @@ Figure 5: The same three-section df_legend, rendered in one legend_composite() 
 <img src="marker-legend_files/figure-html/fig-legend-strip-1.png" width="864">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-legend-strip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure 6: An icon forecast answering a real question - marker shape shows the temperature/precipitation condition, colour shows the alert level - with its legend_canvas() legend stacked below, so every legend key is something you read off the plot.
+Figure 12: An icon forecast answering a real question - marker shape shows the temperature/precipitation condition, colour shows the alert level - with its legend_canvas() legend stacked below, so every legend key is something you read off the plot.
 </figcaption></figure>
 </div>
 </div>

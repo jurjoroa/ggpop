@@ -32,7 +32,7 @@ tuning."><meta property="og:image" content="https://jurjoroa.github.io/ggpop/ins
   "name": "ggpop",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "R",
-  "softwareVersion": "1.8.0",
+  "softwareVersion": "1.9.0",
   "description": "R package for creating icon-based population charts and pictogram plots with ggplot2. Visualize proportion and population data in R",
   "url": "https://jurjoroa.github.io/ggpop/",
   "downloadUrl": "https://cran.r-project.org/package=ggpop",
@@ -52,7 +52,7 @@ tuning."><meta property="og:image" content="https://jurjoroa.github.io/ggpop/ins
 
     <a class="navbar-brand me-2" href="../index.html">ggpop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@ tuning."><meta property="og:image" content="https://jurjoroa.github.io/ggpop/ins
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Draw a border tightly around a composite legend's rendered content</h1>
-      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/v1.8.0/R/legend-canvas.R" class="external-link"><code>R/legend-canvas.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/R/legend-canvas.R" class="external-link"><code>R/legend-canvas.R</code></a></small>
       <div class="d-none name"><code>legend_box.Rd</code></div>
     </div>
 
@@ -152,8 +152,11 @@ fractions of the measured content width and height
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
-<dd><p>Grayscale ink cutoff (0-255) for detecting content;
-pixels darker than this count as content (default <code>150</code>).</p></dd>
+<dd><p>Colour-channel cutoff (0-255) for detecting content; a
+pixel counts as content when its darkest red, green or blue channel is
+below this value (default <code>150</code>). Testing the darkest channel, not
+the gray level, keeps light saturated colours such as yellow inside the
+border. Very pale fills (all channels above the cutoff) are not detected.</p></dd>
 
 
 <dt id="arg-dpi">dpi<a class="anchor" aria-label="anchor" href="#arg-dpi"></a></dt>

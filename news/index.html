@@ -12,7 +12,7 @@
   "name": "ggpop",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "R",
-  "softwareVersion": "1.8.0",
+  "softwareVersion": "1.9.0",
   "description": "R package for creating icon-based population charts and pictogram plots with ggplot2. Visualize proportion and population data in R",
   "url": "https://jurjoroa.github.io/ggpop/",
   "downloadUrl": "https://cran.r-project.org/package=ggpop",
@@ -32,7 +32,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggpop</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,11 +62,47 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/jurjoroa/ggpop/blob/v1.8.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/jurjoroa/ggpop/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.8.0" id="ggpop-180">ggpop 1.8.0<a class="anchor" aria-label="anchor" href="#ggpop-180"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9.0" id="ggpop-190">ggpop 1.9.0<a class="anchor" aria-label="anchor" href="#ggpop-190"></a></h2>
+<p>This release adds a data-to-marker encoder and a reusable specification for composite legends with external colour keys, and evens out the visible size of the bundled circle markers.</p>
+<div class="section level3">
+<h3 id="new-features-1-9-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-9-0"></a></h3>
+<ul><li>
+<code><a href="../reference/marker_encode.html">marker_encode()</a></code> turns data values into the icon names the geoms already render. A marker scheme maps one value to a shape family and another to a variant; the built-in <code>"sda2028"</code> scheme maps screening start ages 45/50/55 to square/circle/diamond and stop ages 70/75/80/85 to inset/hollow/cross/solid, with dedicated markers for one-time and no-screening rows. Pass a list of named <code>start</code>, <code>stop</code> and <code>once</code> vectors plus one <code>none</code> marker to define your own scheme (<a href="https://github.com/jurjoroa/ggpop/issues/399" class="external-link">#399</a>).</li>
+<li>
+<code><a href="../reference/legend_spec.html">legend_spec()</a></code> stores the content of a composite legend (an <code><a href="../reference/icon_grid.html">icon_grid()</a></code> grid, named colour keys, and typed symbol rows) and <code><a href="../reference/legend_render.html">legend_render()</a></code> lays it out and fits its border at a physical size in inches. Colour keys can run in several columns and sit beside the icon grid as small square swatches (<a href="https://github.com/jurjoroa/ggpop/issues/400" class="external-link">#400</a>).</li>
+<li>
+<code><a href="../reference/key_legend.html">key_legend()</a></code> accepts a <code>"text"</code> entry type: a label with no visible key symbol, for notes that belong in a symbol column without a key (<a href="https://github.com/jurjoroa/ggpop/issues/400" class="external-link">#400</a>).</li>
+<li>
+<code><a href="../reference/legend_subset.html">legend_subset()</a></code> selects grid rows, colour keys and symbols from an existing specification, and <code><a href="../reference/legend_add_key.html">legend_add_key()</a></code> appends a typed symbol row, so related legends reuse one specification instead of rebuilding it. Neither changes the original (<a href="https://github.com/jurjoroa/ggpop/issues/401" class="external-link">#401</a>).</li>
+<li>
+<code><a href="../reference/legend_spec.html">legend_spec()</a></code> takes a <code>symbol_title</code> argument. By default the first symbol row sits on the title line and doubles as the column heading. With a title, the heading takes that line and the symbol rows start on the same rows as the icon grid and colour keys, so the three sections line up. Existing legends are unchanged.</li>
+<li>
+<code><a href="../reference/legend_spec.html">legend_spec()</a></code> takes a <code>label_fontface</code> argument (default <code>"plain"</code>) controlling the title and label font face, in step with <code><a href="../reference/legend_canvas.html">legend_canvas()</a></code> and <code><a href="../reference/marker_legend.html">marker_legend()</a></code>. <code><a href="../reference/legend_render.html">legend_render()</a></code> measures text at that face so the border still fits bold or italic labels.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-9-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-9-0"></a></h3>
+<ul><li>
+<code><a href="../reference/legend_box.html">legend_box()</a></code> located the legend’s content by gray level, so light saturated colours such as yellow (gray level about 196) counted as background and a colour key drawn in one could sit outside the fitted border. It now tests each pixel’s darkest colour channel, so yellow and similar keys are enclosed; the <code>threshold</code> argument now applies to that channel value. This also fixes the border in <code><a href="../reference/legend_render.html">legend_render()</a></code> and <code><a href="../reference/legend_composite.html">legend_composite()</a></code> legends that use light keys.</li>
+<li>The bundled <code>"circle-cross"</code>, <code>"circle-hollow"</code> and <code>"circle-solid"</code> markers now share one visible diameter with <code>"circle-inset"</code>, so a set of circle variants renders at the same size at a given geom size. <code>"circle-cross"</code> previously filled its whole viewBox and looked larger than the others, while <code>"circle-hollow"</code> and <code>"circle-solid"</code> looked smaller (<a href="https://github.com/jurjoroa/ggpop/issues/411" class="external-link">#411</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="issues-resolved-in-v190-1-9-0">Issues Resolved in v1.9.0<a class="anchor" aria-label="anchor" href="#issues-resolved-in-v190-1-9-0"></a></h3>
+<ul><li>#399</li>
+<li>#400</li>
+<li>#401</li>
+<li>#411</li>
+</ul></div>
+<div class="section level3">
+<h3 id="version-1-9-0">Version<a class="anchor" aria-label="anchor" href="#version-1-9-0"></a></h3>
+<ul><li>#398</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.8.0" id="ggpop-180">ggpop 1.8.0<a class="anchor" aria-label="anchor" href="#ggpop-180"></a></h2><p class="text-muted">CRAN release: 2026-08-23</p>
 <p>This release adds custom SVG icon support to both geoms, a composite-legend system for legends that ggplot2’s own guides cannot express, and a draw-time recolouring fix that removes the long-standing black-icon rendering bug.</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-8-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-0"></a></h3>

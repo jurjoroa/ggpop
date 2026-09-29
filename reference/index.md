@@ -55,11 +55,26 @@ legends.
 - [`legend_strip()`](https://jurjoroa.github.io/ggpop/reference/legend_strip.md)
   : Attach a legend strip below a ggplot
 
+- [`legend_spec()`](https://jurjoroa.github.io/ggpop/reference/legend_spec.md)
+  : Specify a composite legend with external colour keys
+
+- [`legend_render()`](https://jurjoroa.github.io/ggpop/reference/legend_render.md)
+  : Render a composite legend specification
+
+- [`legend_subset()`](https://jurjoroa.github.io/ggpop/reference/legend_subset.md)
+  : Select content from a composite legend specification
+
+- [`legend_add_key()`](https://jurjoroa.github.io/ggpop/reference/legend_add_key.md)
+  : Add a typed symbol row to a composite legend specification
+
 - [`fa_icons()`](https://jurjoroa.github.io/ggpop/reference/fa_icons.md)
   : Search and list Font Awesome icons
 
 - [`ggpop_markers()`](https://jurjoroa.github.io/ggpop/reference/ggpop_markers.md)
   : List the icon markers ggpop can render by name
+
+- [`marker_encode()`](https://jurjoroa.github.io/ggpop/reference/marker_encode.md)
+  : Encode data values as icon marker names
 
 ## Themes
 

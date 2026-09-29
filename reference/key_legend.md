@@ -8,7 +8,7 @@ using the same
 approach. The coordinate system is shared with the base plot, so
 positions integrate seamlessly with the rest of the legend.
 
-Three entry types are supported:
+Four entry types are supported:
 
 - swatch:
 
@@ -21,6 +21,10 @@ Three entry types are supported:
 - point:
 
   A bold `"*"` glyph rendered as text.
+
+- text:
+
+  A label with no visible key symbol.
 
 A fourth entry kind, `icon`, exists in
 [`legend_canvas`](https://jurjoroa.github.io/ggpop/reference/legend_canvas.md)'s
@@ -66,10 +70,10 @@ key_legend(
 
 - entries:
 
-  A data frame with columns `type` (`"swatch"`, `"line"`, or `"point"`),
-  `label`, and `color` (or `colour`). Optional columns: `linetype`
-  (default `"solid"`), `linewidth` (default `0.8`), `pch` (default `NA`
-  -\> draws `"*"` for `type = "point"`).
+  A data frame with columns `type` (`"swatch"`, `"line"`, `"point"`, or
+  `"text"`), `label`, and `color` (or `colour`). Optional columns:
+  `linetype` (default `"solid"`), `linewidth` (default `0.8`), `pch`
+  (default `NA` -\> draws `"*"` for `type = "point"`).
 
 - x:
 

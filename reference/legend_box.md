@@ -68,8 +68,11 @@ legend_box(
 
 - threshold:
 
-  Grayscale ink cutoff (0-255) for detecting content; pixels darker than
-  this count as content (default `150`).
+  Colour-channel cutoff (0-255) for detecting content; a pixel counts as
+  content when its darkest red, green or blue channel is below this
+  value (default `150`). Testing the darkest channel, not the gray
+  level, keeps light saturated colours such as yellow inside the border.
+  Very pale fills (all channels above the cutoff) are not detected.
 
 - dpi:
 
