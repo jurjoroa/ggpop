@@ -42,6 +42,70 @@ testthat::test_that("rendering does not change a legend spec", {
   testthat::expect_s3_class(plot, "ggplot")
 })
 
+testthat::test_that("legend spec applies label_fontface to every text layer", {
+  grid <- data.frame(row = 1, col = 1, icon = "square-inset", label = "A")
+  spec <- legend_spec(
+    grid, keys = c(One = "#08B8A2"), group_title = "Group",
+    label_fontface = "bold"
+  )
+  plot <- legend_render(spec, width = 7, height = 1.5)
+  built <- suppressWarnings(ggplot2::ggplot_build(plot))
+
+  testthat::expect_identical(spec$label_fontface, "bold")
+  testthat::expect_identical(legend_subset(spec, keys = "One")$label_fontface,
+                             "bold")
+  faces <- unlist(lapply(built$data, function(data) {
+    if ("label" %in% names(data) && "fontface" %in% names(data)) {
+      as.character(data$fontface)
+    }
+  }))
+  testthat::expect_true(length(faces) > 0L)
+  testthat::expect_true(all(faces == "bold"))
+})
+
+testthat::test_that("legend border encloses light-coloured keys", {
+  grid <- data.frame(row = 1, col = 1, icon = "square-inset", label = "A")
+  yellow <- "#F4C542"
+  spec <- legend_spec(grid, keys = c(Advisory = yellow))
+  plot <- legend_render(spec, width = 7, height = 1.5)
+  built <- suppressWarnings(ggplot2::ggplot_build(plot))
+
+  rectangles <- do.call(rbind, Filter(function(data) {
+    all(c("xmin", "xmax", "fill") %in% names(data))
+  }, lapply(built$data, function(data) {
+    data[, intersect(c("xmin", "xmax", "fill"), names(data)), drop = FALSE]
+  })))
+  swatch <- rectangles[rectangles$fill %in% yellow, ]
+  border <- rectangles[is.na(rectangles$fill), ]
+
+  testthat::expect_equal(nrow(swatch), 1L)
+  testthat::expect_equal(nrow(border), 1L)
+  testthat::expect_lt(border$xmin, swatch$xmin)
+})
+
+testthat::test_that("symbol_title puts symbol rows on the grid rows", {
+  grid <- data.frame(row = 1, col = 1, icon = "square-inset", label = "A")
+  symbol_y <- function(spec) {
+    built <- suppressWarnings(ggplot2::ggplot_build(
+      legend_render(spec, width = 7, height = 1.5)
+    ))
+    data <- do.call(rbind, lapply(built$data, function(data) {
+      if (all(c("label", "y") %in% names(data))) data[, c("label", "y")]
+    }))
+    data$y[data$label == "Frontier"]
+  }
+  without <- legend_spec(grid, symbols = c(Frontier = "line"))
+  with_title <- legend_spec(grid, symbols = c(Frontier = "line"),
+                            symbol_title = "Marks")
+
+  testthat::expect_identical(with_title$symbol_title, "Marks")
+  testthat::expect_lt(symbol_y(with_title), symbol_y(without))
+  testthat::expect_error(legend_spec(grid, symbol_title = ""), "symbol_title")
+  testthat::expect_identical(
+    legend_subset(with_title, symbols = "Frontier")$symbol_title, "Marks"
+  )
+})
+
 testthat::test_that("legend spec validates its content and dimensions", {
   grid <- data.frame(row = 1, col = 1, icon = "square-inset", label = "A")
   testthat::expect_error(legend_spec(data.frame()), "grid")
@@ -50,6 +114,8 @@ testthat::test_that("legend spec validates its content and dimensions", {
   testthat::expect_error(legend_spec(grid, keys = c(One = "red"),
                                      key_columns = 2), "key_columns")
   testthat::expect_error(legend_spec(grid, xlim = c(1, 0)), "xlim")
+  testthat::expect_error(legend_spec(grid, label_fontface = "heavy"),
+                         "label_fontface")
   testthat::expect_error(legend_spec(grid, border_padding = -1), "border")
   testthat::expect_error(legend_spec(grid, symbols = c(Note = "other")),
                          "invalid value")
